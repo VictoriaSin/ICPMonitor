@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="600mm"
+   height="200mm"
+   viewBox="0 0 600 200"
+   version="1.1"
+   id="svg23464"
+   inkscape:version="1.2.1 (9c6d41e, 2022-07-14)"
+   sodipodi:docname="acceptWide_pressed.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview23466"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.38039422"
+     inkscape:cx="1267.1065"
+     inkscape:cy="512.62608"
+     inkscape:window-width="1920"
+     inkscape:window-height="1007"
+     inkscape:window-x="1920"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     inkscape:pageshadow="0" />
+  <defs
+     id="defs23461" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#0c2731;fill-opacity:1;stroke:#f0f0f0;stroke-width:3.47527;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.94117647"
+       id="rect382"
+       width="596.52472"
+       height="196.52473"
+       x="1.7376363"
+       y="1.7376363"
+       ry="44.67347" />
+    <rect
+       style="fill:#f0f0f0;fill-opacity:0.941176;stroke:none;stroke-width:3.27524;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.941176"
+       id="rect382-3"
+       width="580"
+       height="179.52533"
+       x="10"
+       y="10.267147"
+       ry="40.809219" />
+    <path
+       id="rect30667"
+       style="fill:#4fbc30;fill-opacity:1;stroke:#000000;stroke-width:1.20907;paint-order:stroke fill markers"
+       d="m 364.61798,18.108107 c -6.63441,0.17273 -14.4633,6.553862 -19.21432,16.344219 L 292.99703,142.44573 252.56436,78.36386 c -5.13334,-8.135769 -14.76059,-11.218841 -21.58524,-6.912756 -6.82466,4.306084 -8.18587,14.322291 -3.05253,22.45806 l 51.4842,81.597086 c 2.93299,4.64846 7.33305,7.6439 11.83906,8.55762 0.0723,0.0155 0.14535,0.0276 0.21808,0.0413 3.31009,0.62135 6.6651,0.11991 9.52759,-1.6862 1.34383,-0.84791 2.47248,-1.92001 3.3848,-3.15278 3.18699,-2.81183 6.13906,-6.68727 8.39535,-11.33677 L 371.4217,47.077913 c 5.84742,-12.049672 4.75288,-24.565502 -2.45411,-28.062883 -1.35131,-0.655764 -2.81859,-0.946784 -4.34961,-0.906923 z" />
+  </g>
+</svg>

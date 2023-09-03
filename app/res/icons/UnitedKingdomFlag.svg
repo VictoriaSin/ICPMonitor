@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 50 30"
+   width="1000"
+   height="600"
+   version="1.1"
+   id="svg10250"
+   sodipodi:docname="UnitedKingdomFlag.svg"
+   inkscape:version="1.2.1 (9c6d41e, 2022-07-14)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs10254" />
+  <sodipodi:namedview
+     id="namedview10252"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     showgrid="false"
+     inkscape:zoom="0.83580022"
+     inkscape:cx="402.00995"
+     inkscape:cy="348.16933"
+     inkscape:window-width="1920"
+     inkscape:window-height="1051"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg10250" />
+  <clipPath
+     id="t">
+    <path
+       d="M25,15h25v15zv15h-25zh-25v-15zv-15h25z"
+       id="path5" />
+  </clipPath>
+  <path
+     d="M0,0v30h50v-30z"
+     fill="#012169"
+     id="path4" />
+  <path
+     d="M0,0 50,30M50,0 0,30"
+     stroke="#fff"
+     stroke-width="6"
+     id="path3" />
+  <path
+     d="M0,0 50,30M50,0 0,30"
+     stroke="#C8102E"
+     stroke-width="4"
+     id="path2" />
+  <path
+     d="M-1 11h22v-12h8v12h22v8h-22v12h-8v-12h-22z"
+     fill="#C8102E"
+     stroke="#FFF"
+     stroke-width="2"
+     id="path1" />
+</svg>

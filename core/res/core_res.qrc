@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>imit_data/ICP_data_60sec.csv</file>
+        <file>trans/core_en.qm</file>
+    </qresource>
+</RCC>

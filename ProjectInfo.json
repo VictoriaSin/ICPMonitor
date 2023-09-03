@@ -1,0 +1,10 @@
+{
+    "build_prefix": "Builds/ICPMonitor",
+    "build_artifacts" : [
+        "ICPMonitor*"
+    ],
+    "test_prefix": "Builds/ICPMonitor",
+    "test_artifacts" : [
+        "gunit_MainTest*"
+    ]
+}

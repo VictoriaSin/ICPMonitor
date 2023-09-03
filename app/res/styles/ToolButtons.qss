@@ -1,0 +1,6 @@
+QToolButton {
+	background-color: transparent;
+	border: none;
+	color: white;
+	font: bold;
+}

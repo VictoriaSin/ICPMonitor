@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LanguagePage</class>
+ <widget class="QWidget" name="LanguagePage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1124</width>
+    <height>428</height>
+   </rect>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QRadioButton" name="rusLangRB">
+     <property name="font">
+      <font>
+       <pointsize>25</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QRadioButton::indicator {
+    width: 100px;
+    height: 50px;
+}
+
+QRadioButton{
+    spacing: 6px;
+	color: white;
+}
+
+QRadioButton::indicator:checked {
+    image: url(:/icons/radioButtonSelected.svg);
+}
+
+QRadioButton::indicator:unchecked
+  {
+    image: url(:/icons/radioButtonUnselected.svg);
+  }</string>
+     </property>
+     <property name="text">
+      <string>Русский</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../res/app_res.qrc">
+       <normaloff>:/icons/RussiaFlag.svg</normaloff>:/icons/RussiaFlag.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>100</width>
+       <height>75</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QRadioButton" name="engLangRB">
+     <property name="font">
+      <font>
+       <pointsize>25</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QRadioButton::indicator {
+    width: 100px;
+    height: 50px;
+}
+
+QRadioButton{
+    spacing: 6px;
+	color: white;
+}
+
+QRadioButton::indicator:checked {
+    image: url(:/icons/radioButtonSelected.svg);
+}
+
+QRadioButton::indicator:unchecked
+  {
+    image: url(:/icons/radioButtonUnselected.svg);
+  }</string>
+     </property>
+     <property name="text">
+      <string>Английский</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../res/app_res.qrc">
+       <normaloff>:/icons/UnitedKingdomFlag.svg</normaloff>:/icons/UnitedKingdomFlag.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>100</width>
+       <height>75</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../res/app_res.qrc"/>
+ </resources>
+ <connections/>
+</ui>
