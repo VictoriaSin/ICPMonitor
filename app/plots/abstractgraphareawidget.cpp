@@ -21,6 +21,7 @@ AbstractGraphAreaWidget::AbstractGraphAreaWidget(QWidget *parent) :
 
     // Устанавливаем шрифт имени графика
     ui->nameGraphLabel->setFont(mGraphNameFont);
+    ui->nameGraphLabel->hide();
 
     // Настройка перерисовки графиков
     mGuiUpdateTimer->setInterval(mGuiUpdate);

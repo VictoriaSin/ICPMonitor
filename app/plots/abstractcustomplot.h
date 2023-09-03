@@ -33,7 +33,7 @@ public:
         HistGraph,
         RecordedGraph
     };
-    bool labelMoved = false;
+    //bool labelMoved = false;
 
     AbstractCustomPlot(GraphType type, QWidget *parent = nullptr);
 
@@ -120,6 +120,9 @@ private:
     void settingAnalisingElements();
 
 protected:
+    //uint32_t pointStart;
+    //uint32_t pointStop;
+
     //! Тип графика
     const GraphType mGraphType;
 

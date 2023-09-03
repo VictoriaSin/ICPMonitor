@@ -17,5 +17,8 @@ extern bool isLabelCreating;
 extern bool isIntervalCreating;
 extern uint32_t mCoordLabelX;
 extern uint8_t mIntervalsCount;
-extern uint16_t mCurrentLabelNumber;
+extern uint16_t mCurrentLabelIndex;
+
+enum direction { previous = false, next = true};
+enum interval { first = false, second = true};
 #endif // GLOBAL_DEFINE_H

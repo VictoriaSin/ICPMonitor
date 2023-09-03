@@ -25,7 +25,7 @@ QFile mMarksFile;
 QFile mRawDataFile;
 
 uint64_t startTimeStampRecord {0};
-uint16_t mCurrentLabelNumber {1};
+uint16_t mCurrentLabelIndex;
 
 MainPage::MainPage(QWidget *parent)
     : IPageWidget(parent)
@@ -52,13 +52,12 @@ MainPage::MainPage(QWidget *parent)
     connect(mUpdateDateTimeTimer, &QTimer::timeout, this, &MainPage::updateDateTime);
 
     connect(this, &MainPage::changeCurrentGraph, mCurrentGraphsArea, &AbstractMultipleGraphsAreasWidget::changeGraph);
-    connect(this, SIGNAL(changeRecordedGraphInteraction(bool)), mCurrentGraphsArea, SLOT(changeInteraction(bool)));
+    connect(this, SIGNAL(changeRecordedGraphInteraction(bool)), mCurrentGraphsArea, SLOT(addOrDeleteNewItem(bool)));
 
     connect(this, &MainPage::changeCurrentRange, mCurrentGraphsArea, &CurrentGraphsArea::changeXInterval);
 
     connect(this, SIGNAL(goToLabel(bool)), mCurrentGraphsArea, SLOT(goToLabel(bool)));
 
-    //connect(ui->labelsNavigation, QLabel::cha)
 }
 
 MainPage::~MainPage()
@@ -371,11 +370,10 @@ void MainPage::updateLabelCounter()
     // Запрос у контроллера кол-ва меток за текущую сессию
     int countLabels = mController->getLabelsCountPerCurrentSession();
     if (countLabels > 0) {
-        //ui->labelCounterLabel->setText(counterLabelText.arg(countLabels));
-        ui->labelCounterLabel->setText(counterLabelText.arg(mLabelManagerGlobal->mCountLabels));
-        ui->labelsNavigation->setText(currentLabelText.arg(mCurrentLabelNumber).arg(mLabelManagerGlobal->mCountLabels));
+        //ui->labelCounterLabel->setText(counterLabelText.arg(mLabelManagerGlobal->mCountLabels));
+        ui->labelsNavigation->setText(currentLabelText.arg(mCurrentLabelIndex + 1).arg(mLabelManagerGlobal->mCountLabels));
     } else {
-        ui->labelCounterLabel->setText(tr("Меток: "));
+        //ui->labelCounterLabel->setText(tr("Меток: "));
     }
 }
 
@@ -384,7 +382,7 @@ void MainPage::scaleFont(float scaleFactor)
     WFontScaling(ui->dateTimeLabel, scaleFactor);
     //WFontScaling(ui->sensorInfoLabel, scaleFactor);
     WFontScaling(ui->sensorStateLabel, scaleFactor);
-    WFontScaling(ui->labelCounterLabel, scaleFactor);
+    //WFontScaling(ui->labelCounterLabel, scaleFactor);
     //WFontScaling(ui->sessionID, scaleFactor);
     ui->averageICPWidget->scaleFont(scaleFactor);
     ui->alarmLevelICPWidget->scaleFont(scaleFactor);
@@ -576,9 +574,11 @@ void MainPage::on_recordButton_clicked()
             ui->intervalButton->show();
             //ui->intervalStopButton->show();
             ui->makeLabelButton->show();
-            ui->labelCounterLabel->show();
             ui->recordButton->hide();
             ui->sessionButton->setEnabled(true);
+
+            ui->averageICPWidget->hide();
+            ui->alarmLevelICPWidget->hide();
             emit (changeCurrentGraph());
         }
 }
@@ -635,10 +635,12 @@ void MainPage::on_sessionButton_clicked()
         ui->sessionButton->setIcon(QIcon(":/icons/deleteSession.svg"), QIcon(":/icons/deleteSession_pressed.svg"));
         ui->homeButton->hide();
         ui->makeLabelButton->hide();
-        ui->labelCounterLabel->hide();
         ui->acceptMarkButton->hide();
         ui->rejectMarkButton->hide();
+        ui->averageICPWidget->show();
+        ui->alarmLevelICPWidget->show();
 
+        mCurrentLabelIndex = 0;
         mController->mSensor->startSendingSensorReadings();
         mCurrentGraphsArea->startPlotting();
     }
@@ -658,7 +660,6 @@ void MainPage::on_sessionButton_clicked()
         emit (resetWaveGraph());
 
         ui->makeLabelButton->hide();
-        ui->labelCounterLabel->hide();
         ui->acceptMarkButton->hide();
         ui->rejectMarkButton->hide();
         ui->recordButton->hide();
@@ -674,10 +675,12 @@ void MainPage::on_sessionButton_clicked()
         ui->labelsNavigation->hide();
         ui->goToPreviousMarkButton->hide();
         ui->goToNextMarkButton->hide();
-//        for (int i=0; i<mLabelItemsContainer.count(); i++)
-//        {
-//            mLabelItemsContainer.remove(i);
-//        }//добавить удаление всех линий после завершения сессии
+
+        ui->maxValueInterval1->hide();
+        ui->maxValueInterval2->hide();
+        ui->averageValueInterval1->hide();
+        ui->averageValueInterval2->hide();
+        //добавить удаление всех линий после завершения сессии
     }
 }
 
@@ -688,7 +691,6 @@ void MainPage::on_intervalButton_clicked()
     ui->rejectIntervalButton->show();
 
     ui->makeLabelButton->hide();
-    ui->labelCounterLabel->hide();
 
     mCurrentGraphsArea->addIntervalOnRecordedGraph();
     if (isIntervalCreating)
@@ -721,13 +723,13 @@ void MainPage::on_acceptIntervalButton_clicked()
     mIntervalsFile.write((QString::number(mIntervalsCount) + ": " + QString::number(mIntervalsContainer[mIntervalsCount-1]->mIntervalPos) + "\n").toLatin1());
     mIntervalsFile.close();
     ui->makeLabelButton->show();
-    ui->labelCounterLabel->show();
     ui->acceptIntervalButton->hide();
     ui->rejectIntervalButton->hide();
     emit(changeRecordedGraphInteraction(true));
 
     ui->intervalButton->setEnabled(true);
-
+    const QString maxValuePreset = tr("Максимум\n%1"); //перевести потом
+    const QString averageValuePreset = tr("Среднее\n%1"); //перевести потом
     if (mIntervalsCount % 2 == 0)
     {
         mCurrentGraphsArea->colorInterval();
@@ -736,13 +738,17 @@ void MainPage::on_acceptIntervalButton_clicked()
             ui->goToInterval1Button->show();
             ui->maxValueInterval1->show();
             ui->averageValueInterval1->show();
-
+            ui->maxValueInterval1->setText(maxValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue)));
+            ui->averageValueInterval1->setText(averageValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue)));
         }
         else
         {
             ui->goToInterval2Button->show();
             ui->maxValueInterval2->show();
             ui->averageValueInterval2->show();
+            ui->maxValueInterval2->setText(maxValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue)));
+            ui->averageValueInterval2->setText(averageValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue)));
+
         }
 
     }
@@ -762,7 +768,6 @@ void MainPage::on_rejectIntervalButton_clicked()
     ui->rejectIntervalButton->hide();
 
     ui->makeLabelButton->show();
-    ui->labelCounterLabel->show();
     mIntervalsCount--;
     emit(changeRecordedGraphInteraction(false));
     ui->intervalButton->setEnabled(true);
@@ -771,24 +776,24 @@ void MainPage::on_rejectIntervalButton_clicked()
 
 void MainPage::on_goToInterval1Button_clicked()
 {
-    emit (changeCurrentRange(false));
+    emit (changeCurrentRange(first));
 }
 
 void MainPage::on_goToInterval2Button_clicked()
 {
-    emit (changeCurrentRange(true));
+    emit (changeCurrentRange(second));
 }
-
-
 
 void MainPage::on_goToPreviousMarkButton_clicked()
 {
-    emit (goToLabel(false));
+    emit (goToLabel(previous));
+    updateLabelCounter();
 }
 
 
 void MainPage::on_goToNextMarkButton_clicked()
 {
-    emit (goToLabel(true));
+    emit (goToLabel(next));
+    updateLabelCounter();
 }
 

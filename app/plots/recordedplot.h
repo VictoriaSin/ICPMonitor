@@ -27,13 +27,14 @@ public:
     /*! Менеджер меток */
     //LabelManager *mLabelManager {nullptr};
 
-
+    bool event(QEvent *event) override;
     explicit RecordedPlot(QWidget *parent = nullptr);
     ~RecordedPlot();
 
 
 
     double mCurrentMaxXRange {60};
+    double mCurrentMaxYRange {60};
 
     /*! Добавление данных для отображения на графике */
     void saveDataForGraphic(const ComplexValue &complexVal);
@@ -54,6 +55,9 @@ public:
 //#endif
 
 private:
+    u32 pointStart;
+    u32 pointStop;
+    bool labelMoved;
     QCPGraph *mMainGraph {nullptr};
 
     QCPGraph *mIntervalFirst {nullptr};
@@ -70,13 +74,15 @@ private:
     /*! Суммарное время пришедших данных с датчика */
     double mSummarySensorDataTimePerXRange {0};
 
-    double mUpper {0};
-
 public:
     void scaleFont(double scaleFactor) override;
     void resetGraph() override;
 
     void addInterval(uint8_t num, QColor color);
+protected:
+    bool editLabel(QMouseEvent *mouseEvent);
+    bool editInterval(QMouseEvent *mouseEvent);
+    bool editAxisRange(QMouseEvent *mouseEvent);
 protected slots:
     /*! Обработка нажатий по элементам графика */
     void itemClicked(QCPAbstractItem *item, QMouseEvent *event);
@@ -84,6 +90,7 @@ protected slots:
 private slots:
     /*! Проверка оси X на вхождение в интервал*/
     void checkXAxisInterval(const QCPRange &range);
+    void checkYAxisInterval(const QCPRange &range);
 };
 
 #endif // RECORDEDPLOT_H

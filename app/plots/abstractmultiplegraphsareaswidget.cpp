@@ -38,7 +38,7 @@ void AbstractMultipleGraphsAreasWidget::updateDisplayedGraphName()
         AbstractGraphAreaWidget::ui->nameGraphLabel->setText(tr("ГИСТОГРАММА"));
     }
     case AbstractCustomPlot::GraphType::RecordedGraph: {
-        AbstractGraphAreaWidget::ui->nameGraphLabel->setText(tr("ЗАПИСЬ"));
+        AbstractGraphAreaWidget::ui->nameGraphLabel->setText(tr(" "));//("ЗАПИСЬ"));
     }
     default: break;
     }

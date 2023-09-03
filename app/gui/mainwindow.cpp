@@ -103,7 +103,6 @@ bool MainWindow::changeCurrentPage(IPageWidget *installedPage)
         mCurrentPage->show();
     }
 
-    qDebug() << "Page:" << installedPage;
     return mCurrentPage != nullptr;
 }
 
@@ -182,7 +181,6 @@ void MainWindow::setPage(IPageWidget *installedPage)
 
 void MainWindow::setPreviousPage()
 {
-    qDebug() << "Sender " << sender();
     // Если в стэке больше одной страницы
     if (mStackOfWidgets.size() > 1) {
         mStackOfWidgets.pop(); // Удаляем текущую страницу из стека

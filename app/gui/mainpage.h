@@ -158,7 +158,7 @@ signals:
     void changeCurrentGraph();
     void changeRecordedGraphInteraction(bool state);
     void changeCurrentRange(bool interval); //false=1, true=2
-    void goToLabel(bool direction); //false=previous, true=next
+    void goToLabel(bool direction);
 
     // IPageWidget interface
 public slots:

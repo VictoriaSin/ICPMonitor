@@ -565,7 +565,7 @@ bool MonitorController::setLevelsAndStatesAlarm(int lowLevelAlarm, int highLevel
     return true;
 }
 bool MonitorController::setInetrvalsOnGraph(double mCurrentReadingsGraphIntervalX, double mCurrentReadingsGraphIntervalYFrom, double mCurrentReadingsGraphIntervalYTo,
-                                            float mTickCountX, float mTickCountY)
+                                            double mTickCountX, double mTickCountY)
 {
     if (!mICPSettings || mCurrentReadingsGraphIntervalYFrom >= mCurrentReadingsGraphIntervalYTo) {
         return false;

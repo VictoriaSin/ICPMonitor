@@ -89,7 +89,6 @@ void WaveFormPlot::changePenColor(QColor mColor)
     mMainGraph->setPen(pen);
     pen.setWidth(mThicknessOfHistGraph);
     mHistGraph->setPen(pen);
-    qDebug() << "pen reset";
 }
 
 void WaveFormPlot::checkXAxisInterval(const QCPRange &range)

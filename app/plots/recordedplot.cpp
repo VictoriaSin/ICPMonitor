@@ -49,7 +49,10 @@ RecordedPlot::RecordedPlot(QWidget *parent):
     layer("lineLayer")->setMode(QCPLayer::lmBuffered);
 
     // Соединяем изменение диапазона оси X с проверкой вхождения в интервал
-    //connect(xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(checkXAxisInterval(QCPRange)));
+//    connect(xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(checkXAxisInterval(QCPRange)));
+
+    // Соединяем изменение диапазона оси Y с проверкой вхождения в интервал
+//    connect(yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(checkYAxisInterval(QCPRange)));
 
 //    // Разрешаем зумить и двигать по осям
 //    axisRect()->setRangeDragAxes(QList<QCPAxis *>({xAxis, xAxis2, yAxis}));
@@ -70,6 +73,7 @@ RecordedPlot::RecordedPlot(QWidget *parent):
 
     retranslate();
     addLayer("intervalLayer", nullptr, limAbove);
+
 }
 
 RecordedPlot::~RecordedPlot()
@@ -131,11 +135,14 @@ void RecordedPlot::addInterval(uint8_t num, QColor color)
     int indexStop = temp.indexOf(second);
     qDebug() << t1 << indexStart;
     qDebug() << t2 << indexStop;
-
     for (int i=indexStart; i<=indexStop; i++)
     {
         mIntervalFirst->addData(mRecordedData[i].first, mRecordedData[i].second);
+        if (mIntervalsContainer[num-1]->maxIntervalValue < mRecordedData[i].second) { mIntervalsContainer[num-1]->maxIntervalValue =  mRecordedData[i].second; }
+        mIntervalsContainer[num-1]->averageIntervalValue += mRecordedData[i].second;
     }
+    mIntervalsContainer[num-1]->averageIntervalValue /= (indexStop - indexStart + 1);
+
 }
 
 void RecordedPlot::saveDataForGraphic(const ComplexValue &complexVal)
@@ -167,12 +174,11 @@ void RecordedPlot::saveDataForGraphic(const ComplexValue &complexVal)
 
 void RecordedPlot::addDataOnGraphic()
 {
-    double mNewUpperXValue = (double)mRecordedData.count()/25.0;// показаний в файле в секунду 50, а мы берем каждое второе
-    mUpper = xAxis->range().upper;
-    if (mNewUpperXValue < mUpper)
+    double mNewUpperXValue = (double)mRecordedData.count()/25;// показаний в файле в секунду 50, а мы берем каждое второе
+    if (mNewUpperXValue < xAxis->range().upper)
     {
         xAxis->setRangeUpper(mNewUpperXValue);
-        setInteraction(QCP::iRangeDrag, false);
+        //setInteraction(QCP::iRangeDrag, false);
     }
     mCurrentMaxXRange = mNewUpperXValue;
     for (int i = 0; i < mRecordedData.count(); i++)
@@ -181,17 +187,6 @@ void RecordedPlot::addDataOnGraphic()
     }
 }
 
-void RecordedPlot::checkXAxisInterval(const QCPRange &range)
-{
-    if (range.lower < 0)
-    {
-        xAxis->setRange(0, mUpper);
-    }
-    else if (range.upper > mCurrentMaxXRange)
-    {
-        xAxis->setRange(mCurrentMaxXRange - mUpper, mCurrentMaxXRange);
-    }
-}
 
 //void RecordedPlot::setLabelManager(LabelManager *labelManager)
 //{
@@ -201,18 +196,17 @@ void RecordedPlot::checkXAxisInterval(const QCPRange &range)
 
 void RecordedPlot::itemClicked(QCPAbstractItem *item, QMouseEvent *event)
 {
+    qDebug() << item;
     const LabelMarkItem *labelItem = dynamic_cast<LabelMarkItem*>(item);
 
     // Если преобразование прошло успешно и событие отпускания левой мышки
-    if (labelItem && event->type() == QEvent::Type::MouseButtonRelease &&
-            event->button() == Qt::MouseButton::LeftButton) {
+    if (labelItem && event->type() == QEvent::Type::MouseButtonRelease && event->button() == Qt::MouseButton::LeftButton)
+    {
         // Метка, связанная с отображение на графике
         Label *label = labelItem->getLabel();
 
         // Если метки нет
-        if (!label) {
-            return;
-        }
+        if (!label) { return; }
 
         // Время начала и окончания метки
         const int64_t &timeStartLabelMs = label->getTimeStartLabelMS();
@@ -268,6 +262,367 @@ void RecordedPlot::resetGraph()
     mRecordedData.clear();
     setInteraction(QCP::iRangeDrag, true);
     mCurrentMaxXRange = 60;
+    mCurrentMaxYRange = 60;
     mMainGraph->data()->clear();
     qDebug() << "RecordedPlot reset";
+}
+#ifdef PC_BUILD
+
+bool RecordedPlot::editLabel(QMouseEvent *mouseEvent)
+{
+    const auto typeOfEvent = mouseEvent->type();
+    static bool isLabelDrag = false;
+    if((typeOfEvent == QEvent::MouseButtonPress) || (typeOfEvent == QEvent::MouseButtonRelease) || (typeOfEvent == QEvent::MouseMove) )
+    {
+        if (typeOfEvent == QEvent::MouseButtonPress)
+        {
+            labelMoved = true;
+            isLabelDrag = false;
+            pointStart = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
+            return true;
+        }
+        if ((typeOfEvent == QEvent::MouseMove) && (labelMoved == true))
+        {
+            isLabelDrag = true;
+            pointStop = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
+            int32_t deltaX = pointStop - pointStart;
+            if (abs(deltaX) > 2)
+            {
+                pointStart = pointStop;
+                mCoordLabelX += deltaX;
+                mLabelItemsContainer.back()->replotLine();
+            }
+            return true;
+        }
+        if (typeOfEvent == QEvent::MouseButtonRelease)
+        {
+            pointStop = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
+            labelMoved = false;
+            if ((pointStart == pointStop) && (isLabelDrag == false))
+            {
+                mCoordLabelX = pointStart;
+                mLabelItemsContainer.back()->replotLine();
+            }
+            isLabelDrag = false;
+            return true;
+        }
+    }
+    return false;
+}
+bool RecordedPlot::editInterval(QMouseEvent *mouseEvent)
+{
+    const auto typeOfEvent = mouseEvent->type();
+    static bool isLabelDrag = false;
+    if((typeOfEvent == QEvent::MouseButtonPress) || (typeOfEvent == QEvent::MouseButtonRelease) || (typeOfEvent == QEvent::MouseMove) )
+    {
+        if (typeOfEvent == QEvent::MouseButtonPress)
+        {
+            labelMoved = true;
+            isLabelDrag = false;
+            pointStart = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
+            return true;
+        }
+        if ((typeOfEvent == QEvent::MouseMove) && (labelMoved == true))
+        {
+            isLabelDrag = true;
+            pointStop = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
+            int32_t deltaX = pointStop - pointStart;
+            if (abs(deltaX) > 2)
+            {
+                auto ttt = (mIntervalsContainer[mIntervalsCount-1]->mIntervalPos + deltaX);
+                if (mIntervalsCount % 2 == 0)
+                {
+                    if (ttt <= (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos)) { return true; }
+                }
+                else
+                    if (mIntervalsCount == 3)
+                    {
+                        if (ttt <= (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos)) { return true; }
+                    }
+                pointStart = pointStop;
+                mIntervalsContainer[mIntervalsCount-1]->mIntervalPos += deltaX;
+                mIntervalsContainer[mIntervalsCount-1]->replotLine();
+            }
+            return true;
+        }
+        if (typeOfEvent == QEvent::MouseButtonRelease)
+        {
+            pointStop = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
+            labelMoved = false;
+            if ((pointStart == pointStop) && (isLabelDrag == false))
+            {
+                if (mIntervalsCount % 2 == 0)
+                {
+                    if (pointStart <= (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos)) { return true; }
+                }
+                else
+                if (mIntervalsCount == 3)
+                {
+                    if (pointStart < (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos)) { return true; }
+                }
+                mIntervalsContainer[mIntervalsCount-1]->mIntervalPos = pointStart;
+                mIntervalsContainer[mIntervalsCount-1]->replotLine();
+            }
+            isLabelDrag = false;
+            return true;
+        }
+    }
+    return false;
+}
+bool RecordedPlot::editAxisRange(QMouseEvent *mouseEvent)
+{
+    const auto typeOfEvent = mouseEvent->type();
+    static bool isAxisMoving = false;
+    static double pointStartX, pointStartY;
+    static double pointStopX, pointStopY;
+
+    if((typeOfEvent == QEvent::MouseButtonPress) || (typeOfEvent == QEvent::MouseButtonRelease) || (typeOfEvent == QEvent::MouseMove) || (typeOfEvent == QEvent::Wheel))
+    {
+        if (typeOfEvent == QEvent::MouseButtonPress)
+        {
+            isAxisMoving = true;
+            pointStartX = xAxis->pixelToCoord(mouseEvent->pos().x());
+            pointStartY = yAxis->pixelToCoord(mouseEvent->pos().y());
+            return true;
+        }
+        if ((typeOfEvent == QEvent::MouseMove) && (isAxisMoving))
+        {
+            pointStopX = xAxis->pixelToCoord(mouseEvent->pos().x());
+            pointStopY = yAxis->pixelToCoord(mouseEvent->pos().y());
+            double deltaX = pointStopX - pointStartX;
+            double deltaY = pointStopY - pointStartY;
+
+            if (!((xAxis->range().lower - deltaX < 0) || (xAxis->range().upper - deltaX > mCurrentMaxXRange)))
+            {
+                xAxis->setRange(xAxis->range().lower - deltaX, xAxis->range().upper - deltaX);
+            }
+            if (!((yAxis->range().lower - deltaY < 0) || (yAxis->range().upper - deltaY > mCurrentMaxYRange)))
+            {
+                yAxis->setRange(yAxis->range().lower - deltaY, yAxis->range().upper - deltaY);
+            }
+
+            pointStartX = pointStopX = xAxis->pixelToCoord(mouseEvent->pos().x());
+            pointStartY = pointStopY = yAxis->pixelToCoord(mouseEvent->pos().y());
+            return true;
+        }
+        if (typeOfEvent == QEvent::MouseButtonRelease)
+        {
+            isAxisMoving = false;
+            return true;
+        }
+
+        if (typeOfEvent == QEvent::Wheel)
+        {
+            pointStartX = xAxis->pixelToCoord(mouseEvent->pos().x());
+            pointStartY = yAxis->pixelToCoord(mouseEvent->pos().y());
+            xAxis->scaleRange(1.5, pointStartX);
+            return true;
+        }
+
+
+
+    }
+    return false;
+}
+
+
+#else
+
+#endif
+bool RecordedPlot::event(QEvent *event)
+{
+#ifdef PC_BUILD
+    if (isLabelCreating == true)
+    {
+        if (editLabel((QMouseEvent*)event)) return true;
+    }
+    else if (isIntervalCreating == true)
+    {
+        if (editInterval((QMouseEvent*)event)) return true;
+    }
+    else
+    {
+        if (editAxisRange((QMouseEvent*)event)) return true;
+    }
+
+
+
+
+#else
+    if((typeOfEvent == QEvent::TouchBegin) || (typeOfEvent == QEvent::TouchEnd) || (typeOfEvent == QEvent::TouchUpdate) || (typeOfEvent == QEvent::TouchCancel) )
+        {
+            //доделать обработку 4 события
+            QTouchEvent *touchEvent = static_cast<QTouchEvent *>(event);
+            if (typeOfEvent == QEvent::TouchBegin)
+            {
+                labelMoved = true;
+                isLabelDrag = false;
+                pointStart = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x())*1000;
+                //qDebug() << "QEvent::MouseButtonPress: " << pointStart;
+            }
+            else if ((typeOfEvent == QEvent::TouchUpdate) && (labelMoved == true))
+            {
+                isLabelDrag = true;
+                pointStop = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x())*1000;
+                int32_t deltaX = pointStop - pointStart;
+                if (abs(deltaX) > 2)
+                {
+                    pointStart = pointStop;
+                    if (isLabelCreating)
+                    {
+                        mCoordLabelX += deltaX;
+                        mLabelItemsContainer.back()->replotLine();
+                    }
+                    else if (isIntervalCreating)
+                    {
+                        if (mIntervalsCount % 2 == 0)
+                        {
+                            if ((mIntervalsContainer[mIntervalsCount-1]->mIntervalPos + deltaX) <= (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos))
+                            {
+                                return true;
+                            }
+                        }
+                        //mIntervalPos += deltaX;
+                        mIntervalsContainer[mIntervalsCount-1]->mIntervalPos += deltaX;
+                        mIntervalsContainer[mIntervalsCount-1]->replotLine();
+
+                    }
+                }
+                //qDebug() << "Delta: " << deltaX;
+            }
+            else if (typeOfEvent == QEvent::TouchEnd)
+            {
+                pointStop = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x())*1000;
+                labelMoved = false;
+                if ((pointStart == pointStop) && (isLabelDrag == false))
+                {
+                    if (isLabelCreating)
+                    {
+                        mCoordLabelX = pointStart;
+                        mLabelItemsContainer.back()->replotLine();
+                    }
+                    else if (isIntervalCreating)
+                    {
+                        if (mIntervalsCount % 2 == 0)
+                        {
+                            if (pointStart <= (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos))
+                            {
+                                return true;
+                            }
+                        }
+                        //mIntervalPos = pointStart;
+                        mIntervalsContainer[mIntervalsCount-1]->mIntervalPos = pointStart;
+                        mIntervalsContainer[mIntervalsCount-1]->replotLine();
+                    }
+                }
+                isLabelDrag = false;
+                //qDebug() << "QEvent::MouseButtonRelease: "  << pointStop << " Delta: " << deltaX;
+            }
+
+        }
+    }
+
+    // Если событие - взаимодействие с сенсором
+    if(typeOfEvent == QEvent::TouchBegin ||
+       typeOfEvent == QEvent::TouchEnd ||
+       typeOfEvent == QEvent::TouchUpdate ||
+       typeOfEvent == QEvent::TouchCancel)
+    {
+        // Кастуем
+        QTouchEvent *touchEvent = static_cast<QTouchEvent *>(event);
+
+        // Получаем список точек касания
+        auto& touchPoints = touchEvent->touchPoints();
+
+        // Если нажали одним пальцем после нажатия двумя пальцами
+        if(touchPoints.count() == 1 && mDoublePointsTouch) {
+            // Отправляем событие для отпускания тача
+            const auto &point = touchPoints.first();
+            auto ev = QMouseEvent(QEvent::MouseButtonRelease, point.lastPos(),
+                                  point.lastScenePos(), point.lastScreenPos(),
+                                  Qt::MouseButton::LeftButton, Qt::MouseButtons(),
+                                  Qt::KeyboardModifiers(Qt::KeyboardModifier::NoModifier),
+                                  Qt::MouseEventSource::MouseEventSynthesizedBySystem);
+            mouseReleaseEvent(&ev);
+
+            // Обнуляем флаг нажатия двумя пальцами
+            mDoublePointsTouch = false;
+
+            // Отдаём событие на дальнейшую обработку
+            event->ignore();
+
+            // Событие было распознано
+            return true;
+        }
+
+        // Если нажатие двумя пальцами
+        if (touchPoints.count() == 2)
+        {
+            // Устанавливаем флаг нажатия двумя пальцами
+            mDoublePointsTouch = true;
+
+            // Сохраняем позиции точек
+            const QTouchEvent::TouchPoint &touchPoint0 = touchPoints.first();
+            const QTouchEvent::TouchPoint &touchPoint1 = touchPoints.last();
+
+            // Отношение текущей линии к предыдущей
+            double scaleFactor =
+                    QLineF(touchPoint0.pos(), touchPoint1.pos()).length() /
+                    QLineF(touchPoint0.lastPos(), touchPoint1.lastPos()).length();
+
+            // Центр прямоугольника (точка скейлинга)
+            QPointF scalingPointF((touchPoint0.pos().x() + touchPoint1.pos().x())/2,
+                                  (touchPoint0.pos().y() + touchPoint1.pos().y())/2);
+
+            // Если было отдаление, делаем скейл отрицательным
+            scaleFactor *= scaleFactor < 1 ? -1 : 1;
+
+            // Если не отпустили пальцы, отправляем событие колеса мышки
+            if(!touchEvent->touchPointStates().testFlag(Qt::TouchPointReleased)){
+                QWheelEvent ev(scalingPointF, scalingPointF, QPoint(0, 0), QPoint(0, scaleFactor * scaleSensitivity),
+                               Qt::MouseButton::NoButton, Qt::KeyboardModifier::NoModifier, Qt::ScrollPhase::NoScrollPhase, false);
+                wheelEvent(&ev);
+            }
+
+            // Событие не требует дальнейшей обработки
+            event->setAccepted(true);
+
+            // Событие было распознано
+            return true;
+        }
+    }
+    // Если не распознали или не хотим обрабатывать событие, то отдаём родителю
+#endif
+    return AbstractCustomPlot::event(event);
+}
+
+void RecordedPlot::checkXAxisInterval(const QCPRange &range)
+{
+    double sizeOldRangeX = xAxis->range().size();
+    qDebug() << "sizeOldRangeX" << sizeOldRangeX;
+    if (range.lower < 0)
+    {
+        xAxis->setRange(0, sizeOldRangeX);
+    }
+    else if (range.upper > mCurrentMaxXRange)
+    {
+        xAxis->setRange(mCurrentMaxXRange - sizeOldRangeX, mCurrentMaxXRange);
+    }
+}
+
+void RecordedPlot::checkYAxisInterval(const QCPRange &range)
+{
+
+    double sizeOldRangeY = yAxis->range().size();
+    qDebug() << "sizeOldRangeY" << sizeOldRangeY;
+    if (range.lower < 0)
+    {
+        yAxis->setRange(0, sizeOldRangeY);
+        qDebug() << "lowY";
+    }
+    else if (range.upper > mCurrentMaxYRange)
+    {
+        yAxis->setRange(mCurrentMaxYRange - sizeOldRangeY, mCurrentMaxYRange);
+        qDebug() << "high" << mCurrentMaxYRange - sizeOldRangeY << mCurrentMaxYRange;
+    }
 }

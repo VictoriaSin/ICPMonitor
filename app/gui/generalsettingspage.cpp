@@ -111,8 +111,10 @@ void GeneralSettingsPage::updateGraphSettingsOnWidgets()
     ui->intervalYToLineEdit->setText(QString::number(settings->getCurrentReadingsGraphIntervalY().second));
     ui->relativeCurrentPathLineEdit->setText(settings->getRelativeCurrentSensorReadingsPath());
     ui->currentMaxStorageTimeLineEdit->setText(QString::number(settings->getMaxTimeStorageCurrentSensorReadingsMs()));
-    ui->tickCountXLineEdit->setText(QString::number(settings->getCurrentTickCountX()));
-    ui->tickCountYLineEdit->setText(QString::number(settings->getCurrentTickCountY()));
+    double realDivisionXCount = (double)(settings->getCurrentReadingsGraphIntervalX()) / (settings->getCurrentTickCountX());
+    double realDivisionYCount = (double)(settings->getCurrentReadingsGraphIntervalY().second - settings->getCurrentReadingsGraphIntervalY().first) / (settings->getCurrentTickCountY());
+    ui->tickCountXLineEdit->setText(QString::number(realDivisionXCount));//settings->getCurrentTickCountX()));
+    ui->tickCountYLineEdit->setText(QString::number(realDivisionYCount));//settings->getCurrentTickCountY()));
 }
 
 
@@ -154,8 +156,8 @@ void GeneralSettingsPage::updateParameters()
     double mCurrentReadingsGraphIntervalX = ui->intervalXLineEdit->text().toDouble();
     double mCurrentReadingsGraphIntervalYFrom = ui->intervalYFromLineEdit->text().toDouble();
     double mCurrentReadingsGraphIntervalYTo = ui->intervalYToLineEdit->text().toDouble();
-    float mTickCountX = ui->tickCountXLineEdit->text().toFloat();
-    float mTickCountY = ui->tickCountYLineEdit->text().toFloat();
+    double mTickCountX = (double)mCurrentReadingsGraphIntervalX / ui->tickCountXLineEdit->text().toDouble();
+    double mTickCountY = (double)(mCurrentReadingsGraphIntervalYTo - mCurrentReadingsGraphIntervalYFrom) / ui->tickCountYLineEdit->text().toDouble();
 
     double mHighLevelAlarm = ui->upperAlarmLineEdit->text().toFloat();
     double mLowLevelAlarm = ui->lowerAlarmLineEdit->text().toFloat();

@@ -207,7 +207,7 @@ public slots:
     /*! Сброс графика с текущими значениями */
     void resetGraphOfCurrentValues();
 
-    void changeInteraction(bool state);
+    void addOrDeleteNewItem(bool state);
 
     void changeXInterval(bool interval);
     void goToLabel(bool direction);

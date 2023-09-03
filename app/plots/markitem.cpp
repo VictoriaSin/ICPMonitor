@@ -28,7 +28,7 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, const QString &text, const QFont &fo
 
 }
 
-MarkItem::MarkItem(QCustomPlot *parentPlot, uint8_t num, QColor color, const QFont &font) :
+MarkItem::MarkItem(QCustomPlot *parentPlot, uint8_t num, QColor color, const QFont &font, const double position) :
     QCPAbstractItem(parentPlot),
     mTextItem(new QCPItemText(parentPlot))
 {
@@ -57,35 +57,22 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, uint8_t num, QColor color, const QFo
     mTextItem->setFont(font); // Устанавливаем базовый шрифт
     mTextItem->setSelectable(false); // Устанавливаем запрет на выбор элемента кликом
 
-
     // Создаём линию
     mLineThroughGraph = new QCPItemLine(mParentPlot);
-    double mTempPointUpper = mParentPlot->xAxis->range().upper;
-    double mTempPointLower = mParentPlot->xAxis->range().lower;
-    //qDebug() << "interv pos" <<mTempPointUpper << mTempPointLower;
-
-
-    if (mIntervalsCount % 2 == 0)
-    {
-        horizontalPos = 0.1;
-    }
-    else
-    {
-        horizontalPos = 0.9;
-    }
 
     // Вяжем начальную точку к якорю текста
-    mIntervalPos = (mTempPointLower+(mTempPointUpper-mTempPointLower)*horizontalPos)*1000;
+    //mIntervalPos = (mTempPointLower+(mTempPointUpper-mTempPointLower)*horizontalPos)*1000;
+    mIntervalPos = position * 1000;
     //qDebug() << "curr interval pos" << mIntervalPos;
 
-    mTextItem->position->setCoords(mTempPointLower+(mTempPointUpper-mTempPointLower)*horizontalPos, 0.9); // abs, rel
+
+    mTextItem->position->setCoords(position, 0.9); // abs, rel
     mLineThroughGraph->end->setParentAnchor(mTextItem->position);
 
-    mLineThroughGraph->start->setCoords(mTempPointLower+(mTempPointUpper-mTempPointLower)*horizontalPos, 50);    // abs
+    mLineThroughGraph->start->setCoords(position, 100); // abs
     mParentPlot->setInteraction(QCP::iRangeDrag, false);
     // Добавляем на верхний слой
     mLineThroughGraph->setLayer("legend"); // На один слой ниже чем this
-    //qDebug() << mCoordLabelX;
     // Ручка для отрисовки уровней тревоги
     QPen dotPen;
     dotPen.setColor(color);

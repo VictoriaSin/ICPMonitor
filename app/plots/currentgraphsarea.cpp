@@ -9,6 +9,7 @@
 #include "controller/labels/labelmanager.h"
 #include "controller/labels/label.h"
 #include "unistd.h"
+#include "ui_mainpage.h"
 
 #include <QTimer>
 QVector<LabelMarkItem *> mLabelItemsContainer {nullptr};
@@ -105,47 +106,38 @@ void CurrentGraphsArea::resetGraphOfCurrentValues()
     mCounterSensorReadings = 0;
 }
 
+
 void CurrentGraphsArea::goToLabel(bool direction)
 {
-//#define setLabelPosition(_INDEX, _OFFSET_LEFT) mRecordedGraph->setXRange(mLabelItemsContainer[_INDEX]->getLabel()->mCurrentPos*_OFFSET_LEFT, mRecordedGraph->xAxis->range().size())
+    //#define setLabelPosition(_INDEX, _OFFSET_LEFT) mRecordedGraph->setXRange(mLabelItemsContainer[_INDEX]->getLabel()->mCurrentPos*_OFFSET_LEFT, mRecordedGraph->xAxis->range().size())
     //#define setLabelPosition(_INDEX, _OFFSET_LEFT) mRecordedGraph->setXRange(mLabelItemsContainer[_INDEX]->getLabel()->mCurrentPos*_OFFSET_LEFT, mLabelItemsContainer[_INDEX]->getLabel()->mCurrentPos + 5)//mRecordedGraph->xAxis->range().size())
-#define LABEL_OFFSET_LEFT 3
-#define LABEL_OFFSET_RIGHT 3
+#define LABEL_OFFSET_LEFT (mRecordedGraph->xAxis->range().size() * 0.5)
+#define LABEL_OFFSET_RIGHT (mRecordedGraph->xAxis->range().size() * 0.5)
 #define setLabelPosition(_INDEX, _OFFSET_LEFT, _OFFSET_RIGHT) mRecordedGraph->setXRange(mLabelItemsContainer[_INDEX]->getLabel()->mCurrentPos - _OFFSET_LEFT , mLabelItemsContainer[_INDEX]->getLabel()->mCurrentPos + _OFFSET_RIGHT)//mRecordedGraph->xAxis->range().size())
-    uint16_t prevIndex = 0;
+
+    uint16_t newIndex = 0;
     qDebug() << "count" <<mLabelItemsContainer.count();
-    if (mLabelItemsContainer.count() == 1)
-    {
-        double curLabelPosX =mLabelItemsContainer[prevIndex]->getLabel()->mCurrentPos;
-        double leftPos, rightPos;
+    uint16_t labelCount = mLabelItemsContainer.count();
+    double leftPos, rightPos;
 
-        if ((curLabelPosX - LABEL_OFFSET_LEFT) > 0) { leftPos = LABEL_OFFSET_LEFT; }
-        else { leftPos = curLabelPosX; }
 
-        if ((curLabelPosX + LABEL_OFFSET_RIGHT) > mRecordedGraph->mCurrentMaxXRange)
-        { rightPos = mRecordedGraph->mCurrentMaxXRange - curLabelPosX; }
-            else { rightPos = LABEL_OFFSET_RIGHT;}
+    direction == previous ? mCurrentLabelIndex = (mCurrentLabelIndex + labelCount - 1) % labelCount //назад
+            : mCurrentLabelIndex = (mCurrentLabelIndex + 1) % labelCount; //вперед
 
-        setLabelPosition(prevIndex, leftPos, rightPos);
-    }
-    else
-    {
-        if (direction == false) //назад
-        {
-            prevIndex = mLabelItemsContainer.count() - 2;
-        }
-        else //вперед
-        {
-            prevIndex = mLabelItemsContainer.count();
-        }
-        qDebug() << "direction" << direction;
-        qDebug() << "index" << prevIndex;
-        mRecordedGraph->xAxis->setRangeLower(mLabelItemsContainer[prevIndex]->getMarkPosition()*0.5);
-    }
+    double curLabelPosX =mLabelItemsContainer[newIndex]->getLabel()->mCurrentPos;
+
+
+    if ((curLabelPosX - LABEL_OFFSET_LEFT) > 0) { leftPos = LABEL_OFFSET_LEFT; }
+    else { leftPos = curLabelPosX; }
+
+    if ((curLabelPosX + LABEL_OFFSET_RIGHT) > mRecordedGraph->mCurrentMaxXRange) { rightPos = mRecordedGraph->mCurrentMaxXRange - curLabelPosX; }
+    else { rightPos = LABEL_OFFSET_RIGHT;}
+
+    setLabelPosition(mCurrentLabelIndex, leftPos, rightPos);
 }
 
 
-void CurrentGraphsArea::changeInteraction(bool state)
+void CurrentGraphsArea::addOrDeleteNewItem(bool state)
 {
     mRecordedGraph->setInteraction(QCP::iRangeDrag, true);
 
@@ -447,7 +439,7 @@ void CurrentGraphsArea::addDataOnWavePlot()
 
 void CurrentGraphsArea::addRawData(_bufferRecord *buffer)
 {    
-    qDebug("1"); // Болт забили !!!!!
+    //qDebug("1"); // Болт забили !!!!!
     buffer->field[buffer->currentPos].rawData = (u16)(mController->getLastSensorValue().value *500);
     buffer->field[buffer->currentPos].timeOffset = uint32_t(mController->getLastSensorValue().timestamp - startTimeStampRecord);
     buffer->currentPos++;
@@ -516,41 +508,6 @@ void CurrentGraphsArea::updateAlarmStatesOnWidgets()
     //mTrendGraph->enableUpperAlarm(HLSA);
 }
 
-bool CurrentGraphsArea::nextXRange()
-{
-    // Кол-во доступных диапазонов
-    const int countIntervals = mXRangesOfSecondsWithIcons.size();
-
-    // Если в списке нет диапазонов или первое показание еще не приходило
-    if (countIntervals == 0 || mDateTimeOfFirstData.isNull()) {
-        return false;
-    }
-
-    // Преобразуем время предыдущего показания в QDateTime
-    //const QDateTime &prevTimeOfSensorReadingMs = QDateTime::fromMSecsSinceEpoch(mPrevTimeOfSensorReadingMs);
-
-//    // Обновление текущего диапазона, если были перемещения по оси X
-//    if (!qFuzzyCompare(mTrendGraph->xAxis->range().lower, mLastXRange.first) ||
-//            !qFuzzyCompare(mTrendGraph->xAxis->range().upper, mLastXRange.second)) {
-//        mLastXRange = setTrendGraphToTheCenter(mXRangesOfSecondsWithIcons[mCurrentXRangeIndex].interval, prevTimeOfSensorReadingMs);
-//        return true;
-//    }
-
-    // Получаем объект
-    ++mCurrentXRangeIndex;
-    mCurrentXRangeIndex %= countIntervals;
-    const auto &intervalAndIcon = mXRangesOfSecondsWithIcons[mCurrentXRangeIndex];
-
-    // Устанавливаем картинку кнопке
-    AbstractGraphAreaWidget::ui->xRangeGraphToolButton->setIcon(intervalAndIcon.defaultButtonIcon, intervalAndIcon.pressedButtonIcon);
-
-    // Меняем диапазон
-    //mLastXRange = setTrendGraphToTheCenter(intervalAndIcon.interval, prevTimeOfSensorReadingMs);
-
-    return true;
-}
-
-
 
 void CurrentGraphsArea::addLabelOnRecordedGraph()
 {
@@ -563,7 +520,6 @@ void CurrentGraphsArea::addLabelOnRecordedGraph()
 
     // Если нет менеджера меток
     if (!labelManager) {    return;    }
-    qDebug() << "Label is created";
     // Последняя созданная метка
     const std::shared_ptr<Label> label = labelManager->getLastCreatedLabel();
 
@@ -573,7 +529,6 @@ void CurrentGraphsArea::addLabelOnRecordedGraph()
     // Создаём метку
     LabelMarkItem *labelItem = new LabelMarkItem(mRecordedGraph, label, mFontForLabelItems, TopMarginForLabel, LabelOrientation::moVerticalTop);
     labelItem->setPositionMark((double)label->getTimeStartLabelMS() / 1000); // Установка позиции метки
-    qDebug() << "label->getTimeStartLabelMS() " << label->getTimeStartLabelMS()/1000 - startTimeStampRecord;
 
     labelItem->addLine(); // Добавление вертикальной пунктирной линии
 
@@ -581,9 +536,7 @@ void CurrentGraphsArea::addLabelOnRecordedGraph()
     mRecordedGraph->addOptimizationLabelItem(labelItem);
 
     // Добавляем в контейнер меток
-    //qDebug() << "label push" <<labelItem;
     mLabelItemsContainer.append(labelItem);
-    //qDebug() << "label pushed" <<mLabelItemsContainer.count();
 }
 
 void CurrentGraphsArea::addIntervalOnRecordedGraph()
@@ -592,52 +545,53 @@ void CurrentGraphsArea::addIntervalOnRecordedGraph()
     if (!mRecordedGraph || !mController) {  return; }
 
     isIntervalCreating = true;
-    qDebug() << "count" << mIntervalsCount;
     double newIntervalPos = 0.0;
-    qDebug() << "size"<< (double)mRecordedGraph->xAxis->range().size();
+
+    if (mIntervalsCount % 2 == 0)
+    {
+        newIntervalPos = mRecordedGraph->xAxis->range().lower + mRecordedGraph->xAxis->range().size()*0.1;
+
+    }
+    else
+    {
+        newIntervalPos = mRecordedGraph->xAxis->range().lower + mRecordedGraph->xAxis->range().size()*0.9;
+    }
+
     if (mIntervalsCount != 0)
     {
-        if (mIntervalsCount == 2)
-        {
-            newIntervalPos = mRecordedGraph->xAxis->range().lower + mRecordedGraph->xAxis->range().size()*0.1;
+        double prevIntervalPos = (double)(mIntervalsContainer[mIntervalsCount-1]->mIntervalPos)/1000;
 
+        if ((prevIntervalPos >= mRecordedGraph->xAxis->range().lower) && (prevIntervalPos < mRecordedGraph->xAxis->range().upper))
+        {
+            if (newIntervalPos <= prevIntervalPos)
+            {
+                double offset = mRecordedGraph->xAxis->range().size() * 0.01;
+                if ((mRecordedGraph->xAxis->range().size() + offset) < mRecordedGraph->mCurrentMaxXRange)
+                {
+                    newIntervalPos = prevIntervalPos + offset;
+                }
+                else
+                {
+                    newIntervalPos = mRecordedGraph->xAxis->range().upper;
+                }
+            }
         }
         else
         {
-            newIntervalPos = mRecordedGraph->xAxis->range().lower + mRecordedGraph->xAxis->range().size()*0.9;
-        }
-
-        double prevIntervalPos = (double)(mIntervalsContainer[mIntervalsCount-1]->mIntervalPos)/1000;
-        qDebug() << "newIntervalPos"<< newIntervalPos;
-        qDebug() << "prevIntervalPos"<< prevIntervalPos;
-        if (newIntervalPos <= prevIntervalPos)
-        {
-            double offset = prevIntervalPos-newIntervalPos;
-            if ((mRecordedGraph->xAxis->range().size() + offset) < mRecordedGraph->mCurrentMaxXRange)
-            {
-                qDebug() << "prevIntervalPos"<< prevIntervalPos;
-                mRecordedGraph->xAxis->setRange(prevIntervalPos, mRecordedGraph->xAxis->range().size() + offset); //не меняет левую границу
-                qDebug() << mRecordedGraph->xAxis->range().lower;
-            }
-            else
-            {
-                mRecordedGraph->xAxis->setRange(prevIntervalPos, mRecordedGraph->mCurrentMaxXRange);//floor(mRecordedGraph->mCurrentMaxXRange));
-                qDebug() << mRecordedGraph->xAxis->range().lower;
-            }
+            return; // обработать
         }
     }
     if (mIntervalsCount < 2)
     {
-        mIntervalsContainer[mIntervalsCount] = new MarkItem(mRecordedGraph, mIntervalsCount, QColor(Qt::magenta), mFontForLabelItems);
+        mIntervalsContainer[mIntervalsCount] = new MarkItem(mRecordedGraph, mIntervalsCount, QColor(Qt::magenta), mFontForLabelItems, newIntervalPos);
     }
     else
     {
-        mIntervalsContainer[mIntervalsCount] = new MarkItem(mRecordedGraph, mIntervalsCount, QColor(Qt::cyan), mFontForLabelItems);
+        mIntervalsContainer[mIntervalsCount] = new MarkItem(mRecordedGraph, mIntervalsCount, QColor(Qt::cyan), mFontForLabelItems, newIntervalPos);
     }
     // Добавляем элемент для оптимизации
     //mRecordedGraph->addOptimizationLabelItem(mIntervalsContainer[mIntervalsCount]);
     mIntervalsCount++;
-
 }
 
 
@@ -653,7 +607,7 @@ void CurrentGraphsArea::changeXInterval(bool interval)
 #define calcPosInCoord(index) (double)mIntervalsContainer[index]->mIntervalPos/1000
 double leftPos, rightPos;
 // вынести в отдельную функцию
-    if (interval == false) //первый
+    if (interval == first)
     {
         if (calcPosInCoord(0) - INTERVAL_OFFSET_LEFT < 0) { leftPos = calcPosInCoord(0); }
         else { leftPos = INTERVAL_OFFSET_LEFT; }
@@ -663,7 +617,7 @@ double leftPos, rightPos;
 
         setIntervalPosition(0, 1, leftPos, rightPos);
     }
-    else //второй
+    else if (interval == second)
     {
         if (calcPosInCoord(2) - INTERVAL_OFFSET_LEFT < 0) { leftPos = calcPosInCoord(2); }
         else { leftPos = INTERVAL_OFFSET_LEFT; }
@@ -826,4 +780,38 @@ void CurrentGraphsArea::nextYRange()
 //    // Здесь всем графикам меняем приближение
 //    mWaveGraph->setYRange(newYRange.first, newYRange.second);
 //    mTrendGraph->setYRange(newYRange.first, newYRange.second);
+}
+
+bool CurrentGraphsArea::nextXRange()
+{
+    // Кол-во доступных диапазонов
+    const int countIntervals = mXRangesOfSecondsWithIcons.size();
+
+    // Если в списке нет диапазонов или первое показание еще не приходило
+    if (countIntervals == 0 || mDateTimeOfFirstData.isNull()) {
+        return false;
+    }
+
+    // Преобразуем время предыдущего показания в QDateTime
+    //const QDateTime &prevTimeOfSensorReadingMs = QDateTime::fromMSecsSinceEpoch(mPrevTimeOfSensorReadingMs);
+
+//    // Обновление текущего диапазона, если были перемещения по оси X
+//    if (!qFuzzyCompare(mTrendGraph->xAxis->range().lower, mLastXRange.first) ||
+//            !qFuzzyCompare(mTrendGraph->xAxis->range().upper, mLastXRange.second)) {
+//        mLastXRange = setTrendGraphToTheCenter(mXRangesOfSecondsWithIcons[mCurrentXRangeIndex].interval, prevTimeOfSensorReadingMs);
+//        return true;
+//    }
+
+    // Получаем объект
+    ++mCurrentXRangeIndex;
+    mCurrentXRangeIndex %= countIntervals;
+    const auto &intervalAndIcon = mXRangesOfSecondsWithIcons[mCurrentXRangeIndex];
+
+    // Устанавливаем картинку кнопке
+    AbstractGraphAreaWidget::ui->xRangeGraphToolButton->setIcon(intervalAndIcon.defaultButtonIcon, intervalAndIcon.pressedButtonIcon);
+
+    // Меняем диапазон
+    //mLastXRange = setTrendGraphToTheCenter(intervalAndIcon.interval, prevTimeOfSensorReadingMs);
+
+    return true;
 }

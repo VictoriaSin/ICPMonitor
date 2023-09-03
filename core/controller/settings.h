@@ -60,8 +60,8 @@ public:
     double getCurrentReadingsGraphIntervalX() const { return mCurrentReadingsGraphIntervalX; };
     //QVector<QPair<double, double>> getCurrentReadingsGraphYRanges() const { return mCurrentReadingsGraphYRanges; };
     QPair<double, double> getCurrentReadingsGraphIntervalY() const { return qMakePair(mCurrentReadingsGraphIntervalYLow, mCurrentReadingsGraphIntervalYHigh); };
-    float getCurrentTickCountX() const { return mTickCountX; };
-    float getCurrentTickCountY() const { return mTickCountY; };
+    double getCurrentTickCountX() const { return mTickCountX; };
+    double getCurrentTickCountY() const { return mTickCountY; };
     /*################################################################################
                             Настройки средних показаний датчика
     ################################################################################*/
@@ -160,8 +160,8 @@ private:
     double mCurrentReadingsGraphIntervalX {12};
     double mCurrentReadingsGraphIntervalYLow {0};
     double mCurrentReadingsGraphIntervalYHigh {30};
-    float mTickCountX {6};
-    float mTickCountY {3};
+    double mTickCountX {6};
+    double mTickCountY {3};
 
     /*QVector<QPair<double, double>> mCurrentReadingsGraphYRanges {
         {0, 30},    {0, 50},

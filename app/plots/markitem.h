@@ -30,10 +30,12 @@ class MarkItem : public QCPAbstractItem
 
 public:
     uint32_t mIntervalPos = 0;
-    double horizontalPos = 0.0;
+
+    double maxIntervalValue = -1;
+    double averageIntervalValue = 0;
 
     MarkItem(QCustomPlot *parentPlot, const QString &text, const QFont &font, double level = 0, LabelOrientation orientation = LabelOrientation::moVerticalBottom);
-    MarkItem(QCustomPlot *parentPlot, uint8_t num, QColor color, const QFont &font);
+    MarkItem(QCustomPlot *parentPlot, uint8_t num, QColor color, const QFont &font, const double position);
     ~MarkItem();
 
     /*! Добавление пунктирной линии */
