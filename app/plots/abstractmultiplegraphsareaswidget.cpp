@@ -34,11 +34,11 @@ void AbstractMultipleGraphsAreasWidget::updateDisplayedGraphName()
         AbstractGraphAreaWidget::ui->nameGraphLabel->setText(tr("ЯЩИК С УСАМИ"));
         break;
     }
-    case AbstractCustomPlot::GraphType::HistGraph: {
-        AbstractGraphAreaWidget::ui->nameGraphLabel->setText(tr("ГИСТОГРАММА"));
-    }
+    //case AbstractCustomPlot::GraphType::HistGraph: {
+    //    AbstractGraphAreaWidget::ui->nameGraphLabel->setText(tr("ГИСТОГРАММА"));
+    //}
     case AbstractCustomPlot::GraphType::RecordedGraph: {
-        AbstractGraphAreaWidget::ui->nameGraphLabel->setText(tr(" "));//("ЗАПИСЬ"));
+        AbstractGraphAreaWidget::ui->nameGraphLabel->setText(" ");//("ЗАПИСЬ"));
     }
     default: break;
     }

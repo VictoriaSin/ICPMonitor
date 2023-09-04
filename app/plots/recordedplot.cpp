@@ -413,9 +413,50 @@ bool RecordedPlot::editAxisRange(QMouseEvent *mouseEvent)
 
         if (typeOfEvent == QEvent::Wheel)
         {
+#define DEF_ZOOM_IN_X  (double)0.8
+#define DEF_ZOOM_OUT_X (double)(1.0/DEF_ZOOM_IN_X)
+            QWheelEvent *eventWheel = (QWheelEvent*)mouseEvent;
+            int directionWheel = eventWheel->delta();
             pointStartX = xAxis->pixelToCoord(mouseEvent->pos().x());
-            pointStartY = yAxis->pixelToCoord(mouseEvent->pos().y());
-            xAxis->scaleRange(1.5, pointStartX);
+
+            //qDebug() << "directionWheel:" << directionWheel;
+            if (directionWheel < 0)
+            {
+              //qDebug("Zoom-");
+              //qDebug() << "pointStartX:" << pointStartX << " (pointStartX *  DEF_ZOOM_IN_X)" << (pointStartX *  DEF_ZOOM_IN_X) << " xAxis->range().lower" << xAxis->range().lower;
+              double startPlot;
+              double endPlot;
+              bool customPlot = false;
+              if ((pointStartX - (pointStartX *  DEF_ZOOM_IN_X)) > xAxis->range().lower)
+              {
+                customPlot = true;
+                startPlot = 0;
+              }
+
+              if ((xAxis->range().upper + (xAxis->range().upper *  DEF_ZOOM_IN_X)) > mCurrentMaxXRange)
+              {
+                customPlot = true;
+                startPlot = xAxis->range().lower * DEF_ZOOM_IN_X;
+                endPlot = mCurrentMaxXRange;
+              }
+              else
+              {
+                endPlot = xAxis->range().size() / DEF_ZOOM_IN_X;
+              }
+
+              if (customPlot)
+              {
+                xAxis->setRange(startPlot, endPlot);
+                return true;
+              }
+              xAxis->scaleRange(DEF_ZOOM_OUT_X, pointStartX);
+              return true;
+            }
+            else
+            {
+              //qDebug("Zoom+");
+              xAxis->scaleRange(DEF_ZOOM_IN_X, pointStartX);
+            }
             return true;
         }
 
