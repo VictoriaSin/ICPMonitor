@@ -51,7 +51,7 @@ class CurrentGraphsArea : public AbstractMultipleGraphsAreasWidget
     WaveFormPlot *mWaveGraph {nullptr};
 
     /*! Отрисовка каждой {устанавливаемое число} точки на графике текущих значений */
-    int mThinningSensorReadings {2};
+    #define mThinningSensorReadings 2
 
     /*! Счётчик пришедших точек */
     int mCounterSensorReadings {0};

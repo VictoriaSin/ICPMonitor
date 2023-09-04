@@ -309,7 +309,8 @@ bool FileImitSensor::readAllSensorReadingsFromFile()
     // Вычитываем файл
     QTextStream sdata(&file);
     bool okPars = false;
-    while (!sdata.atEnd()) {
+    while (!sdata.atEnd())
+    {
         const QString line = sdata.readLine();
         const float value = line.toFloat(&okPars);
         if (okPars) {

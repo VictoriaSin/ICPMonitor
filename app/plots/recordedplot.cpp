@@ -413,27 +413,24 @@ bool RecordedPlot::editAxisRange(QMouseEvent *mouseEvent)
 
         if (typeOfEvent == QEvent::Wheel)
         {
-#define DEF_ZOOM_IN_X  (double)0.8
-#define DEF_ZOOM_OUT_X (double)(1.0/DEF_ZOOM_IN_X)
+            #define DEF_ZOOM_IN_X  (double)0.8
+            #define DEF_ZOOM_OUT_X (double)(1.0/DEF_ZOOM_IN_X)
             QWheelEvent *eventWheel = (QWheelEvent*)mouseEvent;
-            int directionWheel = eventWheel->delta();
             pointStartX = xAxis->pixelToCoord(mouseEvent->pos().x());
-
-            //qDebug() << "directionWheel:" << directionWheel;
-            if (directionWheel < 0)
+            if (eventWheel->delta() < 0)
             {
               //qDebug("Zoom-");
               //qDebug() << "pointStartX:" << pointStartX << " (pointStartX *  DEF_ZOOM_IN_X)" << (pointStartX *  DEF_ZOOM_IN_X) << " xAxis->range().lower" << xAxis->range().lower;
               double startPlot;
               double endPlot;
               bool customPlot = false;
-              if ((pointStartX - (pointStartX *  DEF_ZOOM_IN_X)) > xAxis->range().lower)
+              if ((pointStartX - (pointStartX * DEF_ZOOM_IN_X)) > xAxis->range().lower) // < 0
               {
                 customPlot = true;
                 startPlot = 0;
               }
 
-              if ((xAxis->range().upper + (xAxis->range().upper *  DEF_ZOOM_IN_X)) > mCurrentMaxXRange)
+              if ((xAxis->range().upper + (xAxis->range().upper *  DEF_ZOOM_IN_X)) > mCurrentMaxXRange) // > MAX
               {
                 customPlot = true;
                 startPlot = xAxis->range().lower * DEF_ZOOM_IN_X;
@@ -468,11 +465,13 @@ bool RecordedPlot::editAxisRange(QMouseEvent *mouseEvent)
 
 
 #else
-
+// Для тача
 #endif
 bool RecordedPlot::event(QEvent *event)
 {
 #ifdef PC_BUILD
+
+
     if (isLabelCreating == true)
     {
         if (editLabel((QMouseEvent*)event)) return true;
@@ -485,6 +484,7 @@ bool RecordedPlot::event(QEvent *event)
     {
         if (editAxisRange((QMouseEvent*)event)) return true;
     }
+
 
 
 

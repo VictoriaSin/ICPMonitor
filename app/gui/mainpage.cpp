@@ -81,7 +81,6 @@ void MainPage::setupButtons()
     ui->makeLabelButton->setIconSize(QSize(100, 100));
     ui->makeLabelButton->setStyleSheet(ToolButtonStyleSheet);
     ui->makeLabelButton->hide();
-    ui->labelCounterLabel->hide();
 
     // Кнопка экрана домой
     ui->homeButton->setIcon(QIcon(":/icons/settings.svg"), QIcon(":/icons/settings_pressed.svg"));
@@ -95,13 +94,13 @@ void MainPage::setupButtons()
 
     // Кнопка подтверждения метки
     ui->acceptMarkButton->setIcon(QIcon(":/icons/accept.svg"), QIcon(":/icons/accept_pressed.svg"));
-    ui->acceptMarkButton->setIconSize(QSize(100, 100));
+    ui->acceptMarkButton->setIconSize(QSize(80, 80));
     ui->acceptMarkButton->setStyleSheet(ToolButtonStyleSheet);
     ui->acceptMarkButton->hide();
 
     // Кнопка удаления метки
     ui->rejectMarkButton->setIcon(QIcon(":/icons/reject.svg"), QIcon(":/icons/reject_pressed.svg"));
-    ui->rejectMarkButton->setIconSize(QSize(100, 100));
+    ui->rejectMarkButton->setIconSize(QSize(80, 80));
     ui->rejectMarkButton->setStyleSheet(ToolButtonStyleSheet);
     ui->rejectMarkButton->hide();
 
@@ -113,13 +112,13 @@ void MainPage::setupButtons()
 
     // Кнопка подтверждения интервала
     ui->acceptIntervalButton->setIcon(QIcon(":/icons/accept.svg"), QIcon(":/icons/accept_pressed.svg"));
-    ui->acceptIntervalButton->setIconSize(QSize(100, 100));
+    ui->acceptIntervalButton->setIconSize(QSize(80, 80));
     ui->acceptIntervalButton->setStyleSheet(ToolButtonStyleSheet);
     ui->acceptIntervalButton->hide();
 
     // Кнопка удаления интервала
     ui->rejectIntervalButton->setIcon(QIcon(":/icons/reject.svg"), QIcon(":/icons/reject_pressed.svg"));
-    ui->rejectIntervalButton->setIconSize(QSize(100, 100));
+    ui->rejectIntervalButton->setIconSize(QSize(80, 80));
     ui->rejectIntervalButton->setStyleSheet(ToolButtonStyleSheet);
     ui->rejectIntervalButton->hide();
 
@@ -154,6 +153,11 @@ void MainPage::setupButtons()
     ui->maxValueInterval2->hide();
     ui->averageValueInterval1->hide();
     ui->averageValueInterval2->hide();
+
+    ui->alarmLevelICPWidget->hide();
+    ui->averageICPWidget->hide();
+
+    ui->sensorStateLabel->hide();
 }
 
 void MainPage::setupBottomInfoSVG()
@@ -681,6 +685,9 @@ void MainPage::on_sessionButton_clicked()
         ui->averageValueInterval1->hide();
         ui->averageValueInterval2->hide();
         //добавить удаление всех линий после завершения сессии
+
+        ui->alarmLevelICPWidget->hide();
+        ui->averageICPWidget->hide();
     }
 }
 

@@ -422,7 +422,7 @@ void CurrentGraphsArea::updateTicksOnGraphs()
 
 void CurrentGraphsArea::addDataOnWavePlot()
 {
-    ++mCounterSensorReadings;    
+    ++mCounterSensorReadings;
     // Если кол-во точек равно кол-ву прореживания
     if (mCounterSensorReadings == mThinningSensorReadings)
     {
