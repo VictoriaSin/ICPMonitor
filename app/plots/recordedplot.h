@@ -88,9 +88,7 @@ protected slots:
     void itemClicked(QCPAbstractItem *item, QMouseEvent *event);
 
 private slots:
-    /*! Проверка оси X на вхождение в интервал*/
-    void checkXAxisInterval(const QCPRange &range);
-    void checkYAxisInterval(const QCPRange &range);
+
 };
 
 #endif // RECORDEDPLOT_H

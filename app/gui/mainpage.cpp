@@ -222,7 +222,7 @@ void MainPage::controllerEventHandler(ControllerEvent event)//, const QVariantMa
         break;
     }
     case ControllerEvent::LabelCreated: {
-        updateLabelCounter();
+        //updateLabelCounter();
         break;
     }
     case ControllerEvent::SensorConnected: {
@@ -579,15 +579,13 @@ void MainPage::on_recordButton_clicked()
           // ADD !!!
 #define SET_VISIBLED_DISABLED(_UUII) {ui->_UUII->show();  ui->_UUII->setEnabled(false);}
 #define SET_VISIBLED_ENABLED(_UUII) {ui->_UUII->show();  ui->_UUII->setEnabled(true);}
-          SET_VISIBLED_DISABLED(goToInterval1Button);
-          SET_VISIBLED_DISABLED(maxValueInterval1);
 
-          ui->maxValueInterval1->setText(tr("Максимум\n---\nСреднее\n---"));
 
-          SET_VISIBLED_DISABLED(goToInterval2Button);
-          SET_VISIBLED_DISABLED(maxValueInterval2);
+          ui->goToInterval1Button->hide();
+          ui->maxValueInterval1->hide();
 
-          ui->maxValueInterval2->setText(tr("Максимум\n---\nСреднее\n---"));
+          ui->goToInterval2Button->hide();
+          ui->maxValueInterval2->hide();
 
           SET_VISIBLED_DISABLED(goToPreviousMarkButton);
           SET_VISIBLED_DISABLED(labelsNavigation);
@@ -614,21 +612,35 @@ void MainPage::on_makeLabelButton_clicked()
     ui->makeLabelButton->setEnabled(false);
     ui->acceptMarkButton->show();
     ui->rejectMarkButton->show();
+    ui->sessionButton->setEnabled(false);
+
+    ui->goToPreviousMarkButton->setEnabled(false);
+    ui->goToNextMarkButton->setEnabled(false);
+
+    ui->goToInterval1Button->setEnabled(false);
+    ui->goToInterval2Button->setEnabled(false);
     QTimer::singleShot(0, mController, [this](){
         mController->makeLabel();
     });
-    ui->intervalButton->hide();
+    ui->intervalButton->setEnabled(false);//ui->intervalButton->hide();
+
     //emit (changeLabelButtonStatus);
 }
 
 void MainPage::on_acceptMarkButton_clicked()
 {
     ui->labelsNavigation->show();
-    ui->goToPreviousMarkButton->show();
-    ui->goToNextMarkButton->show();
+
+
     ui->makeLabelButton->setEnabled(true);
     ui->acceptMarkButton->hide();
     ui->rejectMarkButton->hide();
+    ui->intervalButton->setEnabled(true);
+    ui->sessionButton->setEnabled(true);
+
+    ui->goToInterval1Button->setEnabled(true);
+    ui->goToInterval2Button->setEnabled(true);
+
     mMarksFile.open(QIODevice::WriteOnly | QIODevice::Append);
     mMarksFile.write((QString::number(mLabelManagerGlobal->mCountLabels) + ": " + QString::number(mCoordLabelX) + "\n").toLatin1());
     mMarksFile.close();
@@ -636,6 +648,12 @@ void MainPage::on_acceptMarkButton_clicked()
     temp->mCurrentPos = (double)mCoordLabelX/1000;
     if (mIntervalsCount < 4) {ui->intervalButton->show();}
     emit(changeRecordedGraphInteraction(true));
+    updateLabelCounter();
+    if (ui->labelsNavigation->text() != "0/0")
+    {
+        ui->goToPreviousMarkButton->setEnabled(true);
+        ui->goToNextMarkButton->setEnabled(true);
+    }
 }
 
 
@@ -644,9 +662,20 @@ void MainPage::on_rejectMarkButton_clicked()
     ui->makeLabelButton->setEnabled(true);
     ui->acceptMarkButton->hide();
     ui->rejectMarkButton->hide();
+    ui->intervalButton->setEnabled(true);
+    ui->sessionButton->setEnabled(true);
+
+    ui->goToInterval1Button->setEnabled(true);
+    ui->goToInterval2Button->setEnabled(true);
+
     if (mIntervalsCount < 4) {ui->intervalButton->show();}
     emit(changeRecordedGraphInteraction(false));
-    updateLabelCounter();
+    //updateLabelCounter();
+    if (ui->labelsNavigation->text() != "0/0")
+    {
+        ui->goToPreviousMarkButton->setEnabled(true);
+        ui->goToNextMarkButton->setEnabled(true);
+    }
 }
 
 
@@ -721,7 +750,13 @@ void MainPage::on_intervalButton_clicked()
     ui->rejectIntervalButton->show();
 
     ui->makeLabelButton->setEnabled(false); //ui->makeLabelButton->hide();
+    ui->sessionButton->setEnabled(false);
 
+    ui->goToPreviousMarkButton->setEnabled(false);
+    ui->goToNextMarkButton->setEnabled(false);
+
+    ui->goToInterval1Button->setEnabled(false);
+    ui->goToInterval2Button->setEnabled(false);
     mCurrentGraphsArea->addIntervalOnRecordedGraph();
     if (isIntervalCreating)
     {
@@ -753,8 +788,11 @@ void MainPage::on_acceptIntervalButton_clicked()
     mIntervalsFile.write((QString::number(mIntervalsCount) + ": " + QString::number(mIntervalsContainer[mIntervalsCount-1]->mIntervalPos) + "\n").toLatin1());
     mIntervalsFile.close();
     ui->makeLabelButton->setEnabled(true); //ui->makeLabelButton->show();
+    ui->sessionButton->setEnabled(true);
     ui->acceptIntervalButton->hide();
     ui->rejectIntervalButton->hide();
+    ui->goToInterval1Button->setEnabled(true);
+    ui->goToInterval2Button->setEnabled(true);
     emit(changeRecordedGraphInteraction(true));
 
     ui->intervalButton->setEnabled(true);
@@ -767,43 +805,30 @@ void MainPage::on_acceptIntervalButton_clicked()
     if (mIntervalsCount % 2 == 0)
     {
         mCurrentGraphsArea->colorInterval();
+
+        QString msg;
+        msg.sprintf("%s\n%.1f\n%s\n%.1f", (char*)maxValuePreset.toLocal8Bit().data(),     mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue,
+                                          (char*)averageValuePreset.toLocal8Bit().data(), mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue);
+
         if (mIntervalsCount == 2)
         {
-            ui->goToInterval1Button->setEnabled(true); //ui->goToInterval1Button->show();
-            //ui->maxValueInterval1->show();
-            //ui->averageValueInterval1->show();
-            QString msg;
-
-            msg.sprintf("%s\n%.1f\n%s\n%.1f", (char*)maxValuePreset.toLocal8Bit().data(), mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue,
-                      (char*)averageValuePreset.toLocal8Bit().data(), mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue);
-
-            //QString msg(maxValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue)) + "\n"
-            //          + averageValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue)));
             ui->maxValueInterval1->setText(msg);
-            //ui->maxValueInterval1->setText(maxValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue)));
-            //ui->averageValueInterval1->setText(averageValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue)));
+            ui->goToInterval1Button->show();
+            ui->maxValueInterval1->show();
         }
         else
         {
-            ui->goToInterval2Button->setEnabled(true);//ui->goToInterval2Button->show();
-            //ui->maxValueInterval2->show();
-            //ui->averageValueInterval2->show();
-            QString msg(maxValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue)) + "\n"
-                      + averageValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue)));
             ui->maxValueInterval2->setText(msg);
-            //ui->maxValueInterval2->setText(maxValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue)));
-            //ui->averageValueInterval2->setText(averageValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue)));
-
+            ui->goToInterval2Button->show();
+            ui->maxValueInterval2->show();
+            ui->intervalButton->hide();
         }
-
     }
-
-    if (mIntervalsCount == 4)
+    if (ui->labelsNavigation->text() != "0/0")
     {
-        ui->intervalButton->hide();
+        ui->goToPreviousMarkButton->setEnabled(true);
+        ui->goToNextMarkButton->setEnabled(true);
     }
-
-
 }
 
 
@@ -813,6 +838,15 @@ void MainPage::on_rejectIntervalButton_clicked()
     ui->rejectIntervalButton->hide();
 
     ui->makeLabelButton->setEnabled(true); //ui->makeLabelButton->show();
+    ui->sessionButton->setEnabled(true);
+
+    ui->goToInterval1Button->setEnabled(true);
+    ui->goToInterval2Button->setEnabled(true);
+    if (ui->labelsNavigation->text() != "0/0")
+    {
+        ui->goToPreviousMarkButton->setEnabled(true);
+        ui->goToNextMarkButton->setEnabled(true);
+    }
     mIntervalsCount--;
     emit(changeRecordedGraphInteraction(false));
     ui->intervalButton->setEnabled(true);

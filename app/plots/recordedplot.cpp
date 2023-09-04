@@ -48,11 +48,7 @@ RecordedPlot::RecordedPlot(QWidget *parent):
     addLayer("lineLayer", nullptr, limAbove);
     layer("lineLayer")->setMode(QCPLayer::lmBuffered);
 
-    // Соединяем изменение диапазона оси X с проверкой вхождения в интервал
-//    connect(xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(checkXAxisInterval(QCPRange)));
 
-    // Соединяем изменение диапазона оси Y с проверкой вхождения в интервал
-//    connect(yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(checkYAxisInterval(QCPRange)));
 
 //    // Разрешаем зумить и двигать по осям
 //    axisRect()->setRangeDragAxes(QList<QCPAxis *>({xAxis, xAxis2, yAxis}));
@@ -457,9 +453,6 @@ bool RecordedPlot::editAxisRange(QMouseEvent *mouseEvent)
             }
             return true;
         }
-
-
-
     }
     return false;
 }
@@ -485,10 +478,6 @@ bool RecordedPlot::event(QEvent *event)
     {
         if (editAxisRange((QMouseEvent*)event)) return true;
     }
-
-
-
-
 
 #else
     if((typeOfEvent == QEvent::TouchBegin) || (typeOfEvent == QEvent::TouchEnd) || (typeOfEvent == QEvent::TouchUpdate) || (typeOfEvent == QEvent::TouchCancel) )
@@ -636,35 +625,4 @@ bool RecordedPlot::event(QEvent *event)
     // Если не распознали или не хотим обрабатывать событие, то отдаём родителю
 #endif
     return AbstractCustomPlot::event(event);
-}
-
-void RecordedPlot::checkXAxisInterval(const QCPRange &range)
-{
-    double sizeOldRangeX = xAxis->range().size();
-    qDebug() << "sizeOldRangeX" << sizeOldRangeX;
-    if (range.lower < 0)
-    {
-        xAxis->setRange(0, sizeOldRangeX);
-    }
-    else if (range.upper > mCurrentMaxXRange)
-    {
-        xAxis->setRange(mCurrentMaxXRange - sizeOldRangeX, mCurrentMaxXRange);
-    }
-}
-
-void RecordedPlot::checkYAxisInterval(const QCPRange &range)
-{
-
-    double sizeOldRangeY = yAxis->range().size();
-    qDebug() << "sizeOldRangeY" << sizeOldRangeY;
-    if (range.lower < 0)
-    {
-        yAxis->setRange(0, sizeOldRangeY);
-        qDebug() << "lowY";
-    }
-    else if (range.upper > mCurrentMaxYRange)
-    {
-        yAxis->setRange(mCurrentMaxYRange - sizeOldRangeY, mCurrentMaxYRange);
-        qDebug() << "high" << mCurrentMaxYRange - sizeOldRangeY << mCurrentMaxYRange;
-    }
 }

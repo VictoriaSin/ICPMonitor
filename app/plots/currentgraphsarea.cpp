@@ -109,31 +109,31 @@ void CurrentGraphsArea::resetGraphOfCurrentValues()
 
 void CurrentGraphsArea::goToLabel(bool direction)
 {
-    //#define setLabelPosition(_INDEX, _OFFSET_LEFT) mRecordedGraph->setXRange(mLabelItemsContainer[_INDEX]->getLabel()->mCurrentPos*_OFFSET_LEFT, mRecordedGraph->xAxis->range().size())
-    //#define setLabelPosition(_INDEX, _OFFSET_LEFT) mRecordedGraph->setXRange(mLabelItemsContainer[_INDEX]->getLabel()->mCurrentPos*_OFFSET_LEFT, mLabelItemsContainer[_INDEX]->getLabel()->mCurrentPos + 5)//mRecordedGraph->xAxis->range().size())
-#define LABEL_OFFSET_LEFT (mRecordedGraph->xAxis->range().size() * 0.5)
-#define LABEL_OFFSET_RIGHT (mRecordedGraph->xAxis->range().size() * 0.5)
-#define setLabelPosition(_INDEX, _OFFSET_LEFT, _OFFSET_RIGHT) mRecordedGraph->setXRange(mLabelItemsContainer[_INDEX]->getLabel()->mCurrentPos - _OFFSET_LEFT , mLabelItemsContainer[_INDEX]->getLabel()->mCurrentPos + _OFFSET_RIGHT)//mRecordedGraph->xAxis->range().size())
-
-    uint16_t newIndex = 0;
     qDebug() << "count" <<mLabelItemsContainer.count();
     uint16_t labelCount = mLabelItemsContainer.count();
-    double leftPos, rightPos;
-
+    double leftPos = 0, rightPos = mRecordedGraph->mCurrentMaxXRange;
 
     direction == previous ? mCurrentLabelIndex = (mCurrentLabelIndex + labelCount - 1) % labelCount //назад
             : mCurrentLabelIndex = (mCurrentLabelIndex + 1) % labelCount; //вперед
 
-    double curLabelPosX =mLabelItemsContainer[newIndex]->getLabel()->mCurrentPos;
+    double curLabelPosX =mLabelItemsContainer[mCurrentLabelIndex]->getLabel()->mCurrentPos;
 
-
-    if ((curLabelPosX - LABEL_OFFSET_LEFT) > 0) { leftPos = LABEL_OFFSET_LEFT; }
-    else { leftPos = curLabelPosX; }
-
-    if ((curLabelPosX + LABEL_OFFSET_RIGHT) > mRecordedGraph->mCurrentMaxXRange) { rightPos = mRecordedGraph->mCurrentMaxXRange - curLabelPosX; }
-    else { rightPos = LABEL_OFFSET_RIGHT;}
-
-    setLabelPosition(mCurrentLabelIndex, leftPos, rightPos);
+    double tempRangeDiv2 = (mRecordedGraph->xAxis->range().size())/2;
+    if (curLabelPosX + tempRangeDiv2 > mRecordedGraph->mCurrentMaxXRange)
+    {
+        leftPos = curLabelPosX - (mRecordedGraph->mCurrentMaxXRange - curLabelPosX);
+    }
+    else
+    if ((curLabelPosX - tempRangeDiv2) < 0)
+    {
+        rightPos = curLabelPosX + curLabelPosX;
+    }
+    else
+    {
+        leftPos = curLabelPosX - tempRangeDiv2;
+        rightPos = curLabelPosX + tempRangeDiv2;
+    }
+    mRecordedGraph->setXRange(leftPos, rightPos);
 }
 
 
@@ -594,11 +594,9 @@ void CurrentGraphsArea::addIntervalOnRecordedGraph()
     mIntervalsCount++;
 }
 
-
 void CurrentGraphsArea::changeXInterval(bool interval)
 {
-#define INTERVAL_OFFSET_LEFT 0.5
-#define INTERVAL_OFFSET_RIGHT 0.5
+#define calcRangePercent(indexLeft, indexRight)  ((((double)mIntervalsContainer[indexRight]->mIntervalPos/1000) - ((double)mIntervalsContainer[indexLeft]->mIntervalPos/1000))*0.02)
 
 #define setIntervalPosition(indexLeft, indexRight, _OFFSET_LEFT, _OFFSET_RIGHT)\
     mRecordedGraph->setXRange((double)mIntervalsContainer[indexLeft]->mIntervalPos/1000 - _OFFSET_LEFT,\
@@ -606,24 +604,27 @@ void CurrentGraphsArea::changeXInterval(bool interval)
 
 #define calcPosInCoord(index) (double)mIntervalsContainer[index]->mIntervalPos/1000
 double leftPos, rightPos;
+double tempOffset;
 // вынести в отдельную функцию
     if (interval == first)
     {
-        if (calcPosInCoord(0) - INTERVAL_OFFSET_LEFT < 0) { leftPos = calcPosInCoord(0); }
-        else { leftPos = INTERVAL_OFFSET_LEFT; }
+        tempOffset = calcRangePercent(0, 1);
+        if (calcPosInCoord(0) - tempOffset < 0) { leftPos = calcPosInCoord(0); }
+        else { leftPos = tempOffset; }
 
-        if (calcPosInCoord(1) + INTERVAL_OFFSET_RIGHT > mRecordedGraph->mCurrentMaxXRange) { rightPos = mRecordedGraph->mCurrentMaxXRange - calcPosInCoord(1); }
-        else {rightPos = INTERVAL_OFFSET_RIGHT; }
+        if (calcPosInCoord(1) + tempOffset > mRecordedGraph->mCurrentMaxXRange) { rightPos = mRecordedGraph->mCurrentMaxXRange - calcPosInCoord(1); }
+        else {rightPos = tempOffset; }
 
         setIntervalPosition(0, 1, leftPos, rightPos);
     }
     else if (interval == second)
     {
-        if (calcPosInCoord(2) - INTERVAL_OFFSET_LEFT < 0) { leftPos = calcPosInCoord(2); }
-        else { leftPos = INTERVAL_OFFSET_LEFT; }
+        tempOffset = calcRangePercent(2, 3);
+        if (calcPosInCoord(2) - tempOffset < 0) { leftPos = calcPosInCoord(2); }
+        else { leftPos = tempOffset; }
 
-        if (calcPosInCoord(3) + INTERVAL_OFFSET_RIGHT > mRecordedGraph->mCurrentMaxXRange) { rightPos = mRecordedGraph->mCurrentMaxXRange - calcPosInCoord(3); }
-        else {rightPos = INTERVAL_OFFSET_RIGHT; }
+        if (calcPosInCoord(3) + tempOffset > mRecordedGraph->mCurrentMaxXRange) { rightPos = mRecordedGraph->mCurrentMaxXRange - calcPosInCoord(3); }
+        else {rightPos = tempOffset; }
 
         setIntervalPosition(2, 3, leftPos, rightPos);
     }
