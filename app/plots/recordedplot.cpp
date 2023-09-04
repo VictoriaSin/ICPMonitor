@@ -417,6 +417,7 @@ bool RecordedPlot::editAxisRange(QMouseEvent *mouseEvent)
             #define DEF_ZOOM_OUT_X (double)(1.0/DEF_ZOOM_IN_X)
             QWheelEvent *eventWheel = (QWheelEvent*)mouseEvent;
             pointStartX = xAxis->pixelToCoord(mouseEvent->pos().x());
+
             if (eventWheel->delta() < 0)
             {
               //qDebug("Zoom-");

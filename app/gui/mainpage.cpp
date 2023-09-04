@@ -64,7 +64,7 @@ MainPage::~MainPage()
 {
     delete ui;
 }
-
+#define BUT_SIZE_BIG 95
 void MainPage::setupButtons()
 {
     // Общий стиль для кнопок
@@ -72,24 +72,24 @@ void MainPage::setupButtons()
 
     // Кнопка записи
     ui->recordButton->setIcon(QIcon(":/icons/startRecord.svg"), QIcon(":/icons/startRecord_pressed.svg"));
-    ui->recordButton->setIconSize(QSize(100, 100));
+    ui->recordButton->setIconSize(QSize(BUT_SIZE_BIG, BUT_SIZE_BIG));
     ui->recordButton->setStyleSheet(ToolButtonStyleSheet);
     ui->recordButton->hide();
 
     // Кнопка установки метки
     ui->makeLabelButton->setIcon(QIcon(":/icons/selectData.svg"), QIcon(":/icons/selectData_pressed.svg"));
-    ui->makeLabelButton->setIconSize(QSize(100, 100));
+    ui->makeLabelButton->setIconSize(QSize(BUT_SIZE_BIG, BUT_SIZE_BIG));
     ui->makeLabelButton->setStyleSheet(ToolButtonStyleSheet);
     ui->makeLabelButton->hide();
 
     // Кнопка экрана домой
     ui->homeButton->setIcon(QIcon(":/icons/settings.svg"), QIcon(":/icons/settings_pressed.svg"));
-    ui->homeButton->setIconSize(QSize(100, 100));
+    ui->homeButton->setIconSize(QSize(BUT_SIZE_BIG, BUT_SIZE_BIG));
     ui->homeButton->setStyleSheet(ToolButtonStyleSheet);
 
     // Кнопка начала сессии
     ui->sessionButton->setIcon(QIcon(":/icons/newSession.svg"), QIcon(":/icons/newSession_pressed.svg"));
-    ui->sessionButton->setIconSize(QSize(100, 100));
+    ui->sessionButton->setIconSize(QSize(BUT_SIZE_BIG, BUT_SIZE_BIG));
     ui->sessionButton->setStyleSheet(ToolButtonStyleSheet);
 
     // Кнопка подтверждения метки
@@ -106,7 +106,7 @@ void MainPage::setupButtons()
 
     // Кнопки интервалов
     ui->intervalButton->setIcon(QIcon(":/icons/startInterval1.svg"), QIcon(":/icons/startInterval1_pressed.svg"));
-    ui->intervalButton->setIconSize(QSize(100, 100));
+    ui->intervalButton->setIconSize(QSize(BUT_SIZE_BIG, BUT_SIZE_BIG));
     ui->intervalButton->setStyleSheet(ToolButtonStyleSheet);
     ui->intervalButton->hide();
 
@@ -124,24 +124,24 @@ void MainPage::setupButtons()
 
     // Кнопка перехода к 1 интервалу
     ui->goToInterval1Button->setIcon(QIcon(":/icons/firstInterval.svg"),QIcon(":/icons/firstInterval_pressed.svg"));
-    ui->goToInterval1Button->setIconSize(QSize(100, 100));
+    ui->goToInterval1Button->setIconSize(QSize(BUT_SIZE_BIG, BUT_SIZE_BIG));
     ui->goToInterval1Button->setStyleSheet(ToolButtonStyleSheet);
     ui->goToInterval1Button->hide();
 
     // Кнопка перехода ко 2 интервалу
     ui->goToInterval2Button->setIcon(QIcon(":/icons/secondInterval.svg"),QIcon(":/icons/secondInterval_pressed.svg"));
-    ui->goToInterval2Button->setIconSize(QSize(100, 100));
+    ui->goToInterval2Button->setIconSize(QSize(BUT_SIZE_BIG, BUT_SIZE_BIG));
     ui->goToInterval2Button->setStyleSheet(ToolButtonStyleSheet);
     ui->goToInterval2Button->hide();
 
     ui->goToNextMarkButton->setIcon(QIcon(":/icons/nextLabel.svg"),QIcon(":/icons/nextLabel_pressed.svg"));
-    ui->goToNextMarkButton->setIconSize(QSize(100, 100));
+    ui->goToNextMarkButton->setIconSize(QSize(BUT_SIZE_BIG, BUT_SIZE_BIG));
     ui->goToNextMarkButton->setStyleSheet(ToolButtonStyleSheet);
     ui->goToNextMarkButton->show();
 
 
     ui->goToPreviousMarkButton->setIcon(QIcon(":/icons/previousLabel.svg"),QIcon(":/icons/previousLabel_pressed.svg"));
-    ui->goToPreviousMarkButton->setIconSize(QSize(100, 100));
+    ui->goToPreviousMarkButton->setIconSize(QSize(BUT_SIZE_BIG, BUT_SIZE_BIG));
     ui->goToPreviousMarkButton->setStyleSheet(ToolButtonStyleSheet);
     ui->goToPreviousMarkButton->show();
 
@@ -151,8 +151,8 @@ void MainPage::setupButtons()
 
     ui->maxValueInterval1->hide();
     ui->maxValueInterval2->hide();
-    ui->averageValueInterval1->hide();
-    ui->averageValueInterval2->hide();
+    //ui->averageValueInterval1->hide();
+    //ui->averageValueInterval2->hide();
 
     ui->alarmLevelICPWidget->hide();
     ui->averageICPWidget->hide();
@@ -395,8 +395,8 @@ void MainPage::scaleFont(float scaleFactor)
     WFontScaling(ui->labelsNavigation, scaleFactor);
     WFontScaling(ui->maxValueInterval1, scaleFactor);
     WFontScaling(ui->maxValueInterval2, scaleFactor);
-    WFontScaling(ui->averageValueInterval1, scaleFactor);
-    WFontScaling(ui->averageValueInterval2, scaleFactor);
+    //WFontScaling(ui->averageValueInterval1, scaleFactor);
+    //WFontScaling(ui->averageValueInterval2, scaleFactor);
 }
 
 void MainPage::updateDateTime()
@@ -554,36 +554,57 @@ void MainPage::on_recordButton_clicked()
         }
         else
         {
-            uint64_t StopMS = getCurrentTimeStampMS();
-            currentTime = QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss");
-            qDebug() << "Stop" << currentTime;
-            if (mHeadFile.open(QIODevice::WriteOnly | QIODevice::Append))
-            {
-                //QTextStream data(&mHeadFile);
-                QStringList time = currentTime.split("@");
-                //data << "Session stopped: " + currentTime + "\nStopTimeStamp(ms): " << StopMS << "\n";
-                mHeadFile.write(("Session stopped: " + currentTime + "\nStopTimeStamp(ms): " + QString::number(StopMS) + "\n").toLatin1());
-                mHeadFile.close();
-            }
-            isStart = true;
-            ui->recordButton->setIcon(QIcon(":/icons/startRecord.svg"), QIcon(":/icons/startRecord_pressed.svg"));
-            mCurrentGraphsArea->isRecord = false;
-            emit(dataReadyForRecordGraph());
-            //mController->stopAverageTimer();// получается не нужен
-            mController->mSensor->endSendingSensorReadings();
+          uint64_t StopMS = getCurrentTimeStampMS();
+          currentTime = QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss");
+          qDebug() << "Stop" << currentTime;
+          if (mHeadFile.open(QIODevice::WriteOnly | QIODevice::Append))
+          {
+            //QTextStream data(&mHeadFile);
+            QStringList time = currentTime.split("@");
+            //data << "Session stopped: " + currentTime + "\nStopTimeStamp(ms): " << StopMS << "\n";
+            mHeadFile.write(("Session stopped: " + currentTime + "\nStopTimeStamp(ms): " + QString::number(StopMS) + "\n").toLatin1());
+            mHeadFile.close();
+          }
+          isStart = true;
+          ui->recordButton->setIcon(QIcon(":/icons/startRecord.svg"), QIcon(":/icons/startRecord_pressed.svg"));
+          mCurrentGraphsArea->isRecord = false;
+          emit(dataReadyForRecordGraph());
+          //mController->stopAverageTimer();// получается не нужен
+          mController->mSensor->endSendingSensorReadings();
 
-            //ui->softwareStorageIconSVG->hide();
-            //ui->dateTimeLabel->hide();
-            //ui->infoWidgets->hide();
-            ui->intervalButton->show();
-            //ui->intervalStopButton->show();
-            ui->makeLabelButton->show();
-            ui->recordButton->hide();
-            ui->sessionButton->setEnabled(true);
+          //ui->softwareStorageIconSVG->hide();
+          //ui->dateTimeLabel->hide();
+          //ui->infoWidgets->hide();
+          ui->intervalButton->show();
+          // ADD !!!
+#define SET_VISIBLED_DISABLED(_UUII) {ui->_UUII->show();  ui->_UUII->setEnabled(false);}
+#define SET_VISIBLED_ENABLED(_UUII) {ui->_UUII->show();  ui->_UUII->setEnabled(true);}
+          SET_VISIBLED_DISABLED(goToInterval1Button);
+          SET_VISIBLED_DISABLED(maxValueInterval1);
 
-            ui->averageICPWidget->hide();
-            ui->alarmLevelICPWidget->hide();
-            emit (changeCurrentGraph());
+          ui->maxValueInterval1->setText(tr("Максимум\n---\nСреднее\n---"));
+
+          SET_VISIBLED_DISABLED(goToInterval2Button);
+          SET_VISIBLED_DISABLED(maxValueInterval2);
+
+          ui->maxValueInterval2->setText(tr("Максимум\n---\nСреднее\n---"));
+
+          SET_VISIBLED_DISABLED(goToPreviousMarkButton);
+          SET_VISIBLED_DISABLED(labelsNavigation);
+          ui->labelsNavigation->setText("0/0");
+          SET_VISIBLED_DISABLED(goToNextMarkButton);
+
+
+          // ADD !!!
+          //ui->intervalStopButton->show();
+          SET_VISIBLED_ENABLED(makeLabelButton);
+          ui->recordButton->hide();
+          ui->sessionButton->setEnabled(true);
+
+
+          ui->averageICPWidget->hide();
+          ui->alarmLevelICPWidget->hide();
+          emit (changeCurrentGraph());
         }
 }
 
@@ -669,6 +690,7 @@ void MainPage::on_sessionButton_clicked()
         ui->recordButton->hide();
 
         ui->intervalButton->hide();
+
         ui->acceptIntervalButton->hide();
         ui->rejectIntervalButton->hide();
 
@@ -677,13 +699,14 @@ void MainPage::on_sessionButton_clicked()
         ui->goToInterval2Button->hide();
 
         ui->labelsNavigation->hide();
+
         ui->goToPreviousMarkButton->hide();
         ui->goToNextMarkButton->hide();
 
         ui->maxValueInterval1->hide();
         ui->maxValueInterval2->hide();
-        ui->averageValueInterval1->hide();
-        ui->averageValueInterval2->hide();
+        //ui->averageValueInterval1->hide();
+        //ui->averageValueInterval2->hide();
         //добавить удаление всех линий после завершения сессии
 
         ui->alarmLevelICPWidget->hide();
@@ -697,7 +720,7 @@ void MainPage::on_intervalButton_clicked()
     ui->acceptIntervalButton->show();
     ui->rejectIntervalButton->show();
 
-    ui->makeLabelButton->hide();
+    ui->makeLabelButton->setEnabled(false); //ui->makeLabelButton->hide();
 
     mCurrentGraphsArea->addIntervalOnRecordedGraph();
     if (isIntervalCreating)
@@ -729,32 +752,47 @@ void MainPage::on_acceptIntervalButton_clicked()
     mIntervalsFile.open(QIODevice::WriteOnly | QIODevice::Append);
     mIntervalsFile.write((QString::number(mIntervalsCount) + ": " + QString::number(mIntervalsContainer[mIntervalsCount-1]->mIntervalPos) + "\n").toLatin1());
     mIntervalsFile.close();
-    ui->makeLabelButton->show();
+    ui->makeLabelButton->setEnabled(true); //ui->makeLabelButton->show();
     ui->acceptIntervalButton->hide();
     ui->rejectIntervalButton->hide();
     emit(changeRecordedGraphInteraction(true));
 
     ui->intervalButton->setEnabled(true);
-    const QString maxValuePreset = tr("Максимум\n%1"); //перевести потом
-    const QString averageValuePreset = tr("Среднее\n%1"); //перевести потом
+    //const QString maxValuePreset = tr("Максимум\n%1"); //перевести потом
+    //const QString averageValuePreset = tr("Среднее\n%1"); //перевести потом
+
+    QString maxValuePreset = tr("Максимум"); //перевести потом
+    QString averageValuePreset = tr("Среднее"); //перевести потом
+
     if (mIntervalsCount % 2 == 0)
     {
         mCurrentGraphsArea->colorInterval();
         if (mIntervalsCount == 2)
         {
-            ui->goToInterval1Button->show();
-            ui->maxValueInterval1->show();
-            ui->averageValueInterval1->show();
-            ui->maxValueInterval1->setText(maxValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue)));
-            ui->averageValueInterval1->setText(averageValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue)));
+            ui->goToInterval1Button->setEnabled(true); //ui->goToInterval1Button->show();
+            //ui->maxValueInterval1->show();
+            //ui->averageValueInterval1->show();
+            QString msg;
+
+            msg.sprintf("%s\n%.1f\n%s\n%.1f", (char*)maxValuePreset.toLocal8Bit().data(), mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue,
+                      (char*)averageValuePreset.toLocal8Bit().data(), mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue);
+
+            //QString msg(maxValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue)) + "\n"
+            //          + averageValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue)));
+            ui->maxValueInterval1->setText(msg);
+            //ui->maxValueInterval1->setText(maxValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue)));
+            //ui->averageValueInterval1->setText(averageValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue)));
         }
         else
         {
-            ui->goToInterval2Button->show();
-            ui->maxValueInterval2->show();
-            ui->averageValueInterval2->show();
-            ui->maxValueInterval2->setText(maxValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue)));
-            ui->averageValueInterval2->setText(averageValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue)));
+            ui->goToInterval2Button->setEnabled(true);//ui->goToInterval2Button->show();
+            //ui->maxValueInterval2->show();
+            //ui->averageValueInterval2->show();
+            QString msg(maxValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue)) + "\n"
+                      + averageValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue)));
+            ui->maxValueInterval2->setText(msg);
+            //ui->maxValueInterval2->setText(maxValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue)));
+            //ui->averageValueInterval2->setText(averageValuePreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue)));
 
         }
 
@@ -774,7 +812,7 @@ void MainPage::on_rejectIntervalButton_clicked()
     ui->acceptIntervalButton->hide();
     ui->rejectIntervalButton->hide();
 
-    ui->makeLabelButton->show();
+    ui->makeLabelButton->setEnabled(true); //ui->makeLabelButton->show();
     mIntervalsCount--;
     emit(changeRecordedGraphInteraction(false));
     ui->intervalButton->setEnabled(true);
