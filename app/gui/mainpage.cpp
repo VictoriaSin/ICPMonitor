@@ -64,7 +64,8 @@ MainPage::~MainPage()
 {
     delete ui;
 }
-#define BUT_SIZE_BIG 95
+#define BUT_SIZE_BIG 85
+#define BUT_SIZE_SMALL 85
 void MainPage::setupButtons()
 {
     // Общий стиль для кнопок
@@ -94,13 +95,13 @@ void MainPage::setupButtons()
 
     // Кнопка подтверждения метки
     ui->acceptMarkButton->setIcon(QIcon(":/icons/accept.svg"), QIcon(":/icons/accept_pressed.svg"));
-    ui->acceptMarkButton->setIconSize(QSize(80, 80));
+    ui->acceptMarkButton->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
     ui->acceptMarkButton->setStyleSheet(ToolButtonStyleSheet);
     ui->acceptMarkButton->hide();
 
     // Кнопка удаления метки
     ui->rejectMarkButton->setIcon(QIcon(":/icons/reject.svg"), QIcon(":/icons/reject_pressed.svg"));
-    ui->rejectMarkButton->setIconSize(QSize(80, 80));
+    ui->rejectMarkButton->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
     ui->rejectMarkButton->setStyleSheet(ToolButtonStyleSheet);
     ui->rejectMarkButton->hide();
 
@@ -112,13 +113,13 @@ void MainPage::setupButtons()
 
     // Кнопка подтверждения интервала
     ui->acceptIntervalButton->setIcon(QIcon(":/icons/accept.svg"), QIcon(":/icons/accept_pressed.svg"));
-    ui->acceptIntervalButton->setIconSize(QSize(80, 80));
+    ui->acceptIntervalButton->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
     ui->acceptIntervalButton->setStyleSheet(ToolButtonStyleSheet);
     ui->acceptIntervalButton->hide();
 
     // Кнопка удаления интервала
     ui->rejectIntervalButton->setIcon(QIcon(":/icons/reject.svg"), QIcon(":/icons/reject_pressed.svg"));
-    ui->rejectIntervalButton->setIconSize(QSize(80, 80));
+    ui->rejectIntervalButton->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
     ui->rejectIntervalButton->setStyleSheet(ToolButtonStyleSheet);
     ui->rejectIntervalButton->hide();
 
