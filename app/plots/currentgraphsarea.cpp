@@ -392,13 +392,13 @@ void CurrentGraphsArea::updateIntervalsOnGraphs()
     }
 
     mWaveGraph->setXRange(0, settings->getCurrentReadingsGraphIntervalX());
-    mWaveGraph->setYRange(settings->getCurrentReadingsGraphIntervalY().first, settings->getCurrentReadingsGraphIntervalY().second);
+    mWaveGraph->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
     mWaveGraph->setLowerAlarmLevelLine(settings->getLowLevelAlarm());
     mWaveGraph->setUpperAlarmLevelLine(settings->getHighLevelAlarm());
     mWaveGraph->resetGraph();
 
     mRecordedGraph->setXRange(0, settings->getCurrentReadingsGraphIntervalX());
-    mRecordedGraph->setYRange(settings->getCurrentReadingsGraphIntervalY().first, settings->getCurrentReadingsGraphIntervalY().second);
+    mRecordedGraph->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
     mRecordedGraph->resetGraph();
 }
 
@@ -566,7 +566,7 @@ void CurrentGraphsArea::addIntervalOnRecordedGraph()
             if (newIntervalPos <= prevIntervalPos)
             {
                 double offset = mRecordedGraph->xAxis->range().size() * 0.01;
-                if ((mRecordedGraph->xAxis->range().size() + offset) < mRecordedGraph->mCurrentMaxXRange)
+                if ((prevIntervalPos + offset) < mRecordedGraph->mCurrentMaxXRange)
                 {
                     newIntervalPos = prevIntervalPos + offset;
                 }

@@ -114,7 +114,7 @@ void MarkItem::replotLine()
     {
         mTextItem->position->setCoords(double(mIntervalPos)/1000.0, 0.9);
         mLineThroughGraph->end->setParentAnchor(mTextItem->position);
-        mLineThroughGraph->start->setCoords(double(mIntervalPos)/1000.0, 50);
+        mLineThroughGraph->start->setCoords(double(mIntervalPos)/1000.0, 100);
     }
 
 }

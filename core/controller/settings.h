@@ -59,7 +59,7 @@ public:
     int64_t getMaxTimeStorageCurrentSensorReadingsMs() const { return mMaxTimeStorageCurrentSensorReadingsMs; };
     double getCurrentReadingsGraphIntervalX() const { return mCurrentReadingsGraphIntervalX; };
     //QVector<QPair<double, double>> getCurrentReadingsGraphYRanges() const { return mCurrentReadingsGraphYRanges; };
-    QPair<double, double> getCurrentReadingsGraphIntervalY() const { return qMakePair(mCurrentReadingsGraphIntervalYLow, mCurrentReadingsGraphIntervalYHigh); };
+    double getCurrentReadingsGraphIntervalY() const { return mCurrentReadingsGraphIntervalY; };
     double getCurrentTickCountX() const { return mTickCountX; };
     double getCurrentTickCountY() const { return mTickCountY; };
     /*################################################################################
@@ -115,7 +115,7 @@ private:
 
 private slots:
     void setCurrentReadingsGraphIntervalX(double currentReadingsGraphIntervalX);
-    void setCurrentReadingsGraphIntervalY(double currentReadingsGraphIntervalYFrom, double currentReadingsGraphIntervalYTo);
+    void setCurrentReadingsGraphIntervalY(double currentReadingsGraphIntervalYTo);
     void setCurrentTickCountX(float currentTickCountX);
     void setCurrentTickCountY(float currentTickCountY);
 
@@ -158,8 +158,7 @@ private:
     QString mRelativeCurrentSensorReadingsPath {"./ICPCurrentSensorReadings"};
     int64_t mMaxTimeStorageCurrentSensorReadingsMs {1 * 24 * 60 * 60 * 1000};
     double mCurrentReadingsGraphIntervalX {12};
-    double mCurrentReadingsGraphIntervalYLow {0};
-    double mCurrentReadingsGraphIntervalYHigh {30};
+    double mCurrentReadingsGraphIntervalY {60};
     double mTickCountX {6};
     double mTickCountY {3};
 

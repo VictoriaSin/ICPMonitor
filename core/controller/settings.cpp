@@ -157,9 +157,8 @@ void Settings::readCurrentSensorReadingsSettings()
     mRelativeCurrentSensorReadingsPath = mSettings->value("mRelativeCurrentSensorReadingsPath", mRelativeCurrentSensorReadingsPath).toString();
     mMaxTimeStorageCurrentSensorReadingsMs = mSettings->value("mMaxTimeStorageCurrentSensorReadingsMs", qlonglong(mMaxTimeStorageCurrentSensorReadingsMs)).toLongLong();
 
-    mCurrentReadingsGraphIntervalX = mSettings->value("mCurrentReadingsGraphIntervalX", mCurrentReadingsGraphIntervalX).toDouble();
-    mCurrentReadingsGraphIntervalYLow = mSettings->value("mCurrentReadingsGraphIntervalYLow", mCurrentReadingsGraphIntervalYLow).toDouble();
-    mCurrentReadingsGraphIntervalYHigh = mSettings->value("mCurrentReadingsGraphIntervalYHigh", mCurrentReadingsGraphIntervalYHigh).toDouble();
+    mCurrentReadingsGraphIntervalX = mSettings->value("mCurrentReadingsGraphIntervalX", mCurrentReadingsGraphIntervalX).toDouble();    
+    mCurrentReadingsGraphIntervalY = mSettings->value("mCurrentReadingsGraphIntervalY", mCurrentReadingsGraphIntervalY).toDouble();
 
     mTickCountX = mSettings->value("mTickCountX", mTickCountX).toDouble();
     mTickCountY = mSettings->value("mTickCountY", mTickCountY).toDouble();
@@ -172,8 +171,7 @@ void Settings::writeCurrentSensorReadingsSettings()
     mSettings->setValue("mRelativeCurrentSensorReadingsPath", mRelativeCurrentSensorReadingsPath);
     mSettings->setValue("mMaxTimeStorageCurrentSensorReadingsMs", qlonglong(mMaxTimeStorageCurrentSensorReadingsMs));
     mSettings->setValue("mCurrentReadingsGraphIntervalX", mCurrentReadingsGraphIntervalX);
-    mSettings->setValue("mCurrentReadingsGraphIntervalYLow", mCurrentReadingsGraphIntervalYLow);
-    mSettings->setValue("mCurrentReadingsGraphIntervalYHigh", mCurrentReadingsGraphIntervalYHigh);
+    mSettings->setValue("mCurrentReadingsGraphIntervalY", mCurrentReadingsGraphIntervalY);
     mSettings->setValue("mTickCountX", QString::number(mTickCountX));
     mSettings->setValue("mTickCountY", QString::number(mTickCountY));
     mSettings->endGroup();
@@ -195,10 +193,9 @@ void Settings::setCurrentReadingsGraphIntervalX(double currentReadingsGraphInter
     mCurrentReadingsGraphIntervalX = currentReadingsGraphIntervalX;
 }
 
-void Settings::setCurrentReadingsGraphIntervalY(double currentReadingsGraphIntervalYFrom, double currentReadingsGraphIntervalYTo)
+void Settings::setCurrentReadingsGraphIntervalY(double currentReadingsGraphIntervalY)
 {
-    mCurrentReadingsGraphIntervalYLow = currentReadingsGraphIntervalYFrom;
-    mCurrentReadingsGraphIntervalYHigh = currentReadingsGraphIntervalYTo;
+    mCurrentReadingsGraphIntervalY = currentReadingsGraphIntervalY;
 }
 
 void Settings::setCurrentTickCountX(float currentTickCountX)

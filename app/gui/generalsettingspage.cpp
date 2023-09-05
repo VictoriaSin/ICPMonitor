@@ -107,12 +107,11 @@ void GeneralSettingsPage::updateGraphSettingsOnWidgets()
     }
 
     ui->intervalXLineEdit->setText(QString::number(settings->getCurrentReadingsGraphIntervalX()));
-    ui->intervalYFromLineEdit->setText(QString::number(settings->getCurrentReadingsGraphIntervalY().first));
-    ui->intervalYToLineEdit->setText(QString::number(settings->getCurrentReadingsGraphIntervalY().second));
+    ui->intervalYLineEdit->setText(QString::number(settings->getCurrentReadingsGraphIntervalY()));
     ui->relativeCurrentPathLineEdit->setText(settings->getRelativeCurrentSensorReadingsPath());
     ui->currentMaxStorageTimeLineEdit->setText(QString::number(settings->getMaxTimeStorageCurrentSensorReadingsMs()));
     double realDivisionXCount = (double)(settings->getCurrentReadingsGraphIntervalX()) / (settings->getCurrentTickCountX());
-    double realDivisionYCount = (double)(settings->getCurrentReadingsGraphIntervalY().second - settings->getCurrentReadingsGraphIntervalY().first) / (settings->getCurrentTickCountY());
+    double realDivisionYCount = (double)(settings->getCurrentReadingsGraphIntervalY() - 10) / (settings->getCurrentTickCountY());
     ui->tickCountXLineEdit->setText(QString::number(realDivisionXCount));//settings->getCurrentTickCountX()));
     ui->tickCountYLineEdit->setText(QString::number(realDivisionYCount));//settings->getCurrentTickCountY()));
 }
@@ -154,10 +153,9 @@ void GeneralSettingsPage::updateParameters()
         }
     }
     double mCurrentReadingsGraphIntervalX = ui->intervalXLineEdit->text().toDouble();
-    double mCurrentReadingsGraphIntervalYFrom = ui->intervalYFromLineEdit->text().toDouble();
-    double mCurrentReadingsGraphIntervalYTo = ui->intervalYToLineEdit->text().toDouble();
+    double mCurrentReadingsGraphIntervalY = ui->intervalYLineEdit->text().toDouble();
     double mTickCountX = (double)mCurrentReadingsGraphIntervalX / ui->tickCountXLineEdit->text().toDouble();
-    double mTickCountY = (double)(mCurrentReadingsGraphIntervalYTo - mCurrentReadingsGraphIntervalYFrom) / ui->tickCountYLineEdit->text().toDouble();
+    double mTickCountY = (double)(mCurrentReadingsGraphIntervalY - 10) / ui->tickCountYLineEdit->text().toDouble();
 
     double mHighLevelAlarm = ui->upperAlarmLineEdit->text().toFloat();
     double mLowLevelAlarm = ui->lowerAlarmLineEdit->text().toFloat();
@@ -179,10 +177,10 @@ void GeneralSettingsPage::updateParameters()
 //        else { openAlarmInfoErrorDialog(tr("Верхний уровень должен\nбыть больше, чем нижний!"));}
     });
 
-    QTimer::singleShot(0, mController, [this, mCurrentReadingsGraphIntervalX, mCurrentReadingsGraphIntervalYFrom,
-                       mCurrentReadingsGraphIntervalYTo, mTickCountX, mTickCountY]()
+    QTimer::singleShot(0, mController, [this, mCurrentReadingsGraphIntervalX,
+                       mCurrentReadingsGraphIntervalY, mTickCountX, mTickCountY]()
     {
-        if (mController->setInetrvalsOnGraph(mCurrentReadingsGraphIntervalX, mCurrentReadingsGraphIntervalYFrom, mCurrentReadingsGraphIntervalYTo,
+        if (mController->setInetrvalsOnGraph(mCurrentReadingsGraphIntervalX, mCurrentReadingsGraphIntervalY,
                                              mTickCountX, mTickCountY))
         {
             emit previousPage();
@@ -218,10 +216,7 @@ void GeneralSettingsPage::scaleFont(float scaleFactor)
     WFontScaling(ui->intervalXLabel, scaleFactor);
     WFontScaling(ui->intervalYLabel, scaleFactor);
     WFontScaling(ui->intervalXLineEdit, scaleFactor);
-    WFontScaling(ui->intervalYFromLineEdit, scaleFactor);
-    WFontScaling(ui->intervalYToLineEdit, scaleFactor);
-    WFontScaling(ui->rangeYFromLabel, scaleFactor);
-    WFontScaling(ui->rangeYToLabel, scaleFactor);
+    WFontScaling(ui->intervalYLineEdit, scaleFactor);
     WFontScaling(ui->tickCountXLabel, scaleFactor);
     WFontScaling(ui->tickCountXLineEdit, scaleFactor);
     WFontScaling(ui->tickCountYLabel, scaleFactor);

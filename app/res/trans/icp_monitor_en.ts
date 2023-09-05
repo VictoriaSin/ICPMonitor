@@ -297,16 +297,16 @@ READING</translation>
         <translation>X-axis interval</translation>
     </message>
     <message>
-        <source>Кол-во делений оси X</source>
-        <translation>Number of divisions of X axis</translation>
+        <source>Шаг делений оси X</source>
+        <translation>Division step of X axis</translation>
     </message>
     <message>
         <source>Интервал оси Y</source>
         <translation>Y-axis interval</translation>
     </message>
     <message>
-        <source>Кол-во делений оси Y</source>
-        <translation>Number of divisions of Y axis</translation>
+        <source>Шаг делений оси Y</source>
+        <translation>Division step of Y axis</translation>
     </message>
     <message>
         <source>Верхний порог тревоги</source>
@@ -463,6 +463,14 @@ confirm your choice!</translation>
     <message>
         <source>Датчик отключён</source>
         <translation>Sensor Disconnected</translation>
+    </message>
+    <message>
+        <source>Максимум</source>
+        <translation>Maximum</translation>
+    </message>
+    <message>
+        <source>Среднее</source>
+        <translation>Average</translation>
     </message>
 </context>
 <context>
@@ -704,10 +712,10 @@ this may lead to unforeseen consequences!</translation>
     </message>
 </context>
 <context>
-    <name>TrendPlot</name>
+    <name>RecordedPlot</name>
     <message>
         <source>секунды</source>
-        <translation type="vanished">seconds</translation>
+        <translation>seconds</translation>
     </message>
     <message>
         <source>мм рт ст</source>

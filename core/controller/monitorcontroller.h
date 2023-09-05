@@ -182,8 +182,8 @@ public:
     /*################################################################################
                                         График
     ################################################################################*/
-    bool setInetrvalsOnGraph(double mCurrentReadingsGraphIntervalX, double mCurrentReadingsGraphIntervalYFrom,
-                             double mCurrentReadingsGraphIntervalYTo, double mTickCountX, double mTickCountY);
+    bool setInetrvalsOnGraph(double mCurrentReadingsGraphIntervalX, double mCurrentReadingsGraphIntervalY,
+                             double mTickCountX, double mTickCountY);
     /*################################################################################
                                         Время
     ################################################################################*/

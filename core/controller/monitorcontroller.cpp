@@ -564,27 +564,25 @@ bool MonitorController::setLevelsAndStatesAlarm(int lowLevelAlarm, int highLevel
 
     return true;
 }
-bool MonitorController::setInetrvalsOnGraph(double mCurrentReadingsGraphIntervalX, double mCurrentReadingsGraphIntervalYFrom, double mCurrentReadingsGraphIntervalYTo,
+bool MonitorController::setInetrvalsOnGraph(double mCurrentReadingsGraphIntervalX, double mCurrentReadingsGraphIntervalY,
                                             double mTickCountX, double mTickCountY)
 {
-    if (!mICPSettings || mCurrentReadingsGraphIntervalYFrom >= mCurrentReadingsGraphIntervalYTo) {
+    if (!mICPSettings) {
         return false;
     }
 
     const double CXR = mICPSettings->getCurrentReadingsGraphIntervalX();
-    const double CYRL = mICPSettings->getCurrentReadingsGraphIntervalY().first;
-    const double CYRH = mICPSettings->getCurrentReadingsGraphIntervalY().second;
+    const double CYR = mICPSettings->getCurrentReadingsGraphIntervalY();
     const float TCX = mICPSettings->getCurrentTickCountX();
     const float TCY = mICPSettings->getCurrentTickCountY();
 
 
     // Если одно из значений осей изменилось
     if (CXR  != mCurrentReadingsGraphIntervalX ||
-        CYRL != mCurrentReadingsGraphIntervalYFrom ||
-        CYRH != mCurrentReadingsGraphIntervalYTo)
+        CYR != mCurrentReadingsGraphIntervalY)
     {
         mICPSettings->setCurrentReadingsGraphIntervalX(mCurrentReadingsGraphIntervalX);
-        mICPSettings->setCurrentReadingsGraphIntervalY(mCurrentReadingsGraphIntervalYFrom, mCurrentReadingsGraphIntervalYTo);
+        mICPSettings->setCurrentReadingsGraphIntervalY(mCurrentReadingsGraphIntervalY);
         emit controllerEvent(ControllerEvent::UpdateGraphIntervals);
     }
 
