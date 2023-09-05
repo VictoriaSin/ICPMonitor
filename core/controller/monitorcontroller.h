@@ -359,6 +359,8 @@ signals:
     void controllerEvent(ControllerEvent event, const QVariantMap &args = {});
     void dataReadyForGraph();
     void dataReadyFromAverageICPController();
+protected:
+    const QStringList search();
 };
 
 #endif // MONITORCONTROLLER_H

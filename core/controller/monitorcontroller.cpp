@@ -1040,6 +1040,23 @@ QString MonitorController::getFlashDevice(QString pathPartDevice)
     return "";
 }
 
+const QStringList MonitorController::search()
+{
+    QStringList cmdAllDevList = executeAConsoleCommand("ls", QStringList() << "/dev/disk/by-uuid" << "-l").split("\n");
+    QStringList mDevicesByUUIDList;
+    uint8_t tempIndex = 0;
+    for (uint8_t i = 1; i< cmdAllDevList.count()-1; i++)
+    {
+        tempIndex = cmdAllDevList[i].split(" ").indexOf("->");
+        if (!(cmdAllDevList[i].split(" ")[tempIndex-1].contains("-")))
+        {
+            mDevicesByUUIDList.append(cmdAllDevList[i].split(" ")[tempIndex-1] + " " + cmdAllDevList[i].split(" ")[tempIndex+1]);
+        }
+    }
+    qDebug() << mDevicesByUUIDList;
+    return mDevicesByUUIDList;
+}
+
 void MonitorController::initSoftwareStorage()
 {
     qDebug() << "Init Software Storage";
@@ -1048,25 +1065,38 @@ void MonitorController::initSoftwareStorage()
         runState(State::DeinitSoftwareStorage);
         return;
     }
+    QStringList mListOfDevices = search();
 
-#ifdef PC_BUILD
-    QString devUUID = getFlashDevice("/dev/sdc1");
-#else
-    QString devUUID = getFlashDevice("/dev/sda1");
-#endif
-
-    qDebug() << "devUUID" <<devUUID;
-    if (devUUID == "")
+    if (mListOfDevices.isEmpty())
     {
         qDebug() << "!!!! Add our storage !!!!";
         exit(5);
     }
-    if (mICPSettings->getSoftwareStorageUUID() != devUUID)
+    if ((!mListOfDevices.contains(mICPSettings->getSoftwareStorageUUID())) || (mICPSettings->getSoftwareStorageUUID() == ""))
     {
-        qDebug() << "!!!! F L A S H CHANGED !!!!";
+        mICPSettings->setSoftwareStorageUUID(mListOfDevices[0].split(" ")[0]);
+        qDebug() << "setSoftwareStorageUUID" << mListOfDevices[0].split(" ")[0];
+        mICPSettings->writeGeneralSettings();
     }
-    mICPSettings->setSoftwareStorageUUID(devUUID);
-    mICPSettings->writeGeneralSettings();
+
+//#ifdef PC_BUILD
+//    QString devUUID = getFlashDevice("/dev/sdc1");
+//#else
+//    QString devUUID = getFlashDevice("/dev/sda1");
+//#endif
+
+//    qDebug() << "devUUID" <<devUUID;
+//    if (devUUID == "")
+//    {
+//        qDebug() << "!!!! Add our storage !!!!";
+//        exit(5);
+//    }
+//    if (mICPSettings->getSoftwareStorageUUID() != devUUID)
+//    {
+//        qDebug() << "!!!! F L A S H CHANGED !!!!";
+//    }
+//    mICPSettings->setSoftwareStorageUUID(devUUID);
+//    mICPSettings->writeGeneralSettings();
 
     const std::shared_ptr<BlockDevice> &blockDev = mBlockDeviceManager->getBlockDeviceByUUID(mICPSettings->getSoftwareStorageUUID());
 
