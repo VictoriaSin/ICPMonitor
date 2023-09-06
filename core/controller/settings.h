@@ -83,7 +83,9 @@ private:
     void writeGeneralSettings();
     void setFontScaleFactor(float fontScaleFactor);
     bool setAppLanguage(QLocale::Language language);
+public:
     void setSoftwareStorageUUID(const QString &blockDevUUID);
+private:
     void setLastSavedDateTimestampSec(int64_t timestamp);
     /*################################################################################
                                     Настройки скриншотов

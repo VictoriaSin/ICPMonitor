@@ -12,7 +12,11 @@
 #include "sensor/sensor_enums.h"
 #include "controller/controller_enums.h"
 
-//#include "global_functions.h"
+#include "global_functions.h"
+
+
+#include "global_define.h"
+#include "controller/settings.h"
 
 //#include <fcntl.h>
 //#include <sys/ioctl.h>
@@ -146,13 +150,149 @@
 //uint8_t currentBufferRecord = 1;
 //_bufferRecord bufferRecord_1, bufferRecord_2;
 
+enum MOUNT_MESSAGE
+{
+  OK,
+  ERROR_CREATED_DIRECTORY,
+  ERROR_CREATED_MNT_POINT,
+  ERROR_FLASH_ABSEND,
+};
+
+__inline bool findFlashDevices(QStringList *Devices)
+{
+      QStringList temp = executeAConsoleCommand("df", QStringList() << "--output=source,fstype,target").split("\n");
+      for (uint8_t i=1; i<temp.count(); i++)
+      {
+          if (temp[i].contains("fuseblk") || temp[i].contains("ntfs3"))
+          {
+              Devices->append(temp[i]);
+          }
+      }
+      qDebug() << Devices->isEmpty();
+      if (Devices->isEmpty() == true)
+      {
+          return false;
+      }
+      return true;
+}
+
+__inline bool findProcMounts(QStringList *mDevicesByUUIDList)
+{
+    QStringList cmdAllDevList = executeAConsoleCommand("ls", QStringList() << "/dev/disk/by-uuid" << "-l").split("\n");
+    uint8_t tempIndex = 0;
+    for (uint8_t i = 1; i< cmdAllDevList.count()-1; i++)
+    {
+        tempIndex = cmdAllDevList[i].split(" ").indexOf("->");
+        if (!(cmdAllDevList[i].split(" ")[tempIndex-1].contains("-"))) //ntfs
+        {
+            mDevicesByUUIDList->append(cmdAllDevList[i].split(" ")[tempIndex-1] + " " + cmdAllDevList[i].split(" ")[tempIndex+1]);
+        }
+    }
+    qDebug() << *mDevicesByUUIDList;//UUID+" "+раздел
+}
+
+__inline bool isMntDirectoryCreated(QDir *mICPReadingsDir)
+{
+    return mICPReadingsDir->exists();
+}
+
+__inline bool findMountRecordInProcMounts(QStringList mDevicesByUUIDList)
+{
+    QStringList mounts = executeAConsoleCommand("cat", QStringList() << "/proc/mounts").split("\n");
+    for (uint8_t i=0; i<mounts.count(); i++)
+    {
+        if (mounts[i].contains("/media/ICPMonitor"))
+        {
+            bool isMounted = true;
+            //break;
+            return true;
+        }
+    }
+    return false;
+}
+
+__inline bool findUUIDInDevicesList(QString *UUID, QStringList mDevicesByUUIDList, QString *rasdel)
+{
+        for (uint8_t i=0; i < mDevicesByUUIDList.count(); i++)
+        {
+           if (mDevicesByUUIDList[i].contains(*UUID))
+           {
+               *rasdel = mDevicesByUUIDList[i].split(" ")[1];
+               return true;
+               //break;
+           }
+        }
+        return false;
+}
+
+__inline bool tryCreateMountPoint(QString *rasdel)
+{
+    executeAConsoleCommand("mount", QStringList() << "*rasdel" << "/media/ICPMonitor");
+}
+
+u8 mount(QString *UUID)
+{
+  QStringList Devices;
+  QStringList mDevicesByUUIDList;
+  QString rasdel = "";
+  bool isMounted = false;
+  QDir mICPReadingsDir("/media/ICPMonitor/");
+
+  if (!findFlashDevices(&Devices)) {return MOUNT_MESSAGE::ERROR_FLASH_ABSEND; } // ищем все флешки
+  findProcMounts(&mDevicesByUUIDList);
+ //  // всегда монтируем в папку /media/ICPMonitor/
+  if (isMntDirectoryCreated(&mICPReadingsDir)) // проверяем есть ли уже такая директория
+  {
+      if (*UUID != "")
+      {
+          if (findMountRecordInProcMounts(mDevicesByUUIDList)) {return MOUNT_MESSAGE::OK;}// допустим папка есть, но данных нет (ну не записали туда ничего еще !!!) - проверяем смонтирована ли флешка в записях файла /proc/mounts
+          //mounts.indexOf(UUID)
+      }
+  }
+  else
+  {
+      if (!(mICPReadingsDir.mkdir(mICPReadingsDir.path()))) {return MOUNT_MESSAGE::ERROR_CREATED_DIRECTORY;}
+  }
+
+  if (*UUID == "")
+  {
+      if (findUUIDInDevicesList(UUID, mDevicesByUUIDList, &rasdel))
+      {
+          if (tryCreateMountPoint(&rasdel)) { return MOUNT_MESSAGE::OK; }
+      }
+  }
+
+  for (u8 i = 0; i < mDevicesByUUIDList.count(); i++)
+  {
+    //*UUID = mDevicesByUUIDList[i].split(" ")[0];//setUUIDFromList(i);
+    //if (tryCreateMountPoint()) { saveInitFile(); return MOUNT_MESSAGE::OK; }
+    if ((QString *)&(mDevicesByUUIDList[i].split(" ")[1]))
+    {
+        *UUID = mDevicesByUUIDList[i].split(" ")[0];
+        return MOUNT_MESSAGE::OK;
+    }
+
+  }
+  return MOUNT_MESSAGE::ERROR_CREATED_MNT_POINT;
+}
+
+
+
 
 
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-
+    MonitorController monitorController;
+    Settings *settings = monitorController.settings();
+    settings->readAllSetting();
+    QString currUUID = settings->getSoftwareStorageUUID();
+    int errCode = mount(&currUUID);
+    qDebug() << errCode;
+    settings->setSoftwareStorageUUID(currUUID);
+    settings->writeAllSetting();
+    exit(10);
     Q_INIT_RESOURCE(core_res);
 
     // Игнорируемые события тача автоматически переопределять в MouseEvent
@@ -178,17 +318,17 @@ int main(int argc, char *argv[])
 
     // Создание контроллера приложения и его потока
     QThread mControllerThread;
-    MonitorController monitorController;
+//    MonitorController monitorController;
 
     // Получение настроек из контроллера
-    Settings *settings = monitorController.settings();
+//    Settings *settings = monitorController.settings();
 
     // Регистрация файлов перевода
     settings->registrateLangFile(QLocale::Language::English, ":/trans/core_en.qm");
     settings->registrateLangFile(QLocale::Language::English, ":/trans/icp_monitor_en.qm");
 
     // Чтение настроек
-    settings->readAllSetting();
+//    settings->readAllSetting();
 
     // Установка контроллера виджетам
     w.installController(&monitorController);
@@ -200,7 +340,7 @@ int main(int argc, char *argv[])
 
     // Запуск виджетов
     w.show();
-
+//unmount();
     const int exitCode = a.exec();
 
     // завершение работы контроллера, выполняемое в потоке контроллера
