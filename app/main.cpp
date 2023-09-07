@@ -17,7 +17,7 @@
 
 #include "global_define.h"
 #include "controller/settings.h"
-
+// добавить функцию демонтирования
 //#include <fcntl.h>
 //#include <sys/ioctl.h>
 //#include <linux/i2c-dev.h>
