@@ -508,7 +508,8 @@ void MainPage::on_recordButton_clicked()
             ui->recordButton->setIcon(QIcon(":/icons/stopRecord.svg"), QIcon(":/icons/stopRecord_pressed.svg"));
             emit (resetWaveGraph());
     #ifdef PC_BUILD
-            QDir mCurrentRecordDir(mController->getSoftwareStorage()->mInfo.rootPath() + "/" + currentTime);
+            //QDir mCurrentRecordDir(mController->getSoftwareStorage()->mInfo.rootPath() + "/" + currentTime);
+            QDir mCurrentRecordDir("/media/ICPMonitor/" + currentTime);
     #else
             QDir mCurrentRecordDir("/media/ICPMonitor_AllRecordedData/" + currentTime);
     #endif

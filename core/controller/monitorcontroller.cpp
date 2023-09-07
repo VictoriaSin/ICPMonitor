@@ -115,11 +115,11 @@ void MonitorController::deinitSoftwareStorage()
     runState(State::DeinitDataBase);
 
     // Размонтируем
-    if (mSoftwareStorage) {
-        QTimer::singleShot(0, mBlockDeviceManager, [this, blockDev = mSoftwareStorage](){
-            mBlockDeviceManager->umountBlockDevice(blockDev);
-        });
-    }
+//    if (mSoftwareStorage) {
+//        QTimer::singleShot(0, mBlockDeviceManager, [this, blockDev = mSoftwareStorage](){
+//            mBlockDeviceManager->umountBlockDevice(blockDev);
+//        });
+//    }
 
     // Освобождаемся
     mSoftwareStorage.reset();
@@ -255,7 +255,7 @@ void MonitorController::setSoftwareStorage(const std::shared_ptr<BlockDevice> &d
     }
 
     // Переводим в состояние недоступности программного хранилища
-    runState(State::DeinitSoftwareStorage);
+    //runState(State::DeinitSoftwareStorage);
 
     // Сохраняем новое программное хранилище
     qDebug() << "New Software Storage";
@@ -433,7 +433,7 @@ void MonitorController::runState(State state)
     switch (state)
     {
     case State::InitSystem: {
-        initSoftwareStorage();
+        //initSoftwareStorage();
         initRTCModule();
         initSensor();
         break;
@@ -447,11 +447,11 @@ void MonitorController::runState(State state)
         break;
     }
     case State::InitSoftwareStorage: {
-        initSoftwareStorage();
+        //initSoftwareStorage();
         break;
     }
     case State::DeinitSoftwareStorage: {
-        deinitSoftwareStorage();
+        //deinitSoftwareStorage();
         break;
     }
     case State::UpdateSoftwareStorage: {
@@ -502,7 +502,7 @@ void MonitorController::softwareStorageConnected()
 void MonitorController::softwareStorageDisconnected()
 {
     qDebug() << "ProgramStorageDisconnected";
-    runState(State::DeinitSoftwareStorage);
+    //runState(State::DeinitSoftwareStorage);
 }
 void MonitorController::softwareStorageChanged()
 {
@@ -1062,7 +1062,7 @@ void MonitorController::initSoftwareStorage()
     qDebug() << "Init Software Storage";
     if (!mICPSettings || !mBlockDeviceManager)
     {
-        runState(State::DeinitSoftwareStorage);
+        //runState(State::DeinitSoftwareStorage);
         return;
     }
     QStringList mListOfDevices = search();
@@ -1122,7 +1122,7 @@ void MonitorController::initSoftwareStorage()
     }
     // Запрашиваем программное хранилище
     //const std::shared_ptr<BlockDevice> &blockDev = mBlockDeviceManager->getBlockDeviceByUUID(BlockDevUUID);
-    if (!blockDev || !blockDev->isValid()) { runState(State::DeinitSoftwareStorage); return; }
+    //if (!blockDev || !blockDev->isValid()) { runState(State::DeinitSoftwareStorage); return; }
     // Монтируем хранилище в цикле событий менеджера блочных устройств
     QTimer::singleShot(0, mBlockDeviceManager, [this, blockDev]()
     {
@@ -1150,7 +1150,7 @@ void MonitorController::initSoftwareStorage()
             }
             else
             {
-                runState(State::DeinitSoftwareStorage);
+                //runState(State::DeinitSoftwareStorage);
             }
         }
     });

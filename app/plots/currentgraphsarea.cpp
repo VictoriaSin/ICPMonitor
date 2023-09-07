@@ -109,7 +109,7 @@ void CurrentGraphsArea::resetGraphOfCurrentValues()
 
 void CurrentGraphsArea::goToLabel(bool direction)
 {
-    qDebug() << "count" <<mLabelItemsContainer.count();
+    //qDebug() << "count" <<mLabelItemsContainer.count();
     uint16_t labelCount = mLabelItemsContainer.count();
     double leftPos = 0, rightPos = mRecordedGraph->mCurrentMaxXRange;
 
