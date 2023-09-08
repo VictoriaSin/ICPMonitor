@@ -27,13 +27,14 @@ QFile mRawDataFile;
 uint64_t startTimeStampRecord {0};
 uint16_t mCurrentLabelIndex;
 
+bool isPlayRecord = true;
+
 MainPage::MainPage(QWidget *parent)
     : IPageWidget(parent)
     , mUpdateDateTimeTimer(new QTimer(this))
     , ui(new Ui::MainPage)
 {
     ui->setupUi(this);
-
     // Настройка кнопок
     setupButtons();
     // Настройка окна главного меню
@@ -58,6 +59,17 @@ MainPage::MainPage(QWidget *parent)
 
     connect(this, SIGNAL(goToLabel(bool)), mCurrentGraphsArea, SLOT(goToLabel(bool)));
 
+    connect(this, &MainPage::playBtnPressed, mCurrentGraphsArea, &CurrentGraphsArea::playRecordedPlot);
+
+    connect(mCurrentGraphsArea->mRecordedGraph, &RecordedPlot::changeBtnIcon,
+            [this]() {ui->playRecord->setIcon(QIcon(":/icons/playRecord.svg"),QIcon(":/icons/playRecord_pressed.svg"));
+                      ui->intervalButton->setEnabled(true);
+                      ui->goToInterval1Button->setEnabled(true);
+                      ui->goToInterval2Button->setEnabled(true);
+                      ui->goToNextMarkButton->setEnabled(true);
+                      ui->goToPreviousMarkButton->setEnabled(true);
+                      ui->makeLabelButton->setEnabled(true);
+                      ui->sessionButton->setEnabled(true);} );
 }
 
 MainPage::~MainPage()
@@ -152,13 +164,15 @@ void MainPage::setupButtons()
 
     ui->maxValueInterval1->hide();
     ui->maxValueInterval2->hide();
-    //ui->averageValueInterval1->hide();
-    //ui->averageValueInterval2->hide();
 
     ui->alarmLevelICPWidget->hide();
     ui->averageICPWidget->hide();
-
     ui->sensorStateLabel->hide();
+
+    ui->playRecord->setIcon(QIcon(":/icons/playRecord.svg"),QIcon(":/icons/playRecord_pressed.svg"));
+    ui->playRecord->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
+    ui->playRecord->setStyleSheet(ToolButtonStyleSheet);
+    ui->playRecord->hide();
 }
 
 void MainPage::setupBottomInfoSVG()
@@ -589,6 +603,8 @@ void MainPage::on_recordButton_clicked()
           ui->goToInterval2Button->hide();
           ui->maxValueInterval2->hide();
 
+          ui->playRecord->show();
+
           SET_VISIBLED_DISABLED(goToPreviousMarkButton);
           SET_VISIBLED_DISABLED(labelsNavigation);
           ui->labelsNavigation->setText("0/0");
@@ -625,7 +641,7 @@ void MainPage::on_makeLabelButton_clicked()
         mController->makeLabel();
     });
     ui->intervalButton->setEnabled(false);//ui->intervalButton->hide();
-
+    ui->playRecord->setEnabled(false);
     //emit (changeLabelButtonStatus);
 }
 
@@ -656,6 +672,7 @@ void MainPage::on_acceptMarkButton_clicked()
         ui->goToPreviousMarkButton->setEnabled(true);
         ui->goToNextMarkButton->setEnabled(true);
     }
+    ui->playRecord->setEnabled(true);
 }
 
 
@@ -678,6 +695,7 @@ void MainPage::on_rejectMarkButton_clicked()
         ui->goToPreviousMarkButton->setEnabled(true);
         ui->goToNextMarkButton->setEnabled(true);
     }
+    ui->playRecord->setEnabled(true);
 }
 
 
@@ -742,6 +760,8 @@ void MainPage::on_sessionButton_clicked()
 
         ui->alarmLevelICPWidget->hide();
         ui->averageICPWidget->hide();
+
+        ui->playRecord->hide();
     }
 }
 
@@ -764,6 +784,7 @@ void MainPage::on_intervalButton_clicked()
     {
         ui->intervalButton->setEnabled(false);
     }
+    ui->playRecord->setEnabled(false);
 }
 
 
@@ -798,6 +819,8 @@ void MainPage::on_acceptIntervalButton_clicked()
     emit(changeRecordedGraphInteraction(true));
 
     ui->intervalButton->setEnabled(true);
+
+    ui->playRecord->setEnabled(true);
     //const QString maxValuePreset = tr("Максимум\n%1"); //перевести потом
     //const QString averageValuePreset = tr("Среднее\n%1"); //перевести потом
 
@@ -852,6 +875,7 @@ void MainPage::on_rejectIntervalButton_clicked()
     mIntervalsCount--;
     emit(changeRecordedGraphInteraction(false));
     ui->intervalButton->setEnabled(true);
+    ui->playRecord->setEnabled(true);
 }
 
 
@@ -876,5 +900,36 @@ void MainPage::on_goToNextMarkButton_clicked()
 {
     emit (goToLabel(next));
     updateLabelCounter();
+}
+
+
+void MainPage::on_playRecord_clicked()
+{
+    if (isPlayRecord)
+    {
+        isPlayRecord = false;
+        ui->playRecord->setIcon(QIcon(":/icons/pauseRecord.svg"),QIcon(":/icons/pauseRecord_pressed.svg"));
+        ui->intervalButton->setEnabled(false);
+        ui->goToInterval1Button->setEnabled(false);
+        ui->goToInterval2Button->setEnabled(false);
+        ui->goToNextMarkButton->setEnabled(false);
+        ui->goToPreviousMarkButton->setEnabled(false);
+        ui->makeLabelButton->setEnabled(false);
+        ui->sessionButton->setEnabled(false);
+    }
+    else
+    {
+        isPlayRecord = true;
+        ui->playRecord->setIcon(QIcon(":/icons/playRecord.svg"),QIcon(":/icons/playRecord_pressed.svg"));
+        ui->intervalButton->setEnabled(true);
+        ui->goToInterval1Button->setEnabled(true);
+        ui->goToInterval2Button->setEnabled(true);
+        ui->goToNextMarkButton->setEnabled(true);
+        ui->goToPreviousMarkButton->setEnabled(true);
+        ui->makeLabelButton->setEnabled(true);
+        ui->sessionButton->setEnabled(true);
+    }
+
+    emit(playBtnPressed());
 }
 

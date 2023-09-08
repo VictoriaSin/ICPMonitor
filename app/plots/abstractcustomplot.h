@@ -13,7 +13,6 @@ class LabelMarkItem;
 
 extern QVector<LabelMarkItem *> mLabelItemsContainer;
 
-//extern QVector<LabelMarkItem *> mIntervalsContainer;
 extern MarkItem * mIntervalsContainer[4];
 
 class AbstractCustomPlot : public QCustomPlot

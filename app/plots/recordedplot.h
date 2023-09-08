@@ -9,6 +9,7 @@ class LabelManager;
 class TextEditDialog;
 class MonitorController;
 
+extern bool isPlayRecord;
 class RecordedPlot : public AbstractCustomPlot
 {
     Q_OBJECT
@@ -79,15 +80,17 @@ public:
     void resetGraph() override;
 
     void addInterval(uint8_t num, QColor color);
+    bool animateGraphic();
 protected:
     bool editLabel(QMouseEvent *mouseEvent);
     bool editInterval(QMouseEvent *mouseEvent);
     bool editAxisRange(QMouseEvent *mouseEvent);
+
 protected slots:
     /*! Обработка нажатий по элементам графика */
     void itemClicked(QCPAbstractItem *item, QMouseEvent *event);
-
-private slots:
+signals:
+    void changeBtnIcon();
 
 };
 

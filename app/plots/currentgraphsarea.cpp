@@ -13,7 +13,6 @@
 
 #include <QTimer>
 QVector<LabelMarkItem *> mLabelItemsContainer {nullptr};
-//QVector<LabelMarkItem *> mIntervalsContainer;
 MarkItem *mIntervalsContainer[4];
 bool isIntervalCreating {false};
 uint8_t mIntervalsCount {0};
@@ -418,6 +417,18 @@ void CurrentGraphsArea::updateTicksOnGraphs()
 
     mRecordedGraph->xAxis->ticker()->setTickCount(settings->getCurrentTickCountX());
     mRecordedGraph->yAxis->ticker()->setTickCount(settings->getCurrentTickCountY());
+}
+
+void CurrentGraphsArea::playRecordedPlot()
+{
+    if (mRecordedGraph->animateGraphic())
+    {
+        emit (changePlayIcon());
+    }
+
+    //QTimer *replayDataTimer = new QTimer(this);
+    //replayDataTimer->start(1);//мс
+    //connect(replayDataTimer, &QTimer::timeout, mRecordedGraph, &RecordedPlot::animateGraphic);
 }
 
 void CurrentGraphsArea::addDataOnWavePlot()

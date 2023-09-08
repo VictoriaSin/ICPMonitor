@@ -172,17 +172,18 @@ u8 mount(QString *UUID)
 bool umount()
 {
     //qDebug() << executeAConsoleCommand("rm", QStringList() << "-R" << "/media/ICPMonitor/");
-    if (executeAConsoleCommand("rm", QStringList() << "-R" << "/media/ICPMonitor") == "")
-    {
+    //if (executeAConsoleCommand("rm", QStringList() << "-R" << "/media/ICPMonitor") == "")
+    //{
         if (executeAConsoleCommand("umount", QStringList() << "/dev/sdc1") != "")
         {
             qDebug() << "not umount";
             return false;
         }
         qDebug() << "umount";
+        executeAConsoleCommand("rm", QStringList() << "-R" << "/media/ICPMonitor");
         return true;
-    }
-    return false;
+    //}
+    //return false;
 }
 
 

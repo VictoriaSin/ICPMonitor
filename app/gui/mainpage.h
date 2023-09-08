@@ -7,6 +7,7 @@
 
 #include "global_define.h"
 
+#include "plots/recordedplot.h"
 namespace Ui {
 class MainPage;
 }
@@ -19,7 +20,9 @@ class LabelMarkItem;
 class BlockDevice;
 class MarkItem;
 class Label;
+class RecordedPlot;
 
+extern bool isPlayRecord;
 class MainPage : public IPageWidget
 {
     Q_OBJECT
@@ -35,6 +38,8 @@ class MainPage : public IPageWidget
     bool isSessionStart = true;
 
     bool isStartInterval = true;
+
+    //bool isPlayRecord = true;
 
 public:
     //!!!! Была приватной
@@ -124,6 +129,8 @@ private slots:
 
     void on_goToNextMarkButton_clicked();
 
+    void on_playRecord_clicked();
+
 private:
     Ui::MainPage *ui;
 
@@ -159,7 +166,7 @@ signals:
     void changeRecordedGraphInteraction(bool state);
     void changeCurrentRange(bool interval); //false=1, true=2
     void goToLabel(bool direction);
-
+    void playBtnPressed();
     // IPageWidget interface
 public slots:
     void retranslate() override;

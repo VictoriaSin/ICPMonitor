@@ -102,5 +102,9 @@
         <file>icons/nextLabel.svg</file>
         <file>icons/previousLabel_pressed.svg</file>
         <file>icons/previousLabel.svg</file>
+        <file>icons/pauseRecord_pressed.svg</file>
+        <file>icons/pauseRecord.svg</file>
+        <file>icons/playRecord_pressed.svg</file>
+        <file>icons/playRecord.svg</file>
     </qresource>
 </RCC>

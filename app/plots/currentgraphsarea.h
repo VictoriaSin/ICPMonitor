@@ -59,8 +59,8 @@ class CurrentGraphsArea : public AbstractMultipleGraphsAreasWidget
     /*################################################################################
                                 Записанные показания датчика
     ################################################################################*/
-    //! График записанных значений
-    RecordedPlot *mRecordedGraph {nullptr};
+//    //! График записанных значений
+//    RecordedPlot *mRecordedGraph {nullptr};
 
 
 
@@ -107,7 +107,8 @@ class CurrentGraphsArea : public AbstractMultipleGraphsAreasWidget
 #endif
 
 public:
-
+    //! График записанных значений
+    RecordedPlot *mRecordedGraph {nullptr};
     explicit CurrentGraphsArea(QWidget *parent = nullptr);
     ~CurrentGraphsArea();
 
@@ -211,6 +212,7 @@ public slots:
 
     void changeXInterval(bool interval);
     void goToLabel(bool direction);
+    void playRecordedPlot();
 protected slots:
     void nextYRange() override;
 
@@ -233,6 +235,8 @@ public:
     void writeRawData(_bufferRecord *buffer);
     void addRawData(_bufferRecord *buffer);
     void colorInterval();
+signals:
+    bool changePlayIcon();
 };
 
 #endif // CURRENTGRAPHAREA_H

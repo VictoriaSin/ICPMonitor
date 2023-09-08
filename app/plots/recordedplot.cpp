@@ -4,6 +4,9 @@
 #include "gui/dialogWindows/texteditdialog.h"
 #include "controller/labels/label.h"
 #include "global_define.h"
+
+#include "gui/mainpage.h"
+#include "unistd.h"
 //LabelManager *mLabelManagerRecorded {nullptr};
 
 
@@ -166,6 +169,47 @@ void RecordedPlot::saveDataForGraphic(const ComplexValue &complexVal)
     mRecordedData.push_back(qMakePair(mSummarySensorDataTimePerXRange, complexVal.value));
     mPreviousSensorDataTime = complexVal.timestamp;
 
+}
+
+#define timerDelay 5
+#define axisMoveRange 0.03
+bool RecordedPlot::animateGraphic()
+{
+    QTimer *replayDataTimer = new QTimer(this);
+    int index = 0;
+
+    if (isPlayRecord == true)
+    {
+        qDebug("stop");
+        replayDataTimer->stop();
+    }
+    else
+    {
+        qDebug("start");
+        replayDataTimer->start(timerDelay);//мс
+    }
+    connect(replayDataTimer, &QTimer::timeout, [this, replayDataTimer]()
+    {
+        if (isPlayRecord == true) // если нажата кнопка паузы
+        {
+            replayDataTimer->stop();
+        }
+        else
+        {
+            if (xAxis->range().upper + axisMoveRange < mCurrentMaxXRange)
+            {
+                xAxis->moveRange(axisMoveRange);
+                replayDataTimer->start(timerDelay);//мс
+            }
+            else
+            {
+                xAxis->setRangeUpper(mCurrentMaxXRange);
+                replayDataTimer->stop();
+                isPlayRecord = true;
+                emit(changeBtnIcon());
+            }
+        }
+    });
 }
 
 void RecordedPlot::addDataOnGraphic()
