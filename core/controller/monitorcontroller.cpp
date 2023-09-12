@@ -19,6 +19,7 @@
 #include <QDebug>
 #include <QProcess>
 #include <QDir>
+#include "../app/clock.h"
 
 LabelManager *mLabelManagerGlobal;
 bool isLabelCreating {false};
@@ -619,8 +620,8 @@ bool MonitorController::setGeneralParam(float mFontScaleFactor)
 }
 void MonitorController::saveCurrentDateTime()
 {
-    mICPSettings->setLastSavedDateTimestampSec(QDateTime::currentDateTime().toSecsSinceEpoch());
-    mICPSettings->writeGeneralSettings();
+    //mICPSettings->setLastSavedDateTimestampSec(QDateTime::currentDateTime().toSecsSinceEpoch());
+    //mICPSettings->writeGeneralSettings();
 }
 void MonitorController::writeScreenFromLinuxFB()
 {
@@ -719,27 +720,29 @@ QVector<ComplexValue> MonitorController::getAverageSensorReadingsFromTheInterval
 }
 void MonitorController::setDateTime(int64_t timestamp)
 {
-    // Если сессия существует, то запрещаем сбрасывать время
-    if (mSessionManager->getCurrentSession()) {
-        return;
-    }
+//    // Если сессия существует, то запрещаем сбрасывать время
+//    if (mSessionManager->getCurrentSession()) {
+//        return;
+//    }
 
-    // Меняем системное время
-    QProcess process;
-    process.start("date", QStringList() << "+%s" << "-s" << QString("@%1").arg(timestamp));
-    process.waitForFinished();
-    process.close();
-    emit controllerEvent(ControllerEvent::GlobalTimeUpdate);
+//    // Меняем системное время
+//    QProcess process;
+//    process.start("date", QStringList() << "+%s" << "-s" << QString("@%1").arg(timestamp));
+//    process.waitForFinished();
+//    process.close();
+//    emit controllerEvent(ControllerEvent::GlobalTimeUpdate);
 
-    // Сохраняем текущее время системы в файл настроек
-    saveCurrentDateTime();
+//    //setRTC();
+
+//    // Сохраняем текущее время системы в файл настроек
+//    saveCurrentDateTime();
 }
 bool MonitorController::dateTimeIsValid(const QDateTime &checkDate) const
 {
-    if (checkDate <= Settings::MinDateTime ||
-            checkDate <= QDateTime::fromSecsSinceEpoch(mICPSettings->getLastSavedDateTimestampSec())) {
-        return false;
-    }
+//    if (checkDate <= Settings::MinDateTime ||
+//            checkDate <= QDateTime::fromSecsSinceEpoch(mICPSettings->getLastSavedDateTimestampSec())) {
+//        return false;
+//    }
     return true;
 }
 bool MonitorController::currentTimeIsValid() const

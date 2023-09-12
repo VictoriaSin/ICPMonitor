@@ -48,7 +48,7 @@ void Settings::readGeneralSettings()
     mLanguageSettings->setAppLanguage(QLocale::Language(mSettings->value("mCurrentLanguage", mLanguageSettings->getCurrentLanguage()).toUInt()));
     mSoftwareStorageUUID = mSettings->value("mSoftwareStorageUUID", mSoftwareStorageUUID).toString();
     mFlashDeviceMountPart = mSettings->value("mFlashDeviceMountPart", mFlashDeviceMountPart).toString();
-    mLastSavedDateTimestampSec = mSettings->value("mLastSavedDateTimestampSec", qlonglong(mLastSavedDateTimestampSec)).toLongLong();
+    //mLastSavedDateTimestampSec = mSettings->value("mLastSavedDateTimestampSec", qlonglong(mLastSavedDateTimestampSec)).toLongLong();
     mFontScaleFactor = mSettings->value("mFontScaleFactor", mFontScaleFactor).toFloat();
     mSettings->endGroup();
 }
@@ -59,7 +59,7 @@ void Settings::writeGeneralSettings()
     mSettings->setValue("mCurrentLanguage", mLanguageSettings->getCurrentLanguage());
     mSettings->setValue("mSoftwareStorageUUID", mSoftwareStorageUUID);
     mSettings->setValue("mFlashDeviceMountPart", mFlashDeviceMountPart);
-    mSettings->setValue("mLastSavedDateTimestampSec", qlonglong(mLastSavedDateTimestampSec));
+    //mSettings->setValue("mLastSavedDateTimestampSec", qlonglong(mLastSavedDateTimestampSec));
     mSettings->setValue("mFontScaleFactor", QString::number(mFontScaleFactor));
     mSettings->endGroup();
     mSettings->sync();
@@ -82,7 +82,7 @@ void Settings::setSoftwareStorageUUID(const QString &blockDevUUID)
 
 void Settings::setLastSavedDateTimestampSec(int64_t timestamp)
 {
-    mLastSavedDateTimestampSec = timestamp;
+    //mLastSavedDateTimestampSec = timestamp;
 }
 
 void Settings::readScreensSettings()

@@ -13,6 +13,7 @@ SOURCES += \
     abstractdialogpage.cpp \
     abstractmenupage.cpp \
     animatedtoolbutton.cpp \
+    clock.cpp \
     gui/alarmlevelicpwidget.cpp \
     gui/alarmsetuppage.cpp \
     gui/averageicpwidget.cpp \
@@ -57,6 +58,7 @@ HEADERS += \
     abstractdialogpage.h \
     abstractmenupage.h \
     animatedtoolbutton.h \
+    clock.h \
     global_define.h \
     gui/alarmlevelicpwidget.h \
     gui/alarmsetuppage.h \

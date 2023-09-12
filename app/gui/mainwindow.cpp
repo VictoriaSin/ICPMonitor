@@ -56,10 +56,10 @@ void MainWindow::installController(MonitorController *controller)
 
     setZeroSensorPage();
     // Если текущая дата не валидная, то выводим экран установки даты
-    if (!mController->currentTimeIsValid())
-    {
-        setCurrentDatePage();
-    }
+//    if (!mController->currentTimeIsValid())
+//    {
+//        setCurrentDatePage();
+//    }
 }
 
 void MainWindow::retranslate()

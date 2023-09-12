@@ -442,11 +442,11 @@ void MainPage::updateDateTime()
         ui->dateTimeLabel->setText(currentDateTime);
         mLastDateTime = currentDateTime;
 
-        if (mController) {
-            QTimer::singleShot(0, mController, [this](){
-                mController->saveCurrentDateTime();
-            });
-        }
+//        if (mController) {
+//            QTimer::singleShot(0, mController, [this](){
+//                mController->saveCurrentDateTime();
+//            });
+//        }
     }
 }
 

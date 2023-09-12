@@ -3,6 +3,7 @@
 #include "ui_abstractdialogpage.h"
 #include "controller/monitorcontroller.h"
 #include "gui/gui_funcs.h"
+#include "clock.h"
 
 #include <QDateTimeEdit>
 #include <QDialog>
@@ -53,18 +54,46 @@ void DateTimePage::showEvent(QShowEvent *)
     ui->inputDateSpinBox->setDate(dateTime.date());
 }
 
+typedef struct
+{
+    uint8_t sec;   // 000
+    uint8_t min;
+    uint8_t hour;
+    uint8_t ofday;
+    uint8_t day;
+    uint8_t month;
+    uint8_t years;
+}_currDate;
+
+
 void DateTimePage::done(int exodus)
 {
+    uint8_t mCurrDateTime[7];
     if (exodus == QDialog::Accepted && mController) {
         bool okTime = false;
         bool okDate = false;
         auto ti = ui->inputTimeSpinBox->time(&okTime);
         auto da = ui->inputDateSpinBox->date(&okDate);
+        QString ttt = ti.toString();
+        qDebug() << ttt;
+        mCurrDateTime[3] = 1;
+        mCurrDateTime[2] = ((ttt[0].toLatin1() - 0x30) << 4) + ttt[1].toLatin1() - 0x30;
+        mCurrDateTime[1] = ((ttt[3].toLatin1() - 0x30) << 4) + ttt[4].toLatin1() - 0x30;
+        mCurrDateTime[0] = 0;
 
-        if (okTime && okDate) {
-            ti.setHMS(ti.hour(), ti.minute(), 0); // Обнуляем секунды
-            QTimer::singleShot(0, mController, [this, da, ti]() { mController->setDateTime(QDateTime(da, ti).toSecsSinceEpoch()); });
-        }
+        ttt = da.toString("yy.MM.dd");
+        qDebug() << ttt;
+        mCurrDateTime[6] = ((ttt[0].toLatin1() - 0x30) << 4) + ttt[1].toLatin1() - 0x30;
+        mCurrDateTime[5] = ((ttt[3].toLatin1() - 0x30) << 4) + ttt[4].toLatin1() - 0x30;
+        mCurrDateTime[4] = ((ttt[6].toLatin1() - 0x30) << 4) + ttt[7].toLatin1() - 0x30;
+        qDebug() << mCurrDateTime[6] << mCurrDateTime[5]  << mCurrDateTime[4] << mCurrDateTime[2] << mCurrDateTime[1];
+        //setRTC(mCurrDateTime);
+        //getRTC(mCurrDateTime);
+//        if (okTime && okDate) {
+//            ti.setHMS(ti.hour(), ti.minute(), 0); // Обнуляем секунды
+//            QTimer::singleShot(0, mController, [this, da, ti]() { mController->setDateTime(QDateTime(da, ti).toSecsSinceEpoch()); });
+//        }
+        mController->controllerEvent(ControllerEvent::GlobalTimeUpdate);
     }
     emit previousPage();
 }
