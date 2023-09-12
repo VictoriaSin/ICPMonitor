@@ -36,6 +36,7 @@ public:
     float getFontScaleFactor() const { return mFontScaleFactor; };
     QLocale::Language getCurrentAppLanguage() const { return mLanguageSettings->getCurrentLanguage(); };
     QString getSoftwareStorageUUID() const { return mSoftwareStorageUUID; };
+    QString getFlashDeviceMountPart() const { return mFlashDeviceMountPart; };
     int64_t getLastSavedDateTimestampSec() const { return mLastSavedDateTimestampSec; }; ///< unix timestamp
     /*################################################################################
                                     Настройки скриншотов
@@ -129,6 +130,7 @@ private:
     const QString mGeneralGroup {"GeneralGroup"};
     std::unique_ptr<LanguageSetting> mLanguageSettings;
     QString mSoftwareStorageUUID;
+    QString mFlashDeviceMountPart;
     int64_t mLastSavedDateTimestampSec {0};
 #ifdef PC_BUILD
     float mFontScaleFactor {1};

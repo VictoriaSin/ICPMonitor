@@ -561,7 +561,7 @@ void CurrentGraphsArea::addIntervalOnRecordedGraph()
     {
         double prevIntervalPos = (double)(mIntervalsContainer[mIntervalsCount-1]->mIntervalPos)/1000;
 
-        if ((prevIntervalPos >= mRecordedGraph->xAxis->range().lower) && (prevIntervalPos < mRecordedGraph->xAxis->range().upper))
+        if ((newIntervalPos >= mRecordedGraph->xAxis->range().lower) && (newIntervalPos < mRecordedGraph->xAxis->range().upper))
         {
             if (newIntervalPos <= prevIntervalPos)
             {
@@ -578,6 +578,7 @@ void CurrentGraphsArea::addIntervalOnRecordedGraph()
         }
         else
         {
+            //isIntervalCreating = false;
             return; // обработать
         }
     }
@@ -633,6 +634,7 @@ double tempOffset;
 
 void CurrentGraphsArea::colorInterval()
 {
+    qDebug() << "interval count" << mIntervalsCount;
     if (mIntervalsCount < 3)
     {
         mRecordedGraph->addInterval(mIntervalsCount, QColor(Qt::magenta));// проверить

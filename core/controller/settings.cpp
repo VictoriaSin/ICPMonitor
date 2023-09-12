@@ -47,6 +47,7 @@ void Settings::readGeneralSettings()
     mSettings->beginGroup(mGeneralGroup);
     mLanguageSettings->setAppLanguage(QLocale::Language(mSettings->value("mCurrentLanguage", mLanguageSettings->getCurrentLanguage()).toUInt()));
     mSoftwareStorageUUID = mSettings->value("mSoftwareStorageUUID", mSoftwareStorageUUID).toString();
+    mFlashDeviceMountPart = mSettings->value("mFlashDeviceMountPart", mFlashDeviceMountPart).toString();
     mLastSavedDateTimestampSec = mSettings->value("mLastSavedDateTimestampSec", qlonglong(mLastSavedDateTimestampSec)).toLongLong();
     mFontScaleFactor = mSettings->value("mFontScaleFactor", mFontScaleFactor).toFloat();
     mSettings->endGroup();
@@ -57,6 +58,7 @@ void Settings::writeGeneralSettings()
     mSettings->beginGroup(mGeneralGroup);
     mSettings->setValue("mCurrentLanguage", mLanguageSettings->getCurrentLanguage());
     mSettings->setValue("mSoftwareStorageUUID", mSoftwareStorageUUID);
+    mSettings->setValue("mFlashDeviceMountPart", mFlashDeviceMountPart);
     mSettings->setValue("mLastSavedDateTimestampSec", qlonglong(mLastSavedDateTimestampSec));
     mSettings->setValue("mFontScaleFactor", QString::number(mFontScaleFactor));
     mSettings->endGroup();

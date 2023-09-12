@@ -46,8 +46,8 @@ DataDownloadPage::DataDownloadPage(QWidget *parent) :
     // Необходимо для того, чтобы окно всегда стояло по центру
     // иначе при открытии на устройстве оно не успевает установить
     // текст и переместиться в центр
-    mMessageDialog->setMinimumSize(720, 320);
-    mMoveDataDialog->setMinimumSize(1080, 320);
+    //mMessageDialog->setMinimumSize(720, 320);
+    //mMoveDataDialog->setMinimumSize(1080, 320);
 #endif
 
     // Установка картинки окна

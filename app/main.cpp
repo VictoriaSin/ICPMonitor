@@ -19,7 +19,7 @@
 #include "controller/settings.h"
 // добавить функцию демонтирования
 
-QString mntDirectory("/home/ICPMonitor");
+QString mntDirectory("/media/ICPMonitor");
 enum MOUNT_MESSAGE
 {
   OK,
@@ -30,7 +30,7 @@ enum MOUNT_MESSAGE
 
 __inline bool findFlashDevices(QStringList *mDevicesByUUIDList)
 {
-    QStringList cmdAllDevList = executeAConsoleCommand("ls", QStringList() << "/dev/disk/by-uuid" << "-l").split("\n");
+    QStringList cmdAllDevList = executeAConsoleCommand("ls", QStringList() << "-l" << "/dev/disk/by-uuid").split("\n");
     uint8_t tempIndex = 0;
     qDebug("FINDFLASHDEVICES");
     for (uint8_t i = 1; i< cmdAllDevList.count()-1; i++)
@@ -187,6 +187,7 @@ u8 mount(QString *UUID, QString *rasdel)
 }
 
 
+
 bool umount(QString *rasdel)
 {
 #ifdef PC_BUILD
@@ -236,19 +237,38 @@ int main(int argc, char *argv[])
     // Чтение настроек
     mICPSettings->readAllSetting();
     QString currUUID = mICPSettings->getSoftwareStorageUUID();
-    QString currRasdel = "";
-    int errCode = mount(&currUUID, &currRasdel);
-    qDebug() << errCode;
+    QString currRasdel = mICPSettings->getFlashDeviceMountPart();
+    //int errCode = mount(&currUUID, &currRasdel);
+    //qDebug() << errCode;
 
     //exit(0);
 
-    if (errCode != 0) { exit(7); };
+    //if (errCode != 0) { exit(7); };
 
-    executeAConsoleCommand("chmod", QStringList() << "-R" << "777" << "/media/ICPMonitor");
+    //executeAConsoleCommand("chmod", QStringList() << "-R" << "777" << "/media/ICPMonitor");
 
-    mICPSettings->setSoftwareStorageUUID(currUUID);
-    mICPSettings->writeAllSetting();
+    //mICPSettings->setSoftwareStorageUUID(currUUID);
+    //mICPSettings->writeAllSetting();
     //exit(10);
+    bool status = false;
+    QStringList temp = executeAConsoleCommand("cat", QStringList() << "/proc/mounts").split("\n");
+    for (int i=0; i< temp.count(); i++)
+    {
+        if (temp[i].split(" ")[0].contains(currRasdel))
+        {
+            status = true;
+            break;
+        }
+    }
+    if (!status)
+    {
+        QString result = executeAConsoleCommand("mount", QStringList() << currRasdel << mntDirectory);
+        if (result != "")
+        {
+            qDebug() << result;
+            exit(10);
+        }
+    }
     Q_INIT_RESOURCE(core_res);
 
     // Игнорируемые события тача автоматически переопределять в MouseEvent
@@ -301,9 +321,13 @@ int main(int argc, char *argv[])
     mControllerThread.wait(10000);
 
     sleep(1);
-    qDebug() << "currRasdel" << currRasdel;
-    umount(&currRasdel);
+    //qDebug() << "currRasdel" << currRasdel;
+    //umount(&currRasdel);
     qDebug() << "Exit" << exitCode;
+    if (executeAConsoleCommand("umount", QStringList() << currRasdel) != "")
+    {
+        exit (11);
+    }
     return exitCode;
 }
 

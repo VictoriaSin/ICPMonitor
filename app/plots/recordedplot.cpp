@@ -77,6 +77,7 @@ RecordedPlot::RecordedPlot(QWidget *parent):
 
 RecordedPlot::~RecordedPlot()
 {
+    qDebug() << "exit";
     mRecordedData.clear();
 }
 
@@ -129,6 +130,8 @@ void RecordedPlot::addInterval(uint8_t num, QColor color)
         }
 
     }
+    qDebug() << "1" << first;
+    qDebug() << "2" << second;
 
     int indexStart = temp.indexOf(first);
     int indexStop = temp.indexOf(second);

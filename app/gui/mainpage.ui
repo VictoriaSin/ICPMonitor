@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1024</width>
-    <height>600</height>
+    <width>1200</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,14 +18,14 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>1024</width>
-    <height>600</height>
+    <width>1200</width>
+    <height>700</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>1024</width>
-    <height>600</height>
+    <width>1200</width>
+    <height>700</height>
    </size>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -33,6 +33,9 @@
     <layout class="QVBoxLayout" name="leftLayout">
      <property name="spacing">
       <number>0</number>
+     </property>
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
      </property>
      <item>
       <widget class="QWidget" name="mainWidgets" native="true">
@@ -44,14 +47,14 @@
        </property>
        <property name="minimumSize">
         <size>
-         <width>1024</width>
-         <height>107</height>
+         <width>1200</width>
+         <height>112</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>1024</width>
-         <height>107</height>
+         <width>1200</width>
+         <height>112</height>
         </size>
        </property>
        <property name="font">
@@ -369,14 +372,14 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>1024</width>
-           <height>400</height>
+           <width>1200</width>
+           <height>495</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>1024</width>
-           <height>400</height>
+           <width>1200</width>
+           <height>495</height>
           </size>
          </property>
         </widget>
@@ -607,6 +610,12 @@
    <header>animatedtoolbutton.h</header>
   </customwidget>
   <customwidget>
+   <class>QSvgWidget</class>
+   <extends>QWidget</extends>
+   <header>qsvgwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>AlarmLevelICPWidget</class>
    <extends>QWidget</extends>
    <header>gui/alarmlevelicpwidget.h</header>
@@ -622,12 +631,6 @@
    <class>CurrentGraphsArea</class>
    <extends>QWidget</extends>
    <header>plots/currentgraphsarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QSvgWidget</class>
-   <extends>QWidget</extends>
-   <header>qsvgwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
