@@ -55,7 +55,7 @@ __inline void removeMountsPoints(/*QStringList *Devices*/)
   qDebug("FINDPROCMOUNTS");
   for (int32_t i=1; i < temp.count(); i++)
   {
-    if (temp[i].contains("fuseblk") || temp[i].contains("ntfs3"))
+    if (temp[i].contains("fuseblk") || temp[i].contains("ntfs3") || temp[i].contains("vfat"))
     {
       QStringList removeDev = temp[i].simplified().split(" ");
       if (removeDev[2].length()>8)

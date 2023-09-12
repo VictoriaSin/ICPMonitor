@@ -546,8 +546,8 @@ void MainPage::on_recordButton_clicked()
             //QDir mCurrentRecordDir(mController->getSoftwareStorage()->mInfo.rootPath() + "/" + currentTime);
             QDir mCurrentRecordDir(mntDirectory+ "/" + currentTime);
     #else
-            //QDir mCurrentRecordDir(mntDirectory + "/" + currentTime);
-            QDir mCurrentRecordDir("/media/Data" + currentTime);
+            QDir mCurrentRecordDir(mntDirectory + "/" + currentTime);
+            //QDir mCurrentRecordDir("/media/Data" + currentTime);
     #endif
             mHeadFile.setFileName(mCurrentRecordDir.path() + "/" + "HEAD.txt");
             mIntervalsFile.setFileName(mCurrentRecordDir.path() + "/" + "INTERVALS.txt");
