@@ -106,5 +106,15 @@
         <file>icons/pauseRecord.svg</file>
         <file>icons/playRecord_pressed.svg</file>
         <file>icons/playRecord.svg</file>
+        <file>icons/downloadGraph_pressed.svg</file>
+        <file>icons/downloadGraph.svg</file>
+        <file>icons/rewindRecord_pressed.svg</file>
+        <file>icons/rewindRecord.svg</file>
+        <file>icons/speedX2_pressed.svg</file>
+        <file>icons/speedX2.svg</file>
+        <file>icons/speedX4_pressed.svg</file>
+        <file>icons/speedX4.svg</file>
+        <file>icons/speedX1_pressed.svg</file>
+        <file>icons/speedX1.svg</file>
     </qresource>
 </RCC>

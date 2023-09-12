@@ -201,7 +201,7 @@ private:
     OutputICPSerializer *mOutputICPSerializer {nullptr};
 
     /*! Писатель пришедших показаний датчика */
-    CycleFileWriter *mCSRFileWriter {nullptr};
+    //CycleFileWriter *mCSRFileWriter {nullptr};
     /*################################################################################
                             Обработка средних значений датчика
       ###############################################################################*/

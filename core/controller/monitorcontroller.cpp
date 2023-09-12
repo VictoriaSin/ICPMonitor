@@ -15,7 +15,7 @@
 #include "sensor/impl/fileimitsensor.h"
 #include "sensor/impl/bmp280temperaturespisensor.h"
 #include "global_functions.h"
-
+#include "../app/global_define.h"
 #include <QDebug>
 #include <QProcess>
 #include <QDir>
@@ -27,12 +27,12 @@ bool isLabelCreating {false};
 
 MonitorController::MonitorController() //: mWorkerThread(new QThread(this))
 {
-    // Создание настроек приложения и их чтение
-    #ifdef PC_BUILD
-        mICPSettings = new Settings("ICPMonitorSettings.ini");
-    #else
-        mICPSettings = new Settings("/opt/ICPMonitor/bin/ICPMonitorSettings.ini");
-    #endif
+    //  // Создание настроек приложения и их чтение
+    //  #ifdef PC_BUILD
+    //      mICPSettings = new Settings("ICPMonitorSettings.ini");
+    //  #else
+    //      mICPSettings = new Settings("/opt/ICPMonitor/bin/ICPMonitorSettings.ini");
+    //  #endif
 
     // Создание контроллера средних значений датчиков
     mAverageICPController = new AverageICPController(mICPSettings, this);
@@ -41,7 +41,7 @@ MonitorController::MonitorController() //: mWorkerThread(new QThread(this))
     mAlarmController = new AlarmController(mICPSettings, mAverageICPController, this);
 
     // Создание контроллера блочных устройств
-    mBlockDeviceManager = new BlockDeviceManager;
+    //mBlockDeviceManager = new BlockDeviceManager;
 
     // Создание менеджера базы данных приложения
     mDataBaseManager = new DataBaseManager;
@@ -63,18 +63,18 @@ MonitorController::MonitorController() //: mWorkerThread(new QThread(this))
     connect(mAlarmController,       &AlarmController::alarmEvent,
                              this,  &MonitorController::processAlarmEvent);
     // Прослушка событий контроллера блочных устройств
-    connect(mBlockDeviceManager  ,  &BlockDeviceManager::blockDevicesControllerEvent,
-                             this,  &MonitorController::processBlockDevicesControllerEvent);
+    //connect(mBlockDeviceManager  ,  &BlockDeviceManager::blockDevicesControllerEvent,
+    //                         this,  &MonitorController::processBlockDevicesControllerEvent);
     // Прослушка событий файлового контроллера
-    connect(mFileController      ,  &FileController::fileControllerEvent,
-                             this,  &MonitorController::processFileControllerEvent);
-    // События контроллера для записи файлов
-    connect(               this,    &MonitorController::controllerEvent,
-                mFileController,    &FileController::controllerEventHandler);
+   // connect(mFileController      ,  &FileController::fileControllerEvent,
+   //                          this,  &MonitorController::processFileControllerEvent);
+   // // События контроллера для записи файлов
+   // connect(               this,    &MonitorController::controllerEvent,
+   //             mFileController,    &FileController::controllerEventHandler);
 
     // Скидывание в поток и его запуск
     mWorkerThread = new QThread(this);
-    mBlockDeviceManager->moveToThread(mWorkerThread);
+    //mBlockDeviceManager->moveToThread(mWorkerThread);
     mWorkerThread->start();
 }
 void MonitorController::init()
@@ -322,9 +322,7 @@ void MonitorController::terminate()
     mSessionManager->terminate();
     mLabelManagerGlobal->terminate();
     mDataBaseManager->terminate();
-    QTimer::singleShot(0, mBlockDeviceManager, [this](){
-        mBlockDeviceManager->terminate();
-    });
+    //QTimer::singleShot(0, mBlockDeviceManager, [this](){ mBlockDeviceManager->terminate(); });
 
     // Прекращаем запущенные потоки
 

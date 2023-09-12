@@ -23,6 +23,9 @@ class Label;
 class RecordedPlot;
 
 extern bool isPlayRecord;
+
+enum speed { SpeedX1 = 500, SpeedX2 = 250, SpeedX4 = 125};
+
 class MainPage : public IPageWidget
 {
     Q_OBJECT
@@ -39,6 +42,7 @@ class MainPage : public IPageWidget
 
     bool isStartInterval = true;
 
+    int iconCount = 0;
     //bool isPlayRecord = true;
 
 public:
@@ -130,6 +134,12 @@ private slots:
     void on_goToNextMarkButton_clicked();
 
     void on_playRecord_clicked();
+
+    void on_rewindRecordButton_clicked();
+
+    void on_downloadGraphButton_clicked();
+
+    void on_speedRecordButton_clicked();
 
 private:
     Ui::MainPage *ui;

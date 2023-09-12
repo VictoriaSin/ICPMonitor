@@ -54,8 +54,6 @@ class MonitorController : public QObject
         InitSensor = 12,
     };
 public:
-    Settings *mICPSettings {nullptr};
-
     AverageICPController *mAverageICPController {nullptr};
     AlarmController *mAlarmController {nullptr};
     FileController *mFileController {nullptr};

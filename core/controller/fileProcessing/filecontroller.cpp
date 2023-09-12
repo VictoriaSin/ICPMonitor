@@ -23,13 +23,14 @@ FileController::FileController(Settings *settings, LabelManager *labelManager, Q
     QObject{parent},
     mSettings(settings)
 {
+    qDebug("!!!Kill me!!!");
     // Инициализация писателей файлов и скринов
-    mCSRFileWriter = new CycleFileWriter(mSettings->getRelativeCurrentSensorReadingsPath(), FormatOfCurrentSensorReadings, mMaxRecordTimeForCSRFileMs, mSettings->getMaxTimeStorageCurrentSensorReadingsMs(), MaxQueueCSRFile, this);
+    //mCSRFileWriter = new CycleFileWriter(mSettings->getRelativeCurrentSensorReadingsPath(), FormatOfCurrentSensorReadings, mMaxRecordTimeForCSRFileMs, mSettings->getMaxTimeStorageCurrentSensorReadingsMs(), MaxQueueCSRFile, this);
     mASRFileWriter = new CycleFileWriter(mSettings->getRelativeAverageSensorReadingsPath(), FormatOfAverageSensorReadings, mMaxRecordTimeForASRFileSec, mSettings->getMaxTimeStorageAverageSensorReadingsSec(), MaxQueueASRFile, this);
     mOutputICPSerializer = new OutputICPSerializer;
     mAverageICPSerializer = new AverageICPSerializer;
     mScreenWriter = new ScreenWriter(mSettings->getRelativeScreensPath(), mSettings->getMaxScreens());
-    connect(mCSRFileWriter, &CycleFileWriter::queueFull, this, &FileController::queueCSRFull);
+    //connect(mCSRFileWriter, &CycleFileWriter::queueFull, this, &FileController::queueCSRFull);
     connect(mASRFileWriter, &CycleFileWriter::queueFull, this, &FileController::queueASRFull);
 
     // Статус записи скриншота
@@ -53,7 +54,7 @@ FileController::FileController(Settings *settings, LabelManager *labelManager, Q
 
 void FileController::terminate()
 {
-    mCSRFileWriter->terminate();
+    //mCSRFileWriter->terminate();
     mASRFileWriter->terminate();
 
     mExportThread->quit();
@@ -64,7 +65,7 @@ void FileController::setSoftwareStorage(const std::shared_ptr<BlockDevice> &soft
 {
     mSoftwareStorage = softwareStorage;
     mASRFileWriter->setBlockDevice(softwareStorage);
-    mCSRFileWriter->setBlockDevice(softwareStorage);
+    //mCSRFileWriter->setBlockDevice(softwareStorage);
 
     QTimer::singleShot(0, mScreenWriter, [this](){
         mScreenWriter->setBlockDevice(mSoftwareStorage);
@@ -83,7 +84,7 @@ void FileController::setSessionID(int sessionID)
 
     // Устанавливаем писателям текущий ID сессии
     mASRFileWriter->setSessionID(mCurrentSessionID);
-    mCSRFileWriter->setSessionID(mCurrentSessionID);
+    //mCSRFileWriter->setSessionID(mCurrentSessionID);
 }
 
 void FileController::writeScreenFromLinuxFB()
@@ -206,7 +207,7 @@ void FileController::sendEventExportResult(const ExportResult &exportResult, con
 void FileController::writeICPSensorData(ComplexValue *sensorData)
 {
     mOutputICPSerializer->sensorData = sensorData;
-    mCSRFileWriter->writeData(*mOutputICPSerializer);
+    //mCSRFileWriter->writeData(*mOutputICPSerializer);
 }
 
 void FileController::writeAverageICPSensorData(ComplexValue *sensorData)
@@ -240,12 +241,12 @@ void FileController::controllerEventHandler(ControllerEvent event)//, const QVar
 {
     switch (event) {
     case ControllerEvent::SessionStarted: {
-        mCSRFileWriter->initCycleWriting();
+        //mCSRFileWriter->initCycleWriting();
         mASRFileWriter->initCycleWriting();
         break;
     }
     case ControllerEvent::SessionClosed: {
-        mCSRFileWriter->deinitCycleWriting();
+        //mCSRFileWriter->deinitCycleWriting();
         mASRFileWriter->deinitCycleWriting();
         break;
     }
@@ -294,7 +295,7 @@ void FileController::screenWrittenResult(bool isWriten)
 
 void FileController::queueCSRFull()
 {
-    mCSRFileWriter->deinitCycleWriting();
+    //mCSRFileWriter->deinitCycleWriting();
     emit fileControllerEvent(FileControllerEvent::FatalWriteCurrentSensorReadingsError);
 }
 

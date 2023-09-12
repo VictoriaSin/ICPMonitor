@@ -212,7 +212,6 @@ public slots:
 
     void changeXInterval(bool interval);
     void goToLabel(bool direction);
-    void playRecordedPlot();
 protected slots:
     void nextYRange() override;
 
@@ -235,8 +234,6 @@ public:
     void writeRawData(_bufferRecord *buffer);
     void addRawData(_bufferRecord *buffer);
     void colorInterval();
-signals:
-    bool changePlayIcon();
 };
 
 #endif // CURRENTGRAPHAREA_H

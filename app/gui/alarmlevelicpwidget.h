@@ -26,7 +26,7 @@ class AlarmLevelICPWidget : public QWidget
     const QString AlarmDisabledSvg {":/icons/alarmDisabled.svg"};
 
     /*! Максимальный размер иконок состояний тревоги */
-    const QSize MaxAlarmStateSVGSize {40, 40};
+    const QSize MaxAlarmStateSVGSize {35, 35};
 
 
 public:

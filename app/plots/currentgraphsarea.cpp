@@ -419,17 +419,6 @@ void CurrentGraphsArea::updateTicksOnGraphs()
     mRecordedGraph->yAxis->ticker()->setTickCount(settings->getCurrentTickCountY());
 }
 
-void CurrentGraphsArea::playRecordedPlot()
-{
-    if (mRecordedGraph->animateGraphic())
-    {
-        emit (changePlayIcon());
-    }
-
-    //QTimer *replayDataTimer = new QTimer(this);
-    //replayDataTimer->start(1);//мс
-    //connect(replayDataTimer, &QTimer::timeout, mRecordedGraph, &RecordedPlot::animateGraphic);
-}
 
 void CurrentGraphsArea::addDataOnWavePlot()
 {

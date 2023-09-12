@@ -45,7 +45,9 @@ QString executeAConsoleCommand(const QString &nameProgram, const QStringList &ar
     mProcess.start(nameProgram, arguments);
     mProcess.waitForFinished();
     QString response(mProcess.readAllStandardOutput());
+    QString respError(mProcess.readAllStandardError());
     mProcess.close();
+    if (respError != "") return respError;
     return response;
 }
 

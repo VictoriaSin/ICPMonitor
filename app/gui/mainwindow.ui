@@ -610,7 +610,11 @@
     <number>5</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="page"/>
+    <layout class="QHBoxLayout" name="page">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+    </layout>
    </item>
   </layout>
  </widget>

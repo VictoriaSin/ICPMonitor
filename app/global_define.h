@@ -1,7 +1,9 @@
-// #include "global_define.h"
 #ifndef GLOBAL_DEFINE_H
 #define GLOBAL_DEFINE_H
+#include <QString>
 #include <stdint.h>
+
+#include <controller/settings.h>
 
 #define u8  uint8_t
 #define u16 uint16_t
@@ -18,6 +20,9 @@ extern bool isIntervalCreating;
 extern uint32_t mCoordLabelX;
 extern uint8_t mIntervalsCount;
 extern uint16_t mCurrentLabelIndex;
+
+extern QString mntDirectory;
+extern Settings *mICPSettings;
 
 enum direction { previous = false, next = true};
 enum interval { first = false, second = true};

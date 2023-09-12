@@ -80,12 +80,17 @@ public:
     void resetGraph() override;
 
     void addInterval(uint8_t num, QColor color);
-    bool animateGraphic();
+    void downloadData(QByteArray *temp);
+public slots:
+    bool animateGraphic(int timerDelaySec);
 protected:
     bool editLabel(QMouseEvent *mouseEvent);
     bool editInterval(QMouseEvent *mouseEvent);
     bool editAxisRange(QMouseEvent *mouseEvent);
 
+    bool editLabel(QTouchEvent *touchEvent);
+    bool editInterval(QTouchEvent *touchEvent);
+    bool editAxisRange(QTouchEvent *touchEvent);
 protected slots:
     /*! Обработка нажатий по элементам графика */
     void itemClicked(QCPAbstractItem *item, QMouseEvent *event);

@@ -9,6 +9,7 @@
 #include "plots/markitem.h"
 #include "plots/labelmarkitem.h"
 #include "controller/labels/label.h"
+#include "global_functions.h"
 
 #include <QTimer>
 #include <QDateTime>
@@ -29,6 +30,7 @@ uint16_t mCurrentLabelIndex;
 
 bool isPlayRecord = true;
 
+int currSpeed = speed::SpeedX1;
 MainPage::MainPage(QWidget *parent)
     : IPageWidget(parent)
     , mUpdateDateTimeTimer(new QTimer(this))
@@ -59,7 +61,7 @@ MainPage::MainPage(QWidget *parent)
 
     connect(this, SIGNAL(goToLabel(bool)), mCurrentGraphsArea, SLOT(goToLabel(bool)));
 
-    connect(this, &MainPage::playBtnPressed, mCurrentGraphsArea, &CurrentGraphsArea::playRecordedPlot);
+    connect(this, &MainPage::playBtnPressed, [this](){mCurrentGraphsArea->mRecordedGraph->animateGraphic(currSpeed);});//&RecordedPlot::animateGraphic);
 
     connect(mCurrentGraphsArea->mRecordedGraph, &RecordedPlot::changeBtnIcon,
             [this]() {ui->playRecord->setIcon(QIcon(":/icons/playRecord.svg"),QIcon(":/icons/playRecord_pressed.svg"));
@@ -69,7 +71,11 @@ MainPage::MainPage(QWidget *parent)
                       ui->goToNextMarkButton->setEnabled(true);
                       ui->goToPreviousMarkButton->setEnabled(true);
                       ui->makeLabelButton->setEnabled(true);
-                      ui->sessionButton->setEnabled(true);} );
+                      ui->sessionButton->setEnabled(true);
+                      ui->rewindRecordButton->setEnabled(true);
+                      ui->speedRecordButton->setEnabled(true);
+                      ui->downloadGraphButton->setEnabled(true);// временно
+                    } );
 }
 
 MainPage::~MainPage()
@@ -173,6 +179,21 @@ void MainPage::setupButtons()
     ui->playRecord->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
     ui->playRecord->setStyleSheet(ToolButtonStyleSheet);
     ui->playRecord->hide();
+
+    ui->rewindRecordButton->setIcon(QIcon(":/icons/rewindRecord.svg"),QIcon(":/icons/rewindRecord_pressed.svg"));
+    ui->rewindRecordButton->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
+    ui->rewindRecordButton->setStyleSheet(ToolButtonStyleSheet);
+    ui->rewindRecordButton->hide();
+
+    ui->speedRecordButton->setIcon(QIcon(":/icons/speedX1.svg"),QIcon(":/icons/speedX1_pressed.svg"));
+    ui->speedRecordButton->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
+    ui->speedRecordButton->setStyleSheet(ToolButtonStyleSheet);
+    ui->speedRecordButton->hide();
+
+    ui->downloadGraphButton->setIcon(QIcon(":/icons/downloadGraph.svg"),QIcon(":/icons/downloadGraph_pressed.svg"));
+    ui->downloadGraphButton->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
+    ui->downloadGraphButton->setStyleSheet(ToolButtonStyleSheet);
+    ui->downloadGraphButton->hide();
 }
 
 void MainPage::setupBottomInfoSVG()
@@ -523,34 +544,39 @@ void MainPage::on_recordButton_clicked()
             emit (resetWaveGraph());
     #ifdef PC_BUILD
             //QDir mCurrentRecordDir(mController->getSoftwareStorage()->mInfo.rootPath() + "/" + currentTime);
-            QDir mCurrentRecordDir("/media/ICPMonitor/" + currentTime);
+            QDir mCurrentRecordDir(mntDirectory+ "/" + currentTime);
     #else
-            QDir mCurrentRecordDir("/media/ICPMonitor_AllRecordedData/" + currentTime);
+            //QDir mCurrentRecordDir(mntDirectory + "/" + currentTime);
+            QDir mCurrentRecordDir("/media/Data" + currentTime);
     #endif
-
-
             mHeadFile.setFileName(mCurrentRecordDir.path() + "/" + "HEAD.txt");
             mIntervalsFile.setFileName(mCurrentRecordDir.path() + "/" + "INTERVALS.txt");
             mMarksFile.setFileName(mCurrentRecordDir.path() + "/" + "MARKS.txt");
             mRawDataFile.setFileName(mCurrentRecordDir.path() + "/" + "RAW_DATA.txt");
-
 
             qDebug() << mCurrentRecordDir.path();
             if (!mCurrentRecordDir.exists())
             {
                 //qDebug() << "not exists";
 #ifdef TEST_BUILD
-                QProcess process;
-                process.start("mkdir", QStringList() << "-m" << "777" << mCurrentRecordDir.path());
-                process.waitForFinished();
-                //qDebug() << "normal = "<< process.readAllStandardOutput();
-                //qDebug() << "error =" << process.readAllStandardError();
-                process.close();
+                QString response;
+                //response = executeAConsoleCommand("mkdir", QStringList() << "-m" << "777" << mCurrentRecordDir.path());
+                //response = executeAConsoleCommand("mkdir", QStringList() << "/home/ICPMonitor/222");
+                response = executeAConsoleCommand("mkdir", QStringList() << mCurrentRecordDir.path());
+                if (response == "")
+                {
+                    qDebug() << "Dir open = "<< mCurrentRecordDir.path();
+                }
+                else
+                {
+                    qDebug() << "error" << response;
+                }
 #elif PC_BUILD
                 mCurrentRecordDir.mkdir(mCurrentRecordDir.path());
 #endif
 
-            }
+            }            
+
             mCurrentGraphsArea->isRecord = true;
             qDebug() << "isRecord" << mCurrentGraphsArea->isRecord;
             startTimeStampRecord = getCurrentTimeStampMS();
@@ -604,6 +630,9 @@ void MainPage::on_recordButton_clicked()
           ui->maxValueInterval2->hide();
 
           ui->playRecord->show();
+          ui->rewindRecordButton->show();
+          ui->speedRecordButton->show();
+          ui->downloadGraphButton->show();
 
           SET_VISIBLED_DISABLED(goToPreviousMarkButton);
           SET_VISIBLED_DISABLED(labelsNavigation);
@@ -616,6 +645,7 @@ void MainPage::on_recordButton_clicked()
           SET_VISIBLED_ENABLED(makeLabelButton);
           ui->recordButton->hide();
           ui->sessionButton->setEnabled(true);
+
 
 
           ui->averageICPWidget->hide();
@@ -642,6 +672,9 @@ void MainPage::on_makeLabelButton_clicked()
     });
     ui->intervalButton->setEnabled(false);//ui->intervalButton->hide();
     ui->playRecord->setEnabled(false);
+    ui->rewindRecordButton->setEnabled(false);
+    ui->speedRecordButton->setEnabled(false);
+    ui->downloadGraphButton->setEnabled(false);
     //emit (changeLabelButtonStatus);
 }
 
@@ -673,6 +706,9 @@ void MainPage::on_acceptMarkButton_clicked()
         ui->goToNextMarkButton->setEnabled(true);
     }
     ui->playRecord->setEnabled(true);
+    ui->rewindRecordButton->setEnabled(true);
+    ui->speedRecordButton->setEnabled(true);
+    ui->downloadGraphButton->setEnabled(true);
 }
 
 
@@ -696,6 +732,9 @@ void MainPage::on_rejectMarkButton_clicked()
         ui->goToNextMarkButton->setEnabled(true);
     }
     ui->playRecord->setEnabled(true);
+    ui->rewindRecordButton->setEnabled(true);
+    ui->speedRecordButton->setEnabled(true);
+    ui->downloadGraphButton->setEnabled(true);
 }
 
 
@@ -762,6 +801,9 @@ void MainPage::on_sessionButton_clicked()
         ui->averageICPWidget->hide();
 
         ui->playRecord->hide();
+        ui->rewindRecordButton->hide();
+        ui->speedRecordButton->hide();
+        ui->downloadGraphButton->hide();
     }
 }
 
@@ -785,6 +827,9 @@ void MainPage::on_intervalButton_clicked()
         ui->intervalButton->setEnabled(false);
     }
     ui->playRecord->setEnabled(false);
+    ui->rewindRecordButton->setEnabled(false);
+    ui->speedRecordButton->setEnabled(false);
+    ui->downloadGraphButton->setEnabled(false);
 }
 
 
@@ -821,29 +866,39 @@ void MainPage::on_acceptIntervalButton_clicked()
     ui->intervalButton->setEnabled(true);
 
     ui->playRecord->setEnabled(true);
+    ui->rewindRecordButton->setEnabled(true);
+    ui->speedRecordButton->setEnabled(true);
+    ui->downloadGraphButton->setEnabled(true);
+
     //const QString maxValuePreset = tr("Максимум\n%1"); //перевести потом
     //const QString averageValuePreset = tr("Среднее\n%1"); //перевести потом
 
-    QString maxValuePreset = tr("Максимум"); //перевести потом
-    QString averageValuePreset = tr("Среднее"); //перевести потом
+    const QString intervalDataPreset = tr("Максимум\n%1\nСреднее\n%2"); //перевести потом
+    //QString maxValuePreset = tr("Максимум"); //перевести потом
+    //QString averageValuePreset = tr("Среднее"); //перевести потом
 
     if (mIntervalsCount % 2 == 0)
     {
         mCurrentGraphsArea->colorInterval();
 
-        QString msg;
-        msg.sprintf("%s\n%.1f\n%s\n%.1f", (char*)maxValuePreset.toLocal8Bit().data(),     mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue,
-                                          (char*)averageValuePreset.toLocal8Bit().data(), mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue);
+        //QString msg;
+        /*msg.sprintf("%s\n%.1f\n%s\n%.1f", //maxValuePreset.toLocal8Bit()
+                    (char*)&maxValuePreset,     mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue,
+                                          (char*)averageValuePreset.toLocal8Bit().data(), mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue);*/
 
+        //qDebug() << msg ;
         if (mIntervalsCount == 2)
         {
-            ui->maxValueInterval1->setText(msg);
+            //ui->maxValueInterval1->setText(msg);
+            ui->maxValueInterval1->setText(intervalDataPreset.arg(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue, 0, 'f', 1).arg(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue, 0, 'f', 1));
             ui->goToInterval1Button->show();
             ui->maxValueInterval1->show();
+            //qDebug() << mIntervalsCount << mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue << mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue;
         }
         else
         {
-            ui->maxValueInterval2->setText(msg);
+            //ui->maxValueInterval2->setText(msg);
+            ui->maxValueInterval2->setText(intervalDataPreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue, 'f', 1)).arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue, 'f', 1)));
             ui->goToInterval2Button->show();
             ui->maxValueInterval2->show();
             ui->intervalButton->hide();
@@ -876,6 +931,9 @@ void MainPage::on_rejectIntervalButton_clicked()
     emit(changeRecordedGraphInteraction(false));
     ui->intervalButton->setEnabled(true);
     ui->playRecord->setEnabled(true);
+    ui->rewindRecordButton->setEnabled(true);
+    ui->speedRecordButton->setEnabled(true);
+    ui->downloadGraphButton->setEnabled(true);
 }
 
 
@@ -916,6 +974,9 @@ void MainPage::on_playRecord_clicked()
         ui->goToPreviousMarkButton->setEnabled(false);
         ui->makeLabelButton->setEnabled(false);
         ui->sessionButton->setEnabled(false);
+        ui->rewindRecordButton->setEnabled(false);
+        ui->speedRecordButton->setEnabled(false);
+        ui->downloadGraphButton->setEnabled(false);
     }
     else
     {
@@ -928,8 +989,57 @@ void MainPage::on_playRecord_clicked()
         ui->goToPreviousMarkButton->setEnabled(true);
         ui->makeLabelButton->setEnabled(true);
         ui->sessionButton->setEnabled(true);
+        ui->rewindRecordButton->setEnabled(true);
+        ui->speedRecordButton->setEnabled(true);
+        ui->downloadGraphButton->setEnabled(true);
     }
 
     emit(playBtnPressed());
+}
+
+
+void MainPage::on_rewindRecordButton_clicked()
+{
+    mCurrentGraphsArea->mRecordedGraph->xAxis->setRange(0, mCurrentGraphsArea->mRecordedGraph->xAxis->range().size());
+}
+
+
+void MainPage::on_downloadGraphButton_clicked()
+{
+    mCurrentGraphsArea->mRecordedGraph->clearItems();
+    mCurrentGraphsArea->mRecordedGraph->clearGraphs();
+    QFile mTestData("/media/test/testData.txt");
+    mTestData.open(QIODevice::ReadOnly);
+    QByteArray temp = mTestData.readAll();
+    mTestData.close();
+    mCurrentGraphsArea->mRecordedGraph->downloadData(&temp);//доделать
+}
+
+
+void MainPage::on_speedRecordButton_clicked()
+{
+    iconCount++;
+    switch (iconCount % 3)
+    {
+        case 0: //normal
+        {
+            currSpeed = speed::SpeedX1;
+            ui->speedRecordButton->setIcon(QIcon(":/icons/speedX1.svg"),QIcon(":/icons/speedX1_pressed.svg"));
+            break;
+        }
+        case 1: //x2
+        {
+            currSpeed = speed::SpeedX2;
+            ui->speedRecordButton->setIcon(QIcon(":/icons/speedX2.svg"),QIcon(":/icons/speedX2_pressed.svg"));
+            break;
+        }
+        case 2: //x4
+        {
+            currSpeed = speed::SpeedX2;
+            ui->speedRecordButton->setIcon(QIcon(":/icons/speedX4.svg"),QIcon(":/icons/speedX4_pressed.svg"));
+            break;
+        }
+        default : break;
+    }
 }
 
