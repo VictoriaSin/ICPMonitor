@@ -7,6 +7,14 @@
 #define DEV_REGISTERS_NUM 7
 const char *devName = "/dev/i2c-2";
 
+void setDateTime(u8 *data)
+{
+  char ttt[100];
+  sprintf(ttt, "20%02x%02x%02x %02x:%02x:%02x", data[6], data[5], data[4], data[2], data[1], data[0]);
+  QString res = executeAConsoleCommand("date", QStringList() << QString("--set=") + ttt);
+  qDebug() << "Result " << res;
+}
+
 uint8_t getRTC(u8 *data)
 {
 #define I2C_M_WR 0
@@ -53,8 +61,11 @@ int8_t setRTC(uint8_t *data)
     return I2C_RESULT::I2C_WRITE_FAILED_TO_IOCTL;
   }
   close(file);
+  setDateTime(data);
   return I2C_RESULT::I2C_OK;
 }
+
+
 /*
 bool setRTC(u8 *buf)
 {

@@ -52,6 +52,7 @@ HEADERS += \
     sensor/impl/fileimitsensor.h \
     sensor/isensor.h \
     sensor/sensor_enums.h \
+    sensor/sensordatamanager.h \
     sensor/spi.h \
     statistical_functions.h \
     ultrafastconverting/countdecimaldigit.h \
@@ -89,6 +90,7 @@ SOURCES += \
     global_structs.cpp \
     sensor/impl/bmp280temperaturespisensor.cpp \
     sensor/impl/fileimitsensor.cpp \
+    sensor/sensordatamanager.cpp \
     sensor/spi.cpp \
     statistical_functions.cpp \
     ultrafastconverting/countlut.cpp \

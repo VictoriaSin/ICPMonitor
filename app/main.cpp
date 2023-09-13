@@ -230,13 +230,7 @@ QString convertDateTimeToString(u8 *data)
   data[0]);
   return QString(strOut);
 }
-void setDateTime(u8 *data)
-{
-  char ttt[100];
-  sprintf(ttt, "20%02x%02x%02x %02x:%02x:%02x", data[6], data[5], data[4], data[2], data[1], data[0]);
-  QString res = executeAConsoleCommand("date", QStringList() << QString("--set=") + ttt);
-  qDebug() << "Result " << res;
-}
+
 bool initFlash(QString currRasdel)
 {
   bool status = false;
@@ -303,7 +297,7 @@ int main(int argc, char *argv[])
     {
       qDebug() << "Date/Time" << convertDateTimeToString(clockBuffer);
       //if (setRTC(clockBuffer) != I2C_RESULT::I2C_OK) { exit(66); }
-      setDateTime(clockBuffer);
+      //setDateTime(clockBuffer);
     }
     else
     {

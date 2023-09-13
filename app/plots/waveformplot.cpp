@@ -108,9 +108,12 @@ void WaveFormPlot::addDataOnGraphic(const ComplexValue &complexVal)
     // Суммирование общего времени пришедших данных с датчика
     // для ограничения отображения данных в диапазоне допустимых
     // значение времени на оси Х графика
-    if (mPreviousSensorDataTime == 0) {
+    if (mPreviousSensorDataTime == 0)
+    {
         mPreviousSensorDataTime = complexVal.timestamp;
-    } else {
+    }
+    else
+    {
         mSummarySensorDataTimePerXRange += (complexVal.timestamp - mPreviousSensorDataTime) / 1000.0;
     }
 

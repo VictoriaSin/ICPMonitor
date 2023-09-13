@@ -117,6 +117,7 @@ void RecordedPlot::addInterval(uint8_t num, QColor color)
 
     double first = 0.0;
     double second = 0.0;
+
     for (int i=floor(t1)*25; i<=ceil(t2)*25; i++) //25 показаний в секунду
     {
         if (mRecordedData[i].first <= t1)
@@ -130,13 +131,13 @@ void RecordedPlot::addInterval(uint8_t num, QColor color)
         }
 
     }
-    qDebug() << "1" << first;
-    qDebug() << "2" << second;
+    //qDebug() << "1" << first;
+    //qDebug() << "2" << second;
 
     int indexStart = temp.indexOf(first);
     int indexStop = temp.indexOf(second);
-    qDebug() << t1 << indexStart;
-    qDebug() << t2 << indexStop;
+    //qDebug() << t1 << indexStart;
+    //qDebug() << t2 << indexStop;
     for (int i=indexStart; i<=indexStop; i++)
     {
         mIntervalFirst->addData(mRecordedData[i].first, mRecordedData[i].second);
@@ -171,7 +172,7 @@ void RecordedPlot::saveDataForGraphic(const ComplexValue &complexVal)
 //    //#endif
     mRecordedData.push_back(qMakePair(mSummarySensorDataTimePerXRange, complexVal.value));
     mPreviousSensorDataTime = complexVal.timestamp;
-
+    qDebug() << mRecordedData.size();
 }
 
 void RecordedPlot::downloadData(QByteArray *temp)

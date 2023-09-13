@@ -87,7 +87,7 @@ void DateTimePage::done(int exodus)
         mCurrDateTime[5] = ((ttt[3].toLatin1() - 0x30) << 4) + ttt[4].toLatin1() - 0x30;
         mCurrDateTime[4] = ((ttt[6].toLatin1() - 0x30) << 4) + ttt[7].toLatin1() - 0x30;
         qDebug() << mCurrDateTime[6] << mCurrDateTime[5]  << mCurrDateTime[4] << mCurrDateTime[2] << mCurrDateTime[1];
-        //setRTC(mCurrDateTime);
+        setRTC(mCurrDateTime);
         //getRTC(mCurrDateTime);
 //        if (okTime && okDate) {
 //            ti.setHMS(ti.hour(), ti.minute(), 0); // Обнуляем секунды

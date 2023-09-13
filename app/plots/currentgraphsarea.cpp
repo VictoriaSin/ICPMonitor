@@ -30,7 +30,7 @@ CurrentGraphsArea::CurrentGraphsArea(QWidget *parent) :
     bufferRecord_1.currentPos = 0;
     bufferRecord_2.currentPos = 0;
     currentBufferRecord = 1;
-    qDebug() << "start curr area";
+    //qDebug() << "start curr area";
     // Записываем для быстрого доступа
     mWaveGraph = ui->waveGraph;
     // Записываем для быстрого доступа и скрываем график и кнопку изменения диапазона X
@@ -44,7 +44,7 @@ CurrentGraphsArea::CurrentGraphsArea(QWidget *parent) :
 
     // Добавляем графики в общий контейнер
     mGraphContainer.append(mWaveGraph);
-    //!!!mGraphContainer.append(mTrendGraph);
+    //mGraphContainer.append(mTrendGraph);
     mGraphContainer.append(mRecordedGraph);
 
     // Указываем индекс отображаемого графика
@@ -423,16 +423,17 @@ void CurrentGraphsArea::updateTicksOnGraphs()
 void CurrentGraphsArea::addDataOnWavePlot()
 {
     ++mCounterSensorReadings;
+    ComplexValue currValue;
     // Если кол-во точек равно кол-ву прореживания
     if (mCounterSensorReadings == mThinningSensorReadings)
     {
-        mWaveGraph->addDataOnGraphic(mController->getLastConvertedSensorValue());
+        currValue = mController->getLastConvertedSensorValue();
+        mWaveGraph->addDataOnGraphic(currValue);//(mController->getLastConvertedSensorValue());
         if (isRecord)
         {
             currentBufferRecord == 1 ? addRawData(&bufferRecord_1) : addRawData(&bufferRecord_2);
-            mRecordedGraph->saveDataForGraphic(mController->getLastConvertedSensorValue());// пока оставляем
-
-        }
+            mRecordedGraph->saveDataForGraphic(currValue);//mController->getLastConvertedSensorValue());// пока оставляем
+        }        
         mCounterSensorReadings = 0;
     }
 }

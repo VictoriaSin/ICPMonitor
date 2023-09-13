@@ -14,7 +14,7 @@ FileImitSensor::FileImitSensor()
 
     // Настраиваем таймер генерации данных
     mDataRequestTimer = new QTimer(this);
-    mDataRequestTimer->setInterval(1000 / mReadPerSec);
+    mDataRequestTimer->setInterval(8);//(1000 / mReadPerSec);
     connect(mDataRequestTimer, &QTimer::timeout, this, &FileImitSensor::dataRequest);
 }
 

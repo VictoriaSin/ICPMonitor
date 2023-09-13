@@ -17,7 +17,7 @@ class FileImitSensor : public ISensor
     /*! Таймер для запроса показаний */
     QTimer *mDataRequestTimer {nullptr};
     /*! Кол-во вычитывания из файла показаний датчика в секунду */
-    int mReadPerSec {50};
+    int mReadPerSec {400};//{50};//
 
     /*! Данные из вычитанного файла */
     QVector<float> mSensorReadings;
