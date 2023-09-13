@@ -131,59 +131,61 @@ void MonitorController::deinitSoftwareStorage()
 }
 void MonitorController::initDataBase()
 {
-    qDebug() << "Init DataBase";
-    if (!mDataBaseManager) {
-        runState(State::DeinitDataBase);
-        return;
-    }
+  return;
+//    qDebug() << "Init DataBase";
+//    if (!mDataBaseManager) {
+//        runState(State::DeinitDataBase);
+//        return;
+//    }
 
-    // Открываем БД
-    bool isOpenDB = mDataBaseManager->isOpenConnection();
-    if (!isOpenDB) {
-        isOpenDB = mDataBaseManager->openDataBase(mSoftwareStorage->getLastMountPoint());
-    }
+//    // Открываем БД
+//    bool isOpenDB = mDataBaseManager->isOpenConnection();
+//    if (!isOpenDB) {
+//        isOpenDB = mDataBaseManager->openDataBase(mSoftwareStorage->getLastMountPoint());
+//    }
 
-    // Открылась ли БД
-    if (isOpenDB) {
-        dataBaseAvailable();
-    } else {
-        qDebug() << "Trouble Init DB";
-        ++mCurrentNumOpenDataBase;
-        if (mCurrentNumOpenDataBase < MaxTryOpenDataBase) {
-            QTimer::singleShot(mIntervalOpenDataBaseMs, this, [this](){runState(State::InitDataBase);});
-        } else {
-            runState(State::DeinitDataBase);
-        }
-    }
+//    // Открылась ли БД
+//    if (isOpenDB) {
+//        dataBaseAvailable();
+//    } else {
+//        qDebug() << "Trouble Init DB";
+//        ++mCurrentNumOpenDataBase;
+//        if (mCurrentNumOpenDataBase < MaxTryOpenDataBase) {
+//            QTimer::singleShot(mIntervalOpenDataBaseMs, this, [this](){runState(State::InitDataBase);});
+//        } else {
+//            runState(State::DeinitDataBase);
+//        }
+//    }
 }
 void MonitorController::deinitDataBase()
 {
-    qDebug() << "Deinit DataBase 2";
-    if (mDataBaseManager) {
-        mDataBaseManager->closeDataBase();
-    }
-    dataBaseUnavailable();
+  return;
+    //qDebug() << "Deinit DataBase 2";
+    //if (mDataBaseManager) {
+    //    mDataBaseManager->closeDataBase();
+    //}
+    //dataBaseUnavailable();
 }
 void MonitorController::updateDataBase()
 {
-    qDebug() << "Update DataBase";
-    if (!mDataBaseManager || !isInitSoftwareStorage()) {
-        runState(State::DeinitDataBase);
-        return;
-    }
+//    qDebug() << "Update DataBase";
+//    if (!mDataBaseManager || !isInitSoftwareStorage()) {
+//        runState(State::DeinitDataBase);
+//        return;
+//    }
 
-    // Информация о файле БД
-    const QFileInfo fileDBInfo = mDataBaseManager->dataBaseFile();
-    if (!fileDBInfo.exists()) {
-        runState(State::DeinitDataBase);
-        return;
-    }
+//    // Информация о файле БД
+//    const QFileInfo fileDBInfo = mDataBaseManager->dataBaseFile();
+//    if (!fileDBInfo.exists()) {
+//        runState(State::DeinitDataBase);
+//        return;
+//    }
 
-    // Если не совпадают пути БД и блочного устройства
-    const QString mntPoint = mSoftwareStorage->getLastMountPoint();
-    if (!mntPoint.isEmpty() && !fileDBInfo.absolutePath().contains(mntPoint)) {
-        runState(State::ReinitDataBase);
-    }
+//    // Если не совпадают пути БД и блочного устройства
+//    const QString mntPoint = mSoftwareStorage->getLastMountPoint();
+//    if (!mntPoint.isEmpty() && !fileDBInfo.absolutePath().contains(mntPoint)) {
+//        runState(State::ReinitDataBase);
+//    }
 }
 void MonitorController::dataBaseAvailable()
 {

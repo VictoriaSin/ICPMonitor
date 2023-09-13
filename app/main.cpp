@@ -217,6 +217,51 @@ bool umount(QString *rasdel)
     }
   return false;
 }
+
+QString convertDateTimeToString(u8 *data)
+{
+  char strOut[150];
+  sprintf(strOut, "20%02x-%02x-%02x %02x:%02x:%02x",
+  data[6],
+  data[5],
+  data[4],
+  data[1],
+  data[2],
+  data[0]);
+  return QString(strOut);
+}
+void setDateTime(u8 *data)
+{
+  char ttt[100];
+  sprintf(ttt, "20%02x%02x%02x %02x:%02x:%02x", data[6], data[5], data[4], data[2], data[1], data[0]);
+  QString res = executeAConsoleCommand("date", QStringList() << QString("--set=") + ttt);
+  qDebug() << "Result " << res;
+}
+bool initFlash(QString currRasdel)
+{
+  bool status = false;
+  QStringList temp = executeAConsoleCommand("cat", QStringList() << "/proc/mounts").split("\n");
+  for (int i=0; i< temp.count(); i++)
+  {
+      if (temp[i].split(" ")[0].contains(currRasdel))
+      {
+          status = true;
+          break;
+      }
+  }
+  if (!status)
+  {
+      QString result = executeAConsoleCommand("mount", QStringList() << currRasdel << mntDirectory);
+      if (result != "")
+      {
+          qDebug() << result;
+          exit(10);
+      }
+  }
+
+}
+
+
 Settings *mICPSettings {nullptr};
 int main(int argc, char *argv[])
 {
@@ -228,54 +273,17 @@ int main(int argc, char *argv[])
 #else
     mICPSettings = new Settings("/opt/ICPMonitor/bin/ICPMonitorSettings.ini");
 #endif
-
-
-
-
     // Чтение настроек
     mICPSettings->readAllSetting();
     QString currUUID = mICPSettings->getSoftwareStorageUUID();
     QString currRasdel = mICPSettings->getFlashDeviceMountPart();
-    //int errCode = mount(&currUUID, &currRasdel);
-    //qDebug() << errCode;
 
-    //exit(0);
-
-    //if (errCode != 0) { exit(7); };
-
-    //executeAConsoleCommand("chmod", QStringList() << "-R" << "777" << "/media/ICPMonitor");
-
-    //mICPSettings->setSoftwareStorageUUID(currUUID);
-    //mICPSettings->writeAllSetting();
-    //exit(10);
-    bool status = false;
-    QStringList temp = executeAConsoleCommand("cat", QStringList() << "/proc/mounts").split("\n");
-    for (int i=0; i< temp.count(); i++)
-    {
-        if (temp[i].split(" ")[0].contains(currRasdel))
-        {
-            status = true;
-            break;
-        }
-    }
-    if (!status)
-    {
-        QString result = executeAConsoleCommand("mount", QStringList() << currRasdel << mntDirectory);
-        if (result != "")
-        {
-            qDebug() << result;
-            exit(10);
-        }
-    }
-
-
+    initFlash(currRasdel);
 
     Q_INIT_RESOURCE(core_res);
 
     // Игнорируемые события тача автоматически переопределять в MouseEvent
     QCoreApplication::setAttribute(Qt::AA_SynthesizeTouchForUnhandledMouseEvents, true);
-
-    //bufferRecord_1.currentPos = 0;
 
     qRegisterMetaType<SensorEvent>();
     qRegisterMetaType<ControllerEvent>();
@@ -287,44 +295,39 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName(APP_NAME);
     QCoreApplication::setOrganizationName(ORG_NAME);
     QCoreApplication::setApplicationVersion(version::VERSION_STRING2);
-
     //qDebug() << QString("%1 v%2").arg(APP_NAME, version::VERSION_STRING);
 
 #ifndef PC_BUILD
-    uint8_t clockBuffer[7] = {0x00, 0x22, 0x12, 0x03, 0x13, 0x09, 0x23};
-
-    setRTC(clockBuffer);
-    getRTC(clockBuffer);
-
-    exit(66);
-
-    MonitorController monitorController;
-    monitorController.controllerEvent(ControllerEvent::GlobalTimeUpdate);
-    //qDebug() << clockBuffer[6] << clockBuffer[5]  << clockBuffer[4] << clockBuffer[3] << clockBuffer[2] << clockBuffer[1];
-    char tempTime[100];
-    sprintf(tempTime, "20%02x-%02x-%02x %02x:%02x:00", clockBuffer[6], clockBuffer[5], clockBuffer[4], clockBuffer[2], clockBuffer[1]);
-    //qDebug() << tempTime;
-
+    uint8_t clockBuffer[7];
+    if (getRTC(clockBuffer) == I2C_RESULT::I2C_OK)
+    {
+      qDebug() << "Date/Time" << convertDateTimeToString(clockBuffer);
+      //if (setRTC(clockBuffer) != I2C_RESULT::I2C_OK) { exit(66); }
+      setDateTime(clockBuffer);
+    }
+    else
+    {
+      exit(66);
+    }
 #endif
 
+    MonitorController monitorController;
     // Создание GUI
     MainWindow w;
-
     // Создание контроллера приложения и его потока
     QThread mControllerThread;
-
     // Регистрация файлов перевода
     mICPSettings->registrateLangFile(QLocale::Language::English, ":/trans/core_en.qm");
     mICPSettings->registrateLangFile(QLocale::Language::English, ":/trans/icp_monitor_en.qm");
-
     // Установка контроллера виджетам
     w.installController(&monitorController);
-
     // Инициализация контроллера и сброс контроллера в поток
     monitorController.init();
     monitorController.moveToThread(&mControllerThread);
     mControllerThread.start();
-
+#ifndef PC_BUILD
+    monitorController.controllerEvent(ControllerEvent::GlobalTimeUpdate);
+#endif
     // Запуск виджетов
     w.show();
     const int exitCode = a.exec();
@@ -401,3 +404,18 @@ int main(int argc, char *argv[])
 
 //uint8_t currentBufferRecord = 1;
 //_bufferRecord bufferRecord_1, bufferRecord_2;
+
+
+//int errCode = mount(&currUUID, &currRasdel);
+//qDebug() << errCode;
+
+//exit(0);
+
+//if (errCode != 0) { exit(7); };
+
+//executeAConsoleCommand("chmod", QStringList() << "-R" << "777" << "/media/ICPMonitor");
+
+//mICPSettings->setSoftwareStorageUUID(currUUID);
+//mICPSettings->writeAllSetting();
+//exit(10);
+
