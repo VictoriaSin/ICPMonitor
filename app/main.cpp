@@ -291,10 +291,11 @@ int main(int argc, char *argv[])
     //qDebug() << QString("%1 v%2").arg(APP_NAME, version::VERSION_STRING);
 
 #ifndef PC_BUILD
-    uint8_t clockBuffer[7] = {0x00, 0x50,0x23, 0x02, 0x12, 0x09, 0x23};
+    uint8_t clockBuffer[7] = {0x00, 0x22, 0x12, 0x03, 0x13, 0x09, 0x23};
 
     setRTC(clockBuffer);
     getRTC(clockBuffer);
+
     exit(66);
 
     MonitorController monitorController;

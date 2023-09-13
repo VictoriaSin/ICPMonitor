@@ -8,6 +8,6 @@
 #include "owi_protocol.h"
 
 bool getRTC(u8 *bufget);
-bool setRTC(u8 *buf);
+int8_t setRTC(u8 *data);
 
 #endif // CLOCK_H
