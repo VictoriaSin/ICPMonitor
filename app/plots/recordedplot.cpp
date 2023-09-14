@@ -148,31 +148,34 @@ void RecordedPlot::addInterval(uint8_t num, QColor color)
 
 }
 
-void RecordedPlot::saveDataForGraphic(const ComplexValue &complexVal)
+void RecordedPlot::saveDataForGraphic(uint64_t x, uint64_t y)//const ComplexValue &complexVal)
 {
-    // Суммирование общего времени пришедших данных с датчика
-    // для ограничения отображения данных в диапазоне допустимых
-    // значение времени на оси Х графика
+    double temp_x = (double) x/1000;
+    double temp_y = (double) y;
+    mRecordedData.push_back(qMakePair(temp_x, temp_y));
+//    // Суммирование общего времени пришедших данных с датчика
+//    // для ограничения отображения данных в диапазоне допустимых
+//    // значение времени на оси Х графика
 
-    if (mPreviousSensorDataTime == 0)
-    {
-        mPreviousSensorDataTime = complexVal.timestamp;
-    }
-    else
-    {
-        mSummarySensorDataTimePerXRange += (complexVal.timestamp - mPreviousSensorDataTime) / 1000.0;
-    }
-
-//    //#ifdef QT_DEBUG
-//    if (avgBenchTime > 1000) {
-//        //qDebug() << "Gui update period, ms" << avgBenchTime / (float)benchCount;
-//        avgBenchTime = 0;
-//        benchCount = 0;
+//    if (mPreviousSensorDataTime == 0)
+//    {
+//        mPreviousSensorDataTime = complexVal.timestamp;
 //    }
-//    //#endif
-    mRecordedData.push_back(qMakePair(mSummarySensorDataTimePerXRange, complexVal.value));
-    mPreviousSensorDataTime = complexVal.timestamp;
-    qDebug() << mRecordedData.size();
+//    else
+//    {
+//        mSummarySensorDataTimePerXRange += (complexVal.timestamp - mPreviousSensorDataTime) / 1000.0;
+//    }
+
+////    //#ifdef QT_DEBUG
+////    if (avgBenchTime > 1000) {
+////        //qDebug() << "Gui update period, ms" << avgBenchTime / (float)benchCount;
+////        avgBenchTime = 0;
+////        benchCount = 0;
+////    }
+////    //#endif
+//    mRecordedData.push_back(qMakePair(mSummarySensorDataTimePerXRange, complexVal.value));
+//    mPreviousSensorDataTime = complexVal.timestamp;
+//    qDebug() << mRecordedData.size();
 }
 
 void RecordedPlot::downloadData(QByteArray *temp)

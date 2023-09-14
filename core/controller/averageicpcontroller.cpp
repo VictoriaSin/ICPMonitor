@@ -13,7 +13,7 @@ AverageICPController::AverageICPController(Settings *settings,
 {
     mAverageTimer->setInterval(settings->getConstIntervalBetweenAverageSensorReadingsMs());
 
-    connect(mAverageTimer, &QTimer::timeout, this, &AverageICPController::recalcAverage);
+    //connect(mAverageTimer, &QTimer::timeout, this, &AverageICPController::recalcAverage);
 }
 
 void AverageICPController::start()

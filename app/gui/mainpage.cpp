@@ -11,6 +11,7 @@
 #include "controller/labels/label.h"
 #include "global_functions.h"
 
+
 #include <QTimer>
 #include <QDateTime>
 #include <QPushButton>
@@ -29,8 +30,8 @@ uint64_t startTimeStampRecord {0};
 uint16_t mCurrentLabelIndex;
 
 bool isPlayRecord = true;
-
 int currSpeed = speed::SpeedX1;
+
 MainPage::MainPage(QWidget *parent)
     : IPageWidget(parent)
     , mUpdateDateTimeTimer(new QTimer(this))
@@ -76,6 +77,9 @@ MainPage::MainPage(QWidget *parent)
                       ui->speedRecordButton->setEnabled(true);
                       ui->downloadGraphButton->setEnabled(true);// временно
                     } );
+
+
+
 }
 
 MainPage::~MainPage()
@@ -535,122 +539,136 @@ void MainPage::on_homeButton_clicked()
 
 void MainPage::on_recordButton_clicked()
 {
-        QString currentTime = QDateTime::currentDateTime().toString("yyyy_MM_dd@hh_mm_ss");
-        if (isStart)
-        {
-            qDebug() << currentTime;
-            isStart = false;
-            ui->recordButton->setIcon(QIcon(":/icons/stopRecord.svg"), QIcon(":/icons/stopRecord_pressed.svg"));
-            emit (resetWaveGraph());
-    #ifdef PC_BUILD
-            //QDir mCurrentRecordDir(mController->getSoftwareStorage()->mInfo.rootPath() + "/" + currentTime);
-            QDir mCurrentRecordDir(mntDirectory+ "/" + currentTime);
-    #else
-            QDir mCurrentRecordDir(mntDirectory + "/" + currentTime);
-    #endif
-            mHeadFile.setFileName(mCurrentRecordDir.path() + "/" + "HEAD.txt");
-            mIntervalsFile.setFileName(mCurrentRecordDir.path() + "/" + "INTERVALS.txt");
-            mMarksFile.setFileName(mCurrentRecordDir.path() + "/" + "MARKS.txt");
-            mRawDataFile.setFileName(mCurrentRecordDir.path() + "/" + "RAW_DATA.txt");
+    QString currentTime = QDateTime::currentDateTime().toString("yyyy_MM_dd@hh_mm_ss");
+    if (isStart)
+    {
+        mSensor = new SensorDataManager();
+        mSPIFile = new SaveSPI();
+        mSensor->moveToThread(mSensor);
+        //mSensor->moveToThread(&mSensorManagerThread);
+        //mSPIFile->moveToThread(&mSaveSPIThread);
 
-            qDebug() << mCurrentRecordDir.path();
-            if (!mCurrentRecordDir.exists())
-            {
-                //qDebug() << "not exists";
+        mSensor->start();
+        //mSaveSPIThread.start();
+        connect(mSensor, &SensorDataManager::writeBufferToFile, mSPIFile, &SaveSPI::fillFile);
+        connect(this, &MainPage::stopRecord, mSensor, &SensorDataManager::stopReading);
+        connect(mSensor, SIGNAL(printDataOnGraph(uint64_t, uint64_t)), mCurrentGraphsArea, SLOT(addDataOnWavePlot(uint64_t, uint64_t)));
+
+        qDebug() << currentTime;
+        isStart = false;
+        ui->recordButton->setIcon(QIcon(":/icons/stopRecord.svg"), QIcon(":/icons/stopRecord_pressed.svg"));
+        emit (resetWaveGraph());
+#ifdef PC_BUILD
+        //QDir mCurrentRecordDir(mController->getSoftwareStorage()->mInfo.rootPath() + "/" + currentTime);
+        QDir mCurrentRecordDir(mntDirectory+ "/" + currentTime);
+#else
+        QDir mCurrentRecordDir(mntDirectory + "/" + currentTime);
+#endif
+        mHeadFile.setFileName(mCurrentRecordDir.path() + "/" + "HEAD.txt");
+        mIntervalsFile.setFileName(mCurrentRecordDir.path() + "/" + "INTERVALS.txt");
+        mMarksFile.setFileName(mCurrentRecordDir.path() + "/" + "MARKS.txt");
+        mRawDataFile.setFileName(mCurrentRecordDir.path() + "/" + "RAW_DATA.txt");
+
+        qDebug() << mCurrentRecordDir.path();
+        if (!mCurrentRecordDir.exists())
+        {
+            //qDebug() << "not exists";
 #ifdef TEST_BUILD
-                QString response;
-                //response = executeAConsoleCommand("mkdir", QStringList() << "-m" << "777" << mCurrentRecordDir.path());
-                //response = executeAConsoleCommand("mkdir", QStringList() << "/home/ICPMonitor/222");
-                response = executeAConsoleCommand("mkdir", QStringList() << mCurrentRecordDir.path());
-                if (response == "")
-                {
-                    qDebug() << "Dir open = "<< mCurrentRecordDir.path();
-                }
-                else
-                {
-                    qDebug() << "error" << response;
-                }
+            QString response;
+            //response = executeAConsoleCommand("mkdir", QStringList() << "-m" << "777" << mCurrentRecordDir.path());
+            //response = executeAConsoleCommand("mkdir", QStringList() << "/home/ICPMonitor/222");
+            response = executeAConsoleCommand("mkdir", QStringList() << mCurrentRecordDir.path());
+            if (response == "")
+            {
+                qDebug() << "Dir open = "<< mCurrentRecordDir.path();
+            }
+            else
+            {
+                qDebug() << "error" << response;
+            }
 #elif PC_BUILD
-                mCurrentRecordDir.mkdir(mCurrentRecordDir.path());
+            mCurrentRecordDir.mkdir(mCurrentRecordDir.path());
 #endif
 
-            }            
-
-            mCurrentGraphsArea->isRecord = true;
-            qDebug() << "isRecord" << mCurrentGraphsArea->isRecord;
-            startTimeStampRecord = getCurrentTimeStampMS();
-            qDebug() << startTimeStampRecord;
-            if (mHeadFile.open(QIODevice::WriteOnly | QIODevice::Append))
-            {
-                QStringList time = currentTime.split("@");
-                mHeadFile.write(("Session started: " + time[0].replace("_", ".") + " " + time[1].replace("_", ":") +
-                        "\nStartTimeStamp(ms): " + QString::number(startTimeStampRecord) + "\n").toLatin1());
-                mHeadFile.close();
-            }
-            ui->mainWidgets->show();
-            //ui->softwareStorageIconSVG->show();
-            //ui->dateTimeLabel->show();
-            //ui->infoWidgets->show();
-            ui->sessionButton->setEnabled(false);
         }
-        else
+
+        mCurrentGraphsArea->isRecord = true;
+        qDebug() << "isRecord" << mCurrentGraphsArea->isRecord;
+        startTimeStampRecord = getCurrentTimeStampMS();
+        qDebug() << startTimeStampRecord;
+        if (mHeadFile.open(QIODevice::WriteOnly | QIODevice::Append))
         {
-          uint64_t StopMS = getCurrentTimeStampMS();
-          currentTime = QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss");
-          qDebug() << "Stop" << currentTime;
-          if (mHeadFile.open(QIODevice::WriteOnly | QIODevice::Append))
-          {
+            QStringList time = currentTime.split("@");
+            mHeadFile.write(("Session started: " + time[0].replace("_", ".") + " " + time[1].replace("_", ":") +
+                    "\nStartTimeStamp(ms): " + QString::number(startTimeStampRecord) + "\n").toLatin1());
+            mHeadFile.close();
+        }
+        ui->mainWidgets->show();
+        //ui->softwareStorageIconSVG->show();
+        //ui->dateTimeLabel->show();
+        //ui->infoWidgets->show();
+        ui->sessionButton->setEnabled(false);
+    }
+    else
+    {
+        uint64_t StopMS = getCurrentTimeStampMS();
+        currentTime = QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss");
+        qDebug() << "Stop" << currentTime;
+        if (mHeadFile.open(QIODevice::WriteOnly | QIODevice::Append))
+        {
             //QTextStream data(&mHeadFile);
             QStringList time = currentTime.split("@");
             //data << "Session stopped: " + currentTime + "\nStopTimeStamp(ms): " << StopMS << "\n";
             mHeadFile.write(("Session stopped: " + currentTime + "\nStopTimeStamp(ms): " + QString::number(StopMS) + "\n").toLatin1());
             mHeadFile.close();
-          }
-          isStart = true;
-          ui->recordButton->setIcon(QIcon(":/icons/startRecord.svg"), QIcon(":/icons/startRecord_pressed.svg"));
-          mCurrentGraphsArea->isRecord = false;
-          emit(dataReadyForRecordGraph());
-          //mController->stopAverageTimer();// получается не нужен
-          mController->mSensor->endSendingSensorReadings();
+        }
+        isStart = true;
+        ui->recordButton->setIcon(QIcon(":/icons/startRecord.svg"), QIcon(":/icons/startRecord_pressed.svg"));
+        mCurrentGraphsArea->isRecord = false;
+        emit(dataReadyForRecordGraph());
+        //mController->stopAverageTimer();// получается не нужен
+        mController->mSensor->endSendingSensorReadings();
 
-          //ui->softwareStorageIconSVG->hide();
-          //ui->dateTimeLabel->hide();
-          //ui->infoWidgets->hide();
-          ui->intervalButton->show();
-          // ADD !!!
+        //ui->softwareStorageIconSVG->hide();
+        //ui->dateTimeLabel->hide();
+        //ui->infoWidgets->hide();
+        ui->intervalButton->show();
+        // ADD !!!
 #define SET_VISIBLED_DISABLED(_UUII) {ui->_UUII->show();  ui->_UUII->setEnabled(false);}
 #define SET_VISIBLED_ENABLED(_UUII) {ui->_UUII->show();  ui->_UUII->setEnabled(true);}
 
 
-          ui->goToInterval1Button->hide();
-          ui->maxValueInterval1->hide();
+        ui->goToInterval1Button->hide();
+        ui->maxValueInterval1->hide();
 
-          ui->goToInterval2Button->hide();
-          ui->maxValueInterval2->hide();
+        ui->goToInterval2Button->hide();
+        ui->maxValueInterval2->hide();
 
-          ui->playRecord->show();
-          ui->rewindRecordButton->show();
-          ui->speedRecordButton->show();
-          ui->downloadGraphButton->show();
+        ui->playRecord->show();
+        ui->rewindRecordButton->show();
+        ui->speedRecordButton->show();
+        ui->downloadGraphButton->show();
 
-          SET_VISIBLED_DISABLED(goToPreviousMarkButton);
-          SET_VISIBLED_DISABLED(labelsNavigation);
-          ui->labelsNavigation->setText("0/0");
-          SET_VISIBLED_DISABLED(goToNextMarkButton);
-
-
-          // ADD !!!
-          //ui->intervalStopButton->show();
-          SET_VISIBLED_ENABLED(makeLabelButton);
-          ui->recordButton->hide();
-          ui->sessionButton->setEnabled(true);
+        SET_VISIBLED_DISABLED(goToPreviousMarkButton);
+        SET_VISIBLED_DISABLED(labelsNavigation);
+        ui->labelsNavigation->setText("0/0");
+        SET_VISIBLED_DISABLED(goToNextMarkButton);
 
 
+        // ADD !!!
+        //ui->intervalStopButton->show();
+        SET_VISIBLED_ENABLED(makeLabelButton);
+        ui->recordButton->hide();
+        ui->sessionButton->setEnabled(true);
 
-          ui->averageICPWidget->hide();
-          ui->alarmLevelICPWidget->hide();
-          emit (changeCurrentGraph());
-        }
+        ui->averageICPWidget->hide();
+        ui->alarmLevelICPWidget->hide();
+
+        emit(stopRecord());
+        mSensor->quit();
+        //mSaveSPIThread.quit();
+        emit (changeCurrentGraph());
+    }
 }
 
 

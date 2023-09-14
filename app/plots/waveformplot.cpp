@@ -103,47 +103,63 @@ void WaveFormPlot::checkXAxisInterval(const QCPRange &range)
         xAxis->setRange(mCurrentMaxXRange - 12, mCurrentMaxXRange);
     }
 }
-void WaveFormPlot::addDataOnGraphic(const ComplexValue &complexVal)
+void WaveFormPlot::addDataOnGraphic(uint64_t x, uint64_t y)//const ComplexValue &complexVal)
 {
-    // Суммирование общего времени пришедших данных с датчика
-    // для ограничения отображения данных в диапазоне допустимых
-    // значение времени на оси Х графика
-    if (mPreviousSensorDataTime == 0)
-    {
-        mPreviousSensorDataTime = complexVal.timestamp;
-    }
-    else
-    {
-        mSummarySensorDataTimePerXRange += (complexVal.timestamp - mPreviousSensorDataTime) / 1000.0;
-    }
 
-    // Если суммарное время пришедних данных стало больше ограничения
-    // установленного осью Х графика
-    if(mSummarySensorDataTimePerXRange >= xAxis->range().upper) //mCurrentMaxXRange){
+    if ((double)(x/1000) >= xAxis->range().upper)
     {
         *mHistGraph->data() = *mMainGraph->data();
         mMainGraph->data()->clear();
-        mSummarySensorDataTimePerXRange = 0;
-        mPreviousSensorDataTime = 0;
+        x = x % ((uint64_t)xAxis->range().size()*1000);
     }
+    double temp_x = (double) x/1000;
+    double temp_y = (double) y;//1000;
 
-    //#ifdef QT_DEBUG
-    if (avgBenchTime > 1000) {
-        //qDebug() << "Gui update period, ms" << avgBenchTime / (float)benchCount;
-        avgBenchTime = 0;
-        benchCount = 0;
+    mMainGraph->addData(temp_x, temp_y);
+    if(mHistGraph->data()->size())
+    {
+        mHistGraph->data()->removeBefore(temp_x + 0.5);
     }
-    //#endif
+    qDebug() << temp_x << temp_y;
+//    // Суммирование общего времени пришедших данных с датчика
+//    // для ограничения отображения данных в диапазоне допустимых
+//    // значение времени на оси Х графика
+//    if (mPreviousSensorDataTime == 0)
+//    {
+//        mPreviousSensorDataTime = complexVal.timestamp;
+//    }
+//    else
+//    {
+//        mSummarySensorDataTimePerXRange += (complexVal.timestamp - mPreviousSensorDataTime) / 1000.0;
+//    }
 
-    // Добавляем на текущий график данные
-    mMainGraph->addData(mSummarySensorDataTimePerXRange, complexVal.value);
+//    // Если суммарное время пришедних данных стало больше ограничения
+//    // установленного осью Х графика
+//    if(mSummarySensorDataTimePerXRange >= xAxis->range().upper) //mCurrentMaxXRange){
+//    {
+//        *mHistGraph->data() = *mMainGraph->data();
+//        mMainGraph->data()->clear();
+//        mSummarySensorDataTimePerXRange = 0;
+//        mPreviousSensorDataTime = 0;
+//    }
 
-    // Удаляем с предыдущего графика точку
-    if(mHistGraph->data()->size()){
-        mHistGraph->data()->removeBefore(mSummarySensorDataTimePerXRange + 0.5);
-    }
+//    //#ifdef QT_DEBUG
+//    if (avgBenchTime > 1000) {
+//        //qDebug() << "Gui update period, ms" << avgBenchTime / (float)benchCount;
+//        avgBenchTime = 0;
+//        benchCount = 0;
+//    }
+//    //#endif
 
-    mPreviousSensorDataTime = complexVal.timestamp;
+//    // Добавляем на текущий график данные
+//    mMainGraph->addData(mSummarySensorDataTimePerXRange, complexVal.value);
+
+//    // Удаляем с предыдущего графика точку
+//    if(mHistGraph->data()->size()){
+//        mHistGraph->data()->removeBefore(mSummarySensorDataTimePerXRange + 0.5);
+//    }
+
+//    mPreviousSensorDataTime = complexVal.timestamp;
 }
 
 void WaveFormPlot::retranslate()

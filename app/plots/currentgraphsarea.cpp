@@ -244,7 +244,7 @@ void CurrentGraphsArea::installController(MonitorController *controller)
     connect(mController, &MonitorController::controllerEvent, this, &CurrentGraphsArea::controllerEventHandler);
 
     // Для обновления данных на основном графике
-    connect(mController, &MonitorController::dataReadyForGraph, this, &CurrentGraphsArea::addDataOnWavePlot);
+    //connect(mController, &MonitorController::dataReadyForGraph, this, &CurrentGraphsArea::addDataOnWavePlot);
 
     // Для обновления данных на графике тренда
     //connect(mController, &MonitorController::dataReadyFromAverageICPController, this, &CurrentGraphsArea::addDataOnTrendGraph);
@@ -420,12 +420,12 @@ void CurrentGraphsArea::updateTicksOnGraphs()
 }
 
 
-void CurrentGraphsArea::addDataOnWavePlot()
+void CurrentGraphsArea::addDataOnWavePlot(uint64_t currX, uint64_t currY)
 {
-    ++mCounterSensorReadings;
-    ComplexValue currValue;
+    //++mCounterSensorReadings;
+    //ComplexValue currValue;
     // Если кол-во точек равно кол-ву прореживания
-    if (mCounterSensorReadings == mThinningSensorReadings)
+    /*if (mCounterSensorReadings == mThinningSensorReadings)
     {
         currValue = mController->getLastConvertedSensorValue();
         mWaveGraph->addDataOnGraphic(currValue);//(mController->getLastConvertedSensorValue());
@@ -435,6 +435,12 @@ void CurrentGraphsArea::addDataOnWavePlot()
             mRecordedGraph->saveDataForGraphic(currValue);//mController->getLastConvertedSensorValue());// пока оставляем
         }        
         mCounterSensorReadings = 0;
+    }*/
+    mWaveGraph->addDataOnGraphic(currX, currY);
+    if (isRecord)
+    {
+        //currentBufferRecord == 1 ? addRawData(&bufferRecord_1) : addRawData(&bufferRecord_2);
+        mRecordedGraph->saveDataForGraphic(currX, currY);
     }
 }
 
@@ -446,7 +452,7 @@ void CurrentGraphsArea::addRawData(_bufferRecord *buffer)
     buffer->currentPos++;
     if(buffer->currentPos >= MAX_CNT_RECORD)
     {
-        writeRawData(buffer);
+        //writeRawData(buffer);
         buffer->currentPos = 0;
         if (currentBufferRecord == 1) {currentBufferRecord = 2; }
         else {currentBufferRecord = 1; }
@@ -464,7 +470,7 @@ void CurrentGraphsArea::writeRawData(_bufferRecord *buffer)
 void CurrentGraphsArea::addDataOnRecordedPlot()
 {
     mRecordedGraph->addDataOnGraphic();
-    currentBufferRecord == 1 ? writeRawData(&bufferRecord_1) : writeRawData(&bufferRecord_2);
+    //currentBufferRecord == 1 ? writeRawData(&bufferRecord_1) : writeRawData(&bufferRecord_2);
 }
 
 

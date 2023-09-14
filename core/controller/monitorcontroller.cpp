@@ -793,7 +793,7 @@ void MonitorController::processSensorData()
     // Конвертируем показание в указанный пользователем тип
     mLastConvertedSensorValue = mLastSensorValue;
 
-    emit dataReadyForGraph();
+    //emit dataReadyForGraph();
 }
 void MonitorController::processSensorEvent(SensorEvent event, const QVariantMap &args)
 {

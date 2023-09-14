@@ -24,6 +24,13 @@ extern uint16_t mCurrentLabelIndex;
 extern QString mntDirectory;
 extern Settings *mICPSettings;
 
+#define maxBufferSize 400
+extern struct mSPIBuffer
+{
+    uint16_t index;
+    uint64_t data[maxBufferSize];
+} mSensorBuffer1, mSensorBuffer2;
+
 enum direction { previous = false, next = true};
 enum interval { first = false, second = true};
 #endif // GLOBAL_DEFINE_H

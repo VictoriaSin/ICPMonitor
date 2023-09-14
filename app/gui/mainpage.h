@@ -6,7 +6,8 @@
 #include "blockDevices/blockdevice.h"
 
 #include "global_define.h"
-
+#include "sensor/sensordatamanager.h"
+#include "sensor/savespi.h"
 #include "plots/recordedplot.h"
 namespace Ui {
 class MainPage;
@@ -43,6 +44,8 @@ class MainPage : public IPageWidget
     bool isStartInterval = true;
 
     int iconCount = 0;
+    SensorDataManager *mSensor;
+    SaveSPI *mSPIFile;
     //bool isPlayRecord = true;
 
 public:
@@ -177,6 +180,7 @@ signals:
     void changeCurrentRange(bool interval); //false=1, true=2
     void goToLabel(bool direction);
     void playBtnPressed();
+    void stopRecord();
     // IPageWidget interface
 public slots:
     void retranslate() override;
