@@ -420,7 +420,7 @@ void CurrentGraphsArea::updateTicksOnGraphs()
 }
 
 
-void CurrentGraphsArea::addDataOnWavePlot(uint64_t currX, uint64_t currY)
+void CurrentGraphsArea::addDataOnWavePlot(unsigned int currX, unsigned int currY)
 {
     //++mCounterSensorReadings;
     //ComplexValue currValue;
@@ -440,6 +440,7 @@ void CurrentGraphsArea::addDataOnWavePlot(uint64_t currX, uint64_t currY)
     if (isRecord)
     {
         //currentBufferRecord == 1 ? addRawData(&bufferRecord_1) : addRawData(&bufferRecord_2);
+
         mRecordedGraph->saveDataForGraphic(currX, currY);
     }
 }
@@ -472,9 +473,6 @@ void CurrentGraphsArea::addDataOnRecordedPlot()
     mRecordedGraph->addDataOnGraphic();
     //currentBufferRecord == 1 ? writeRawData(&bufferRecord_1) : writeRawData(&bufferRecord_2);
 }
-
-
-
 void CurrentGraphsArea::updateAlarmLevelsOnWidgets()
 {
     if (!mController) {

@@ -103,14 +103,13 @@ void WaveFormPlot::checkXAxisInterval(const QCPRange &range)
         xAxis->setRange(mCurrentMaxXRange - 12, mCurrentMaxXRange);
     }
 }
-void WaveFormPlot::addDataOnGraphic(uint64_t x, uint64_t y)//const ComplexValue &complexVal)
+void WaveFormPlot::addDataOnGraphic(unsigned int  x, unsigned int  y)//const ComplexValue &complexVal)
 {
-
-    if ((double)(x/1000) >= xAxis->range().upper)
+    x = x % ((unsigned int)xAxis->range().size()*1000);
+    if (x == 0)
     {
         *mHistGraph->data() = *mMainGraph->data();
         mMainGraph->data()->clear();
-        x = x % ((uint64_t)xAxis->range().size()*1000);
     }
     double temp_x = (double) x/1000;
     double temp_y = (double) y;//1000;
@@ -119,6 +118,7 @@ void WaveFormPlot::addDataOnGraphic(uint64_t x, uint64_t y)//const ComplexValue 
     if(mHistGraph->data()->size())
     {
         mHistGraph->data()->removeBefore(temp_x + 0.5);
+        mMainGraph->addData(temp_x, temp_y);
     }
     qDebug() << temp_x << temp_y;
 //    // Суммирование общего времени пришедших данных с датчика

@@ -11,7 +11,10 @@ class SaveSPI : public QThread
 
     QFile SPIData;
 public:
-    SaveSPI();
+    SaveSPI(QObject *parent = nullptr, QString dirPath=nullptr);
+    ~SaveSPI();
+    volatile bool isStopped;
+    volatile bool isRunning;
 protected:
     void run();
 public slots:

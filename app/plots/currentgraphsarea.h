@@ -212,7 +212,7 @@ public slots:
     void changeXInterval(bool interval);
     void goToLabel(bool direction);
     /*! Устанавливаем данные на график внутричерепного давления */
-    void addDataOnWavePlot(uint64_t currX, uint64_t currY);
+    void addDataOnWavePlot(uint32_t currX, uint32_t currY);
 protected slots:
     void nextYRange() override;
 

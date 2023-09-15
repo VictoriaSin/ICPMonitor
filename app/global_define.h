@@ -24,11 +24,13 @@ extern uint16_t mCurrentLabelIndex;
 extern QString mntDirectory;
 extern Settings *mICPSettings;
 
-#define maxBufferSize 400
+
+#define MAXBUFFERSIZE 400
+extern float intervalCountPerSec; // Интервал между соседними измерениями
 extern struct mSPIBuffer
 {
     uint16_t index;
-    uint64_t data[maxBufferSize];
+    uint32_t data[MAXBUFFERSIZE];
 } mSensorBuffer1, mSensorBuffer2;
 
 enum direction { previous = false, next = true};

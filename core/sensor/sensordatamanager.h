@@ -5,24 +5,33 @@
 #include <QTimer>
 #include <QThread>
 
+
+
 class SensorDataManager : public QThread//public QObject
 {
     Q_OBJECT
-    uint32_t currIndex;
-    uint64_t msCount;
-    QTimer *getSPITimer;
 public:
+    explicit SensorDataManager(QObject *parent = nullptr);
     SensorDataManager();
     ~SensorDataManager();
+    volatile bool isStopped;
+    volatile bool isRunning;
+    bool isRecording;
+    uint32_t currIndex;
+    QTimer *getSPITimer;
 protected:
-    bool readDataFromSensor();
-    bool addDataToBuffer(uint64_t data);
+
     void run();
+
 signals:
     void writeBufferToFile();
-    void printDataOnGraph(uint64_t x, uint64_t y);
+    void printDataOnGraph(unsigned int, unsigned int);//uint32_t x, uint32_t y);
+
 public slots:
-    void stopReading();
+    //void stopReading();
+    void addDataToBuffer();
+public:
+
 };
 
 #endif // SENSORDATAMANAGER_H

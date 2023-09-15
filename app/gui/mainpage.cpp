@@ -542,28 +542,33 @@ void MainPage::on_recordButton_clicked()
     QString currentTime = QDateTime::currentDateTime().toString("yyyy_MM_dd@hh_mm_ss");
     if (isStart)
     {
-        mSensor = new SensorDataManager();
-        mSPIFile = new SaveSPI();
-        mSensor->moveToThread(mSensor);
-        //mSensor->moveToThread(&mSensorManagerThread);
-        //mSPIFile->moveToThread(&mSaveSPIThread);
-
-        mSensor->start();
-        //mSaveSPIThread.start();
-        connect(mSensor, &SensorDataManager::writeBufferToFile, mSPIFile, &SaveSPI::fillFile);
-        connect(this, &MainPage::stopRecord, mSensor, &SensorDataManager::stopReading);
-        connect(mSensor, SIGNAL(printDataOnGraph(uint64_t, uint64_t)), mCurrentGraphsArea, SLOT(addDataOnWavePlot(uint64_t, uint64_t)));
-
-        qDebug() << currentTime;
-        isStart = false;
-        ui->recordButton->setIcon(QIcon(":/icons/stopRecord.svg"), QIcon(":/icons/stopRecord_pressed.svg"));
-        emit (resetWaveGraph());
 #ifdef PC_BUILD
         //QDir mCurrentRecordDir(mController->getSoftwareStorage()->mInfo.rootPath() + "/" + currentTime);
         QDir mCurrentRecordDir(mntDirectory+ "/" + currentTime);
 #else
         QDir mCurrentRecordDir(mntDirectory + "/" + currentTime);
 #endif
+
+        mSensor->isRecording = true;
+        mSensor->currIndex = 0;
+
+        mSPIFile = new SaveSPI(this, mCurrentRecordDir.path());
+
+        connect(mSensor, &SensorDataManager::writeBufferToFile, mSPIFile, &SaveSPI::fillFile);
+
+        mSPIFile->moveToThread(mSPIFile);
+        mSPIFile->start();
+
+
+
+        //connect(this, &MainPage::stopRecord, mSensor, &SensorDataManager::stopReading);
+
+
+        qDebug() << currentTime;
+        isStart = false;
+        ui->recordButton->setIcon(QIcon(":/icons/stopRecord.svg"), QIcon(":/icons/stopRecord_pressed.svg"));
+        emit (resetWaveGraph());
+
         mHeadFile.setFileName(mCurrentRecordDir.path() + "/" + "HEAD.txt");
         mIntervalsFile.setFileName(mCurrentRecordDir.path() + "/" + "INTERVALS.txt");
         mMarksFile.setFileName(mCurrentRecordDir.path() + "/" + "MARKS.txt");
@@ -627,7 +632,7 @@ void MainPage::on_recordButton_clicked()
         mCurrentGraphsArea->isRecord = false;
         emit(dataReadyForRecordGraph());
         //mController->stopAverageTimer();// получается не нужен
-        mController->mSensor->endSendingSensorReadings();
+        //mController->mSensor->endSendingSensorReadings();
 
         //ui->softwareStorageIconSVG->hide();
         //ui->dateTimeLabel->hide();
@@ -664,10 +669,17 @@ void MainPage::on_recordButton_clicked()
         ui->averageICPWidget->hide();
         ui->alarmLevelICPWidget->hide();
 
-        emit(stopRecord());
-        mSensor->quit();
-        //mSaveSPIThread.quit();
+        mSensor->getSPITimer->stop();
+        mSensor->isRunning = false;
+        while(mSensor->isStopped == false) {}
+
+        //mSensor->getSPITimer->stop();
+        mSPIFile->isRunning = false;
+        while(mSPIFile->isStopped == false) {}
+
+        //emit(stopRecord());
         emit (changeCurrentGraph());
+
     }
 }
 
@@ -760,6 +772,14 @@ void MainPage::on_sessionButton_clicked()
     if (isSessionStart)
     {
         isSessionStart = false;
+
+        mSensor = new SensorDataManager(this);
+
+        connect(mSensor, &SensorDataManager::printDataOnGraph, mCurrentGraphsArea, &CurrentGraphsArea::addDataOnWavePlot);
+
+        mSensor->moveToThread(mSensor);
+        mSensor->start();
+
         ui->recordButton->show();
         ui->recordButton->setEnabled(true);
         ui->sessionButton->setIcon(QIcon(":/icons/deleteSession.svg"), QIcon(":/icons/deleteSession_pressed.svg"));
@@ -778,8 +798,8 @@ void MainPage::on_sessionButton_clicked()
     {
         isSessionStart = true;
         ui->sessionButton->setIcon(QIcon(":/icons/newSession.svg"), QIcon(":/icons/newSession_pressed.svg"));
-        mCurrentGraphsArea->stopPlotting();
-        mController->mSensor->endSendingSensorReadings();
+        //mCurrentGraphsArea->stopPlotting();
+        //mController->mSensor->endSendingSensorReadings();
         mController->closeSession();
 
         emit (changeCurrentGraph());

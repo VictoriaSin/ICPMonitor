@@ -38,7 +38,7 @@ public:
     double mCurrentMaxYRange {60};
 
     /*! Добавление данных для отображения на графике */
-    void saveDataForGraphic(uint64_t x, uint64_t y);//(const ComplexValue &complexVal);
+    void saveDataForGraphic(unsigned int  x, unsigned int  y);//(const ComplexValue &complexVal);
 
     /*! Добавление данных для отображения на графике */
     void addDataOnGraphic();

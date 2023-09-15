@@ -1,17 +1,31 @@
 #include "savespi.h"
 #include "../app/global_define.h"
 
+#include <QDebug>
+
 extern uint8_t currBuffer;
 
 
-SaveSPI::SaveSPI()
+SaveSPI::SaveSPI(QObject *parent, QString dirPath) : QThread{parent}
 {
-    SPIData.setFileName("/media/SPI_Data.txt");
+    SPIData.setFileName(dirPath + "/SPI_Data.txt");
 }
 
-void SaveSPI::run()
+SaveSPI::~SaveSPI()
 {
 
+}
+void SaveSPI::run()
+{
+    isStopped = false;
+    isRunning = true;
+    qDebug() << "SaveSPI started";
+    while (isRunning)
+    {
+
+    }
+    isStopped = true;
+    qDebug() << "SaveSPI stopped";
 }
 
 void SaveSPI::fillFile()

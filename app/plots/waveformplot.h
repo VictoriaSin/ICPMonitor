@@ -15,7 +15,7 @@ public:
     ~WaveFormPlot();
 
     /*! Добавление данных для отображения на графике */
-    void addDataOnGraphic(uint64_t x, uint64_t y);//(const ComplexValue &complexVal);
+    void addDataOnGraphic(unsigned int  x, unsigned int  y);//(const ComplexValue &complexVal);
 
     /*! Перевод */
     void retranslate();

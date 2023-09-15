@@ -148,7 +148,7 @@ void RecordedPlot::addInterval(uint8_t num, QColor color)
 
 }
 
-void RecordedPlot::saveDataForGraphic(uint64_t x, uint64_t y)//const ComplexValue &complexVal)
+void RecordedPlot::saveDataForGraphic(unsigned int  x, unsigned int  y)//const ComplexValue &complexVal)
 {
     double temp_x = (double) x/1000;
     double temp_y = (double) y;
