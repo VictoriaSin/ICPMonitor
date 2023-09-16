@@ -233,26 +233,22 @@ QString convertDateTimeToString(u8 *data)
 
 bool initFlash(QString currRasdel)
 {
-  bool status = false;
   QStringList temp = executeAConsoleCommand("cat", QStringList() << "/proc/mounts").split("\n");
   for (int i=0; i< temp.count(); i++)
   {
-      if (temp[i].split(" ")[0].contains(currRasdel))
+      //if (temp[i].split(" ")[0].contains(currRasdel))
+      if (temp[i].simplified().split(" ")[0].contains(currRasdel))
       {
-          status = true;
-          break;
+        QString result = executeAConsoleCommand("mount", QStringList() << currRasdel << mntDirectory);
+        if (result != "")
+        {
+            qDebug() << result;
+            return 10;
+        }
+        return 0;
       }
   }
-  if (!status)
-  {
-      QString result = executeAConsoleCommand("mount", QStringList() << currRasdel << mntDirectory);
-      if (result != "")
-      {
-          qDebug() << result;
-          exit(10);
-      }
-  }
-
+  return 11;
 }
 
 
@@ -270,9 +266,15 @@ int main(int argc, char *argv[])
     // Чтение настроек
     mICPSettings->readAllSetting();
     QString currUUID = mICPSettings->getSoftwareStorageUUID();
+    qDebug() << currUUID;
     QString currRasdel = mICPSettings->getFlashDeviceMountPart();
-
-    initFlash(currRasdel);
+    qDebug() << currRasdel;
+    u8 resultInit = initFlash(currRasdel);
+    if (resultInit != 0)
+    {
+      //mICPSettings->writeAllSetting();
+      //exit(resultInit);
+    }
 
     Q_INIT_RESOURCE(core_res);
 

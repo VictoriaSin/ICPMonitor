@@ -89,7 +89,7 @@ void LanguagePage::done(int exodus)
     emit previousPage();
 }
 
-void LanguagePage::showEvent(QShowEvent *event)
+void LanguagePage::showEvent(QShowEvent */*event*/)
 {
     updateCurrentAppLanguageOnWidgets();
 }

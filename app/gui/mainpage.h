@@ -44,7 +44,7 @@ class MainPage : public IPageWidget
     bool isStartInterval = true;
 
     int iconCount = 0;
-    SensorDataManager *mSensor;
+    SensorDataManager *mSensorDataManager;
     SaveSPI *mSPIFile;
     //bool isPlayRecord = true;
 

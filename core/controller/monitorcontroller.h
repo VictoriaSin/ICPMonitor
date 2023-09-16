@@ -63,7 +63,7 @@ public:
     ISensor *mSensor {nullptr};
 
     /*! Поток для менеджера блочных устройств и сохранения скриншотов */
-    QThread *mWorkerThread {nullptr};
+    //QThread *mWorkerThread {nullptr};
 
     /*! Последнее показание датчика */
     ComplexValue mLastSensorValue {};
@@ -194,7 +194,7 @@ public:
     /*! Проверка на корректность даты.
         Сравнивается с Settings->MinDateTime (минимальной валидной датой)
      */
-    bool dateTimeIsValid(const QDateTime &checkDate) const;
+    //bool dateTimeIsValid(const QDateTime &checkDate) const;
 
     /*! Проверка на корректность текущей даты.
         Сравнивается с Settings::MinDateTime (минимальной валидной датой)

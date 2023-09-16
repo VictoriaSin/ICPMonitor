@@ -226,7 +226,7 @@ void ZeroSensorPage::installController(MonitorController *controller)
     retranslate();
 }
 
-void ZeroSensorPage::showEvent(QShowEvent *event)
+void ZeroSensorPage::showEvent(QShowEvent */*event*/)
 {
     updateInfo();
 }

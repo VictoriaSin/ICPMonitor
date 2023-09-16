@@ -100,7 +100,7 @@ private:
         Если папка создана или существует,
         то возвращается true. Иначе false.
     */
-    bool makeScreensDir();
+    //bool makeScreensDir();
 
     /*! Сброс папки скриншотов */
     void resetScreensDir();

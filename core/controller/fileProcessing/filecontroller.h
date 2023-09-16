@@ -124,7 +124,7 @@ public:
                             Обработка средних значений датчика
       ###############################################################################*/
     /*! Запись среднего значения датчика */
-    void writeAverageICPSensorData(ComplexValue *sensorData);
+    //void writeAverageICPSensorData(ComplexValue *sensorData);
 
     /*! Экспорт последних средних показаний датчика за указанное время в секундах
         exportPath - путь экспорта;
@@ -163,7 +163,7 @@ private:
         exportResult - результат экспорта;
         dataType - наименование экспортируемых данных. (Например: Изображения)
      */
-    void sendEventExportResult(const ExportResult &exportResult, const QString &dataType);
+    //void sendEventExportResult(const ExportResult &exportResult, const QString &dataType);
 
     /*! Экспорт последних показаний датчика.
         serializer - необходимый десериализатор;
@@ -175,12 +175,12 @@ private:
         exportValues - значения, необходимые для экспорта;
         exportTime - время необходимого экспорта.
      */
-    void exportLastAbsoluteTimeSensorReadings(AbstractICPDataSerializer *deserializer, const QString &dataPath,
-                                              const QString &formatFile, const QString &dataType, const QString &exportPath,
-                                              const std::function<QString()> &funcGenName,
-                                              uint32_t exportValues,
-                                              ExportDataFunc func,
-                                              uint64_t exportTime);
+    //void exportLastAbsoluteTimeSensorReadings(AbstractICPDataSerializer *deserializer, const QString &dataPath,
+    //                                          const QString &formatFile, const QString &dataType, const QString &exportPath,
+    //                                          const std::function<QString()> &funcGenName,
+    //                                          uint32_t exportValues,
+    //                                          ExportDataFunc func,
+    //                                          uint64_t exportTime);
 
 public slots:
     /*! Обработка событий контроллера */
@@ -193,7 +193,7 @@ private:
                                     Писатель скриншотов
       ###############################################################################*/
     /*! Писатель скриншотов */
-    ScreenWriter *mScreenWriter {nullptr};
+    //ScreenWriter *mScreenWriter {nullptr};
     /*################################################################################
                             Обработка пришедших значений датчика
       ###############################################################################*/
@@ -217,7 +217,7 @@ private:
     Reader *mFileReader {nullptr};
 
     /*! Экспортёр файлов */
-    Exporter *mFileExporter {nullptr};
+    //Exporter *mFileExporter {nullptr};
 
     /*! Поток для экспорта */
     QThread *mExportThread {nullptr};

@@ -82,7 +82,7 @@ public:
     void addInterval(uint8_t num, QColor color);
     void downloadData(QByteArray *temp);
 public slots:
-    bool animateGraphic(int timerDelaySec);
+    void animateGraphic(int timerDelaySec);
 protected:
     bool editLabel(QMouseEvent *mouseEvent);
     bool editInterval(QMouseEvent *mouseEvent);

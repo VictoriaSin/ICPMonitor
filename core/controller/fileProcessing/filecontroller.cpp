@@ -29,26 +29,26 @@ FileController::FileController(Settings *settings, LabelManager *labelManager, Q
     mASRFileWriter = new CycleFileWriter(mSettings->getRelativeAverageSensorReadingsPath(), FormatOfAverageSensorReadings, mMaxRecordTimeForASRFileSec, mSettings->getMaxTimeStorageAverageSensorReadingsSec(), MaxQueueASRFile, this);
     mOutputICPSerializer = new OutputICPSerializer;
     mAverageICPSerializer = new AverageICPSerializer;
-    mScreenWriter = new ScreenWriter(mSettings->getRelativeScreensPath(), mSettings->getMaxScreens());
+    //mScreenWriter = new ScreenWriter(mSettings->getRelativeScreensPath(), mSettings->getMaxScreens());
     //connect(mCSRFileWriter, &CycleFileWriter::queueFull, this, &FileController::queueCSRFull);
     connect(mASRFileWriter, &CycleFileWriter::queueFull, this, &FileController::queueASRFull);
 
     // Статус записи скриншота
-    connect(mScreenWriter, &ScreenWriter::screenWrittenFinished, this, &FileController::screenWrittenResult);
+    //connect(mScreenWriter, &ScreenWriter::screenWrittenFinished, this, &FileController::screenWrittenResult);
 
     // Инициализация экспорта
     mExportThread = new QThread(this);
-    mFileExporter = new Exporter(labelManager); 
+    //mFileExporter = new Exporter(labelManager);
     mFileReader = new Reader;
     mCSRDeserializer = new OutputICPSerializer;
     mASRDeserializer = new AverageICPSerializer;
 
     // Прогресс экспорта
-    connect(mFileExporter, &Exporter::sendExportProgress, this, &FileController::exporterProgress);
+    //connect(mFileExporter, &Exporter::sendExportProgress, this, &FileController::exporterProgress);
 
     // Сброс в поток
-    mScreenWriter->moveToThread(mExportThread);
-    mFileExporter->moveToThread(mExportThread);
+    //mScreenWriter->moveToThread(mExportThread);
+    //mFileExporter->moveToThread(mExportThread);
     mExportThread->start();
 }
 
@@ -67,9 +67,7 @@ void FileController::setSoftwareStorage(const std::shared_ptr<BlockDevice> &soft
     mASRFileWriter->setBlockDevice(softwareStorage);
     //mCSRFileWriter->setBlockDevice(softwareStorage);
 
-    QTimer::singleShot(0, mScreenWriter, [this](){
-        mScreenWriter->setBlockDevice(mSoftwareStorage);
-    });
+    //QTimer::singleShot(0, mScreenWriter, [this](){mScreenWriter->setBlockDevice(mSoftwareStorage);});
 }
 
 void FileController::setSessionID(int sessionID)
@@ -89,19 +87,15 @@ void FileController::setSessionID(int sessionID)
 
 void FileController::writeScreenFromLinuxFB()
 {
-    QTimer::singleShot(0, mScreenWriter, [screenSaver = this->mScreenWriter](){
-        screenSaver->writeScreenFromLinuxFB();
-    });
+    //QTimer::singleShot(0, mScreenWriter, [screenSaver = this->mScreenWriter](){ screenSaver->writeScreenFromLinuxFB();    });
 }
 
-void FileController::writeScreenFromWidget(const QPixmap &screen)
+void FileController::writeScreenFromWidget(const QPixmap &/*screen*/)
 {
-    QTimer::singleShot(0, mScreenWriter, [screenWriter = this->mScreenWriter, scr = std::move(screen)](){
-        screenWriter->writeScreenFromWidget(scr);
-    });
+    //QTimer::singleShot(0, mScreenWriter, [screenWriter = this->mScreenWriter, scr = std::move(screen)](){ screenWriter->writeScreenFromWidget(scr);    });
 }
 
-void FileController::exportScreenshots(ConversionPictureFormat format, int countTransScreenshoots)
+void FileController::exportScreenshots(ConversionPictureFormat /*format*/, int /*countTransScreenshoots*/)
 {
     // Экспортируем скриншоты
 //    QTimer::singleShot(0, mFileExporter, [this]() {
@@ -111,16 +105,16 @@ void FileController::exportScreenshots(ConversionPictureFormat format, int count
 
 void FileController::exportLastAbsoluteTimeCurrentSensorReadingsMs(const QString &exportPath, uint64_t exportTimeMs, uint32_t exportValues, ExportDataFunc func)
 {
-    exportLastAbsoluteTimeSensorReadings(mCSRDeserializer, mSettings->getRelativeCurrentSensorReadingsPath(),
-                                         FormatOfCurrentSensorReadings, tr("Текущие показания датчика"),
-                                         exportPath, genExportNameOfCurrentSensorReadings, exportValues, func, exportTimeMs);
+    //exportLastAbsoluteTimeSensorReadings(mCSRDeserializer, mSettings->getRelativeCurrentSensorReadingsPath(),
+    //                                     FormatOfCurrentSensorReadings, tr("Текущие показания датчика"),
+    //                                     exportPath, genExportNameOfCurrentSensorReadings, exportValues, func, exportTimeMs);
 }
 
 void FileController::exportLastAbsoluteTimeAverageSensorReadingsSec(const QString &exportPath, uint64_t exportTimeSec, uint32_t exportValues, ExportDataFunc func)
 {
-    exportLastAbsoluteTimeSensorReadings(mASRDeserializer, mSettings->getRelativeAverageSensorReadingsPath(),
-                                         FormatOfAverageSensorReadings, tr("Средние показания датчика"),
-                                         exportPath, genExportNameOfAverageSensorReadings, exportValues, func, exportTimeSec);
+    //exportLastAbsoluteTimeSensorReadings(mASRDeserializer, mSettings->getRelativeAverageSensorReadingsPath(),
+    //                                     FormatOfAverageSensorReadings, tr("Средние показания датчика"),
+    //                                     exportPath, genExportNameOfAverageSensorReadings, exportValues, func, exportTimeSec);
 }
 
 QVector<ComplexValue> FileController::getAverageSensorReadingsFromTheInterval(uint64_t intervalStartTimeSeconds, uint64_t intervalEndTimeSeconds)
@@ -166,43 +160,43 @@ QVector<ComplexValue> FileController::getAverageSensorReadingsFromTheIntervalFor
 //    return {};
 //}
 
-void FileController::exportLastAbsoluteTimeSensorReadings(AbstractICPDataSerializer *deserializer, const QString &dataPath,
-                                                          const QString &formatFile, const QString &dataType, const QString &exportPath,
-                                                          const std::function<QString ()> &funcGenName, uint32_t exportValues,
-                                                          ExportDataFunc func, uint64_t exportTime)
-{
-    // Настраиваем чтеца (указываем папку с файлами и их формат. Фильтруем по абсолютному времени.)
-    mFileReader->setListOfRecordsFiles(dataPath, formatFile);
-    mFileReader->filtrationByRecentTime(exportTime);
+//void FileController::exportLastAbsoluteTimeSensorReadings(AbstractICPDataSerializer *deserializer, const QString &dataPath,
+//                                                          const QString &formatFile, const QString &dataType, const QString &exportPath,
+//                                                          const std::function<QString ()> &funcGenName, uint32_t exportValues,
+//                                                          ExportDataFunc func, uint64_t exportTime)
+//{
+//    // Настраиваем чтеца (указываем папку с файлами и их формат. Фильтруем по абсолютному времени.)
+//    mFileReader->setListOfRecordsFiles(dataPath, formatFile);
+//    mFileReader->filtrationByRecentTime(exportTime);
+//
+//    // Генерируем имя экспортируемому файлу
+//    const QString nameExportFile = funcGenName();
+//
+//    // Экспортируем данные
+//    //QTimer::singleShot(0, mFileExporter, [this, deserializer, dataType, exportPath, exportValues, func, nameExportFile]() {
+//    //    struct ExportResult exportResult = this->mFileExporter->exportSensorReadings(deserializer, this->mFileReader, exportValues, func, exportPath, nameExportFile);
+////        sendEventExportResult(exportResult, dataType);
+//    //});
+//}
 
-    // Генерируем имя экспортируемому файлу
-    const QString nameExportFile = funcGenName();
-
-    // Экспортируем данные
-    QTimer::singleShot(0, mFileExporter, [this, deserializer, dataType, exportPath, exportValues, func, nameExportFile]() {
-        struct ExportResult exportResult = this->mFileExporter->exportSensorReadings(deserializer, this->mFileReader, exportValues, func, exportPath, nameExportFile);
-        sendEventExportResult(exportResult, dataType);
-    });
-}
-
-void FileController::sendEventExportResult(const ExportResult &exportResult, const QString &dataType)
-{
-    switch (exportResult.result) {
-    case ExportResult::Result::Done: {
-        emit fileControllerEvent(FileControllerEvent::ExportDone, QVariantMap{{keyfilecontrollerevent::dataType, dataType},
-                                                                              {keyfilecontrollerevent::transferredFiles, exportResult.countExportedFiles},
-                                                                              {keyfilecontrollerevent::countFiles, exportResult.allCountExportedFiles},
-                                                                              {keyfilecontrollerevent::untransferredFiles, exportResult.corruptedFiles}});
-        break;
-    }
-    case ExportResult::Result::ExportFileDidNotOpen: {
-        emit fileControllerEvent(FileControllerEvent::ExportError, QVariantMap{{keyfilecontrollerevent::errorMessage, tr("Не удалось начать запись в файл")}});
-        break;
-    }
-    default:
-        emit fileControllerEvent(FileControllerEvent::ExportError, QVariantMap{{keyfilecontrollerevent::errorMessage, tr("Ошибка экспорта")}});
-    }
-}
+//void FileController::sendEventExportResult(const ExportResult &exportResult, const QString &dataType)
+//{
+//    switch (exportResult.result) {
+//    case ExportResult::Result::Done: {
+//        emit fileControllerEvent(FileControllerEvent::ExportDone, QVariantMap{{keyfilecontrollerevent::dataType, dataType},
+//                                                                              {keyfilecontrollerevent::transferredFiles, exportResult.countExportedFiles},
+//                                                                              {keyfilecontrollerevent::countFiles, exportResult.allCountExportedFiles},
+//                                                                              {keyfilecontrollerevent::untransferredFiles, exportResult.corruptedFiles}});
+//        break;
+//    }
+//    case ExportResult::Result::ExportFileDidNotOpen: {
+//        emit fileControllerEvent(FileControllerEvent::ExportError, QVariantMap{{keyfilecontrollerevent::errorMessage, tr("Не удалось начать запись в файл")}});
+//        break;
+//    }
+//    default:
+//        emit fileControllerEvent(FileControllerEvent::ExportError, QVariantMap{{keyfilecontrollerevent::errorMessage, tr("Ошибка экспорта")}});
+//    }
+//}
 
 void FileController::writeICPSensorData(ComplexValue *sensorData)
 {
@@ -210,11 +204,11 @@ void FileController::writeICPSensorData(ComplexValue *sensorData)
     //mCSRFileWriter->writeData(*mOutputICPSerializer);
 }
 
-void FileController::writeAverageICPSensorData(ComplexValue *sensorData)
-{
-    mAverageICPSerializer->sensorData = sensorData;
-    mASRFileWriter->writeData(*mAverageICPSerializer);
-}
+//void FileController::writeAverageICPSensorData(ComplexValue *sensorData)
+//{
+//    mAverageICPSerializer->sensorData = sensorData;
+//    mASRFileWriter->writeData(*mAverageICPSerializer);
+//}
 
 QString FileController::genExportNameOfCurrentSensorReadings()
 {
@@ -232,9 +226,7 @@ void FileController::updateMaxScreensForScreenWriter()
         return;
     }
 
-    QTimer::singleShot(0, mScreenWriter, [this](){
-        mScreenWriter->setMaxScreens(mSettings->getMaxScreens());
-    });
+    //QTimer::singleShot(0, mScreenWriter, [this](){ mScreenWriter->setMaxScreens(mSettings->getMaxScreens());    });
 }
 
 void FileController::controllerEventHandler(ControllerEvent event)//, const QVariantMap &args)

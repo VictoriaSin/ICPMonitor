@@ -200,7 +200,7 @@ void AlarmSetupPage::done(int exodus)
     updateAlarmInfo();
 }
 
-void AlarmSetupPage::showEvent(QShowEvent *event)
+void AlarmSetupPage::showEvent(QShowEvent */*event*/)
 {
     updateAlarmInfoWidgets();
 }

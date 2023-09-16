@@ -120,7 +120,7 @@ void WaveFormPlot::addDataOnGraphic(unsigned int  x, unsigned int  y)//const Com
         mHistGraph->data()->removeBefore(temp_x + 0.5);
         mMainGraph->addData(temp_x, temp_y);
     }
-    qDebug() << temp_x << temp_y;
+    //qDebug() << temp_x << temp_y;
 //    // Суммирование общего времени пришедших данных с датчика
 //    // для ограничения отображения данных в диапазоне допустимых
 //    // значение времени на оси Х графика
@@ -171,12 +171,12 @@ void WaveFormPlot::retranslate()
 
 void WaveFormPlot::resetGraph()
 {
-    qDebug() << "WavePlot Start reset";
+    //qDebug() << "WavePlot Start reset";
     mPreviousSensorDataTime = 0;
     mSummarySensorDataTimePerXRange = 0;
     mMainGraph->data()->clear();
     mHistGraph->data()->clear();
-    qDebug() << "WavePlot reset";
+    //qDebug() << "WavePlot reset";
 }
 
 void WaveFormPlot::scaleFont(double scaleFactor)

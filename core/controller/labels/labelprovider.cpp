@@ -75,7 +75,7 @@ bool LabelProvider::changeSessionID(int sessionID)
     return true;
 }
 
-QVector<std::shared_ptr<Label>> LabelProvider::takeLabelsForSession(int sessionID)
+QVector<std::shared_ptr<Label>> LabelProvider::takeLabelsForSession(int /*sessionID*/)
 {
     // Если родитель не указан
     if (!mParent) {

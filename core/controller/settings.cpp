@@ -80,7 +80,7 @@ void Settings::setSoftwareStorageUUID(const QString &blockDevUUID)
     mSoftwareStorageUUID = blockDevUUID;
 }
 
-void Settings::setLastSavedDateTimestampSec(int64_t timestamp)
+void Settings::setLastSavedDateTimestampSec(int64_t /*timestamp*/)
 {
     //mLastSavedDateTimestampSec = timestamp;
 }

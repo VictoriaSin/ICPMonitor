@@ -10,17 +10,15 @@
 class SensorDataManager : public QThread//public QObject
 {
     Q_OBJECT
+    volatile qint64 timerForRecordInFile, timerForSetInGraph;
 public:
     explicit SensorDataManager(QObject *parent = nullptr);
     SensorDataManager();
     ~SensorDataManager();
     volatile bool isStopped;
     volatile bool isRunning;
-    bool isRecording;
-    uint32_t currIndex;
-    QTimer *getSPITimer;
-protected:
 
+protected:
     void run();
 
 signals:
@@ -29,7 +27,7 @@ signals:
 
 public slots:
     //void stopReading();
-    void addDataToBuffer();
+    //void addDataToBuffer();
 public:
 
 };

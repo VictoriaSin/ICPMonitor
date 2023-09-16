@@ -178,7 +178,7 @@ void RecordedPlot::saveDataForGraphic(unsigned int  x, unsigned int  y)//const C
 //    qDebug() << mRecordedData.size();
 }
 
-void RecordedPlot::downloadData(QByteArray *temp)
+void RecordedPlot::downloadData(QByteArray */*temp*/)
 {
     //
 }
@@ -186,10 +186,10 @@ void RecordedPlot::downloadData(QByteArray *temp)
 //#define timerDelay 5
 #define axisMoveRange 0.03
 
-bool RecordedPlot::animateGraphic(int timerDelaySec)
+void RecordedPlot::animateGraphic(int timerDelaySec)
 {
     QTimer *replayDataTimer = new QTimer(this);
-    int index = 0;
+    //int index = 0;
 
     if (isPlayRecord == true)
     {

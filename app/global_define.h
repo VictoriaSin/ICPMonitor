@@ -13,7 +13,11 @@
 #define i16 int16_t
 #define i32 int32_t
 
+#define BUFFER_1 1
+#define BUFFER_2 2
+
 #define getCurrentTimeStampMS() (QDateTime::currentMSecsSinceEpoch()/1000)
+#define getCurrentTimeStamp_ms() QDateTime::currentMSecsSinceEpoch()
 extern uint64_t startTimeStampRecord;
 extern bool isLabelCreating;
 extern bool isIntervalCreating;
@@ -27,12 +31,14 @@ extern Settings *mICPSettings;
 
 #define MAXBUFFERSIZE 400
 extern float intervalCountPerSec; // Интервал между соседними измерениями
+
+//#pragma pack(1)
 extern struct mSPIBuffer
 {
     uint16_t index;
     uint32_t data[MAXBUFFERSIZE];
 } mSensorBuffer1, mSensorBuffer2;
-
+//#pragma pack(4)
 enum direction { previous = false, next = true};
 enum interval { first = false, second = true};
 #endif // GLOBAL_DEFINE_H

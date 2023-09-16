@@ -25,20 +25,21 @@ void SaveSPI::run()
 
     }
     isStopped = true;
+    fillFile();
     qDebug() << "SaveSPI stopped";
 }
 
 void SaveSPI::fillFile()
 {
     SPIData.open(QIODevice::WriteOnly | QIODevice::Append);
-    if (currBuffer == 1)
+    if (currBuffer == BUFFER_2)
     {
-        SPIData.write((char*)mSensorBuffer1.data, mSensorBuffer1.index * sizeof(mSPIBuffer));
+        SPIData.write((char*)&mSensorBuffer1, mSensorBuffer1.index * sizeof(mSPIBuffer));
         mSensorBuffer1.index = 0;
     }
     else
     {
-        SPIData.write((char*)mSensorBuffer2.data, mSensorBuffer2.index * sizeof(mSPIBuffer));
+        SPIData.write((char*)&mSensorBuffer2, mSensorBuffer2.index * sizeof(mSPIBuffer));
         mSensorBuffer2.index = 0;
     }
     SPIData.close();

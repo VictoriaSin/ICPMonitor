@@ -59,7 +59,7 @@ void OWI_delay_us(u16 usDelay)
 
 __inline static void OWI_writeByte(u8 sByte)
 {
-  for (register u8 i = 0; i < 8; i++)
+  for (u8 i = 0; i < 8; i++)
   {
     if ((sByte & 0x80) != 0)
     {
@@ -76,7 +76,7 @@ __inline static void OWI_writeByte(u8 sByte)
 }
 __inline static void OWI_writeWord(u16 sWord)
 {
-for (register u8 i = 0; i < 16; i++)
+for (u8 i = 0; i < 16; i++)
   {
     if ((sWord & 0x8000) != 0) // Отправка "1"
     {

@@ -51,7 +51,7 @@ QString executeAConsoleCommand(const QString &nameProgram, const QStringList &ar
     return response;
 }
 
-bool makeDir(const QString &path)
+bool makeDir(const QString /*&path*/)
 {
     //if (path.isEmpty()) {
     //    return false;

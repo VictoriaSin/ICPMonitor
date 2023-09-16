@@ -28,13 +28,14 @@ typedef struct
   uint32_t timeOffset;
   uint16_t rawData;
 }_recordFields;
+//#pragma pack(4)
 
 typedef struct
 {
    _recordFields field[MAX_CNT_RECORD];
    uint16_t currentPos;
 }_bufferRecord;
-//#pragma pack(4)
+
 
 extern uint8_t currentBufferRecord;
 extern _bufferRecord bufferRecord_1, bufferRecord_2;

@@ -85,7 +85,7 @@ void AbstractDialogPage::installController(MonitorController *controller)
     mController = controller;
 }
 
-void AbstractDialogPage::done(int exodus)
+void AbstractDialogPage::done(int /*exodus*/)
 {
     emit previousPage();
 }

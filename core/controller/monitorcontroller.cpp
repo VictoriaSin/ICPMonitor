@@ -74,9 +74,9 @@ MonitorController::MonitorController() //: mWorkerThread(new QThread(this))
    //             mFileController,    &FileController::controllerEventHandler);
 
     // Скидывание в поток и его запуск
-    mWorkerThread = new QThread(this);
+    //mWorkerThread = new QThread(this);
     //mBlockDeviceManager->moveToThread(mWorkerThread);
-    mWorkerThread->start();
+    //mWorkerThread->start();
 }
 void MonitorController::init()
 {
@@ -305,16 +305,12 @@ void MonitorController::initSensor()
     connect(mSensor, &ISensor::sensorEvent, this, &MonitorController::processSensorEvent);
 
     // Запускаем инициализацию датчика (АЦП)
-    QTimer::singleShot(0, mSensor, [this, initMap](){
-        mSensor->init(initMap);
-    });
+    QTimer::singleShot(0, mSensor, [this, initMap](){mSensor->init(initMap); });
 }
 void MonitorController::terminate()
 {
     // Останавливаем рассылку показаний датчика
-    QTimer::singleShot(0, mSensor, [this](){
-        mSensor->endSendingSensorReadings();
-    });
+    QTimer::singleShot(0, mSensor, [this](){ mSensor->endSendingSensorReadings(); });
 
     // Прекращаем работу контроллеров
     mAverageICPController->terminate();
@@ -331,8 +327,8 @@ void MonitorController::terminate()
 
     mSensorThread->quit();
     mSensorThread->wait(1000);
-    mWorkerThread->quit();
-    mWorkerThread->wait(5000);
+    //mWorkerThread->quit();
+    //mWorkerThread->wait(5000);
 
     // Сохраняем настройки
     //mICPSettings->writeAllSetting();
@@ -649,7 +645,7 @@ void MonitorController::setMaxScreens(uint maxScreens)
 
     emit controllerEvent(ControllerEvent::UpdatedMaxScreens);
 }
-void MonitorController::exportLastAbsoluteTimeCurrentSensorReadings(uint64_t exportTimeMs, uint32_t exportValues, ExportDataFunc func)
+void MonitorController::exportLastAbsoluteTimeCurrentSensorReadings(uint64_t /*exportTimeMs*/, uint32_t /*exportValues*/, ExportDataFunc /*func*/)
 {
 //    // Проверяем, есть ли данные для экспорта
 //    if (getCountCurrentSensorReading() < 1) {
@@ -668,7 +664,7 @@ void MonitorController::exportLastAbsoluteTimeCurrentSensorReadings(uint64_t exp
 
 //    mFileController->exportLastAbsoluteTimeCurrentSensorReadingsMs(exportPath, exportTimeMs, exportValues, func);
 }
-void MonitorController::exportLastAbsoluteTimeAverageSensorReadings(uint64_t exportTimeSec, uint32_t exportValues, ExportDataFunc func)
+void MonitorController::exportLastAbsoluteTimeAverageSensorReadings(uint64_t /*exportTimeSec*/, uint32_t /*exportValues*/, ExportDataFunc /*func*/)
 {
 //    // Проверяем, есть ли данные для экспорта
 //    if (getCountAverageSensorReading() < 1) {
@@ -720,7 +716,7 @@ QVector<ComplexValue> MonitorController::getAverageSensorReadingsFromTheInterval
     // Возвращаем отобранные значения
     return mFileController->getAverageSensorReadingsFromTheIntervalForTheSession(intervalStartTimeSeconds, intervalEndTimeSeconds, session->getId());
 }
-void MonitorController::setDateTime(int64_t timestamp)
+void MonitorController::setDateTime(int64_t /*timestamp*/)
 {
 //    // Если сессия существует, то запрещаем сбрасывать время
 //    if (mSessionManager->getCurrentSession()) {
@@ -739,17 +735,17 @@ void MonitorController::setDateTime(int64_t timestamp)
 //    // Сохраняем текущее время системы в файл настроек
 //    saveCurrentDateTime();
 }
-bool MonitorController::dateTimeIsValid(const QDateTime &checkDate) const
-{
-//    if (checkDate <= Settings::MinDateTime ||
-//            checkDate <= QDateTime::fromSecsSinceEpoch(mICPSettings->getLastSavedDateTimestampSec())) {
-//        return false;
-//    }
-    return true;
-}
+//bool MonitorController::dateTimeIsValid(const QDateTime &checkDate) const
+//{
+////    if (checkDate <= Settings::MinDateTime ||
+////            checkDate <= QDateTime::fromSecsSinceEpoch(mICPSettings->getLastSavedDateTimestampSec())) {
+////        return false;
+////    }
+//    return true;
+//}
 bool MonitorController::currentTimeIsValid() const
 {
-    return dateTimeIsValid(QDateTime::currentDateTime());
+    return true;//dateTimeIsValid(QDateTime::currentDateTime());
 }
 void MonitorController::exportScreens(ConversionPictureFormat format, int countTransScreens)
 {
@@ -998,7 +994,7 @@ void MonitorController::processBlockDevicesControllerEvent(BlockDeviceManagerEve
 }
 void MonitorController::processAverageSensorValue()
 {
-    mFileController->writeAverageICPSensorData(mAverageICPController->lastAverageValueByPointer());
+    //mFileController->writeAverageICPSensorData(mAverageICPController->lastAverageValueByPointer());
     emit dataReadyFromAverageICPController();
 }
 

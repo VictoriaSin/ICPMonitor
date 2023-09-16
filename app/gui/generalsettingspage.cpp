@@ -258,7 +258,7 @@ void GeneralSettingsPage::retranslate()
     mMessageDialog->retranslate();
 }
 
-void GeneralSettingsPage::showEvent(QShowEvent *event)
+void GeneralSettingsPage::showEvent(QShowEvent */*event*/)
 {
     updateAlarmSettingsOnWidgets();
     updateGraphSettingsOnWidgets();

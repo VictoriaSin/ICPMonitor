@@ -47,37 +47,37 @@ void ScreenWriter::initFBCatProcess()
 
 void ScreenWriter::writeScreenFromLinuxFB()
 {
-    // Если папка для скринов не создана(лась)
-    if (!makeScreensDir()) {
-        emit screenWrittenFinished(false);
-        return;
-    }
+  //  // Если папка для скринов не создана(лась)
+  //  if (!makeScreensDir()) {
+  //      emit screenWrittenFinished(false);
+  //      return;
+  //  }
 
-    // Если скриншот еще делается
-    if (mProcess->state() != QProcess::NotRunning) {
-        emit screenWrittenFinished(false);
-        return;
-    }
+  //  // Если скриншот еще делается
+  //  if (mProcess->state() != QProcess::NotRunning) {
+  //      emit screenWrittenFinished(false);
+  //      return;
+  //  }
 
-    // Делаем скрин (асинхронно)
-    mProcess->start("bash", QStringList() << "-c" << QString("fbcat > %1").arg(mScreensDir->path() + '/' + genNameOfScreen("ppm")));
+  //  // Делаем скрин (асинхронно)
+  //  mProcess->start("bash", QStringList() << "-c" << QString("fbcat > %1").arg(mScreensDir->path() + '/' + genNameOfScreen("ppm")));
 }
 
-void ScreenWriter::writeScreenFromWidget(const QPixmap &screen)
+void ScreenWriter::writeScreenFromWidget(const QPixmap &/*screen*/)
 {
-    // Если папка для скринов не создана(лась)
-    if (!makeScreensDir()) {
-        emit screenWrittenFinished(false);
-        return;
-    }
+    //// Если папка для скринов не создана(лась)
+    //if (!makeScreensDir()) {
+    //    emit screenWrittenFinished(false);
+    //    return;
+    //}
 
-    // Уведомляем об окончании записи
-    const QString fileName = mScreensDir->path() + '/' + genNameOfScreen("ppm");
-    screen.save(fileName, "PPM");
-    emit screenWrittenFinished(QFile::exists(fileName));
+    //// Уведомляем об окончании записи
+    //const QString fileName = mScreensDir->path() + '/' + genNameOfScreen("ppm");
+    //screen.save(fileName, "PPM");
+    //emit screenWrittenFinished(QFile::exists(fileName));
 
-    // Удаляем старые скриншоты
-    deleteOldScreens();
+    //// Удаляем старые скриншоты
+    //deleteOldScreens();
 }
 
 bool ScreenWriter::isReadyWriteScreen() const
@@ -132,25 +132,26 @@ uint ScreenWriter::getMaxScreens() const
     return mMaxScreens;
 }
 
-bool ScreenWriter::makeScreensDir()
-{
-    if (!isReadyBlockDev()) {
-        return false;
-    }
-
-    if (isReadyScreenDir()) {
-        return true;
-    }
-
-    resetScreensDir();
-
-    const QString screensDirPath = mBlockDevice->getLastMountPoint() + '/' + mRelativePath;
-    if (makeDir(screensDirPath)) {
-        mScreensDir = new QDir(screensDirPath, "", QDir::Time | QDir::Reversed, QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot);
-    }
-
-    return isReadyScreenDir();
-}
+//bool ScreenWriter::makeScreensDir()
+//{
+//  return true;
+//    //if (!isReadyBlockDev()) {
+//    //    return false;
+//    //}
+//
+//    //if (isReadyScreenDir()) {
+//    //    return true;
+//    //}
+//
+//    //resetScreensDir();
+//
+//    //const QString screensDirPath = mBlockDevice->getLastMountPoint() + '/' + mRelativePath;
+//    //if (makeDir(screensDirPath)) {
+//    //    mScreensDir = new QDir(screensDirPath, "", QDir::Time | QDir::Reversed, QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot);
+//    //}
+//
+//    //return isReadyScreenDir();
+//}
 
 void ScreenWriter::resetScreensDir()
 {

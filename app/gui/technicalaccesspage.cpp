@@ -223,7 +223,7 @@ void TechnicalAccessPage::showEvent(QShowEvent *event)
     AbstractDialogPage::showEvent(event);
 }
 
-void TechnicalAccessPage::done(int exodus)
+void TechnicalAccessPage::done(int /*exodus*/)
 {
     updateMaxScreens();
     emit previousPage();
