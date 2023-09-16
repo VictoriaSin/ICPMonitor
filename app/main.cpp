@@ -239,13 +239,23 @@ bool initFlash(QString currRasdel)
       //if (temp[i].split(" ")[0].contains(currRasdel))
       if (temp[i].simplified().split(" ")[0].contains(currRasdel))
       {
-        QString result = executeAConsoleCommand("mount", QStringList() << currRasdel << mntDirectory);
-        if (result != "")
-        {
-            qDebug() << result;
-            return 10;
-        }
-        return 0;
+          if(!isMntDirectoryCreated())
+          {
+              qDebug() << "Try created directory" << mntDirectory;
+              QString outputString = executeAConsoleCommand("mkdir", QStringList() << "-m" << "777" << mntDirectory);
+              if (outputString != "")
+              {
+                qDebug() << "Directory" << mntDirectory << "not created"; return MOUNT_MESSAGE::ERROR_CREATED_DIRECTORY;
+                qDebug() << "Result" << outputString;
+              }
+          }
+          QString result = executeAConsoleCommand("mount", QStringList() << currRasdel << mntDirectory);
+          if (result != "")
+          {
+              qDebug() << result;
+              return 10;
+          }
+          return 0;
       }
   }
   return 11;

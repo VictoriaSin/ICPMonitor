@@ -32,13 +32,23 @@ extern Settings *mICPSettings;
 #define MAXBUFFERSIZE 400
 extern float intervalCountPerSec; // Интервал между соседними измерениями
 
-//#pragma pack(1)
-extern struct mSPIBuffer
+#pragma pack(1)
+typedef struct
 {
-    uint16_t index;
-    uint32_t data[MAXBUFFERSIZE];
-} mSensorBuffer1, mSensorBuffer2;
-//#pragma pack(4)
+    uint32_t timeStamp; // offset
+    uint16_t data; //
+}_mSPIData;
+
+typedef struct
+{
+    uint32_t index; // offset
+    _mSPIData record[MAXBUFFERSIZE];
+} _mSPIBuffer;
+#pragma pack()
+
+extern _mSPIBuffer mSensorBuffer1, mSensorBuffer2;
+
+
 enum direction { previous = false, next = true};
 enum interval { first = false, second = true};
 #endif // GLOBAL_DEFINE_H

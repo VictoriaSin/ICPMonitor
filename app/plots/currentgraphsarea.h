@@ -114,7 +114,7 @@ public:
     ~CurrentGraphsArea();
 
     //! Состояние записи
-    bool isRecord {false};
+    bool isRecord;
 
     /*! Устанавливает интервал на график записанных показаний */
     void addIntervalOnRecordedGraph();

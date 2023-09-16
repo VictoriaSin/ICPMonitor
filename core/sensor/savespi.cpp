@@ -34,12 +34,12 @@ void SaveSPI::fillFile()
     SPIData.open(QIODevice::WriteOnly | QIODevice::Append);
     if (currBuffer == BUFFER_2)
     {
-        SPIData.write((char*)&mSensorBuffer1, mSensorBuffer1.index * sizeof(mSPIBuffer));
+        SPIData.write((char*)&mSensorBuffer1.record, mSensorBuffer1.index * sizeof(_mSPIData));
         mSensorBuffer1.index = 0;
     }
     else
     {
-        SPIData.write((char*)&mSensorBuffer2, mSensorBuffer2.index * sizeof(mSPIBuffer));
+        SPIData.write((char*)&mSensorBuffer2.record, mSensorBuffer2.index * sizeof(_mSPIData));
         mSensorBuffer2.index = 0;
     }
     SPIData.close();

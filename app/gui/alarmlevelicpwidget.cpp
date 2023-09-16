@@ -35,8 +35,8 @@ void AlarmLevelICPWidget::installController(MonitorController *controller)
             this, &AlarmLevelICPWidget::controllerEventHandler);
 
 
-    connect(mController, &MonitorController::dataReadyFromAverageICPController,
-            this, &AlarmLevelICPWidget::updateAverageValueOnWidgets);
+//    connect(mController, &MonitorController::dataReadyFromAverageICPController,
+//            this, &AlarmLevelICPWidget::updateAverageValueOnWidgets);
 
     // Обновление информации о тревоге
     updateAlarmInfo();
@@ -67,16 +67,17 @@ void AlarmLevelICPWidget::setupSVGWidgets()
     ui->svgVerticalLayout->addWidget(mLowLevelPressureSVG);
 }
 
-void AlarmLevelICPWidget::updateAverageValueOnWidgets()
+void AlarmLevelICPWidget::updateAverageValueOnWidgets(double currAverage)//()
 {
-    if (!mController) {
-        return;
-    }
+//    if (!mController) {
+//        return;
+//    }
 
-    const ComplexValue val = mController->getLastAverageValue();
-    if(val.valid){
-        ui->averagePointerWidget->setValue(val.value);
-    }
+//    const ComplexValue val = mController->getLastAverageValue();
+//    if(val.valid){
+//        ui->averagePointerWidget->setValue(val.value);
+//    }
+    ui->averagePointerWidget->setValue(currAverage);
 }
 
 void AlarmLevelICPWidget::updateAlarmInfo()

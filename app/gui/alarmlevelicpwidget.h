@@ -44,8 +44,6 @@ private:
 private slots:
     void controllerEventHandler(ControllerEvent event);//, const QVariantMap &args = {});
 
-    /*! Обновление среднего значения на виджете */
-    void updateAverageValueOnWidgets();
 
     /*! Обновление уровнений и состояний тревоги */
     void updateAlarmInfo();
@@ -60,6 +58,11 @@ private:
     Ui::AlarmLevelICPWidget *ui;
     QSvgWidget *mLowLevelPressureSVG {nullptr};
     QSvgWidget *mHighLevelPressureSVG {nullptr};
+
+public slots:
+
+    /*! Обновление среднего значения на виджете */
+    void updateAverageValueOnWidgets(double currAverage);
 };
 
 #endif // ALARMLEVELICPWIDGET_H

@@ -30,6 +30,7 @@ CurrentGraphsArea::CurrentGraphsArea(QWidget *parent) :
     bufferRecord_1.currentPos = 0;
     bufferRecord_2.currentPos = 0;
     currentBufferRecord = 1;
+    isRecord = false;
     //qDebug() << "start curr area";
     // Записываем для быстрого доступа
     mWaveGraph = ui->waveGraph;
@@ -87,7 +88,7 @@ void CurrentGraphsArea::resetGraphOfCurrentValues()
     if (mWaveGraph)
     {
         mWaveGraph->resetGraph();
-        if(QObject::sender()->objectName() == "MainPage")
+        if (isRecord)
         {
             mWaveGraph->changePenColor(QColor(Qt::red));
         }
@@ -310,7 +311,7 @@ void CurrentGraphsArea::controllerEventHandler(ControllerEvent event)//, const Q
         break;
     }
     case ControllerEvent::GlobalTimeUpdate: {
-        resetGraphOfCurrentValues();
+        //resetGraphOfCurrentValues();
         //resetTrendGraph();
         resetRecordedGraph();
         break;

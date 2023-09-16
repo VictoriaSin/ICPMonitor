@@ -142,6 +142,19 @@
          </widget>
         </item>
         <item>
+         <widget class="QLabel" name="averageValue">
+          <property name="font">
+           <font>
+            <pointsize>65</pointsize>
+            <kerning>true</kerning>
+           </font>
+          </property>
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="AlarmLevelICPWidget" name="alarmLevelICPWidget" native="true">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">

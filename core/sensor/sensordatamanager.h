@@ -18,18 +18,23 @@ public:
     volatile bool isStopped;
     volatile bool isRunning;
 
+    bool isStartRecord;
+    bool isRecording;
 protected:
     void run();
 
 signals:
     void writeBufferToFile();
     void printDataOnGraph(unsigned int, unsigned int);//uint32_t x, uint32_t y);
+    void averageReady(double currAverage);
 
 public slots:
     //void stopReading();
     //void addDataToBuffer();
-public:
-
+private:
+    double mAverageValue;
+    double mAverageSum;
+    uint64_t mAverageCount;
 };
 
 #endif // SENSORDATAMANAGER_H

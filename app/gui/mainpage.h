@@ -144,6 +144,8 @@ private slots:
 
     void on_speedRecordButton_clicked();
 
+    void setAverage(double currAverage);
+
 private:
     Ui::MainPage *ui;
 
@@ -168,6 +170,7 @@ private:
     QString mLastDateTime {};
 
     // QWidget interface
+
 protected:
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;
@@ -181,6 +184,8 @@ signals:
     void goToLabel(bool direction);
     void playBtnPressed();
     void stopRecord();
+    void setAveragePointerPos(double currAverage);
+
     // IPageWidget interface
 public slots:
     void retranslate() override;

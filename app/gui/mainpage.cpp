@@ -12,6 +12,8 @@
 #include "global_functions.h"
 
 
+
+
 #include <QTimer>
 #include <QDateTime>
 #include <QPushButton>
@@ -79,7 +81,7 @@ MainPage::MainPage(QWidget *parent)
                     } );
 
 
-
+    ui->averageValue->hide();
 }
 
 MainPage::~MainPage()
@@ -235,7 +237,7 @@ void MainPage::installController(MonitorController *controller)
 
     mController = controller;
 
-    ui->averageICPWidget->installController(mController);
+    //ui->averageICPWidget->installController(mController);
     ui->alarmLevelICPWidget->installController(mController);
     mCurrentGraphsArea->installController(mController);
     mMainMenu->installController(mController);
@@ -428,7 +430,7 @@ void MainPage::scaleFont(float scaleFactor)
     WFontScaling(ui->sensorStateLabel, scaleFactor);
     //WFontScaling(ui->labelCounterLabel, scaleFactor);
     //WFontScaling(ui->sessionID, scaleFactor);
-    ui->averageICPWidget->scaleFont(scaleFactor);
+    //ui->averageICPWidget->scaleFont(scaleFactor);
     ui->alarmLevelICPWidget->scaleFont(scaleFactor);
     mCurrentGraphsArea->scaleFont(scaleFactor);
     mMainMenu->scaleFont(scaleFactor);
@@ -437,6 +439,7 @@ void MainPage::scaleFont(float scaleFactor)
     WFontScaling(ui->maxValueInterval2, scaleFactor);
     //WFontScaling(ui->averageValueInterval1, scaleFactor);
     //WFontScaling(ui->averageValueInterval2, scaleFactor);
+    WFontScaling(ui->averageValue, scaleFactor);
 }
 
 void MainPage::updateDateTime()
@@ -520,7 +523,7 @@ void MainPage::hideEvent(QHideEvent */*event*/)
 
 void MainPage::retranslate()
 {
-    ui->averageICPWidget->retranslate();
+    //ui->averageICPWidget->retranslate();
     mCurrentGraphsArea->retranslate();
     //updateSessionInfo(); !!!!
     updateSensorState();
@@ -542,21 +545,19 @@ void MainPage::on_recordButton_clicked()
     QString currentTime = QDateTime::currentDateTime().toString("yyyy_MM_dd@hh_mm_ss");
     if (isStart)
     {
+        //mSensorDataManager->currIndex = -1;
+        mSensorDataManager->isStartRecord = true;
         QDir mCurrentRecordDir(mntDirectory+ "/" + currentTime);
 //!!!!!
-        mSensorDataManager = new SensorDataManager(this);
         mSPIFile = new SaveSPI(this, mCurrentRecordDir.path());
-
-        connect(mSensorDataManager, &SensorDataManager::printDataOnGraph, mCurrentGraphsArea, &CurrentGraphsArea::addDataOnWavePlot);
         connect(mSensorDataManager, &SensorDataManager::writeBufferToFile, mSPIFile, &SaveSPI::fillFile);
-
         mSPIFile->start();
-        mSensorDataManager->start();
-
 
         //qDebug() << currentTime;
         isStart = false;
         ui->recordButton->setIcon(QIcon(":/icons/stopRecord.svg"), QIcon(":/icons/stopRecord_pressed.svg"));
+
+        mCurrentGraphsArea->isRecord = true;
         emit (resetWaveGraph());
 
         mHeadFile.setFileName(mCurrentRecordDir.path()      + "/" + "HEAD.txt");
@@ -585,8 +586,6 @@ void MainPage::on_recordButton_clicked()
             mCurrentRecordDir.mkdir(mCurrentRecordDir.path());
 #endif
         }
-        mCurrentGraphsArea->isRecord = true;
-        //qDebug() << "isRecord" << mCurrentGraphsArea->isRecord;
         startTimeStampRecord = getCurrentTimeStampMS();
         //qDebug() << startTimeStampRecord;
         if (mHeadFile.open(QIODevice::WriteOnly | QIODevice::Append))
@@ -645,9 +644,10 @@ void MainPage::on_recordButton_clicked()
         ui->recordButton->hide();
         ui->sessionButton->setEnabled(true);
 
-        ui->averageICPWidget->hide();
+        //ui->averageICPWidget->hide();
         ui->alarmLevelICPWidget->hide();
 
+        ui->averageValue->hide();
         // Остановка считывания данных
         mSensorDataManager->isRunning = false;
         while(mSensorDataManager->isStopped == false) {}
@@ -749,8 +749,14 @@ void MainPage::on_sessionButton_clicked()
 {
     if (isSessionStart)
     {
+        mSensorDataManager = new SensorDataManager(this);
+        connect(mSensorDataManager, &SensorDataManager::printDataOnGraph, mCurrentGraphsArea, &CurrentGraphsArea::addDataOnWavePlot);
+        mSensorDataManager->start();
+
         isSessionStart = false;
 
+        connect(mSensorDataManager, &SensorDataManager::averageReady, this, &MainPage::setAverage);
+        connect(this, &MainPage::setAveragePointerPos, ui->alarmLevelICPWidget, &AlarmLevelICPWidget::updateAverageValueOnWidgets);
         ui->recordButton->show();
         ui->recordButton->setEnabled(true);
         ui->sessionButton->setIcon(QIcon(":/icons/deleteSession.svg"), QIcon(":/icons/deleteSession_pressed.svg"));
@@ -758,8 +764,10 @@ void MainPage::on_sessionButton_clicked()
         ui->makeLabelButton->hide();
         ui->acceptMarkButton->hide();
         ui->rejectMarkButton->hide();
-        ui->averageICPWidget->show();
+        //ui->averageICPWidget->show();
         ui->alarmLevelICPWidget->show();
+
+        ui->averageValue->show();
 
         mCurrentLabelIndex = 0;
         mController->mSensor->startSendingSensorReadings();
@@ -805,13 +813,25 @@ void MainPage::on_sessionButton_clicked()
         //ui->averageValueInterval2->hide();
         //добавить удаление всех линий после завершения сессии
 
-        ui->alarmLevelICPWidget->hide();
-        ui->averageICPWidget->hide();
+        ui->alarmLevelICPWidget->hide(); //или оставить?
+        //ui->averageICPWidget->hide();
+
+//        ui->averageValue->setText("--");
+//        ui->averageValue->show();// или скрывать вообще?
+        ui->averageValue->hide();
 
         ui->playRecord->hide();
         ui->rewindRecordButton->hide();
         ui->speedRecordButton->hide();
         ui->downloadGraphButton->hide();
+
+        // Остановка считывания данных
+        mSensorDataManager->isRunning = false;
+        while(mSensorDataManager->isStopped == false) {}
+
+//        // Остановка записи данных
+//        mSPIFile->isRunning = false;
+//        while(mSPIFile->isStopped == false) {}
     }
 }
 
@@ -1051,3 +1071,9 @@ void MainPage::on_speedRecordButton_clicked()
     }
 }
 
+void MainPage::setAverage(double currAverage)
+{
+    //ui->averageICPWidget->//averageValueLabel->setText
+    ui->averageValue->setText(QString::number(round(currAverage)));
+    setAveragePointerPos(currAverage);
+}
