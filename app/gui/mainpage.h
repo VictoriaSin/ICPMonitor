@@ -99,7 +99,7 @@ private slots:
     void updateSoftwareStorageOnWidgets(bool isAvailable);
 
     /*! Скриншот текущего экрана */
-    void makeScreen();
+    //void makeScreen();
 
     /*! Смена графика */
     void nextGraph();
@@ -175,7 +175,9 @@ protected:
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;
 
-signals:
+    void startSession();
+    void stopSession();
+  signals:
     void resetWaveGraph();
     void dataReadyForRecordGraph();
     void changeCurrentGraph();

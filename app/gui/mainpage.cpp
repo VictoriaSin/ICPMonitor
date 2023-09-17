@@ -231,9 +231,7 @@ void MainPage::setupGraphsContainer()
 
 void MainPage::installController(MonitorController *controller)
 {
-    if (!controller) {
-        return;
-    }
+    if (!controller) { return; }
 
     mController = controller;
 
@@ -332,9 +330,7 @@ void MainPage::updateSensorInfo()
 
     // Получаем текущий датчик
     const auto sensor = mController->sensor();
-    if (!sensor) {
-        return;
-    }
+    if (!sensor) { return; }
 
 //    // Устанавливаем информацию о датчике
 //    ui->sensorInfoLabel->setText(sensor->info());
@@ -343,19 +339,14 @@ void MainPage::updateSensorInfo()
 void MainPage::updateSensorResetTime()
 {
     // Если контроллер не установлен
-    if (!mController) {
-        return;
-    }
+    if (!mController) { return; }
 
     // Получаем текущий датчик
     const ISensor * const sensor = mController->sensor();
-    if (!sensor) {
-        return;
-    }
+    if (!sensor) { return; }
 
     // Обновляем информацию
-    ui->sensorStateLabel->setText(QString("%1: %2").arg(tr("Обнулён")).
-                                      arg(QDateTime::fromMSecsSinceEpoch(sensor->lastResetTimestamp()).toString("hh:mm:ss-dd.MM.yyyy")));
+    ui->sensorStateLabel->setText(QString("%1: %2").arg(tr("Обнулён")).arg(QDateTime::fromMSecsSinceEpoch(sensor->lastResetTimestamp()).toString("hh:mm:ss-dd.MM.yyyy")));
 }
 
 void MainPage::updateSensorState()
@@ -469,27 +460,27 @@ void MainPage::updateSoftwareStorageOnWidgets(bool isAvailable)
     ui->softwareStorageIconSVG->load(svgPath);
 }
 
-void MainPage::makeScreen()
-{
-    if (!mController) {
-        return;
-    }
-
-//#ifdef PC_BUILD
-//    const QPixmap &&screen(makeAScreenOfWidget(this));
-//    if (!screen.isNull()) {
-//        ui->photoButton->setDisabled(true);
-//        QTimer::singleShot(0, mController, [this, scr = std::move(screen)](){
-//            mController->writeScreenFromWidget(scr);
-//        });
+//void MainPage::makeScreen()
+//{
+//    if (!mController) {
+//        return;
 //    }
-//#else
-//    QTimer::singleShot(0, mController, [this](){
-//        ui->photoButton->setDisabled(true);
-//        mController->writeScreenFromLinuxFB();
-//    });
-//#endif
-}
+
+////#ifdef PC_BUILD
+////    const QPixmap &&screen(makeAScreenOfWidget(this));
+////    if (!screen.isNull()) {
+////        ui->photoButton->setDisabled(true);
+////        QTimer::singleShot(0, mController, [this, scr = std::move(screen)](){
+////            mController->writeScreenFromWidget(scr);
+////        });
+////    }
+////#else
+////    QTimer::singleShot(0, mController, [this](){
+////        ui->photoButton->setDisabled(true);
+////        mController->writeScreenFromLinuxFB();
+////    });
+////#endif
+//}
 
 void MainPage::nextGraph()
 {
@@ -526,8 +517,8 @@ void MainPage::retranslate()
     //ui->averageICPWidget->retranslate();
     mCurrentGraphsArea->retranslate();
     //updateSessionInfo(); !!!!
-    updateSensorState();
-    updateSensorInfo();
+    //updateSensorState();
+    //updateSensorInfo();
     updateLabelCounter();
     mMainMenu->retranslate();
 }
@@ -545,17 +536,14 @@ void MainPage::on_recordButton_clicked()
     QString currentTime = QDateTime::currentDateTime().toString("yyyy_MM_dd@hh_mm_ss");
     if (isStart)
     {
-        //mSensorDataManager->currIndex = -1;
-        mSensorDataManager->isStartRecord = true;
+        isStart = false;
         QDir mCurrentRecordDir(mntDirectory+ "/" + currentTime);
-//!!!!!
+        ui->recordButton->setIcon(QIcon(":/icons/stopRecord.svg"), QIcon(":/icons/stopRecord_pressed.svg"));
+
         mSPIFile = new SaveSPI(this, mCurrentRecordDir.path());
         connect(mSensorDataManager, &SensorDataManager::writeBufferToFile, mSPIFile, &SaveSPI::fillFile);
         mSPIFile->start();
-
-        //qDebug() << currentTime;
-        isStart = false;
-        ui->recordButton->setIcon(QIcon(":/icons/stopRecord.svg"), QIcon(":/icons/stopRecord_pressed.svg"));
+        mSensorDataManager->isStartRecord = true;
 
         mCurrentGraphsArea->isRecord = true;
         emit (resetWaveGraph());
@@ -572,7 +560,6 @@ void MainPage::on_recordButton_clicked()
 #ifdef TEST_BUILD
             QString response;
             //response = executeAConsoleCommand("mkdir", QStringList() << "-m" << "777" << mCurrentRecordDir.path());
-            //response = executeAConsoleCommand("mkdir", QStringList() << "/home/ICPMonitor/222");
             response = executeAConsoleCommand("mkdir", QStringList() << mCurrentRecordDir.path());
             if (response == "")
             {
@@ -582,58 +569,61 @@ void MainPage::on_recordButton_clicked()
             {
                 qDebug() << "error" << response;
             }
-#elif PC_BUILD
+#endif
+#ifdef PC_BUILD
             mCurrentRecordDir.mkdir(mCurrentRecordDir.path());
 #endif
         }
-        startTimeStampRecord = getCurrentTimeStampMS();
-        //qDebug() << startTimeStampRecord;
         if (mHeadFile.open(QIODevice::WriteOnly | QIODevice::Append))
         {
             QStringList time = currentTime.split("@");
             mHeadFile.write(("Session started: " + time[0].replace("_", ".") + " " + time[1].replace("_", ":") +
-                    "\nStartTimeStamp(ms): " + QString::number(startTimeStampRecord) + "\n").toLatin1());
+                    "\nStartTimeStamp(ms): " + QString::number(getCurrentTimeStampMS()) + "\n").toLatin1());
             mHeadFile.close();
         }
-        ui->mainWidgets->show();
+        ui->mainWidgets   ->show();
+        ui->sessionButton ->setEnabled(false);
         //ui->softwareStorageIconSVG->show();
         //ui->dateTimeLabel->show();
         //ui->infoWidgets->show();
-        ui->sessionButton->setEnabled(false);
+
     }
     else
     {
         uint64_t StopMS = getCurrentTimeStampMS();
+        ui->recordButton->setIcon(QIcon(":/icons/startRecord.svg"), QIcon(":/icons/startRecord_pressed.svg"));
         currentTime = QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss");
-        //qDebug() << "Stop" << currentTime;
         if (mHeadFile.open(QIODevice::WriteOnly | QIODevice::Append))
         {
-            //QTextStream data(&mHeadFile);
             QStringList time = currentTime.split("@");
-            //data << "Session stopped: " + currentTime + "\nStopTimeStamp(ms): " << StopMS << "\n";
             mHeadFile.write(("Session stopped: " + currentTime + "\nStopTimeStamp(ms): " + QString::number(StopMS) + "\n").toLatin1());
             mHeadFile.close();
         }
         isStart = true;
-        ui->recordButton->setIcon(QIcon(":/icons/startRecord.svg"), QIcon(":/icons/startRecord_pressed.svg"));
+
         mCurrentGraphsArea->isRecord = false;
         emit(dataReadyForRecordGraph());
-        ui->intervalButton->show();
+
 
 #define SET_VISIBLED_DISABLED(_UUII) {ui->_UUII->show();  ui->_UUII->setEnabled(false);}
 #define SET_VISIBLED_ENABLED(_UUII) {ui->_UUII->show();  ui->_UUII->setEnabled(true);}
 
+        ui->intervalButton      ->show();
+        ui->playRecord          ->show();
+        ui->rewindRecordButton  ->show();
+        ui->speedRecordButton   ->show();
+        ui->downloadGraphButton ->show();
 
-        ui->goToInterval1Button->hide();
-        ui->maxValueInterval1->hide();
+        ui->goToInterval1Button ->hide();
+        ui->maxValueInterval1   ->hide();
+        ui->goToInterval2Button ->hide();
+        ui->maxValueInterval2   ->hide();
+        ui->recordButton        ->hide();
+        ui->alarmLevelICPWidget ->hide();
+        ui->averageValue        ->hide();
 
-        ui->goToInterval2Button->hide();
-        ui->maxValueInterval2->hide();
+        ui->sessionButton       ->setEnabled(true);
 
-        ui->playRecord->show();
-        ui->rewindRecordButton->show();
-        ui->speedRecordButton->show();
-        ui->downloadGraphButton->show();
 
         SET_VISIBLED_DISABLED(goToPreviousMarkButton);
         SET_VISIBLED_DISABLED(labelsNavigation);
@@ -641,13 +631,8 @@ void MainPage::on_recordButton_clicked()
         SET_VISIBLED_DISABLED(goToNextMarkButton);
         SET_VISIBLED_ENABLED(makeLabelButton);
 
-        ui->recordButton->hide();
-        ui->sessionButton->setEnabled(true);
-
         //ui->averageICPWidget->hide();
-        ui->alarmLevelICPWidget->hide();
 
-        ui->averageValue->hide();
         // Остановка считывания данных
         mSensorDataManager->isRunning = false;
         while(mSensorDataManager->isStopped == false) {}
@@ -657,207 +642,184 @@ void MainPage::on_recordButton_clicked()
         while(mSPIFile->isStopped == false) {}
 
         emit (changeCurrentGraph());
-
     }
 }
 
 
 void MainPage::on_makeLabelButton_clicked()
 {
-    ui->makeLabelButton->setEnabled(false);
-    ui->acceptMarkButton->show();
-    ui->rejectMarkButton->show();
-    ui->sessionButton->setEnabled(false);
+    ui->acceptMarkButton        ->show();
+    ui->rejectMarkButton        ->show();
+    ui->makeLabelButton         ->setEnabled(false);
+    ui->sessionButton           ->setEnabled(false);
+    ui->goToPreviousMarkButton  ->setEnabled(false);
+    ui->goToNextMarkButton      ->setEnabled(false);
+    ui->goToInterval1Button     ->setEnabled(false);
+    ui->goToInterval2Button     ->setEnabled(false);
+    ui->intervalButton          ->setEnabled(false);
+    ui->playRecord              ->setEnabled(false);
+    ui->rewindRecordButton      ->setEnabled(false);
+    ui->speedRecordButton       ->setEnabled(false);
+    ui->downloadGraphButton     ->setEnabled(false);
 
-    ui->goToPreviousMarkButton->setEnabled(false);
-    ui->goToNextMarkButton->setEnabled(false);
+    QTimer::singleShot(0, mController, [this](){ mController->makeLabel(); });
 
-    ui->goToInterval1Button->setEnabled(false);
-    ui->goToInterval2Button->setEnabled(false);
-    QTimer::singleShot(0, mController, [this](){
-        mController->makeLabel();
-    });
-    ui->intervalButton->setEnabled(false);//ui->intervalButton->hide();
-    ui->playRecord->setEnabled(false);
-    ui->rewindRecordButton->setEnabled(false);
-    ui->speedRecordButton->setEnabled(false);
-    ui->downloadGraphButton->setEnabled(false);
     //emit (changeLabelButtonStatus);
 }
 
 void MainPage::on_acceptMarkButton_clicked()
 {
-    ui->labelsNavigation->show();
-
-
-    ui->makeLabelButton->setEnabled(true);
-    ui->acceptMarkButton->hide();
-    ui->rejectMarkButton->hide();
-    ui->intervalButton->setEnabled(true);
-    ui->sessionButton->setEnabled(true);
-
-    ui->goToInterval1Button->setEnabled(true);
-    ui->goToInterval2Button->setEnabled(true);
+    ui->labelsNavigation    ->show();
+    ui->acceptMarkButton    ->hide();
+    ui->rejectMarkButton    ->hide();
+    ui->makeLabelButton     ->setEnabled(true);
+    ui->intervalButton      ->setEnabled(true);
+    ui->sessionButton       ->setEnabled(true);
+    ui->goToInterval1Button ->setEnabled(true);
+    ui->goToInterval2Button ->setEnabled(true);
+    ui->playRecord          ->setEnabled(true);
+    ui->rewindRecordButton  ->setEnabled(true);
+    ui->speedRecordButton   ->setEnabled(true);
+    ui->downloadGraphButton ->setEnabled(true);
 
     mMarksFile.open(QIODevice::WriteOnly | QIODevice::Append);
     mMarksFile.write((QString::number(mLabelManagerGlobal->mCountLabels) + ": " + QString::number(mCoordLabelX) + "\n").toLatin1());
     mMarksFile.close();
-    Label *temp = mLabelItemsContainer.back()->getLabel();
-    temp->mCurrentPos = (double)mCoordLabelX/1000;
-    if (mIntervalsCount < 4) {ui->intervalButton->show();}
+    mLabelItemsContainer.back()->getLabel()->mCurrentPos = (double)mCoordLabelX/1000;
+    if (mIntervalsCount < 4) { ui->intervalButton->show(); }
     emit(changeRecordedGraphInteraction(true));
     updateLabelCounter();
     if (ui->labelsNavigation->text() != "0/0")
     {
-        ui->goToPreviousMarkButton->setEnabled(true);
-        ui->goToNextMarkButton->setEnabled(true);
+        ui->goToPreviousMarkButton  ->setEnabled(true);
+        ui->goToNextMarkButton      ->setEnabled(true);
     }
-    ui->playRecord->setEnabled(true);
-    ui->rewindRecordButton->setEnabled(true);
-    ui->speedRecordButton->setEnabled(true);
-    ui->downloadGraphButton->setEnabled(true);
 }
 
 
 void MainPage::on_rejectMarkButton_clicked()
 {
-    ui->makeLabelButton->setEnabled(true);
-    ui->acceptMarkButton->hide();
-    ui->rejectMarkButton->hide();
-    ui->intervalButton->setEnabled(true);
-    ui->sessionButton->setEnabled(true);
+    ui->acceptMarkButton    ->hide();
+    ui->rejectMarkButton    ->hide();
+    ui->makeLabelButton     ->setEnabled(true);
+    ui->intervalButton      ->setEnabled(true);
+    ui->sessionButton       ->setEnabled(true);
+    ui->goToInterval1Button ->setEnabled(true);
+    ui->goToInterval2Button ->setEnabled(true);
+    ui->playRecord          ->setEnabled(true);
+    ui->rewindRecordButton  ->setEnabled(true);
+    ui->speedRecordButton   ->setEnabled(true);
+    ui->downloadGraphButton ->setEnabled(true);
 
-    ui->goToInterval1Button->setEnabled(true);
-    ui->goToInterval2Button->setEnabled(true);
-
-    if (mIntervalsCount < 4) {ui->intervalButton->show();}
+    if (mIntervalsCount < 4) { ui->intervalButton->show(); }
     emit(changeRecordedGraphInteraction(false));
-    //updateLabelCounter();
     if (ui->labelsNavigation->text() != "0/0")
     {
         ui->goToPreviousMarkButton->setEnabled(true);
-        ui->goToNextMarkButton->setEnabled(true);
+        ui->goToNextMarkButton    ->setEnabled(true);
     }
-    ui->playRecord->setEnabled(true);
-    ui->rewindRecordButton->setEnabled(true);
-    ui->speedRecordButton->setEnabled(true);
-    ui->downloadGraphButton->setEnabled(true);
 }
 
+void MainPage::startSession()
+{
+  ui->sessionButton->setIcon(QIcon(":/icons/deleteSession.svg"), QIcon(":/icons/deleteSession_pressed.svg"));
+  mSensorDataManager = new SensorDataManager(this);
+  connect(mSensorDataManager, &SensorDataManager::printDataOnGraph, mCurrentGraphsArea, &CurrentGraphsArea::addDataOnWavePlot);
+  connect(mSensorDataManager, &SensorDataManager::averageReady, this, &MainPage::setAverage);
+  connect(this, &MainPage::setAveragePointerPos, ui->alarmLevelICPWidget, &AlarmLevelICPWidget::updateAverageValueOnWidgets);
+  mSensorDataManager->start();
 
+  ui->recordButton        ->show();
+  ui->alarmLevelICPWidget ->show();
+  ui->averageValue        ->show();
+  ui->homeButton          ->hide();
+  ui->makeLabelButton     ->hide();
+  ui->acceptMarkButton    ->hide();
+  ui->rejectMarkButton    ->hide();
+  ui->recordButton        ->setEnabled(true);
+
+  //ui->averageICPWidget->show();
+  mCurrentLabelIndex = 0;
+  mCurrentGraphsArea->startPlotting();
+}
+void MainPage::stopSession()
+{
+  ui->sessionButton->setIcon(QIcon(":/icons/newSession.svg"), QIcon(":/icons/newSession_pressed.svg"));
+  //mCurrentGraphsArea->stopPlotting();
+  //mController->closeSession();
+
+  emit (changeCurrentGraph());
+  emit (resetWaveGraph());
+
+  ui->homeButton            ->show();
+  ui->makeLabelButton       ->hide();
+  ui->acceptMarkButton      ->hide();
+  ui->rejectMarkButton      ->hide();
+  ui->recordButton          ->hide();
+  ui->intervalButton        ->hide();
+  ui->acceptIntervalButton  ->hide();
+  ui->rejectIntervalButton  ->hide();
+  ui->goToInterval1Button   ->hide();
+  ui->goToInterval2Button   ->hide();
+  ui->labelsNavigation      ->hide();
+  ui->goToPreviousMarkButton->hide();
+  ui->goToNextMarkButton    ->hide();
+  ui->maxValueInterval1     ->hide();
+  ui->maxValueInterval2     ->hide();
+  ui->averageValue          ->hide();
+  ui->alarmLevelICPWidget   ->hide(); //или оставить?
+  ui->playRecord            ->hide();
+  ui->rewindRecordButton    ->hide();
+  ui->speedRecordButton     ->hide();
+  ui->downloadGraphButton   ->hide();
+  //ui->averageValueInterval1->hide();
+  //ui->averageValueInterval2->hide();
+  //ui->averageICPWidget->hide();
+  //        ui->averageValue->setText("--");
+  //        ui->averageValue->show();// или скрывать вообще?
+
+  // Остановка потока SensorDataManager - считывание данных
+  mSensorDataManager->isRunning = false;
+  while(mSensorDataManager->isStopped == false) {}
+
+  //        // Остановка записи данных
+  //        mSPIFile->isRunning = false;
+  //        while(mSPIFile->isStopped == false) {}
+}
 void MainPage::on_sessionButton_clicked()
 {
-    if (isSessionStart)
-    {
-        mSensorDataManager = new SensorDataManager(this);
-        connect(mSensorDataManager, &SensorDataManager::printDataOnGraph, mCurrentGraphsArea, &CurrentGraphsArea::addDataOnWavePlot);
-        mSensorDataManager->start();
-
-        isSessionStart = false;
-
-        connect(mSensorDataManager, &SensorDataManager::averageReady, this, &MainPage::setAverage);
-        connect(this, &MainPage::setAveragePointerPos, ui->alarmLevelICPWidget, &AlarmLevelICPWidget::updateAverageValueOnWidgets);
-        ui->recordButton->show();
-        ui->recordButton->setEnabled(true);
-        ui->sessionButton->setIcon(QIcon(":/icons/deleteSession.svg"), QIcon(":/icons/deleteSession_pressed.svg"));
-        ui->homeButton->hide();
-        ui->makeLabelButton->hide();
-        ui->acceptMarkButton->hide();
-        ui->rejectMarkButton->hide();
-        //ui->averageICPWidget->show();
-        ui->alarmLevelICPWidget->show();
-
-        ui->averageValue->show();
-
-        mCurrentLabelIndex = 0;
-        mController->mSensor->startSendingSensorReadings();
-        mCurrentGraphsArea->startPlotting();
-    }
-    else
-    {
-        isSessionStart = true;
-        ui->sessionButton->setIcon(QIcon(":/icons/newSession.svg"), QIcon(":/icons/newSession_pressed.svg"));
-        //mCurrentGraphsArea->stopPlotting();
-        //mController->mSensor->endSendingSensorReadings();
-        mController->closeSession();
-
-        emit (changeCurrentGraph());
-        if (!ui->recordButton->isHidden())
-        {
-            emit (changeCurrentGraph());
-        }
-        emit (resetWaveGraph());
-
-        ui->makeLabelButton->hide();
-        ui->acceptMarkButton->hide();
-        ui->rejectMarkButton->hide();
-        ui->recordButton->hide();
-
-        ui->intervalButton->hide();
-
-        ui->acceptIntervalButton->hide();
-        ui->rejectIntervalButton->hide();
-
-        ui->homeButton->show();
-        ui->goToInterval1Button->hide();
-        ui->goToInterval2Button->hide();
-
-        ui->labelsNavigation->hide();
-
-        ui->goToPreviousMarkButton->hide();
-        ui->goToNextMarkButton->hide();
-
-        ui->maxValueInterval1->hide();
-        ui->maxValueInterval2->hide();
-        //ui->averageValueInterval1->hide();
-        //ui->averageValueInterval2->hide();
-        //добавить удаление всех линий после завершения сессии
-
-        ui->alarmLevelICPWidget->hide(); //или оставить?
-        //ui->averageICPWidget->hide();
-
-//        ui->averageValue->setText("--");
-//        ui->averageValue->show();// или скрывать вообще?
-        ui->averageValue->hide();
-
-        ui->playRecord->hide();
-        ui->rewindRecordButton->hide();
-        ui->speedRecordButton->hide();
-        ui->downloadGraphButton->hide();
-
-        // Остановка считывания данных
-        mSensorDataManager->isRunning = false;
-        while(mSensorDataManager->isStopped == false) {}
-
-//        // Остановка записи данных
-//        mSPIFile->isRunning = false;
-//        while(mSPIFile->isStopped == false) {}
-    }
+  if (isSessionStart)
+  {
+    isSessionStart = false;
+    startSession();
+  }
+  else
+  {
+    isSessionStart = true;
+    stopSession();
+  }
 }
-
-
 void MainPage::on_intervalButton_clicked()
 {
-    ui->acceptIntervalButton->show();
-    ui->rejectIntervalButton->show();
+    ui->acceptIntervalButton    ->show();
+    ui->rejectIntervalButton    ->show();
+    ui->makeLabelButton         ->setEnabled(false); //ui->makeLabelButton->hide();
+    ui->sessionButton           ->setEnabled(false);
+    ui->goToPreviousMarkButton  ->setEnabled(false);
+    ui->goToNextMarkButton      ->setEnabled(false);
+    ui->goToInterval1Button     ->setEnabled(false);
+    ui->goToInterval2Button     ->setEnabled(false);
+    ui->playRecord              ->setEnabled(false);
+    ui->rewindRecordButton      ->setEnabled(false);
+    ui->speedRecordButton       ->setEnabled(false);
+    ui->downloadGraphButton     ->setEnabled(false);
 
-    ui->makeLabelButton->setEnabled(false); //ui->makeLabelButton->hide();
-    ui->sessionButton->setEnabled(false);
-
-    ui->goToPreviousMarkButton->setEnabled(false);
-    ui->goToNextMarkButton->setEnabled(false);
-
-    ui->goToInterval1Button->setEnabled(false);
-    ui->goToInterval2Button->setEnabled(false);
     mCurrentGraphsArea->addIntervalOnRecordedGraph();
     if (isIntervalCreating)
     {
         ui->intervalButton->setEnabled(false);
     }
-    ui->playRecord->setEnabled(false);
-    ui->rewindRecordButton->setEnabled(false);
-    ui->speedRecordButton->setEnabled(false);
-    ui->downloadGraphButton->setEnabled(false);
+
 }
 
 
@@ -883,20 +845,20 @@ void MainPage::on_acceptIntervalButton_clicked()
     mIntervalsFile.open(QIODevice::WriteOnly | QIODevice::Append);
     mIntervalsFile.write((QString::number(mIntervalsCount) + ": " + QString::number(mIntervalsContainer[mIntervalsCount-1]->mIntervalPos) + "\n").toLatin1());
     mIntervalsFile.close();
-    ui->makeLabelButton->setEnabled(true); //ui->makeLabelButton->show();
-    ui->sessionButton->setEnabled(true);
-    ui->acceptIntervalButton->hide();
-    ui->rejectIntervalButton->hide();
-    ui->goToInterval1Button->setEnabled(true);
-    ui->goToInterval2Button->setEnabled(true);
+
+    ui->acceptIntervalButton  ->hide();
+    ui->rejectIntervalButton  ->hide();
+    ui->makeLabelButton       ->setEnabled(true); //ui->makeLabelButton->show();
+    ui->sessionButton         ->setEnabled(true);
+    ui->goToInterval1Button   ->setEnabled(true);
+    ui->goToInterval2Button   ->setEnabled(true);
+    ui->intervalButton        ->setEnabled(true);
+    ui->playRecord            ->setEnabled(true);
+    ui->rewindRecordButton    ->setEnabled(true);
+    ui->speedRecordButton     ->setEnabled(true);
+    ui->downloadGraphButton   ->setEnabled(true);
+
     emit(changeRecordedGraphInteraction(true));
-
-    ui->intervalButton->setEnabled(true);
-
-    ui->playRecord->setEnabled(true);
-    ui->rewindRecordButton->setEnabled(true);
-    ui->speedRecordButton->setEnabled(true);
-    ui->downloadGraphButton->setEnabled(true);
 
     //const QString maxValuePreset = tr("Максимум\n%1"); //перевести потом
     //const QString averageValuePreset = tr("Среднее\n%1"); //перевести потом
@@ -917,39 +879,40 @@ void MainPage::on_acceptIntervalButton_clicked()
         //qDebug() << msg ;
         if (mIntervalsCount == 2)
         {
-            //ui->maxValueInterval1->setText(msg);
             ui->maxValueInterval1->setText(intervalDataPreset.arg(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue, 0, 'f', 1).arg(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue, 0, 'f', 1));
-            ui->goToInterval1Button->show();
-            ui->maxValueInterval1->show();
-            //qDebug() << mIntervalsCount << mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue << mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue;
+            ui->goToInterval1Button ->show();
+            ui->maxValueInterval1   ->show();
         }
         else
         {
-            //ui->maxValueInterval2->setText(msg);
             ui->maxValueInterval2->setText(intervalDataPreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue, 'f', 1)).arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue, 'f', 1)));
-            ui->goToInterval2Button->show();
-            ui->maxValueInterval2->show();
-            ui->intervalButton->hide();
+            ui->goToInterval2Button ->show();
+            ui->maxValueInterval2   ->show();
+            ui->intervalButton      ->hide();
         }
     }
     if (ui->labelsNavigation->text() != "0/0")
     {
-        ui->goToPreviousMarkButton->setEnabled(true);
-        ui->goToNextMarkButton->setEnabled(true);
+        ui->goToPreviousMarkButton  ->setEnabled(true);
+        ui->goToNextMarkButton      ->setEnabled(true);
     }
 }
 
 
 void MainPage::on_rejectIntervalButton_clicked()
 {
-    ui->acceptIntervalButton->hide();
-    ui->rejectIntervalButton->hide();
+    ui->acceptIntervalButton  ->hide();
+    ui->rejectIntervalButton  ->hide();
+    ui->makeLabelButton       ->setEnabled(true);
+    ui->sessionButton         ->setEnabled(true);
+    ui->goToInterval1Button   ->setEnabled(true);
+    ui->goToInterval2Button   ->setEnabled(true);
+    ui->intervalButton        ->setEnabled(true);
+    ui->playRecord            ->setEnabled(true);
+    ui->rewindRecordButton    ->setEnabled(true);
+    ui->speedRecordButton     ->setEnabled(true);
+    ui->downloadGraphButton   ->setEnabled(true);
 
-    ui->makeLabelButton->setEnabled(true); //ui->makeLabelButton->show();
-    ui->sessionButton->setEnabled(true);
-
-    ui->goToInterval1Button->setEnabled(true);
-    ui->goToInterval2Button->setEnabled(true);
     if (ui->labelsNavigation->text() != "0/0")
     {
         ui->goToPreviousMarkButton->setEnabled(true);
@@ -957,11 +920,7 @@ void MainPage::on_rejectIntervalButton_clicked()
     }
     mIntervalsCount--;
     emit(changeRecordedGraphInteraction(false));
-    ui->intervalButton->setEnabled(true);
-    ui->playRecord->setEnabled(true);
-    ui->rewindRecordButton->setEnabled(true);
-    ui->speedRecordButton->setEnabled(true);
-    ui->downloadGraphButton->setEnabled(true);
+
 }
 
 
