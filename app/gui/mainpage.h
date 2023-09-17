@@ -76,16 +76,16 @@ private slots:
     void controllerEventHandler(ControllerEvent event);//, const QVariantMap &args = {});
 
     /*! Обновление информации о последнем состоянии датчика */
-    void updateSensorState();
+    //void updateSensorState();
 
     /*! Обновляет информацию о датчике */
-    void updateSensorInfo();
+    //void updateSensorInfo();
 
     /*! Обновляет последнее время сброса датчика */
-    void updateSensorResetTime();
+    //void updateSensorResetTime();
 
     /*! Обновление информации о сессии */
-    void updateSessionInfo();
+    //void updateSessionInfo();
 
     /*! Обновление количества поставленных меток */
     void updateLabelCounter();
@@ -96,7 +96,7 @@ private slots:
     /*! Обновление программного хранилища на виджетах
         isAvailable - доступно ли программное хранилище
     */
-    void updateSoftwareStorageOnWidgets(bool isAvailable);
+    //void updateSoftwareStorageOnWidgets(bool isAvailable);
 
     /*! Скриншот текущего экрана */
     //void makeScreen();

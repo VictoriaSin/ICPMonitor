@@ -249,14 +249,14 @@ void MainPage::installController(MonitorController *controller)
 void MainPage::controllerEventHandler(ControllerEvent event)//, const QVariantMap &args)
 {
     switch(event) {
-    case ControllerEvent::SessionStarted: {
-        //updateSessionInfo(); !!!!
-        break;
-    }
-    case ControllerEvent::SessionClosed: {
-        //updateSessionInfo(); !!!!
-        break;
-    }
+//    case ControllerEvent::SessionStarted: {
+//        //updateSessionInfo(); !!!!
+//        break;
+//    }
+//    case ControllerEvent::SessionClosed: {
+//        //updateSessionInfo(); !!!!
+//        break;
+//    }
     case ControllerEvent::GlobalTimeUpdate: {
         updateDateTime();
         break;
@@ -265,53 +265,53 @@ void MainPage::controllerEventHandler(ControllerEvent event)//, const QVariantMa
         //updateLabelCounter();
         break;
     }
-    case ControllerEvent::SensorConnected: {
-        mLastSensorState = ControllerEvent::SensorConnected;
-        updateSensorState();
-        break;
-    }
-    case ControllerEvent::SensorConnectionError: {
-        mLastSensorState = ControllerEvent::SensorConnectionError;
-        updateSensorState();
-        break;
-    }
-    case ControllerEvent::SensorReset: {
-        mLastSensorState = ControllerEvent::SensorReset;
-        updateSensorState();
-        break;
-    }
-    case ControllerEvent::SensorResetError: {
-        mLastSensorState = ControllerEvent::SensorResetError;
-        updateSensorState();
-        break;
-    }
-    case ControllerEvent::SensorDisconnected: {
-        mLastSensorState = ControllerEvent::SensorDisconnected;
-        updateSensorState();
-        break;
-    }
-    case ControllerEvent::SoftwareStorageAvailable: {
-        updateSoftwareStorageOnWidgets(true);
-        break;
-    }
-    case ControllerEvent::SoftwareStorageUnavailable: {
-        updateSoftwareStorageOnWidgets(false);
-        break;
-    }
-    case ControllerEvent::SoftwareStorageNotAssigned: {
-        updateSoftwareStorageOnWidgets(false);
-        break;
-    }
-    case ControllerEvent::DataBaseAvailable: {
-//!!!   ui->makeLabelButton->setDisabled(false);
-        ui->softwareStorageIconSVG->load(QString(":/icons/softwareStorage.svg"));
-        break;
-    }
-    case ControllerEvent::DataBaseUnavailable: {
-//!!!   ui->makeLabelButton->setDisabled(true);
-        ui->softwareStorageIconSVG->load(QString(":/icons/softwareStorageUnavailable.svg"));
-        break;
-    }
+//    case ControllerEvent::SensorConnected: {
+//        mLastSensorState = ControllerEvent::SensorConnected;
+//        //updateSensorState();
+//        break;
+//    }
+//    case ControllerEvent::SensorConnectionError: {
+//        mLastSensorState = ControllerEvent::SensorConnectionError;
+//        //updateSensorState();
+//        break;
+//    }
+//    case ControllerEvent::SensorReset: {
+//        mLastSensorState = ControllerEvent::SensorReset;
+//        //updateSensorState();
+//        break;
+//    }
+//    case ControllerEvent::SensorResetError: {
+//        mLastSensorState = ControllerEvent::SensorResetError;
+//        //updateSensorState();
+//        break;
+//    }
+//    case ControllerEvent::SensorDisconnected: {
+//        mLastSensorState = ControllerEvent::SensorDisconnected;
+//        //updateSensorState();
+//        break;
+//    }
+//    case ControllerEvent::SoftwareStorageAvailable: {
+//        updateSoftwareStorageOnWidgets(true);
+//        break;
+//    }
+//    case ControllerEvent::SoftwareStorageUnavailable: {
+//        updateSoftwareStorageOnWidgets(false);
+//        break;
+//    }
+//    case ControllerEvent::SoftwareStorageNotAssigned: {
+//        updateSoftwareStorageOnWidgets(false);
+//        break;
+//    }
+//    case ControllerEvent::DataBaseAvailable: {
+////!!!   ui->makeLabelButton->setDisabled(false);
+//        ui->softwareStorageIconSVG->load(QString(":/icons/softwareStorage.svg"));
+//        break;
+//    }
+//    case ControllerEvent::DataBaseUnavailable: {
+////!!!   ui->makeLabelButton->setDisabled(true);
+//        ui->softwareStorageIconSVG->load(QString(":/icons/softwareStorageUnavailable.svg"));
+//        break;
+//    }
 //    case ControllerEvent::ScreenWritten:
 //    case ControllerEvent::ScreenNotWritten: {
 //        ui->photoButton->setEnabled(true);
@@ -321,92 +321,89 @@ void MainPage::controllerEventHandler(ControllerEvent event)//, const QVariantMa
     }
 }
 
-void MainPage::updateSensorInfo()
-{
-    // Если контроллер не установлен
-    if (!mController) {
-        return;
-    }
-
-    // Получаем текущий датчик
-    const auto sensor = mController->sensor();
-    if (!sensor) { return; }
-
-//    // Устанавливаем информацию о датчике
-//    ui->sensorInfoLabel->setText(sensor->info());
-}
-
-void MainPage::updateSensorResetTime()
-{
-    // Если контроллер не установлен
-    if (!mController) { return; }
-
-    // Получаем текущий датчик
-    const ISensor * const sensor = mController->sensor();
-    if (!sensor) { return; }
-
-    // Обновляем информацию
-    ui->sensorStateLabel->setText(QString("%1: %2").arg(tr("Обнулён")).arg(QDateTime::fromMSecsSinceEpoch(sensor->lastResetTimestamp()).toString("hh:mm:ss-dd.MM.yyyy")));
-}
-
-void MainPage::updateSensorState()
-{
-    switch (mLastSensorState) {
-    case ControllerEvent::SensorConnected: {
-        ui->sensorStateLabel->setText(tr("Датчик подключён"));
-        updateSensorInfo();
-        break;
-    }
-    case ControllerEvent::SensorConnectionError: {
-        ui->sensorStateLabel->setText(tr("Ошибка соединения с датчиком"));
-        break;
-    }
-    case ControllerEvent::SensorReset: {
-        updateSensorResetTime();
-        break;
-    }
-    case ControllerEvent::SensorResetError: {
-        ui->sensorStateLabel->setText(tr("Ошибка сброса датчика"));
-        break;
-    }
-    case ControllerEvent::SensorDisconnected: {
-        ui->sensorStateLabel->setText(tr("Датчик отключён"));
-        updateSensorInfo();
-        break;
-    }
-        default: break;
-    }
-}
-
-void MainPage::updateSessionInfo()
-{
-    // Если контроллер не установлен
-    if (!mController) {
-        return;
-    }
-
-    // Получаем текущую сессию
-    //const auto &currentSession = mController->getCurrentSession();
-//    if (!currentSession) {
-//        ui->sessionID->setText(tr("Сессия неактивна!"));
-//    } else {
-//        ui->sessionID->setText(QString("%1 %2").arg(tr("ID сессии:")).arg(currentSession->getId()));
+//void MainPage::updateSensorInfo()
+//{
+//    // Если контроллер не установлен
+//    if (!mController) {
+//        return;
 //    }
-}
+
+//    // Получаем текущий датчик
+//    const auto sensor = mController->sensor();
+//    if (!sensor) { return; }
+
+////    // Устанавливаем информацию о датчике
+////    ui->sensorInfoLabel->setText(sensor->info());
+//}
+
+//void MainPage::updateSensorResetTime()
+//{
+//    // Если контроллер не установлен
+//    if (!mController) { return; }
+
+//    // Получаем текущий датчик
+//    const ISensor * const sensor = mController->sensor();
+//    if (!sensor) { return; }
+
+//    // Обновляем информацию
+//    ui->sensorStateLabel->setText(QString("%1: %2").arg(tr("Обнулён")).arg(QDateTime::fromMSecsSinceEpoch(sensor->lastResetTimestamp()).toString("hh:mm:ss-dd.MM.yyyy")));
+//}
+
+//void MainPage::updateSensorState()
+//{
+//    switch (mLastSensorState) {
+////    case ControllerEvent::SensorConnected: {
+////        ui->sensorStateLabel->setText(tr("Датчик подключён"));
+////        updateSensorInfo();
+////        break;
+////    }
+////    case ControllerEvent::SensorConnectionError: {
+////        ui->sensorStateLabel->setText(tr("Ошибка соединения с датчиком"));
+////        break;
+////    }
+////    case ControllerEvent::SensorReset: {
+////        updateSensorResetTime();
+////        break;
+////    }
+////    case ControllerEvent::SensorResetError: {
+////        ui->sensorStateLabel->setText(tr("Ошибка сброса датчика"));
+////        break;
+////    }
+////    case ControllerEvent::SensorDisconnected: {
+////        ui->sensorStateLabel->setText(tr("Датчик отключён"));
+////        updateSensorInfo();
+////        break;
+////    }
+//        default: break;
+//    }
+//}
+
+//void MainPage::updateSessionInfo()
+//{
+//    // Если контроллер не установлен
+//    if (!mController) { return; }
+
+//    // Получаем текущую сессию
+//    //const auto &currentSession = mController->getCurrentSession();
+////    if (!currentSession) {
+////        ui->sessionID->setText(tr("Сессия неактивна!"));
+////    } else {
+////        ui->sessionID->setText(QString("%1 %2").arg(tr("ID сессии:")).arg(currentSession->getId()));
+////    }
+//}
 
 void MainPage::updateLabelCounter()
 {
     // Если контроллер не установлен
-    if (!mController) {
-        return;
-    }
+    if (!mController) { return; }
 
     // Подготовка шаблона для заполнения
     const QString counterLabelText = tr("Меток: %1");
     const QString currentLabelText = tr("%1/%2");
     // Запрос у контроллера кол-ва меток за текущую сессию
     int countLabels = mController->getLabelsCountPerCurrentSession();
-    if (countLabels > 0) {
+    if (countLabels > 0)
+    {
         //ui->labelCounterLabel->setText(counterLabelText.arg(mLabelManagerGlobal->mCountLabels));
         ui->labelsNavigation->setText(currentLabelText.arg(mCurrentLabelIndex + 1).arg(mLabelManagerGlobal->mCountLabels));
     } else {
@@ -417,20 +414,21 @@ void MainPage::updateLabelCounter()
 void MainPage::scaleFont(float scaleFactor)
 {
     WFontScaling(ui->dateTimeLabel, scaleFactor);
-    //WFontScaling(ui->sensorInfoLabel, scaleFactor);
     WFontScaling(ui->sensorStateLabel, scaleFactor);
-    //WFontScaling(ui->labelCounterLabel, scaleFactor);
-    //WFontScaling(ui->sessionID, scaleFactor);
-    //ui->averageICPWidget->scaleFont(scaleFactor);
     ui->alarmLevelICPWidget->scaleFont(scaleFactor);
     mCurrentGraphsArea->scaleFont(scaleFactor);
     mMainMenu->scaleFont(scaleFactor);
     WFontScaling(ui->labelsNavigation, scaleFactor);
     WFontScaling(ui->maxValueInterval1, scaleFactor);
     WFontScaling(ui->maxValueInterval2, scaleFactor);
+    WFontScaling(ui->averageValue, scaleFactor);
+    //WFontScaling(ui->sensorInfoLabel, scaleFactor);
+    //WFontScaling(ui->labelCounterLabel, scaleFactor);
+    //WFontScaling(ui->sessionID, scaleFactor);
+    //ui->averageICPWidget->scaleFont(scaleFactor);
     //WFontScaling(ui->averageValueInterval1, scaleFactor);
     //WFontScaling(ui->averageValueInterval2, scaleFactor);
-    WFontScaling(ui->averageValue, scaleFactor);
+
 }
 
 void MainPage::updateDateTime()
@@ -448,17 +446,17 @@ void MainPage::updateDateTime()
     }
 }
 
-void MainPage::updateSoftwareStorageOnWidgets(bool isAvailable)
-{
-    QString svgPath;
-    if (isAvailable) {
-        svgPath = ":/icons/softwareStorage.svg";
-    } else {
-        svgPath = ":/icons/softwareStorageUnavailable.svg";
-    }
+//void MainPage::updateSoftwareStorageOnWidgets(bool isAvailable)
+//{
+//    QString svgPath;
+//    if (isAvailable) {
+//        svgPath = ":/icons/softwareStorage.svg";
+//    } else {
+//        svgPath = ":/icons/softwareStorageUnavailable.svg";
+//    }
 
-    ui->softwareStorageIconSVG->load(svgPath);
-}
+//    ui->softwareStorageIconSVG->load(svgPath);
+//}
 
 //void MainPage::makeScreen()
 //{
@@ -488,9 +486,7 @@ void MainPage::nextGraph()
     int countGraph = mGraphWidgetContainer.size();
 
     // Если в списке меньше одного графика
-    if (countGraph < 2) {
-        return;
-    }
+    if (countGraph < 2) { return; }
 
     // Скрываем текущий график
     mGraphWidgetContainer[mGraphNumber]->hide();
@@ -556,7 +552,6 @@ void MainPage::on_recordButton_clicked()
         qDebug() << mCurrentRecordDir.path();
         if (!mCurrentRecordDir.exists())
         {
-            //qDebug() << "not exists";
 #ifdef TEST_BUILD
             QString response;
             //response = executeAConsoleCommand("mkdir", QStringList() << "-m" << "777" << mCurrentRecordDir.path());
@@ -686,6 +681,7 @@ void MainPage::on_acceptMarkButton_clicked()
     mMarksFile.write((QString::number(mLabelManagerGlobal->mCountLabels) + ": " + QString::number(mCoordLabelX) + "\n").toLatin1());
     mMarksFile.close();
     mLabelItemsContainer.back()->getLabel()->mCurrentPos = (double)mCoordLabelX/1000;
+
     if (mIntervalsCount < 4) { ui->intervalButton->show(); }
     emit(changeRecordedGraphInteraction(true));
     updateLabelCounter();
@@ -715,8 +711,8 @@ void MainPage::on_rejectMarkButton_clicked()
     emit(changeRecordedGraphInteraction(false));
     if (ui->labelsNavigation->text() != "0/0")
     {
-        ui->goToPreviousMarkButton->setEnabled(true);
-        ui->goToNextMarkButton    ->setEnabled(true);
+        ui->goToPreviousMarkButton  ->setEnabled(true);
+        ui->goToNextMarkButton      ->setEnabled(true);
     }
 }
 
@@ -870,13 +866,6 @@ void MainPage::on_acceptIntervalButton_clicked()
     if (mIntervalsCount % 2 == 0)
     {
         mCurrentGraphsArea->colorInterval();
-
-        //QString msg;
-        /*msg.sprintf("%s\n%.1f\n%s\n%.1f", //maxValuePreset.toLocal8Bit()
-                    (char*)&maxValuePreset,     mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue,
-                                          (char*)averageValuePreset.toLocal8Bit().data(), mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue);*/
-
-        //qDebug() << msg ;
         if (mIntervalsCount == 2)
         {
             ui->maxValueInterval1->setText(intervalDataPreset.arg(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue, 0, 'f', 1).arg(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue, 0, 'f', 1));
@@ -915,8 +904,8 @@ void MainPage::on_rejectIntervalButton_clicked()
 
     if (ui->labelsNavigation->text() != "0/0")
     {
-        ui->goToPreviousMarkButton->setEnabled(true);
-        ui->goToNextMarkButton->setEnabled(true);
+        ui->goToPreviousMarkButton  ->setEnabled(true);
+        ui->goToNextMarkButton      ->setEnabled(true);
     }
     mIntervalsCount--;
     emit(changeRecordedGraphInteraction(false));

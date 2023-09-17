@@ -52,11 +52,11 @@ MonitorController::MonitorController() //: mWorkerThread(new QThread(this))
     mLabelManagerGlobal = new LabelManager(mICPSettings, mDataBaseManager);
 
     // Создание файлового контроллера
-    mFileController = new FileController(mICPSettings, mLabelManagerGlobal, this);
+    //mFileController = new FileController(mICPSettings, mLabelManagerGlobal, this);
 
     // Усреднённые данные с датчика готовы
-    connect(mAverageICPController,  &AverageICPController::dataReady,
-                             this,  &MonitorController::processAverageSensorValue);
+//    connect(mAverageICPController,  &AverageICPController::dataReady,
+//                             this,  &MonitorController::processAverageSensorValue);
 //    // Остановка mAverageTimer
 //    connect(this,                   &MonitorController::stopAverageTimer,
 //            mAverageICPController,  &AverageICPController::stop);
@@ -204,7 +204,7 @@ void MonitorController::dataBaseUnavailable()
 void MonitorController::updateFileController()
 {
     qDebug() << "Update FileController";
-    mFileController->setSoftwareStorage(mSoftwareStorage);
+    //mFileController->setSoftwareStorage(mSoftwareStorage);
 }
 void MonitorController::initRTCModule()
 {
@@ -301,7 +301,7 @@ void MonitorController::initSensor()
     mSensor->moveToThread(mSensorThread);
     mSensorThread->start(QThread::HighPriority);
 
-    connect(mSensor, &ISensor::dataReady, this, &MonitorController::processSensorData);
+    //connect(mSensor, &ISensor::dataReady, this, &MonitorController::processSensorData);
     connect(mSensor, &ISensor::sensorEvent, this, &MonitorController::processSensorEvent);
 
     // Запускаем инициализацию датчика (АЦП)
@@ -315,7 +315,7 @@ void MonitorController::terminate()
     // Прекращаем работу контроллеров
     mAverageICPController->terminate();
     mAlarmController->terminate();
-    mFileController->terminate();
+    //mFileController->terminate();
 
     // Прекращаем работу менеджеров
     mSessionManager->terminate();
@@ -623,11 +623,11 @@ void MonitorController::saveCurrentDateTime()
 }
 void MonitorController::writeScreenFromLinuxFB()
 {
-    mFileController->writeScreenFromLinuxFB();
+    //mFileController->writeScreenFromLinuxFB();
 }
 void MonitorController::writeScreenFromWidget(const QPixmap &screen)
 {
-    mFileController->writeScreenFromWidget(screen);
+    //mFileController->writeScreenFromWidget(screen);
 }
 void MonitorController::setMaxScreens(uint maxScreens)
 {
@@ -690,31 +690,29 @@ QVector<ComplexValue> MonitorController::getAverageSensorReadingsFromTheInterval
     }
 
     // Если контроллер файлов отсутствует
-    if (!mFileController) {
-        return {};
-    }
+    //if (!mFileController) {return {};   }
 
     // Возвращаем отобранные значения
-    return mFileController->getAverageSensorReadingsFromTheInterval(intervalStartTimeSeconds, intervalEndTimeSeconds);
+    return {};// mFileController->getAverageSensorReadingsFromTheInterval(intervalStartTimeSeconds, intervalEndTimeSeconds);
 }
 QVector<ComplexValue> MonitorController::getAverageSensorReadingsFromTheIntervalForTheCurrentSession(uint64_t intervalStartTimeSeconds, uint64_t intervalEndTimeSeconds)
 {
-    if (!mFileController || !mSessionManager) {
-        return {};
-    }
+  return {};
+//  if (!mFileController || !mSessionManager) { return {};
+//    }
 
-    const auto &session = mSessionManager->getCurrentSession();
-    if (!session) {
-        return {};
-    }
+//    const auto &session = mSessionManager->getCurrentSession();
+//    if (!session) {
+//        return {};
+//    }
 
-    // Если начальная точка интервала больше конечной
-    if (intervalStartTimeSeconds > intervalEndTimeSeconds) {
-        return {};
-    }
+//    // Если начальная точка интервала больше конечной
+//    if (intervalStartTimeSeconds > intervalEndTimeSeconds) {
+//        return {};
+//    }
 
-    // Возвращаем отобранные значения
-    return mFileController->getAverageSensorReadingsFromTheIntervalForTheSession(intervalStartTimeSeconds, intervalEndTimeSeconds, session->getId());
+//    // Возвращаем отобранные значения
+//    return mFileController->getAverageSensorReadingsFromTheIntervalForTheSession(intervalStartTimeSeconds, intervalEndTimeSeconds, session->getId());
 }
 void MonitorController::setDateTime(int64_t /*timestamp*/)
 {
@@ -747,29 +745,29 @@ bool MonitorController::currentTimeIsValid() const
 {
     return true;//dateTimeIsValid(QDateTime::currentDateTime());
 }
-void MonitorController::exportScreens(ConversionPictureFormat format, int countTransScreens)
-{
-    mFileController->exportScreenshots(format, countTransScreens);
-}
-void MonitorController::createSession()
-{
-    auto isCreated = mSessionManager->createSession();
-    if (isCreated) {
-        auto idSession = isCreated->getId();
-        mLabelManagerGlobal->setSessionID(idSession);
-        mFileController->setSessionID(idSession);
-        emit controllerEvent(ControllerEvent::SessionStarted);
-    }
-}
-void MonitorController::closeSession()
-{
-    bool isClosed = mSessionManager->closeCurrentSession();
-    if (isClosed) {
-        mLabelManagerGlobal->setSessionID(-1);
-        mFileController->setSessionID(-1);
-        emit controllerEvent(ControllerEvent::SessionClosed);
-    }
-}
+//void MonitorController::exportScreens(ConversionPictureFormat format, int countTransScreens)
+//{
+//    //mFileController->exportScreenshots(format, countTransScreens);
+//}
+//void MonitorController::createSession()
+//{
+//    //auto isCreated = mSessionManager->createSession();
+//    //if (isCreated) {
+//    //    auto idSession = isCreated->getId();
+//    //    mLabelManagerGlobal->setSessionID(idSession);
+//    //    mFileController->setSessionID(idSession);
+//    //    emit controllerEvent(ControllerEvent::SessionStarted);
+//    //}
+//}
+//void MonitorController::closeSession()
+//{
+//    //bool isClosed = mSessionManager->closeCurrentSession();
+//    //if (isClosed) {
+//    //    mLabelManagerGlobal->setSessionID(-1);
+//    //    mFileController->setSessionID(-1);
+//    //    emit controllerEvent(ControllerEvent::SessionClosed);
+//    //}
+//}
 void MonitorController::processSensorData()
 {
     if (!mSensor)
@@ -778,16 +776,16 @@ void MonitorController::processSensorData()
     }
 
     // Берём у датчика последнее показание
-    mLastSensorValue = getLastSensorValue();
+    //mLastSensorValue = getLastSensorValue();
 
     // Файлы писать строго в тех единицах, которые выдаются датчиком
-    mFileController->writeICPSensorData(&mLastSensorValue);
+    //mFileController->writeICPSensorData(&mLastSensorValue);
 
     // Средние значения строго в тех единицах, которые выдаются датчиком
-    mAverageICPController->setSensorData(mLastSensorValue);
+    //mAverageICPController->setSensorData(mLastSensorValue);
 
     // Конвертируем показание в указанный пользователем тип
-    mLastConvertedSensorValue = mLastSensorValue;
+    //mLastConvertedSensorValue = mLastSensorValue;
 
     //emit dataReadyForGraph();
 }
@@ -800,7 +798,7 @@ void MonitorController::processSensorEvent(SensorEvent event, const QVariantMap 
         break;
     case SensorEvent::InitError:
         qDebug() << "InitError Sensor";
-        closeSession();
+        //closeSession();
         mAverageICPController->stop();
         mAlarmController->clear();
         emit controllerEvent(ControllerEvent::SensorInitError, args);
@@ -814,7 +812,7 @@ void MonitorController::processSensorEvent(SensorEvent event, const QVariantMap 
         break;
     case SensorEvent::ConnectionError:
         qDebug() << "ConnectionError Sensor";
-        closeSession();
+        //closeSession();
         mAverageICPController->stop();
         mAlarmController->clear();
         emit controllerEvent(ControllerEvent::SensorConnectionError, args);
@@ -825,7 +823,7 @@ void MonitorController::processSensorEvent(SensorEvent event, const QVariantMap 
         break;
     case SensorEvent::ConfigError:
         qDebug() << "ConfigError Sensor";
-        closeSession();
+        //closeSession();
         mAverageICPController->stop();
         mAlarmController->clear();
         emit controllerEvent(ControllerEvent::SensorConfigError, args);
@@ -840,14 +838,14 @@ void MonitorController::processSensorEvent(SensorEvent event, const QVariantMap 
     case SensorEvent::ResetError:
         qDebug() << "ResetError Sensor";
         // Необходимо уведомить пользователя args об ошибке
-        closeSession();
+        //closeSession();
         mAverageICPController->stop();
         mAlarmController->clear();
         emit controllerEvent(ControllerEvent::SensorResetError, args);
         break;
     case SensorEvent::StartDispatchSensorReadings:
         qDebug() << "Start Dispatch Sensor Readings";
-        createSession();
+        //createSession();
         mAverageICPController->start();
         emit controllerEvent(ControllerEvent::SensorStartDispatchSensorReadings, args);
         break;
@@ -860,14 +858,14 @@ void MonitorController::processSensorEvent(SensorEvent event, const QVariantMap 
         break;
     case SensorEvent::Disconnected:
         qDebug() << "Disconnected Sensor";
-        closeSession();
+        //closeSession();
         mAverageICPController->stop();
         mAlarmController->clear();
         emit controllerEvent(ControllerEvent::SensorDisconnected, args);
         break;
     case SensorEvent::HardReset:
         qDebug() << "HardReset Sensor";
-        closeSession();
+        //closeSession();
         mAverageICPController->stop();
         mAlarmController->clear();
         emit controllerEvent(ControllerEvent::SensorHardReseted, args);
@@ -875,7 +873,7 @@ void MonitorController::processSensorEvent(SensorEvent event, const QVariantMap 
     case SensorEvent::UndefinedError:
         qDebug() << "UndefinedError Sensor";
         // Необходимо уведомить пользователя args об ошибке
-        closeSession();
+        //closeSession();
         mAverageICPController->stop();
         mAlarmController->clear();
         emit controllerEvent(ControllerEvent::SensorUndefinedError, args);
@@ -924,14 +922,14 @@ void MonitorController::processFileControllerEvent(FileControllerEvent event, co
         break;
     }
     case FileControllerEvent::FatalWriteCurrentSensorReadingsError: {
-        closeSession();
+        //closeSession();
         emit controllerEvent(ControllerEvent::RecordCurrentSensorReadingsInterruptedError, QVariantMap{{GlobalEventsArgs::Message, tr("Переполнена очередь записи\n"
                                                                                                         "текущих показаний в память!\n"
                                                                                                         "Сессия завершена!")}});
         break;
     }
     case FileControllerEvent::FatalWriteAverageSensorReadingsError: {
-        closeSession();
+        //closeSession();
         emit controllerEvent(ControllerEvent::RecordAverageSensorReadingsInterruptedError, QVariantMap{{GlobalEventsArgs::Message, tr("Переполнена очередь записи\n"
                                                                                                         "средних показаний в память!\n"
                                                                                                         "Сессия завершена!")}});
@@ -992,166 +990,166 @@ void MonitorController::processBlockDevicesControllerEvent(BlockDeviceManagerEve
     }
     }
 }
-void MonitorController::processAverageSensorValue()
-{
-    //mFileController->writeAverageICPSensorData(mAverageICPController->lastAverageValueByPointer());
-    emit dataReadyFromAverageICPController();
-}
+//void MonitorController::processAverageSensorValue()
+//{
+//    //mFileController->writeAverageICPSensorData(mAverageICPController->lastAverageValueByPointer());
+//    emit dataReadyFromAverageICPController();
+//}
 
-QString MonitorController::getFlashDevice(QString pathPartDevice)
-{
-    // Список со всеми подключёнными блочными устройствами
-    QList<std::shared_ptr<BlockDevice>> blockDevices;
+//QString MonitorController::getFlashDevice(QString pathPartDevice)
+//{
+//    // Список со всеми подключёнными блочными устройствами
+//    QList<std::shared_ptr<BlockDevice>> blockDevices;
 
-    // Получаем все блочные устройства в формате json
-    QJsonDocument blockDevsJson = QJsonDocument::fromJson(executeAConsoleCommand("bash", QStringList() << "-c" << "lsblk -J -o TYPE,UUID,PATH").toLocal8Bit());
-    if (blockDevsJson.isNull()) {
-        return {};
-    }
-    //qDebug() << blockDevsJson;
+//    // Получаем все блочные устройства в формате json
+//    QJsonDocument blockDevsJson = QJsonDocument::fromJson(executeAConsoleCommand("bash", QStringList() << "-c" << "lsblk -J -o TYPE,UUID,PATH").toLocal8Bit());
+//    if (blockDevsJson.isNull()) {
+//        return {};
+//    }
+//    //qDebug() << blockDevsJson;
 
-    // Парсим блочные устройства
-    QJsonArray data = blockDevsJson.object().value("blockdevices").toArray();
-    QString diskName; // Основное имя диска
-    for (const QJsonValue &dev : qAsConst(data))
-    {
-        const QString blockDevType = dev.toObject().value("type").toString().simplified();
-        const QString uuid = dev.toObject().value("uuid").toString().simplified();
-        const QString pathDev = dev.toObject().value("path").toString().simplified();
+//    // Парсим блочные устройства
+//    QJsonArray data = blockDevsJson.object().value("blockdevices").toArray();
+//    QString diskName; // Основное имя диска
+//    for (const QJsonValue &dev : qAsConst(data))
+//    {
+//        const QString blockDevType = dev.toObject().value("type").toString().simplified();
+//        const QString uuid = dev.toObject().value("uuid").toString().simplified();
+//        const QString pathDev = dev.toObject().value("path").toString().simplified();
 
-        if ((blockDevType == "part")&&(pathDev == pathPartDevice))// "/dev/sdc1"))
-        {
-            return uuid;
-        }
+//        if ((blockDevType == "part")&&(pathDev == pathPartDevice))// "/dev/sdc1"))
+//        {
+//            return uuid;
+//        }
 
-        //if (getBlockDeviceByUUID(uuid)) {
-        //    qDebug() << "The same UUID, IGNORED!";
-        //    continue;
-        //}
+//        //if (getBlockDeviceByUUID(uuid)) {
+//        //    qDebug() << "The same UUID, IGNORED!";
+//        //    continue;
+//        //}
 
-        //// Если это часть основного диска
-        //if (devName.contains(diskName)) {
-        //}
+//        //// Если это часть основного диска
+//        //if (devName.contains(diskName)) {
+//        //}
 
-        //blockDevices.append(std::make_shared<BlockDevice>(uuid, devName));
-    }
+//        //blockDevices.append(std::make_shared<BlockDevice>(uuid, devName));
+//    }
 
-    return "";
-}
+//    return "";
+//}
 
-const QStringList MonitorController::search()
-{
-    QStringList cmdAllDevList = executeAConsoleCommand("ls", QStringList() << "/dev/disk/by-uuid" << "-l").split("\n");
-    QStringList mDevicesByUUIDList;
-    uint8_t tempIndex = 0;
-    for (uint8_t i = 1; i< cmdAllDevList.count()-1; i++)
-    {
-        tempIndex = cmdAllDevList[i].split(" ").indexOf("->");
-        if (!(cmdAllDevList[i].split(" ")[tempIndex-1].contains("-")))
-        {
-            mDevicesByUUIDList.append(cmdAllDevList[i].split(" ")[tempIndex-1] + " " + cmdAllDevList[i].split(" ")[tempIndex+1]);
-        }
-    }
-    qDebug() << mDevicesByUUIDList;
-    return mDevicesByUUIDList;
-}
+//const QStringList MonitorController::search()
+//{
+//    QStringList cmdAllDevList = executeAConsoleCommand("ls", QStringList() << "/dev/disk/by-uuid" << "-l").split("\n");
+//    QStringList mDevicesByUUIDList;
+//    uint8_t tempIndex = 0;
+//    for (uint8_t i = 1; i< cmdAllDevList.count()-1; i++)
+//    {
+//        tempIndex = cmdAllDevList[i].split(" ").indexOf("->");
+//        if (!(cmdAllDevList[i].split(" ")[tempIndex-1].contains("-")))
+//        {
+//            mDevicesByUUIDList.append(cmdAllDevList[i].split(" ")[tempIndex-1] + " " + cmdAllDevList[i].split(" ")[tempIndex+1]);
+//        }
+//    }
+//    qDebug() << mDevicesByUUIDList;
+//    return mDevicesByUUIDList;
+//}
 
-void MonitorController::initSoftwareStorage()
-{
-    qDebug() << "Init Software Storage";
-    if (!mICPSettings || !mBlockDeviceManager)
-    {
-        //runState(State::DeinitSoftwareStorage);
-        return;
-    }
-    QStringList mListOfDevices = search();
+//void MonitorController::initSoftwareStorage()
+//{
+//    qDebug() << "Init Software Storage";
+//    if (!mICPSettings || !mBlockDeviceManager)
+//    {
+//        //runState(State::DeinitSoftwareStorage);
+//        return;
+//    }
+//    QStringList mListOfDevices = search();
 
-    if (mListOfDevices.isEmpty())
-    {
-        qDebug() << "!!!! Add our storage !!!!";
-        exit(5);
-    }
-    if ((!mListOfDevices.contains(mICPSettings->getSoftwareStorageUUID())) || (mICPSettings->getSoftwareStorageUUID() == ""))
-    {
-        mICPSettings->setSoftwareStorageUUID(mListOfDevices[0].split(" ")[0]);
-        qDebug() << "setSoftwareStorageUUID" << mListOfDevices[0].split(" ")[0];
-        mICPSettings->writeGeneralSettings();
-    }
-
-//#ifdef PC_BUILD
-//    QString devUUID = getFlashDevice("/dev/sdc1");
-//#else
-//    QString devUUID = getFlashDevice("/dev/sda1");
-//#endif
-
-//    qDebug() << "devUUID" <<devUUID;
-//    if (devUUID == "")
+//    if (mListOfDevices.isEmpty())
 //    {
 //        qDebug() << "!!!! Add our storage !!!!";
 //        exit(5);
 //    }
-//    if (mICPSettings->getSoftwareStorageUUID() != devUUID)
+//    if ((!mListOfDevices.contains(mICPSettings->getSoftwareStorageUUID())) || (mICPSettings->getSoftwareStorageUUID() == ""))
 //    {
-//        qDebug() << "!!!! F L A S H CHANGED !!!!";
+//        mICPSettings->setSoftwareStorageUUID(mListOfDevices[0].split(" ")[0]);
+//        qDebug() << "setSoftwareStorageUUID" << mListOfDevices[0].split(" ")[0];
+//        mICPSettings->writeGeneralSettings();
 //    }
-//    mICPSettings->setSoftwareStorageUUID(devUUID);
-//    mICPSettings->writeGeneralSettings();
 
-    const std::shared_ptr<BlockDevice> &blockDev = mBlockDeviceManager->getBlockDeviceByUUID(mICPSettings->getSoftwareStorageUUID());
+////#ifdef PC_BUILD
+////    QString devUUID = getFlashDevice("/dev/sdc1");
+////#else
+////    QString devUUID = getFlashDevice("/dev/sda1");
+////#endif
 
-    // Если программное хранилище уже инициализировано
+////    qDebug() << "devUUID" <<devUUID;
+////    if (devUUID == "")
+////    {
+////        qDebug() << "!!!! Add our storage !!!!";
+////        exit(5);
+////    }
+////    if (mICPSettings->getSoftwareStorageUUID() != devUUID)
+////    {
+////        qDebug() << "!!!! F L A S H CHANGED !!!!";
+////    }
+////    mICPSettings->setSoftwareStorageUUID(devUUID);
+////    mICPSettings->writeGeneralSettings();
 
-    if (isInitSoftwareStorage())
-    {
-        softwareStorageAvailable();
-        runState(State::UpdateDataBase);
-        runState(State::UpdateFileController);
-        return;
-    }
-    // Получаем UUID программного хранилища
-    const QString BlockDevUUID = mICPSettings->getSoftwareStorageUUID();
+//    const std::shared_ptr<BlockDevice> &blockDev = mBlockDeviceManager->getBlockDeviceByUUID(mICPSettings->getSoftwareStorageUUID());
 
-    if (BlockDevUUID.isEmpty())
-    {
-        qDebug() << "F L A S H K A not INIT";
-        softwareStorageNotAssigned();
-        runState(State::DeinitDataBase);
-        runState(State::UpdateFileController);
-        return;
-    }
-    // Запрашиваем программное хранилище
-    //const std::shared_ptr<BlockDevice> &blockDev = mBlockDeviceManager->getBlockDeviceByUUID(BlockDevUUID);
-    //if (!blockDev || !blockDev->isValid()) { runState(State::DeinitSoftwareStorage); return; }
-    // Монтируем хранилище в цикле событий менеджера блочных устройств
-    QTimer::singleShot(0, mBlockDeviceManager, [this, blockDev]()
-    {
-        bool isMnt = blockDev->isMounted();
-        if (!isMnt)
-        {
-            qDebug() << "not mounted";
-            isMnt = mBlockDeviceManager->mountBlockDevice(blockDev);
-        }
-        qDebug() << "isMnt" << isMnt;
-        // Смонтировалось ли хранилище
-        if (isMnt)
-        {
-            mSoftwareStorage = blockDev;
-            softwareStorageAvailable();
-            runState(State::InitDataBase);
-            runState(State::UpdateFileController);
-        }
-        else
-        {
-            ++mCurrentNumMountSoftwareStorage;
-            if (mCurrentNumMountSoftwareStorage < MaxTryMountSoftwareStorage)
-            {
-                QTimer::singleShot(mIntervalMountSoftwareStorageMs, this, [this]() { runState(State::InitSoftwareStorage); });
-            }
-            else
-            {
-                //runState(State::DeinitSoftwareStorage);
-            }
-        }
-    });
-}
+//    // Если программное хранилище уже инициализировано
+
+//    if (isInitSoftwareStorage())
+//    {
+//        softwareStorageAvailable();
+//        runState(State::UpdateDataBase);
+//        runState(State::UpdateFileController);
+//        return;
+//    }
+//    // Получаем UUID программного хранилища
+//    const QString BlockDevUUID = mICPSettings->getSoftwareStorageUUID();
+
+//    if (BlockDevUUID.isEmpty())
+//    {
+//        qDebug() << "F L A S H K A not INIT";
+//        softwareStorageNotAssigned();
+//        runState(State::DeinitDataBase);
+//        runState(State::UpdateFileController);
+//        return;
+//    }
+//    // Запрашиваем программное хранилище
+//    //const std::shared_ptr<BlockDevice> &blockDev = mBlockDeviceManager->getBlockDeviceByUUID(BlockDevUUID);
+//    //if (!blockDev || !blockDev->isValid()) { runState(State::DeinitSoftwareStorage); return; }
+//    // Монтируем хранилище в цикле событий менеджера блочных устройств
+//    QTimer::singleShot(0, mBlockDeviceManager, [this, blockDev]()
+//    {
+//        bool isMnt = blockDev->isMounted();
+//        if (!isMnt)
+//        {
+//            qDebug() << "not mounted";
+//            isMnt = mBlockDeviceManager->mountBlockDevice(blockDev);
+//        }
+//        qDebug() << "isMnt" << isMnt;
+//        // Смонтировалось ли хранилище
+//        if (isMnt)
+//        {
+//            mSoftwareStorage = blockDev;
+//            softwareStorageAvailable();
+//            runState(State::InitDataBase);
+//            runState(State::UpdateFileController);
+//        }
+//        else
+//        {
+//            ++mCurrentNumMountSoftwareStorage;
+//            if (mCurrentNumMountSoftwareStorage < MaxTryMountSoftwareStorage)
+//            {
+//                QTimer::singleShot(mIntervalMountSoftwareStorageMs, this, [this]() { runState(State::InitSoftwareStorage); });
+//            }
+//            else
+//            {
+//                //runState(State::DeinitSoftwareStorage);
+//            }
+//        }
+//    });
+//}
 

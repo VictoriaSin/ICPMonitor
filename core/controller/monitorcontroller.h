@@ -56,7 +56,7 @@ class MonitorController : public QObject
 public:
     AverageICPController *mAverageICPController {nullptr};
     AlarmController *mAlarmController {nullptr};
-    FileController *mFileController {nullptr};
+    //FileController *mFileController {nullptr};
     BlockDeviceManager *mBlockDeviceManager {nullptr};
 
     QThread *mSensorThread {nullptr};
@@ -223,7 +223,7 @@ public:
         format - формат конвертирования изображения
         countTransScreenshoots - количество фотографий, необходимых для экспорта
     */
-    void exportScreens(ConversionPictureFormat format, int countTransScreens);
+    //void exportScreens(ConversionPictureFormat format, int countTransScreens);
     /*################################################################################
                                 Текущие показания датчика
     ################################################################################*/
@@ -277,9 +277,9 @@ public:
     bool testMakeSensorReset();
 
     /*! Закрывает сессию */
-    void closeSession();
+    //void closeSession();
     void deleteLabel();
-    QString getFlashDevice(QString pathPartDevice);
+    //QString getFlashDevice(QString pathPartDevice);
 private:
     /*! Запуск состояния */
     void runState(State state);
@@ -290,7 +290,7 @@ private:
         подключится и БД. Если не успешно,
         то сообщит о недоступности хранилища.
     */
-    void initSoftwareStorage();
+    //void initSoftwareStorage();
 
     /*! Обновление программного хранилища */
     void updateSoftwareStorage();
@@ -341,7 +341,7 @@ private:
     void initRTCModule();
 
     /*! Создаёт сессию */
-    void createSession();
+    //void createSession();
 
 
 
@@ -351,14 +351,14 @@ private slots:
     void processAlarmEvent(AlarmEvent event, const QVariantMap &args = {});
     void processFileControllerEvent(FileControllerEvent event, const QVariantMap &args = {});
     void processBlockDevicesControllerEvent(BlockDeviceManagerEvent event, const QVariantMap &args = {});
-    void processAverageSensorValue();
+    //void processAverageSensorValue();
 
 signals:
     void controllerEvent(ControllerEvent event, const QVariantMap &args = {});
     void dataReadyForGraph();
     void dataReadyFromAverageICPController();
 protected:
-    const QStringList search();
+    //const QStringList search();
 };
 
 #endif // MONITORCONTROLLER_H
