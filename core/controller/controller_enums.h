@@ -94,6 +94,8 @@ enum class ControllerEvent {
     UpdateGraphIntervals,                ///< Обновлены интервалы осей
     UpdateGraphTicks,                    ///< Обновлены деления осей
 
+    ChangePressureUnits,                 ///< Изменены единицы измерения давления
+
     UpdateGeneralGroupInfo               ///< Обновлены параметры данной группы .ini файла
 };
 

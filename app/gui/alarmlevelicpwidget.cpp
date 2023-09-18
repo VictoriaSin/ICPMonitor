@@ -16,6 +16,7 @@ AlarmLevelICPWidget::AlarmLevelICPWidget(QWidget *parent) :
 
     // Настройка SVG виджетов
     setupSVGWidgets();
+    ui->averagePointerWidget->setPointerVisible(true);
 }
 
 AlarmLevelICPWidget::~AlarmLevelICPWidget()

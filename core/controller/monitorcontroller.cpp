@@ -561,6 +561,23 @@ bool MonitorController::setLevelsAndStatesAlarm(int lowLevelAlarm, int highLevel
 
     return true;
 }
+
+bool MonitorController::setPressureUnits(uint8_t mCurrentPressureUnitsIndex)
+{
+    if (!mICPSettings) {
+        return false;
+    }
+    const uint8_t PUI = mICPSettings->getCurrentPressureIndex();
+    if (PUI != mCurrentPressureUnitsIndex)
+    {
+        mICPSettings->setCurrentPressureUnits(mCurrentPressureUnitsIndex);
+        emit controllerEvent(ControllerEvent::ChangePressureUnits);
+        mICPSettings->writeCurrentSensorReadingsSettings();
+        return true;
+    }
+    return false;
+}
+
 bool MonitorController::setInetrvalsOnGraph(double mCurrentReadingsGraphIntervalX, double mCurrentReadingsGraphIntervalY,
                                             double mTickCountX, double mTickCountY)
 {
@@ -569,10 +586,18 @@ bool MonitorController::setInetrvalsOnGraph(double mCurrentReadingsGraphInterval
     }
 
     const double CXR = mICPSettings->getCurrentReadingsGraphIntervalX();
-    const double CYR = mICPSettings->getCurrentReadingsGraphIntervalY();
+    double CYR = mICPSettings->getCurrentReadingsGraphIntervalY();
     const float TCX = mICPSettings->getCurrentTickCountX();
-    const float TCY = mICPSettings->getCurrentTickCountY();
+    float TCY = mICPSettings->getCurrentTickCountY();
 
+//#define indexPressureH2O 13.595
+//    if (mCurrentPressureUnitsIndex == 1)
+//    {
+//        CYR *= indexPressureH2O;
+//        //TCY /= indexPressureH2O;
+//        mCurrentReadingsGraphIntervalY *= indexPressureH2O;
+//        //mTickCountY /= indexPressureH2O;
+//    }
 
     // Если одно из значений осей изменилось
     if (CXR  != mCurrentReadingsGraphIntervalX ||

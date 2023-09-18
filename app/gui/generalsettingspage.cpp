@@ -114,8 +114,8 @@ void GeneralSettingsPage::updateGraphSettingsOnWidgets()
     double realDivisionYCount = (double)(settings->getCurrentReadingsGraphIntervalY() - 10) / (settings->getCurrentTickCountY());
     ui->tickCountXLineEdit->setText(QString::number(realDivisionXCount));//settings->getCurrentTickCountX()));
     ui->tickCountYLineEdit->setText(QString::number(realDivisionYCount));//settings->getCurrentTickCountY()));
+    ui->pressureUnitsComboBox->setCurrentIndex(settings->getCurrentPressureIndex());
 }
-
 
 void GeneralSettingsPage::updateGeneralSettingsOnWidgets()
 {
@@ -132,12 +132,14 @@ void GeneralSettingsPage::updateGeneralSettingsOnWidgets()
     ui->softwareStorageUUIDLineEdit->setText(settings->getSoftwareStorageUUID());
 }
 
-
+#define indexPressureH2O 13.595
 void GeneralSettingsPage::updateParameters()
 {
     if (!mController) {
         return;
     }
+    bool isPressureUnitsChanged = false;
+    qDebug() << "FromisPressureUnitsChanged" << isPressureUnitsChanged;
     //mController
     mLineEditList = ui->scrollArea->findChildren<QLineEdit*>();
     for (int i = 0; i < mLineEditList.count(); i++)
@@ -152,17 +154,61 @@ void GeneralSettingsPage::updateParameters()
             return;
         }
     }
+    uint8_t mPressureUnitsIndex = ui->pressureUnitsComboBox->currentIndex();
+    //QTimer::singleShot(0, mController, [this, mPressureUnitsIndex, &isPressureUnitsChanged]()
+    {
+        if (mController->setPressureUnits(mPressureUnitsIndex))
+        {
+            //emit previousPage();
+            isPressureUnitsChanged = true;
+            //qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
+        }
+        emit previousPage();
+//        else { openAlarmInfoErrorDialog(tr("Верхний уровень должен\nбыть больше, чем нижний!"));}S
+    }//);
+qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
     double mCurrentReadingsGraphIntervalX = ui->intervalXLineEdit->text().toDouble();
     double mCurrentReadingsGraphIntervalY = ui->intervalYLineEdit->text().toDouble();
     double mTickCountX = (double)mCurrentReadingsGraphIntervalX / ui->tickCountXLineEdit->text().toDouble();
     double mTickCountY = (double)(mCurrentReadingsGraphIntervalY - 10) / ui->tickCountYLineEdit->text().toDouble();
-
     double mHighLevelAlarm = ui->upperAlarmLineEdit->text().toFloat();
     double mLowLevelAlarm = ui->lowerAlarmLineEdit->text().toFloat();
+
     bool mLowLevelStateAlarm = true;
     bool mHighLevelStateAlarm = true;
     if (ui->lowerAlarmSignalButton->text() == "Включить") { mLowLevelStateAlarm = false; }
     if (ui->upperAlarmSignalButton->text() == "Включить") { mHighLevelStateAlarm = false; }
+
+    if (isPressureUnitsChanged == true)
+    {
+        if (mPressureUnitsIndex == 0) // 1 -> 0
+        {
+            mCurrentReadingsGraphIntervalY /= indexPressureH2O;
+            mTickCountY /= indexPressureH2O;
+            mHighLevelAlarm /= indexPressureH2O;
+            mLowLevelAlarm /= indexPressureH2O;
+        }
+        else // 0 -> 1
+        {
+            mCurrentReadingsGraphIntervalY *= indexPressureH2O;
+            mTickCountY *= indexPressureH2O;
+            mHighLevelAlarm *= indexPressureH2O;
+            mLowLevelAlarm *= indexPressureH2O;
+        }
+        qDebug() << "mCurrentReadingsGraphIntervalY" <<mCurrentReadingsGraphIntervalY;
+        qDebug() << "mTickCountY" << mTickCountY;
+        qDebug() << "mHighLevelAlarm" << mHighLevelAlarm;
+        qDebug() << "mLowLevelAlarm" << mLowLevelAlarm;
+
+        mController->setInetrvalsOnGraph(mCurrentReadingsGraphIntervalX, mCurrentReadingsGraphIntervalY,
+                                                     mTickCountX, mTickCountY);
+        mController->setLevelsAndStatesAlarm(mLowLevelAlarm, mHighLevelAlarm, mLowLevelStateAlarm, mHighLevelStateAlarm);
+        mICPSettings->setAllPressureParam(mCurrentReadingsGraphIntervalY, mTickCountY,
+                                          mHighLevelAlarm, mLowLevelAlarm);
+        updateAlarmSettingsOnWidgets();
+        updateGraphSettingsOnWidgets();
+}
+
 
     float mFontScaleFactor = ui->fontScaleFactorLineEdit->text().toFloat();
     QString mSoftwareStorageUUID = ui->softwareStorageUUIDLineEdit->text();

@@ -17,5 +17,6 @@ enum I2C_RESULT
 
 uint8_t getRTC(u8 *data);
 int8_t setRTC(u8 *data);
+void setDateTime(u8 *data);
 
 #endif // CLOCK_H

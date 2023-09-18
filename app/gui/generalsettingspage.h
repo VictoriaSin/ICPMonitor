@@ -3,6 +3,7 @@
 
 #include "abstractdialogpage.h"
 #include "ui_generalsettingspage.h"
+#include "global_define.h"
 
 namespace Ui {
 class GeneralSettingsPage;

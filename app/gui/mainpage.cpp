@@ -54,7 +54,7 @@ MainPage::MainPage(QWidget *parent)
     connect(this, &MainPage::dataReadyForRecordGraph, mCurrentGraphsArea, &CurrentGraphsArea::addDataOnRecordedPlot);
 
     // Настраиваем обновление виджета с текущим временем
-    mUpdateDateTimeTimer->setInterval(1000);
+    mUpdateDateTimeTimer->setInterval(60000);
     connect(mUpdateDateTimeTimer, &QTimer::timeout, this, &MainPage::updateDateTime);
 
     connect(this, &MainPage::changeCurrentGraph, mCurrentGraphsArea, &AbstractMultipleGraphsAreasWidget::changeGraph);
@@ -1021,7 +1021,6 @@ void MainPage::on_speedRecordButton_clicked()
 
 void MainPage::setAverage(double currAverage)
 {
-    //ui->averageICPWidget->//averageValueLabel->setText
     ui->averageValue->setText(QString::number(round(currAverage)));
     setAveragePointerPos(currAverage);
 }

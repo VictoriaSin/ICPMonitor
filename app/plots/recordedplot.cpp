@@ -296,7 +296,7 @@ void RecordedPlot::retranslate()
 {
     // Подписываем оси
     xAxis->setLabel(tr("секунды"));
-    yAxis->setLabel(tr("мм рт ст"));
+    mICPSettings->getCurrentPressureIndex() == 0 ? yAxis->setLabel(tr("мм рт ст")) : yAxis->setLabel(tr("мм вод ст"));
 
     mTextEditDialog->retranslate();
     mTextEditDialog->setWindowTitle(tr("Информация о метке"));
@@ -315,7 +315,7 @@ void RecordedPlot::resetGraph()
     mRecordedData.clear();
     setInteraction(QCP::iRangeDrag, true);
     mCurrentMaxXRange = 60;
-    mCurrentMaxYRange = 60;
+    mCurrentMaxYRange = 300;
     mMainGraph->data()->clear();
     qDebug() << "RecordedPlot reset";
 }

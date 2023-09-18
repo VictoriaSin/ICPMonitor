@@ -164,6 +164,8 @@ void Settings::readCurrentSensorReadingsSettings()
 
     mTickCountX = mSettings->value("mTickCountX", mTickCountX).toDouble();
     mTickCountY = mSettings->value("mTickCountY", mTickCountY).toDouble();
+
+    mPressureUnitsIndex = mSettings->value("mPressureUnitsIndex", mPressureUnitsIndex).toUInt();
     mSettings->endGroup();
 }
 
@@ -176,6 +178,7 @@ void Settings::writeCurrentSensorReadingsSettings()
     mSettings->setValue("mCurrentReadingsGraphIntervalY", mCurrentReadingsGraphIntervalY);
     mSettings->setValue("mTickCountX", QString::number(mTickCountX));
     mSettings->setValue("mTickCountY", QString::number(mTickCountY));
+    mSettings->setValue("mPressureUnitsIndex", mPressureUnitsIndex);
     mSettings->endGroup();
     mSettings->sync();
 }
@@ -209,6 +212,23 @@ void Settings::setCurrentTickCountY(float currentTickCountY)
 {
     mTickCountY = currentTickCountY;
 }
+
+void Settings::setCurrentPressureUnits(uint8_t mCurrentPressureUnitsIndex)
+{
+    mPressureUnitsIndex = mCurrentPressureUnitsIndex;
+}
+
+void Settings::setAllPressureParam(double mCurrentReadingsGraphIntervalY, double mTickCountY,
+                         double mHighLevelAlarm, double mLowLevelAlarm)
+{
+    setCurrentReadingsGraphIntervalY(mCurrentReadingsGraphIntervalY);
+    setCurrentTickCountY(mTickCountY);
+    setHighLevelAlarm(mHighLevelAlarm);
+    setLowLevelAlarm(mLowLevelAlarm);
+    writeAlarmSettings();
+    writeCurrentSensorReadingsSettings();
+}
+
 
 void Settings::readAverageSensorReadingsSettings()
 {

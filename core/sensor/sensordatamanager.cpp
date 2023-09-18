@@ -10,9 +10,6 @@
 #include <QDebug>
 
 
-
-#define numPosDataForPrint 16
-
 #define selectCurrentBufferForRecord(_BUF) { currBuffer = _BUF;}
 uint8_t currBuffer = BUFFER_1;
 //mSPIBuffer mSensorBuffer1;
@@ -43,7 +40,7 @@ SensorDataManager::~SensorDataManager()
 #define startTimerGraph() {timerForSetInGraph += TIME_INTERVAL_FOR_WRITE_ON_GRAPH;}
 #define startTimerRecord() {timerForRecordInFile += TIME_INTERVAL_FOR_RECORD_IN_FILE;}
 
-#define READ_SPI() data = (15 + rand() % 20) // Потом будем брать значение из потока SPI
+#define READ_SPI() data = (10 + rand() % 20) // Потом будем брать значение из потока SPI
 
 unsigned short data = 0;
 void SensorDataManager::run()
@@ -68,6 +65,10 @@ void SensorDataManager::run()
           {
               startTimerGraph();
               READ_SPI();
+              if (mICPSettings->getCurrentPressureIndex() == 1)
+              {
+                  data *= 13.595;
+              }
               emit(printDataOnGraph((unsigned int)(currIndexDrawGraph * TIME_INTERVAL_FOR_WRITE_ON_GRAPH), data));
               currIndexDrawGraph++;
               emit(averageReady(mAverageValue));
@@ -78,6 +79,10 @@ void SensorDataManager::run()
               startTimerRecord();
               currIndex++; // Сначала увеличим индекс , чтобы индекс указывал на последний элемент
               READ_SPI();
+              if (mICPSettings->getCurrentPressureIndex() == 1)
+              {
+                  data *= 13.595;
+              }
               if (currBuffer == BUFFER_1)
               {
                   mSensorBuffer1.record[mSensorBuffer1.index].data = data;
@@ -98,7 +103,12 @@ void SensorDataManager::run()
                       emit(writeBufferToFile());
                   }
               }
-              mAverageSum += (double)(READ_SPI());
+              READ_SPI();
+              if (mICPSettings->getCurrentPressureIndex() == 1)
+              {
+                  data *= 13.595;
+              }
+              mAverageSum += (double)(data);
               mAverageCount++;
               mAverageValue = mAverageSum / mAverageCount;
           }
@@ -120,15 +130,22 @@ void SensorDataManager::run()
                   currIndex ++;
                   startTimerGraph();
                   READ_SPI();
+                  if (mICPSettings->getCurrentPressureIndex() == 1)
+                  {
+                      data *= 13.595;
+                  }
                   emit(printDataOnGraph((unsigned int)(currIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH), data));
                   emit(averageReady(mAverageValue));
+
               }
               if (getCurrentTimeStamp_ms() >= timerForRecordInFile) // Add Data In File
               {
-                  //mAverageValue = (mAverageValue*mAverageCount + (double)(READ_SPI()));
-                  //mAverageCount++;
-                  //mAverageValue /= mAverageCount;
-                  mAverageSum += (double)(READ_SPI());
+                  READ_SPI();
+                  if (mICPSettings->getCurrentPressureIndex() == 1)
+                  {
+                      data *= 13.595;
+                  }
+                  mAverageSum += (double)(data);
                   mAverageCount++;
                   mAverageValue = mAverageSum / mAverageCount;
               }

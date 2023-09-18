@@ -35,7 +35,7 @@ public:
 
 
     double mCurrentMaxXRange {60};
-    double mCurrentMaxYRange {60};
+    double mCurrentMaxYRange {300};
 
     /*! Добавление данных для отображения на графике */
     void saveDataForGraphic(unsigned int  x, unsigned int  y);//(const ComplexValue &complexVal);

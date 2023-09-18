@@ -722,6 +722,10 @@ this may lead to unforeseen consequences!</translation>
         <translation>mmHg</translation>
     </message>
     <message>
+        <source>мм вод ст</source>
+        <translation>mmH2O</translation>
+    </message>
+    <message>
         <source>время</source>
         <translation>time</translation>
     </message>
@@ -759,6 +763,10 @@ this may lead to unforeseen consequences!</translation>
     <message>
         <source>мм рт ст</source>
         <translation>mmHg</translation>
+    </message>
+    <message>
+        <source>мм вод ст</source>
+        <translation>mmH2O</translation>
     </message>
 </context>
 <context>

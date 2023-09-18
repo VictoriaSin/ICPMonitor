@@ -166,7 +166,7 @@ void WaveFormPlot::retranslate()
 {
     // Подписываем оси
     xAxis->setLabel(tr("секунды"));
-    yAxis->setLabel(tr("мм рт ст"));
+    mICPSettings->getCurrentPressureIndex() == 0 ? yAxis->setLabel(tr("мм рт ст")) : yAxis->setLabel(tr("мм вод ст"));
 }
 
 void WaveFormPlot::resetGraph()

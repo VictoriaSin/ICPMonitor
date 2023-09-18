@@ -335,6 +335,10 @@ void CurrentGraphsArea::controllerEventHandler(ControllerEvent event)//, const Q
         updateTicksOnGraphs();
         break;
     }
+    case ControllerEvent::ChangePressureUnits: {
+        changePressureUnits();
+        break;
+    }
         default: break;
     }
 }
@@ -390,15 +394,26 @@ void CurrentGraphsArea::updateIntervalsOnGraphs()
     if (!settings) {
         return;
     }
-
+#define indexPressureH2O 13.595
     mWaveGraph->setXRange(0, settings->getCurrentReadingsGraphIntervalX());
-    mWaveGraph->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
-    mWaveGraph->setLowerAlarmLevelLine(settings->getLowLevelAlarm());
-    mWaveGraph->setUpperAlarmLevelLine(settings->getHighLevelAlarm());
-    mWaveGraph->resetGraph();
+    if (mICPSettings->getCurrentPressureIndex() == 1)
+    {
+        mWaveGraph->setYRange(10*indexPressureH2O, settings->getCurrentReadingsGraphIntervalY());
+//        mWaveGraph->setLowerAlarmLevelLine(settings->getLowLevelAlarm()*indexPressureH2O);
+//        mWaveGraph->setUpperAlarmLevelLine(settings->getHighLevelAlarm()*indexPressureH2O);
+//        mRecordedGraph->setXRange(0, settings->getCurrentReadingsGraphIntervalX()*indexPressureH2O);
+        mRecordedGraph->setYRange(10*indexPressureH2O, settings->getCurrentReadingsGraphIntervalY());
+   }
+    else
+    {
+        mWaveGraph->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
+        mWaveGraph->setLowerAlarmLevelLine(settings->getLowLevelAlarm());
+        mWaveGraph->setUpperAlarmLevelLine(settings->getHighLevelAlarm());
+        mRecordedGraph->setXRange(0, settings->getCurrentReadingsGraphIntervalX());
+        mRecordedGraph->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
+    }
 
-    mRecordedGraph->setXRange(0, settings->getCurrentReadingsGraphIntervalX());
-    mRecordedGraph->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
+    mWaveGraph->resetGraph();    
     mRecordedGraph->resetGraph();
 }
 
@@ -420,6 +435,20 @@ void CurrentGraphsArea::updateTicksOnGraphs()
     mRecordedGraph->yAxis->ticker()->setTickCount(settings->getCurrentTickCountY());
 }
 
+void CurrentGraphsArea::changePressureUnits()
+{
+    if (mICPSettings->getCurrentPressureIndex() == 0)
+    {
+        mRecordedGraph->yAxis->setLabel(tr("мм рт ст"));
+        mWaveGraph->yAxis->setLabel(tr("мм рт ст"));
+    }
+    else
+    {
+        mRecordedGraph->yAxis->setLabel(tr("мм вод ст"));
+        mWaveGraph->yAxis->setLabel(tr("мм вод ст"));
+    }
+    retranslate();
+}
 
 void CurrentGraphsArea::addDataOnWavePlot(unsigned int currX, unsigned int currY)
 {

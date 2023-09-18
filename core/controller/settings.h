@@ -29,6 +29,8 @@ public:
     /*! Запись всех настроек */
     void writeAllSetting();
 
+    void setAllPressureParam(double mCurrentReadingsGraphIntervalY, double mTickCountY,
+                             double mHighLevelAlarm, double mLowLevelAlarm);
     /*################################################################################
                                       Общие настройки
     ################################################################################*/
@@ -37,7 +39,7 @@ public:
     QLocale::Language getCurrentAppLanguage() const { return mLanguageSettings->getCurrentLanguage(); };
     QString getSoftwareStorageUUID() const { return mSoftwareStorageUUID; };
     QString getFlashDeviceMountPart() const { return mFlashDeviceMountPart; };
-    int64_t getLastSavedDateTimestampSec() const { return mLastSavedDateTimestampSec; }; ///< unix timestamp
+    int64_t getLastSavedDateTimestampSec() const { return mLastSavedDateTimestampSec; }; ///< unix timestamp    
     /*################################################################################
                                     Настройки скриншотов
     ################################################################################*/
@@ -63,6 +65,7 @@ public:
     double getCurrentReadingsGraphIntervalY() const { return mCurrentReadingsGraphIntervalY; };
     double getCurrentTickCountX() const { return mTickCountX; };
     double getCurrentTickCountY() const { return mTickCountY; };
+    uint8_t getCurrentPressureIndex() const { return mPressureUnitsIndex; };
     /*################################################################################
                             Настройки средних показаний датчика
     ################################################################################*/
@@ -121,6 +124,7 @@ private slots:
     void setCurrentReadingsGraphIntervalY(double currentReadingsGraphIntervalYTo);
     void setCurrentTickCountX(float currentTickCountX);
     void setCurrentTickCountY(float currentTickCountY);
+    void setCurrentPressureUnits(uint8_t mCurrentPressureUnitsIndex);
 
 private:
     QSettings *mSettings {nullptr};
@@ -165,6 +169,7 @@ private:
     double mCurrentReadingsGraphIntervalY {60};
     double mTickCountX {6};
     double mTickCountY {3};
+    uint8_t mPressureUnitsIndex {0};
 
     /*QVector<QPair<double, double>> mCurrentReadingsGraphYRanges {
         {0, 30},    {0, 50},
