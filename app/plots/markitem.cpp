@@ -61,15 +61,13 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, uint8_t num, QColor color, const QFo
     mLineThroughGraph = new QCPItemLine(mParentPlot);
 
     // Вяжем начальную точку к якорю текста
-    //mIntervalPos = (mTempPointLower+(mTempPointUpper-mTempPointLower)*horizontalPos)*1000;
     mIntervalPos = position * 1000;
-    //qDebug() << "curr interval pos" << mIntervalPos;
 
 
     mTextItem->position->setCoords(position, 0.9); // abs, rel
     mLineThroughGraph->end->setParentAnchor(mTextItem->position);
 
-    mLineThroughGraph->start->setCoords(position, 100); // abs
+    mLineThroughGraph->start->setCoords(position, 1000); // abs
     mParentPlot->setInteraction(QCP::iRangeDrag, false);
     // Добавляем на верхний слой
     mLineThroughGraph->setLayer("legend"); // На один слой ниже чем this
@@ -114,7 +112,7 @@ void MarkItem::replotLine()
     {
         mTextItem->position->setCoords(double(mIntervalPos)/1000.0, 0.9);
         mLineThroughGraph->end->setParentAnchor(mTextItem->position);
-        mLineThroughGraph->start->setCoords(double(mIntervalPos)/1000.0, 100);
+        mLineThroughGraph->start->setCoords(double(mIntervalPos)/1000.0, 1000);
     }
 
 }
@@ -127,16 +125,12 @@ void MarkItem::deleteLine()
         mParentPlot->removeItem(mLineThroughGraph);
     }
 
-    //// Удаляем элемент текста, если есть
+    // Удаляем элемент текста, если есть
     if(mTextItem && mParentPlot && mParentPlot->hasItem(mTextItem))
     {
         mTextItem->setText("");
         mTextItem->position->setCoords(-1, -1);
-        //mParentPlot->removeItem(mTextItem);
     }
-
-
-    //mParentPlot->removeItem(this);
 }
 
 void MarkItem::addLine()
@@ -148,7 +142,6 @@ void MarkItem::addLine()
     mLineThroughGraph = new QCPItemLine(mParentPlot);
     double mTempPointUpper = mParentPlot->xAxis->range().upper;
     double mTempPointLower = mParentPlot->xAxis->range().lower;
-   // qDebug() << mTempPointUpper << mTempPointLower;
 
 
     // Вяжем начальную точку к якорю текста
@@ -160,7 +153,6 @@ void MarkItem::addLine()
     mParentPlot->setInteraction(QCP::iRangeDrag, false);
     // Добавляем на верхний слой
     mLineThroughGraph->setLayer("legend"); // На один слой ниже чем this
-    //qDebug() << "Coordx"<< mCoordLabelX;
     // Ручка для отрисовки уровней тревоги
     QPen dotPen;
     dotPen.setColor(QColor(Qt::yellow));

@@ -63,7 +63,6 @@ private:
     /*! Обновляет ориентацию метки */
     void updateMarkOrientation();
 
-    // QCPLayerable interface
 public:
     double selectTest(const QPointF &pos, bool onlySelectable, QVariant *details) const override;
     void replotLine();

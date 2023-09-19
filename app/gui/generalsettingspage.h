@@ -4,6 +4,9 @@
 #include "abstractdialogpage.h"
 #include "ui_generalsettingspage.h"
 #include "global_define.h"
+#include "plots/recordedplot.h"
+
+
 
 namespace Ui {
 class GeneralSettingsPage;
@@ -11,6 +14,7 @@ class GeneralSettingsPage;
 
 class MessageDialog;
 
+//extern double mCurrentMaxYRange;
 class GeneralSettingsPage : public AbstractDialogPage
 {
     Q_OBJECT

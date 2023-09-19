@@ -31,7 +31,6 @@ CurrentGraphsArea::CurrentGraphsArea(QWidget *parent) :
     bufferRecord_2.currentPos = 0;
     currentBufferRecord = 1;
     isRecord = false;
-    //qDebug() << "start curr area";
     // Записываем для быстрого доступа
     mWaveGraph = ui->waveGraph;
     // Записываем для быстрого доступа и скрываем график и кнопку изменения диапазона X

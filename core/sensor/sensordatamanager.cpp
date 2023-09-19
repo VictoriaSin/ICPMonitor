@@ -12,8 +12,6 @@
 
 #define selectCurrentBufferForRecord(_BUF) { currBuffer = _BUF;}
 uint8_t currBuffer = BUFFER_1;
-//mSPIBuffer mSensorBuffer1;
-//mSPIBuffer mSensorBuffer2;
 _mSPIBuffer mSensorBuffer1, mSensorBuffer2;
 
 
@@ -42,6 +40,7 @@ SensorDataManager::~SensorDataManager()
 
 #define READ_SPI() data = (10 + rand() % 20) // Потом будем брать значение из потока SPI
 
+#define indexPressureH2O 13.595
 unsigned short data = 0;
 void SensorDataManager::run()
 {
@@ -67,7 +66,7 @@ void SensorDataManager::run()
               READ_SPI();
               if (mICPSettings->getCurrentPressureIndex() == 1)
               {
-                  data *= 13.595;
+                  data *= indexPressureH2O;
               }
               emit(printDataOnGraph((unsigned int)(currIndexDrawGraph * TIME_INTERVAL_FOR_WRITE_ON_GRAPH), data));
               currIndexDrawGraph++;
@@ -81,7 +80,7 @@ void SensorDataManager::run()
               READ_SPI();
               if (mICPSettings->getCurrentPressureIndex() == 1)
               {
-                  data *= 13.595;
+                  data *= indexPressureH2O;
               }
               if (currBuffer == BUFFER_1)
               {
@@ -106,7 +105,7 @@ void SensorDataManager::run()
               READ_SPI();
               if (mICPSettings->getCurrentPressureIndex() == 1)
               {
-                  data *= 13.595;
+                  data *= indexPressureH2O;
               }
               mAverageSum += (double)(data);
               mAverageCount++;
@@ -132,7 +131,7 @@ void SensorDataManager::run()
                   READ_SPI();
                   if (mICPSettings->getCurrentPressureIndex() == 1)
                   {
-                      data *= 13.595;
+                      data *= indexPressureH2O;
                   }
                   emit(printDataOnGraph((unsigned int)(currIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH), data));
                   emit(averageReady(mAverageValue));
@@ -143,7 +142,7 @@ void SensorDataManager::run()
                   READ_SPI();
                   if (mICPSettings->getCurrentPressureIndex() == 1)
                   {
-                      data *= 13.595;
+                      data *= indexPressureH2O;
                   }
                   mAverageSum += (double)(data);
                   mAverageCount++;

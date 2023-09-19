@@ -9,7 +9,7 @@
 #include "unistd.h"
 //LabelManager *mLabelManagerRecorded {nullptr};
 
-
+double mCurrentMaxYRange {700};
 RecordedPlot::RecordedPlot(QWidget *parent):
     AbstractCustomPlot(GraphType::RecordedGraph, parent),
     mTextEditDialog(new TextEditDialog(this))
@@ -315,7 +315,7 @@ void RecordedPlot::resetGraph()
     mRecordedData.clear();
     setInteraction(QCP::iRangeDrag, true);
     mCurrentMaxXRange = 60;
-    mCurrentMaxYRange = 300;
+    //mCurrentMaxYRange = 700; //60
     mMainGraph->data()->clear();
     qDebug() << "RecordedPlot reset";
 }

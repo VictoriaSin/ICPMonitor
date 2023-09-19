@@ -183,17 +183,19 @@ qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
     {
         if (mPressureUnitsIndex == 0) // 1 -> 0
         {
-            mCurrentReadingsGraphIntervalY /= indexPressureH2O;
-            mTickCountY /= indexPressureH2O;
-            mHighLevelAlarm /= indexPressureH2O;
-            mLowLevelAlarm /= indexPressureH2O;
+            mCurrentReadingsGraphIntervalY = (round)(mCurrentReadingsGraphIntervalY / indexPressureH2O);
+            //mTickCountY /= indexPressureH2O;
+            mHighLevelAlarm = (round)(mHighLevelAlarm / indexPressureH2O);
+            mLowLevelAlarm = (round)(mLowLevelAlarm / indexPressureH2O);
+            //mCurrentMaxYRange /= indexPressureH2O;
         }
         else // 0 -> 1
         {
-            mCurrentReadingsGraphIntervalY *= indexPressureH2O;
-            mTickCountY *= indexPressureH2O;
-            mHighLevelAlarm *= indexPressureH2O;
-            mLowLevelAlarm *= indexPressureH2O;
+            mCurrentReadingsGraphIntervalY = (round)(mCurrentReadingsGraphIntervalY * indexPressureH2O);
+            //mTickCountY *= indexPressureH2O;
+            mHighLevelAlarm = (round)(mHighLevelAlarm * indexPressureH2O);
+            mLowLevelAlarm = (round)(mLowLevelAlarm * indexPressureH2O);
+            //mCurrentMaxYRange *= indexPressureH2O;
         }
         qDebug() << "mCurrentReadingsGraphIntervalY" <<mCurrentReadingsGraphIntervalY;
         qDebug() << "mTickCountY" << mTickCountY;
@@ -283,6 +285,8 @@ void GeneralSettingsPage::scaleFont(float scaleFactor)
     WFontScaling(ui->fontScaleFactorLineEdit, scaleFactor);
     WFontScaling(ui->softwareStorageUUIDLabel, scaleFactor);
     WFontScaling(ui->softwareStorageUUIDLineEdit, scaleFactor);
+    WFontScaling(ui->pressureUnitsLabel, scaleFactor);
+    WFontScaling(ui->pressureUnitsComboBox, scaleFactor);
 
     mMessageDialog->scaleFont(scaleFactor);
 }

@@ -7,7 +7,7 @@
 
 
 
-class SensorDataManager : public QThread//public QObject
+class SensorDataManager : public QThread
 {
     Q_OBJECT
     volatile qint64 timerForRecordInFile, timerForSetInGraph;
@@ -25,7 +25,7 @@ protected:
 
 signals:
     void writeBufferToFile();
-    void printDataOnGraph(unsigned int, unsigned int);//uint32_t x, uint32_t y);
+    void printDataOnGraph(unsigned int, unsigned int);
     void averageReady(double currAverage);
 
 public slots:

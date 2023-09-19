@@ -10,6 +10,7 @@ class TextEditDialog;
 class MonitorController;
 
 extern bool isPlayRecord;
+//extern double mCurrentMaxYRange;
 class RecordedPlot : public AbstractCustomPlot
 {
     Q_OBJECT
@@ -35,7 +36,7 @@ public:
 
 
     double mCurrentMaxXRange {60};
-    double mCurrentMaxYRange {300};
+
 
     /*! Добавление данных для отображения на графике */
     void saveDataForGraphic(unsigned int  x, unsigned int  y);//(const ComplexValue &complexVal);
