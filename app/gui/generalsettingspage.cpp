@@ -187,7 +187,7 @@ qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
             //mTickCountY /= indexPressureH2O;
             mHighLevelAlarm = (round)(mHighLevelAlarm / indexPressureH2O);
             mLowLevelAlarm = (round)(mLowLevelAlarm / indexPressureH2O);
-            //mCurrentMaxYRange /= indexPressureH2O;
+            mCurrentMaxYRange /= indexPressureH2O;
         }
         else // 0 -> 1
         {
@@ -195,12 +195,13 @@ qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
             //mTickCountY *= indexPressureH2O;
             mHighLevelAlarm = (round)(mHighLevelAlarm * indexPressureH2O);
             mLowLevelAlarm = (round)(mLowLevelAlarm * indexPressureH2O);
-            //mCurrentMaxYRange *= indexPressureH2O;
+            mCurrentMaxYRange *= indexPressureH2O;
         }
         qDebug() << "mCurrentReadingsGraphIntervalY" <<mCurrentReadingsGraphIntervalY;
         qDebug() << "mTickCountY" << mTickCountY;
         qDebug() << "mHighLevelAlarm" << mHighLevelAlarm;
         qDebug() << "mLowLevelAlarm" << mLowLevelAlarm;
+        qDebug() << "mCurrentMaxYRange" << mCurrentMaxYRange;
 
         mController->setInetrvalsOnGraph(mCurrentReadingsGraphIntervalX, mCurrentReadingsGraphIntervalY,
                                                      mTickCountX, mTickCountY);

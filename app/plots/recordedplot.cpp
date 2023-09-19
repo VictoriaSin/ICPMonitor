@@ -9,7 +9,7 @@
 #include "unistd.h"
 //LabelManager *mLabelManagerRecorded {nullptr};
 
-double mCurrentMaxYRange {700};
+double mCurrentMaxYRange;
 RecordedPlot::RecordedPlot(QWidget *parent):
     AbstractCustomPlot(GraphType::RecordedGraph, parent),
     mTextEditDialog(new TextEditDialog(this))
@@ -18,6 +18,7 @@ RecordedPlot::RecordedPlot(QWidget *parent):
     mTextEditDialog->setMinimumSize(QSize(480, 360));
     isLabelCreating = false;
     isIntervalCreating = false;
+    mICPSettings->getCurrentPressureIndex() == 0 ? mCurrentMaxYRange = 60 : mCurrentMaxYRange = 815.7;
     // Настраиваем приближение и движение
     axisRect()->setRangeDrag(Qt::Horizontal | Qt::Vertical);
     axisRect()->setRangeZoom(Qt::Horizontal | Qt::Vertical);

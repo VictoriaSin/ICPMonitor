@@ -10,7 +10,7 @@ class TextEditDialog;
 class MonitorController;
 
 extern bool isPlayRecord;
-//extern double mCurrentMaxYRange;
+extern double mCurrentMaxYRange;
 class RecordedPlot : public AbstractCustomPlot
 {
     Q_OBJECT

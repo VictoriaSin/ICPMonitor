@@ -14,7 +14,7 @@ class GeneralSettingsPage;
 
 class MessageDialog;
 
-//extern double mCurrentMaxYRange;
+extern double mCurrentMaxYRange;
 class GeneralSettingsPage : public AbstractDialogPage
 {
     Q_OBJECT
