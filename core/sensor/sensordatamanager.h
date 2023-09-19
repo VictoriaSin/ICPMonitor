@@ -22,7 +22,12 @@ public:
     bool isRecording;
 protected:
     void run();
-
+    uint16_t first;
+    uint16_t last;
+    double sum;
+    uint16_t cnt;
+    double *CurrDataForAverage;
+    double calcAverage(int data);
 signals:
     void writeBufferToFile();
     void printDataOnGraph(unsigned int, unsigned int);

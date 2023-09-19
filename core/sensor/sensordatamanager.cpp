@@ -8,27 +8,12 @@
 #include <QTextStream>
 #include <QDateTime>
 #include <QDebug>
+#include "math.h"
 
 
 #define selectCurrentBufferForRecord(_BUF) { currBuffer = _BUF;}
 uint8_t currBuffer = BUFFER_1;
 _mSPIBuffer mSensorBuffer1, mSensorBuffer2;
-
-
-SensorDataManager::SensorDataManager(QObject *parent) : QThread{parent}
-{
-    currBuffer = BUFFER_1;
-    mSensorBuffer1.index = 0;
-    mSensorBuffer2.index = 0;
-    mAverageValue = 0;
-    mAverageCount = 0;
-    mAverageSum = 0;
-    srand(5);
-}
-
-SensorDataManager::~SensorDataManager()
-{
-}
 
 #define TIME_INTERVAL_FOR_RECORD_IN_FILE (3)
 #define TIME_INTERVAL_FOR_WRITE_ON_GRAPH (40) //40 миллисекунд - 25 раз в секунду
@@ -39,6 +24,32 @@ SensorDataManager::~SensorDataManager()
 #define startTimerRecord() {timerForRecordInFile += TIME_INTERVAL_FOR_RECORD_IN_FILE;}
 
 #define READ_SPI() data = (10 + rand() % 20) // Потом будем брать значение из потока SPI
+
+#define AverageIntervalSec 1.5
+int buffSize =(int) (1000.0 / TIME_INTERVAL_FOR_WRITE_ON_GRAPH * AverageIntervalSec);
+SensorDataManager::SensorDataManager(QObject *parent) : QThread{parent}
+{
+    currBuffer = BUFFER_1;
+    mSensorBuffer1.index = 0;
+    mSensorBuffer2.index = 0;
+    mAverageValue = 0;
+    mAverageCount = 0;
+    mAverageSum = 0;
+    srand(5);    
+    qDebug() << "buffSize" << buffSize;
+    CurrDataForAverage = new double[buffSize];
+    first = 0;
+    last = 0;
+    sum = 0;
+    cnt = 0;
+}
+
+
+SensorDataManager::~SensorDataManager()
+{
+}
+
+
 
 #define indexPressureH2O 13.595
 unsigned short data = 0;
@@ -68,6 +79,7 @@ void SensorDataManager::run()
               {
                   data *= indexPressureH2O;
               }
+              mAverageValue = calcAverage(data);
               emit(printDataOnGraph((unsigned int)(currIndexDrawGraph * TIME_INTERVAL_FOR_WRITE_ON_GRAPH), data));
               currIndexDrawGraph++;
               emit(averageReady(mAverageValue));
@@ -102,14 +114,6 @@ void SensorDataManager::run()
                       emit(writeBufferToFile());
                   }
               }
-              READ_SPI();
-              if (mICPSettings->getCurrentPressureIndex() == 1)
-              {
-                  data *= indexPressureH2O;
-              }
-              mAverageSum += (double)(data);
-              mAverageCount++;
-              mAverageValue = mAverageSum / mAverageCount;
           }
       }
       else
@@ -133,24 +137,35 @@ void SensorDataManager::run()
                   {
                       data *= indexPressureH2O;
                   }
+                  mAverageValue = calcAverage(data);
                   emit(printDataOnGraph((unsigned int)(currIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH), data));
                   emit(averageReady(mAverageValue));
 
-              }
-              if (getCurrentTimeStamp_ms() >= timerForRecordInFile) // Add Data In File
-              {
-                  READ_SPI();
-                  if (mICPSettings->getCurrentPressureIndex() == 1)
-                  {
-                      data *= indexPressureH2O;
-                  }
-                  mAverageSum += (double)(data);
-                  mAverageCount++;
-                  mAverageValue = mAverageSum / mAverageCount;
               }
           }
       }
   }  // End of while()
   isStopped = true;
   qDebug() << "SensorDataManager stopped";
+}
+
+
+double SensorDataManager::calcAverage(int data)
+{
+    //qDebug() << "cnt" << cnt;
+    //qDebug() << "data" << data;
+    first = (first + 1) % buffSize;
+    sum += data;
+    if (cnt < buffSize)
+    {
+        cnt++;
+    }
+    else
+    {
+        last = (last + 1) % buffSize;
+        sum -= CurrDataForAverage[last];
+    }
+    CurrDataForAverage[first] = data;
+    //qDebug() << "average" << sum/cnt;
+    return sum/cnt;
 }
