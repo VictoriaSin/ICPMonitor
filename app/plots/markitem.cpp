@@ -32,7 +32,6 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, uint8_t num, QColor color, const QFo
     QCPAbstractItem(parentPlot),
     mTextItem(new QCPItemText(parentPlot))
 {
-    qDebug() << "mark interval" << num;
     // Установка слоя отрисовки
     setLayer("overlay");
 

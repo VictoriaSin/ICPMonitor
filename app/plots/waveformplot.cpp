@@ -171,12 +171,11 @@ void WaveFormPlot::retranslate()
 
 void WaveFormPlot::resetGraph()
 {
-    //qDebug() << "WavePlot Start reset";
     mPreviousSensorDataTime = 0;
     mSummarySensorDataTimePerXRange = 0;
     mMainGraph->data()->clear();
     mHistGraph->data()->clear();
-    //qDebug() << "WavePlot reset";
+    qDebug() << "WavePlot reset";
 }
 
 void WaveFormPlot::scaleFont(double scaleFactor)

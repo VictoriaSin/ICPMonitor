@@ -25,7 +25,7 @@ _mSPIBuffer mSensorBuffer1, mSensorBuffer2;
 
 #define READ_SPI() data = (12 + rand() % 20) // Потом будем брать значение из потока SPI
 
-SensorDataManager::SensorDataManager(QObject *parent) : QThread{parent}
+SensorDataManager::SensorDataManager(QObject *parent, QString dirPath) : QThread{parent}
 {
     currBuffer = BUFFER_1;
     mSensorBuffer1.index = 0;
@@ -42,6 +42,8 @@ SensorDataManager::SensorDataManager(QObject *parent) : QThread{parent}
     last = 0;
     sum = 0;
     cnt = 0;
+    SPIData.setFileName(dirPath + "/SPI_Data.txt");
+    isStopSensorData = false;
 }
 
 
@@ -55,17 +57,16 @@ SensorDataManager::~SensorDataManager()
 unsigned short data = 0;
 void SensorDataManager::run()
 {
-  volatile int32_t currIndex = -1; // увеличим в функции записи, т.е. с нуля начинаем запись
+  currIndex = -1; // увеличим в функции записи, т.е. с нуля начинаем запись
 
   isStopped = false;
   isRunning = true;
   isRecording = false;
-  isStartRecord = false;
   qDebug() << "SensorDataManager started";
 
   initTimerGraph();
   initTimerRecord();
-  uint32_t currIndexDrawGraph = 0;
+  currIndexDrawGraph = 0;
 
   while (isRunning)
   {
@@ -82,7 +83,8 @@ void SensorDataManager::run()
               mAverageValue = calcAverage(data);
               emit(printDataOnGraph((unsigned int)(currIndexDrawGraph * TIME_INTERVAL_FOR_WRITE_ON_GRAPH), data));
               currIndexDrawGraph++;
-              emit(averageReady(mAverageValue));
+              //emit(averageReady(mAverageValue));
+              qDebug() << "manager x*1000" << currIndexDrawGraph * TIME_INTERVAL_FOR_WRITE_ON_GRAPH;
           }
 
           if (getCurrentTimeStamp_ms() >= timerForRecordInFile) // Add Data In File
@@ -90,43 +92,19 @@ void SensorDataManager::run()
               startTimerRecord();
               currIndex++; // Сначала увеличим индекс , чтобы индекс указывал на последний элемент
               READ_SPI();
+
               if (mICPSettings->getCurrentPressureIndex() == 1)
               {
                   data *= indexPressureH2O;
               }
-              if (currBuffer == BUFFER_1)
-              {
-                  mSensorBuffer1.record[mSensorBuffer1.index].data = data;
-                  mSensorBuffer1.record[mSensorBuffer1.index++].timeStamp = currIndex * TIME_INTERVAL_FOR_RECORD_IN_FILE;
-                  if (mSensorBuffer1.index == MAXBUFFERSIZE)
-                  {
-                      selectCurrentBufferForRecord(BUFFER_2);
-                      emit(writeBufferToFile());
-                  }
-              }
-              else
-              {
-                  mSensorBuffer2.record[mSensorBuffer2.index].data = data;
-                  mSensorBuffer2.record[mSensorBuffer2.index++].timeStamp = currIndex * TIME_INTERVAL_FOR_RECORD_IN_FILE;
-                  if (mSensorBuffer2.index == MAXBUFFERSIZE)
-                  {
-                      selectCurrentBufferForRecord(BUFFER_1);
-                      emit(writeBufferToFile());
-                  }
-              }
+              uint32_t tempBuf = currIndex * TIME_INTERVAL_FOR_RECORD_IN_FILE;
+              SPIData.write((char*)&tempBuf, sizeof(tempBuf));
+              SPIData.write((char*)&data, sizeof(data));
           }
       }
       else
       {
-          if (isStartRecord)
-          {
-              initTimerGraph();
-              initTimerRecord();
-              isRecording = true;
-              isStartRecord = false;
-              currIndex = -1;
-          }
-          else
+          if (isStopSensorData == false)
           {
               if (getCurrentTimeStamp_ms() >= timerForSetInGraph) // Add Data To Graph
               {
@@ -137,15 +115,18 @@ void SensorDataManager::run()
                   {
                       data *= indexPressureH2O;
                   }
+                  qDebug() << "ttt" << currIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH;
                   mAverageValue = calcAverage(data);
                   emit(printDataOnGraph((unsigned int)(currIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH), data));
-                  emit(averageReady(mAverageValue));
-
+                  //emit(averageReady(mAverageValue));
               }
           }
+          else qDebug() << "isStopSensorData";
       }
   }  // End of while()
+  SPIData.close();
   isStopped = true;
+
   qDebug() << "SensorDataManager stopped";
 }
 
@@ -169,3 +150,34 @@ double SensorDataManager::calcAverage(int data)
     //qDebug() << "average" << sum/cnt;
     return sum/cnt;
 }
+
+void SensorDataManager::startRecord()
+{
+    SPIData.open(QIODevice::WriteOnly | QIODevice::Append);
+    initTimerGraph();
+    initTimerRecord();
+    currIndex = -1;
+    currIndexDrawGraph = 0;
+    isRecording = true;
+}
+
+//              if (currBuffer == BUFFER_1)
+//              {
+//                  mSensorBuffer1.record[mSensorBuffer1.index].data = data;
+//                  mSensorBuffer1.record[mSensorBuffer1.index++].timeStamp = currIndex * TIME_INTERVAL_FOR_RECORD_IN_FILE;
+//                  if (mSensorBuffer1.index == MAXBUFFERSIZE)
+//                  {
+//                      selectCurrentBufferForRecord(BUFFER_2);
+//                      emit(writeBufferToFile());
+//                  }
+//              }
+//              else
+//              {
+//                  mSensorBuffer2.record[mSensorBuffer2.index].data = data;
+//                  mSensorBuffer2.record[mSensorBuffer2.index++].timeStamp = currIndex * TIME_INTERVAL_FOR_RECORD_IN_FILE;
+//                  if (mSensorBuffer2.index == MAXBUFFERSIZE)
+//                  {
+//                      selectCurrentBufferForRecord(BUFFER_1);
+//                      emit(writeBufferToFile());
+//                  }
+//              }

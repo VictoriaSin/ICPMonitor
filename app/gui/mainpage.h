@@ -45,7 +45,7 @@ class MainPage : public IPageWidget
 
     int iconCount = 0;
     SensorDataManager *mSensorDataManager;
-    SaveSPI *mSPIFile;
+
     //bool isPlayRecord = true;
 
 public:
@@ -71,7 +71,7 @@ private:
 
     /*! Настройка контейнера с графиками */
     void setupGraphsContainer();
-
+    QDir mCurrentRecordDir;
 private slots:
     void controllerEventHandler(ControllerEvent event);//, const QVariantMap &args = {});
 

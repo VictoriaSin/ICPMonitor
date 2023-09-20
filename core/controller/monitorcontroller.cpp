@@ -376,7 +376,6 @@ void MonitorController::makeLabel()
     // Если метка создалась, то рассылаем уведомление о создании с номером метки и временем создания
     if (std::shared_ptr<Label> label = mLabelManagerGlobal->createLabel())
     {
-        qDebug() << "pos" <<label->mCurrentPos << label->getNumberLabel() << label->getTimeStartLabelMS();
         emit controllerEvent(ControllerEvent::LabelCreated, QVariantMap({
                                            {ControllerEventsArgs::LabelNumber,           label->getNumberLabel()},
                                            {ControllerEventsArgs::LabelCreationTimeMs,   (qlonglong)label->getTimeStartLabelMS()}  }));

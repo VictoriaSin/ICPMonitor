@@ -10,8 +10,10 @@
 #include "controller/labels/label.h"
 #include "unistd.h"
 #include "ui_mainpage.h"
-
 #include <QTimer>
+
+
+
 QVector<LabelMarkItem *> mLabelItemsContainer {nullptr};
 MarkItem *mIntervalsContainer[4];
 bool isIntervalCreating {false};
@@ -87,6 +89,7 @@ void CurrentGraphsArea::resetGraphOfCurrentValues()
     // Если график текущих значений создан     
     if (mWaveGraph)
     {
+
         mWaveGraph->resetGraph();
         if (isRecord)
         {
@@ -98,7 +101,8 @@ void CurrentGraphsArea::resetGraphOfCurrentValues()
         }
     }
     double temp = mWaveGraph->xAxis->range().upper;
-    if (mRecordedGraph) {
+    if (mRecordedGraph)
+    {
         mRecordedGraph->resetGraph();
         mRecordedGraph->setXRange(0, temp);
     }
@@ -466,11 +470,11 @@ void CurrentGraphsArea::addDataOnWavePlot(unsigned int currX, unsigned int currY
         }        
         mCounterSensorReadings = 0;
     }*/
+
     mWaveGraph->addDataOnGraphic(currX, currY);
     if (isRecord)
     {
-        //currentBufferRecord == 1 ? addRawData(&bufferRecord_1) : addRawData(&bufferRecord_2);
-
+        //currentBufferRecord == 1 ? addRawData(&bufferRecord_2) : addRawData(&bufferRecord_1);
         mRecordedGraph->saveDataForGraphic(currX, currY);
     }
 }

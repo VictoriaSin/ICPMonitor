@@ -116,5 +116,7 @@
         <file>icons/speedX4.svg</file>
         <file>icons/speedX1_pressed.svg</file>
         <file>icons/speedX1.svg</file>
+        <file>icons/zoomInterval_pressed.svg</file>
+        <file>icons/zoomInterval.svg</file>
     </qresource>
 </RCC>

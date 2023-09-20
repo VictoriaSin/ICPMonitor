@@ -73,7 +73,7 @@
          <number>4</number>
         </property>
         <property name="rightMargin">
-         <number>3</number>
+         <number>12</number>
         </property>
         <property name="bottomMargin">
          <number>0</number>
@@ -389,13 +389,13 @@
          <property name="minimumSize">
           <size>
            <width>1280</width>
-           <height>500</height>
+           <height>496</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>1280</width>
-           <height>500</height>
+           <height>496</height>
           </size>
          </property>
         </widget>
@@ -405,7 +405,7 @@
      <item>
       <layout class="QHBoxLayout" name="bottonLayout" stretch="0,0,0,0,0,0,0,0,0,0,0,0,0">
        <property name="spacing">
-        <number>6</number>
+        <number>12</number>
        </property>
        <item>
         <widget class="QLabel" name="dateTimeLabel">

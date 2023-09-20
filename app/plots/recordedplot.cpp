@@ -19,6 +19,8 @@ RecordedPlot::RecordedPlot(QWidget *parent):
     isLabelCreating = false;
     isIntervalCreating = false;
     mICPSettings->getCurrentPressureIndex() == 0 ? mCurrentMaxYRange = 60 : mCurrentMaxYRange = 815.7;
+
+    mRecordedData.clear();
     // Настраиваем приближение и движение
     axisRect()->setRangeDrag(Qt::Horizontal | Qt::Vertical);
     axisRect()->setRangeZoom(Qt::Horizontal | Qt::Vertical);
@@ -111,34 +113,38 @@ void RecordedPlot::addInterval(uint8_t num, QColor color)
     for (int i=0; i<mRecordedData.count(); i++)
     {
         temp.push_back(mRecordedData[i].first);
+        qDebug() << "mRecordedData[i].first" << mRecordedData[i].first;
     }
 
     double t1 = (double)mIntervalsContainer[num-2]->mIntervalPos/1000.0;
     double t2 = (double)mIntervalsContainer[num-1]->mIntervalPos/1000.0;
-
+qDebug() << "t1" << t1;
+qDebug() << "t2" << t2;
     double first = 0.0;
     double second = 0.0;
 
-    for (int i=floor(t1)*25; i<=ceil(t2)*25; i++) //25 показаний в секунду
+    //for (int i=floor(t1)*25; i<=ceil(t2)*25; i++) //25 показаний в секунду
+    for (int i=0; i<=temp.count(); i++) //25 показаний в секунду
     {
-        if (mRecordedData[i].first <= t1)
+        //qDebug() << "i" << i << "x" << temp[i];//mRecordedData[i].first;
+        if (temp[i] <= t1)//if (mRecordedData[i].first <= t1)
         {
-            first = mRecordedData[i].first;
+            first = temp[i];//mRecordedData[i].first;
         }
-        else if (mRecordedData[i].first >= t2)
+        else if (temp[i] >= t2)//mRecordedData[i].first >= t2)
         {
-            second = mRecordedData[i].first;
+            second = temp[i];//mRecordedData[i].first;
             break;
         }
 
     }
-    //qDebug() << "1" << first;
-    //qDebug() << "2" << second;
+    qDebug() << "first" << first;
+    qDebug() << "second" << second;
 
     int indexStart = temp.indexOf(first);
     int indexStop = temp.indexOf(second);
-    //qDebug() << t1 << indexStart;
-    //qDebug() << t2 << indexStop;
+    qDebug() << "t1" << t1 << "indexStart" << indexStart;
+    qDebug() << "t2" << t2 << "indexStop" << indexStop;
     for (int i=indexStart; i<=indexStop; i++)
     {
         mIntervalFirst->addData(mRecordedData[i].first, mRecordedData[i].second);
@@ -154,6 +160,7 @@ void RecordedPlot::saveDataForGraphic(unsigned int  x, unsigned int  y)//const C
     double temp_x = (double) x/1000;
     double temp_y = (double) y;
     mRecordedData.push_back(qMakePair(temp_x, temp_y));
+    qDebug() << "x" << temp_x;
 //    // Суммирование общего времени пришедших данных с датчика
 //    // для ограничения отображения данных в диапазоне допустимых
 //    // значение времени на оси Х графика

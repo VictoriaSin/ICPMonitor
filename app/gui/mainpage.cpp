@@ -532,17 +532,11 @@ void MainPage::on_recordButton_clicked()
     QString currentTime = QDateTime::currentDateTime().toString("yyyy_MM_dd@hh_mm_ss");
     if (isStart)
     {
-        isStart = false;
-        QDir mCurrentRecordDir(mntDirectory+ "/" + currentTime);
-        ui->recordButton->setIcon(QIcon(":/icons/stopRecord.svg"), QIcon(":/icons/stopRecord_pressed.svg"));
-
-        mSPIFile = new SaveSPI(this, mCurrentRecordDir.path());
-        connect(mSensorDataManager, &SensorDataManager::writeBufferToFile, mSPIFile, &SaveSPI::fillFile);
-        mSPIFile->start();
-        mSensorDataManager->isStartRecord = true;
-
-        mCurrentGraphsArea->isRecord = true;
+        mSensorDataManager->isStopSensorData = true;
         emit (resetWaveGraph());
+        isStart = false;
+        mCurrentRecordDir.setPath(mntDirectory+ "/" + currentTime);
+        ui->recordButton->setIcon(QIcon(":/icons/stopRecord.svg"), QIcon(":/icons/stopRecord_pressed.svg"));
 
         mHeadFile.setFileName(mCurrentRecordDir.path()      + "/" + "HEAD.txt");
         mIntervalsFile.setFileName(mCurrentRecordDir.path() + "/" + "INTERVALS.txt");
@@ -554,7 +548,6 @@ void MainPage::on_recordButton_clicked()
         {
 #ifdef TEST_BUILD
             QString response;
-            //response = executeAConsoleCommand("mkdir", QStringList() << "-m" << "777" << mCurrentRecordDir.path());
             response = executeAConsoleCommand("mkdir", QStringList() << mCurrentRecordDir.path());
             if (response == "")
             {
@@ -578,9 +571,10 @@ void MainPage::on_recordButton_clicked()
         }
         ui->mainWidgets   ->show();
         ui->sessionButton ->setEnabled(false);
-        //ui->softwareStorageIconSVG->show();
-        //ui->dateTimeLabel->show();
-        //ui->infoWidgets->show();
+emit (resetWaveGraph());
+        mSensorDataManager->startRecord();
+        mCurrentGraphsArea->isRecord = true;
+
 
     }
     else
@@ -632,9 +626,6 @@ void MainPage::on_recordButton_clicked()
         mSensorDataManager->isRunning = false;
         while(mSensorDataManager->isStopped == false) {}
 
-        // Остановка записи данных
-        mSPIFile->isRunning = false;
-        while(mSPIFile->isStopped == false) {}
 
         emit (changeCurrentGraph());
     }
@@ -719,10 +710,11 @@ void MainPage::on_rejectMarkButton_clicked()
 void MainPage::startSession()
 {
   ui->sessionButton->setIcon(QIcon(":/icons/deleteSession.svg"), QIcon(":/icons/deleteSession_pressed.svg"));
-  mSensorDataManager = new SensorDataManager(this);
+  mSensorDataManager = new SensorDataManager(this, mCurrentRecordDir.path());
   connect(mSensorDataManager, &SensorDataManager::printDataOnGraph, mCurrentGraphsArea, &CurrentGraphsArea::addDataOnWavePlot);
   connect(mSensorDataManager, &SensorDataManager::averageReady, this, &MainPage::setAverage);
   connect(this, &MainPage::setAveragePointerPos, ui->alarmLevelICPWidget, &AlarmLevelICPWidget::updateAverageValueOnWidgets);
+
   mSensorDataManager->start();
 
   ui->recordButton        ->show();
@@ -777,10 +769,6 @@ void MainPage::stopSession()
   // Остановка потока SensorDataManager - считывание данных
   mSensorDataManager->isRunning = false;
   while(mSensorDataManager->isStopped == false) {}
-
-  //        // Остановка записи данных
-  //        mSPIFile->isRunning = false;
-  //        while(mSPIFile->isStopped == false) {}
 }
 void MainPage::on_sessionButton_clicked()
 {
