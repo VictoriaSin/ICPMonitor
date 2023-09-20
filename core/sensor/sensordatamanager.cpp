@@ -23,15 +23,15 @@ _mSPIBuffer mSensorBuffer1, mSensorBuffer2;
 #define startTimerGraph() {timerForSetInGraph += TIME_INTERVAL_FOR_WRITE_ON_GRAPH;}
 #define startTimerRecord() {timerForRecordInFile += TIME_INTERVAL_FOR_RECORD_IN_FILE;}
 
-#define READ_SPI() data = (10 + rand() % 20) // Потом будем брать значение из потока SPI
+#define READ_SPI() data = (12 + rand() % 20) // Потом будем брать значение из потока SPI
 
-#define AverageIntervalSec 1.5
-int buffSize =(int) (1000.0 / TIME_INTERVAL_FOR_WRITE_ON_GRAPH * AverageIntervalSec);
 SensorDataManager::SensorDataManager(QObject *parent) : QThread{parent}
 {
     currBuffer = BUFFER_1;
     mSensorBuffer1.index = 0;
     mSensorBuffer2.index = 0;
+    AverageIntervalSec = mICPSettings->getCurrentAverageIntervalSec();
+    buffSize =(int) (1000.0 / TIME_INTERVAL_FOR_WRITE_ON_GRAPH * AverageIntervalSec);
     mAverageValue = 0;
     mAverageCount = 0;
     mAverageSum = 0;

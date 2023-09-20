@@ -183,6 +183,7 @@ public:
     bool setInetrvalsOnGraph(double mCurrentReadingsGraphIntervalX, double mCurrentReadingsGraphIntervalY,
                              double mTickCountX, double mTickCountY);
     bool setPressureUnits(uint8_t mCurrentPressureUnitsIndex);
+    bool setAverageInterval(float mAverageIntervalSec);
     /*################################################################################
                                         Время
     ################################################################################*/

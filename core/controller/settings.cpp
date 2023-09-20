@@ -166,6 +166,7 @@ void Settings::readCurrentSensorReadingsSettings()
     mTickCountY = mSettings->value("mTickCountY", mTickCountY).toDouble();
 
     mPressureUnitsIndex = mSettings->value("mPressureUnitsIndex", mPressureUnitsIndex).toUInt();
+    mAverageIntervalSec = mSettings->value("mAverageIntervalSec", mAverageIntervalSec).toFloat();
     mSettings->endGroup();
 }
 
@@ -179,6 +180,7 @@ void Settings::writeCurrentSensorReadingsSettings()
     mSettings->setValue("mTickCountX", QString::number(mTickCountX));
     mSettings->setValue("mTickCountY", QString::number(mTickCountY));
     mSettings->setValue("mPressureUnitsIndex", mPressureUnitsIndex);
+    mSettings->setValue("mAverageIntervalSec", QString::number(mAverageIntervalSec));
     mSettings->endGroup();
     mSettings->sync();
 }
@@ -213,9 +215,14 @@ void Settings::setCurrentTickCountY(float currentTickCountY)
     mTickCountY = currentTickCountY;
 }
 
-void Settings::setCurrentPressureUnits(uint8_t mCurrentPressureUnitsIndex)
+void Settings::setCurrentPressureUnits(uint8_t currentPressureUnitsIndex)
 {
-    mPressureUnitsIndex = mCurrentPressureUnitsIndex;
+    mPressureUnitsIndex = currentPressureUnitsIndex;
+}
+
+void Settings::setCurrentAverageIntervalSec(double currentAverageIntervalSec)
+{
+    mAverageIntervalSec = currentAverageIntervalSec;
 }
 
 void Settings::setAllPressureParam(double mCurrentReadingsGraphIntervalY, double mTickCountY,

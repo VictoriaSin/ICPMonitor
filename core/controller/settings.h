@@ -40,6 +40,7 @@ public:
     QString getSoftwareStorageUUID() const { return mSoftwareStorageUUID; };
     QString getFlashDeviceMountPart() const { return mFlashDeviceMountPart; };
     int64_t getLastSavedDateTimestampSec() const { return mLastSavedDateTimestampSec; }; ///< unix timestamp    
+
     /*################################################################################
                                     Настройки скриншотов
     ################################################################################*/
@@ -66,6 +67,7 @@ public:
     double getCurrentTickCountX() const { return mTickCountX; };
     double getCurrentTickCountY() const { return mTickCountY; };
     uint8_t getCurrentPressureIndex() const { return mPressureUnitsIndex; };
+    float getCurrentAverageIntervalSec() const { return mAverageIntervalSec; };
     /*################################################################################
                             Настройки средних показаний датчика
     ################################################################################*/
@@ -124,7 +126,8 @@ private slots:
     void setCurrentReadingsGraphIntervalY(double currentReadingsGraphIntervalYTo);
     void setCurrentTickCountX(float currentTickCountX);
     void setCurrentTickCountY(float currentTickCountY);
-    void setCurrentPressureUnits(uint8_t mCurrentPressureUnitsIndex);
+    void setCurrentPressureUnits(uint8_t currentPressureUnitsIndex);
+    void setCurrentAverageIntervalSec(double currentAverageIntervalSec);
 
 private:
     QSettings *mSettings {nullptr};
@@ -136,6 +139,7 @@ private:
     QString mSoftwareStorageUUID;
     QString mFlashDeviceMountPart;
     int64_t mLastSavedDateTimestampSec {0};
+    float mAverageIntervalSec;
 #ifdef PC_BUILD
     float mFontScaleFactor {1};
 #else

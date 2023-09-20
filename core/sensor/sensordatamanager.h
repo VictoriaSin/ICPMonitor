@@ -40,6 +40,8 @@ private:
     double mAverageValue;
     double mAverageSum;
     uint64_t mAverageCount;
+    float AverageIntervalSec{1.5};
+    int buffSize;
 };
 
 #endif // SENSORDATAMANAGER_H

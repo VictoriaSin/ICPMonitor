@@ -333,6 +333,14 @@ READING</translation>
         <translation>Relative path</translation>
     </message>
     <message>
+        <source>Единицы измерения давления</source>
+        <translation>Pressure units</translation>
+    </message>
+    <message>
+        <source>Интервал для подсчета среднего значения (с)</source>
+        <translation>Interval for calculating the average value (s)</translation>
+    </message>
+    <message>
         <source>Масштаб шрифта</source>
         <translation>Font scale factor</translation>
     </message>

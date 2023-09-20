@@ -308,8 +308,8 @@ int main(int argc, char *argv[])
     if (getRTC(clockBuffer) == I2C_RESULT::I2C_OK)
     {
       qDebug() << "Date/Time" << convertDateTimeToString(clockBuffer);
-      //if (setRTC(clockBuffer) != I2C_RESULT::I2C_OK) { exit(66); }
-      //setDateTime(clockBuffer);
+      if (setRTC(clockBuffer) != I2C_RESULT::I2C_OK) { exit(66); }
+      setDateTime(clockBuffer);
     }
     else
     {

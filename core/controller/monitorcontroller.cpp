@@ -578,6 +578,21 @@ bool MonitorController::setPressureUnits(uint8_t mCurrentPressureUnitsIndex)
     return false;
 }
 
+bool MonitorController::setAverageInterval(float mAverageIntervalSec)
+{
+    if (!mICPSettings) {
+        return false;
+    }
+    const float AIS = mICPSettings->getCurrentAverageIntervalSec();
+    if (AIS != mAverageIntervalSec)
+    {
+        mICPSettings->setCurrentAverageIntervalSec(mAverageIntervalSec);
+        //emit controllerEvent(ControllerEvent::UpdateAverageInterval);
+    }
+    mICPSettings->writeCurrentSensorReadingsSettings();
+    return true;
+}
+
 bool MonitorController::setInetrvalsOnGraph(double mCurrentReadingsGraphIntervalX, double mCurrentReadingsGraphIntervalY,
                                             double mTickCountX, double mTickCountY)
 {

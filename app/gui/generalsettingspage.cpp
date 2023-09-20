@@ -115,6 +115,7 @@ void GeneralSettingsPage::updateGraphSettingsOnWidgets()
     ui->tickCountXLineEdit->setText(QString::number(realDivisionXCount));//settings->getCurrentTickCountX()));
     ui->tickCountYLineEdit->setText(QString::number(realDivisionYCount));//settings->getCurrentTickCountY()));
     ui->pressureUnitsComboBox->setCurrentIndex(settings->getCurrentPressureIndex());
+    ui->averageIntervalSecLineEdit->setText(QString::number(settings->getCurrentAverageIntervalSec()));
 }
 
 void GeneralSettingsPage::updateGeneralSettingsOnWidgets()
@@ -129,7 +130,7 @@ void GeneralSettingsPage::updateGeneralSettingsOnWidgets()
     }
 
     ui->fontScaleFactorLineEdit->setText(QString::number(settings->getFontScaleFactor()));
-    ui->softwareStorageUUIDLineEdit->setText(settings->getSoftwareStorageUUID());
+    ui->softwareStorageUUIDLineEdit->setText(settings->getSoftwareStorageUUID());    
 }
 
 #define indexPressureH2O 13.595
@@ -155,6 +156,7 @@ void GeneralSettingsPage::updateParameters()
         }
     }
     uint8_t mPressureUnitsIndex = ui->pressureUnitsComboBox->currentIndex();
+
     //QTimer::singleShot(0, mController, [this, mPressureUnitsIndex, &isPressureUnitsChanged]()
     {
         if (mController->setPressureUnits(mPressureUnitsIndex))
@@ -173,6 +175,7 @@ qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
     double mTickCountY = (double)(mCurrentReadingsGraphIntervalY - 10) / ui->tickCountYLineEdit->text().toDouble();
     double mHighLevelAlarm = ui->upperAlarmLineEdit->text().toFloat();
     double mLowLevelAlarm = ui->lowerAlarmLineEdit->text().toFloat();
+    float mAverageIntervalSec = ui->averageIntervalSecLineEdit->text().toFloat();
 
     bool mLowLevelStateAlarm = true;
     bool mHighLevelStateAlarm = true;
@@ -236,6 +239,15 @@ qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
         }
 //        else { openAlarmInfoErrorDialog(tr("Верхний уровень должен\nбыть больше, чем нижний!"));}
     });
+    \
+    QTimer::singleShot(0, mController, [this, mAverageIntervalSec]()
+    {
+        if (mController->setAverageInterval(mAverageIntervalSec))
+        {
+            emit previousPage();
+        }
+//        else { openAlarmInfoErrorDialog(tr("Верхний уровень должен\nбыть больше, чем нижний!"));}
+    });
 
     QTimer::singleShot(0, mController, [this, mFontScaleFactor]()
     {
@@ -288,6 +300,8 @@ void GeneralSettingsPage::scaleFont(float scaleFactor)
     WFontScaling(ui->softwareStorageUUIDLineEdit, scaleFactor);
     WFontScaling(ui->pressureUnitsLabel, scaleFactor);
     WFontScaling(ui->pressureUnitsComboBox, scaleFactor);
+    WFontScaling(ui->averageIntervalSecLabel, scaleFactor);
+    WFontScaling(ui->averageIntervalSecLineEdit, scaleFactor);
 
     mMessageDialog->scaleFont(scaleFactor);
 }
