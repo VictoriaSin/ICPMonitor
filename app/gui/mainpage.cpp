@@ -405,7 +405,7 @@ void MainPage::updateLabelCounter()
     if (countLabels > 0)
     {
         //ui->labelCounterLabel->setText(counterLabelText.arg(mLabelManagerGlobal->mCountLabels));
-        ui->labelsNavigation->setText(currentLabelText.arg(mCurrentLabelIndex + 1).arg(mLabelManagerGlobal->mCountLabels));
+        ui->labelsNavigation->setText(currentLabelText.arg(mCurrentLabelIndex+1).arg(mLabelManagerGlobal->mCountLabels));
     } else {
         //ui->labelCounterLabel->setText(tr("Меток: "));
     }

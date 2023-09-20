@@ -368,17 +368,22 @@ bool MonitorController::setAppLanguage(QLocale::Language language)
 void MonitorController::makeLabel()
 {
     // Если текущая сессия отсутствует или локальная
-    const auto &currentSession = mSessionManager->getCurrentSession();
-    if (!currentSession || currentSession->getId() == LOCAL_SESSION_ID) {
-        return;
-    }
+//    const auto &currentSession = mSessionManager->getCurrentSession();
+//    if (!currentSession || currentSession->getId() == LOCAL_SESSION_ID) {
+//        return;
+//    }
     isLabelCreating = true;
     // Если метка создалась, то рассылаем уведомление о создании с номером метки и временем создания
     if (std::shared_ptr<Label> label = mLabelManagerGlobal->createLabel())
     {
+        qDebug() << "pos" <<label->mCurrentPos << label->getNumberLabel() << label->getTimeStartLabelMS();
         emit controllerEvent(ControllerEvent::LabelCreated, QVariantMap({
                                            {ControllerEventsArgs::LabelNumber,           label->getNumberLabel()},
                                            {ControllerEventsArgs::LabelCreationTimeMs,   (qlonglong)label->getTimeStartLabelMS()}  }));
+    }
+    else
+    {
+        qDebug() << "none";
     }
 }
 

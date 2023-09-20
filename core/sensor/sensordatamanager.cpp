@@ -15,7 +15,7 @@
 uint8_t currBuffer = BUFFER_1;
 _mSPIBuffer mSensorBuffer1, mSensorBuffer2;
 
-#define TIME_INTERVAL_FOR_RECORD_IN_FILE (3)
+#define TIME_INTERVAL_FOR_RECORD_IN_FILE (10)
 #define TIME_INTERVAL_FOR_WRITE_ON_GRAPH (40) //40 миллисекунд - 25 раз в секунду
 
 #define initTimerGraph() {timerForSetInGraph = getCurrentTimeStamp_ms() + TIME_INTERVAL_FOR_WRITE_ON_GRAPH;}

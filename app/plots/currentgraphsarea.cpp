@@ -31,6 +31,7 @@ CurrentGraphsArea::CurrentGraphsArea(QWidget *parent) :
     bufferRecord_2.currentPos = 0;
     currentBufferRecord = 1;
     isRecord = false;
+    mLabelItemsContainer.clear();
     // Записываем для быстрого доступа
     mWaveGraph = ui->waveGraph;
     // Записываем для быстрого доступа и скрываем график и кнопку изменения диапазона X
@@ -72,7 +73,7 @@ CurrentGraphsArea::CurrentGraphsArea(QWidget *parent) :
     // Устанавливаем фильтр событий для отслеживания нажатия на график записи
     mRecordedGraph->installEventFilter(this);
 
-    resetAllLabelItems();
+    //resetAllLabelItems();
 }
 
 CurrentGraphsArea::~CurrentGraphsArea()
@@ -114,7 +115,7 @@ void CurrentGraphsArea::goToLabel(bool direction)
 
     direction == previous ? mCurrentLabelIndex = (mCurrentLabelIndex + labelCount - 1) % labelCount //назад
             : mCurrentLabelIndex = (mCurrentLabelIndex + 1) % labelCount; //вперед
-
+qDebug() << "currind" << mCurrentLabelIndex;
     double curLabelPosX =mLabelItemsContainer[mCurrentLabelIndex]->getLabel()->mCurrentPos;
 
     double tempRangeDiv2 = (mRecordedGraph->xAxis->range().size())/2;
@@ -571,6 +572,7 @@ void CurrentGraphsArea::addLabelOnRecordedGraph()
 
     // Добавляем в контейнер меток
     mLabelItemsContainer.append(labelItem);
+    qDebug() << mLabelItemsContainer.count();
 }
 
 void CurrentGraphsArea::addIntervalOnRecordedGraph()
