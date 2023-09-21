@@ -48,21 +48,11 @@ MainPage::MainPage(QWidget *parent)
     setupBottomInfoSVG();
     // Настройка контейнера с графиками
     setupGraphsContainer();
-    connect(this,  &MainPage::resetWaveGraph, mCurrentGraphsArea, &CurrentGraphsArea::resetGraphOfCurrentValues);
 
-    // Для добавления данных на график записи показаний
-    connect(this, &MainPage::dataReadyForRecordGraph, mCurrentGraphsArea, &CurrentGraphsArea::addDataOnRecordedPlot);
 
     // Настраиваем обновление виджета с текущим временем
     mUpdateDateTimeTimer->setInterval(60000);
     connect(mUpdateDateTimeTimer, &QTimer::timeout, this, &MainPage::updateDateTime);
-
-    connect(this, &MainPage::changeCurrentGraph, mCurrentGraphsArea, &AbstractMultipleGraphsAreasWidget::changeGraph);
-    connect(this, SIGNAL(changeRecordedGraphInteraction(bool)), mCurrentGraphsArea, SLOT(addOrDeleteNewItem(bool)));
-
-    connect(this, &MainPage::changeCurrentRange, mCurrentGraphsArea, &CurrentGraphsArea::changeXInterval);
-
-    connect(this, SIGNAL(goToLabel(bool)), mCurrentGraphsArea, SLOT(goToLabel(bool)));
 
     connect(this, &MainPage::playBtnPressed, [this](){mCurrentGraphsArea->mRecordedGraph->animateGraphic(currSpeed);});//&RecordedPlot::animateGraphic);
 
@@ -534,7 +524,7 @@ void MainPage::on_recordButton_clicked()
     {
         //mSensorDataManager->isStopSensorData = true;
         mCurrentGraphsArea->stopWork();
-        emit (resetWaveGraph());
+        mCurrentGraphsArea->resetGraphOfCurrentValues();
         mCurrentGraphsArea->startWork();
         isStart = false;
         mCurrentRecordDir.setPath(mntDirectory+ "/" + currentTime);
@@ -550,7 +540,7 @@ void MainPage::on_recordButton_clicked()
         {
 #ifdef TEST_BUILD
             QString response;
-            response = executeAConsoleCommand("mkdir", QStringList() << mCurrentRecordDir.path());
+            response = executeAConsoleCommand("mkdir", QStringList() << "-p" << mCurrentRecordDir.path());
             if (response == "")
             {
                 qDebug() << "Dir open = "<< mCurrentRecordDir.path();
@@ -571,13 +561,15 @@ void MainPage::on_recordButton_clicked()
                     "\nStartTimeStamp(ms): " + QString::number(getCurrentTimeStampMS()) + "\n").toLatin1());
             mHeadFile.close();
         }
+
+
         ui->mainWidgets   ->show();
         ui->sessionButton ->setEnabled(false);
 
         //mSensorDataManager->startRecord();
         mCurrentGraphsArea->isRecord = true;
-        emit (resetWaveGraph());
-
+        mCurrentGraphsArea->resetGraphOfCurrentValues();
+        mRawDataFile.open(QIODevice::WriteOnly | QIODevice::Append);
 
     }
     else
@@ -594,7 +586,7 @@ void MainPage::on_recordButton_clicked()
         isStart = true;
 
         mCurrentGraphsArea->isRecord = false;
-        emit(dataReadyForRecordGraph());
+        mCurrentGraphsArea->addDataOnRecordedPlot();
 
 
 #define SET_VISIBLED_DISABLED(_UUII) {ui->_UUII->show();  ui->_UUII->setEnabled(false);}
@@ -630,7 +622,8 @@ void MainPage::on_recordButton_clicked()
         //while(mSensorDataManager->isStopped == false) {}
 
         mCurrentGraphsArea->stopWork();
-        emit (changeCurrentGraph());
+        mCurrentGraphsArea->changeGraph();
+        mRawDataFile.close();
     }
 }
 
@@ -677,7 +670,7 @@ void MainPage::on_acceptMarkButton_clicked()
     mLabelItemsContainer.back()->getLabel()->mCurrentPos = (double)mCoordLabelX/1000;
 
     if (mIntervalsCount < 4) { ui->intervalButton->show(); }
-    emit(changeRecordedGraphInteraction(true));
+    mCurrentGraphsArea->addOrDeleteNewItem(true);
     updateLabelCounter();
     if (ui->labelsNavigation->text() != "0/0")
     {
@@ -702,7 +695,7 @@ void MainPage::on_rejectMarkButton_clicked()
     ui->downloadGraphButton ->setEnabled(true);
 
     if (mIntervalsCount < 4) { ui->intervalButton->show(); }
-    emit(changeRecordedGraphInteraction(false));
+    mCurrentGraphsArea->addOrDeleteNewItem(false);
     if (ui->labelsNavigation->text() != "0/0")
     {
         ui->goToPreviousMarkButton  ->setEnabled(true);
@@ -713,12 +706,8 @@ void MainPage::on_rejectMarkButton_clicked()
 void MainPage::startSession()
 {
   ui->sessionButton->setIcon(QIcon(":/icons/deleteSession.svg"), QIcon(":/icons/deleteSession_pressed.svg"));
-  //mSensorDataManager = new SensorDataManager(this, mCurrentRecordDir.path());
-  //connect(mSensorDataManager, &SensorDataManager::printDataOnGraph, mCurrentGraphsArea, &CurrentGraphsArea::addDataOnWavePlot);
   connect(mCurrentGraphsArea, &CurrentGraphsArea::averageReady, this, &MainPage::setAverage);
   connect(this, &MainPage::setAveragePointerPos, ui->alarmLevelICPWidget, &AlarmLevelICPWidget::updateAverageValueOnWidgets);
-
-  //mSensorDataManager->start();
 
   ui->recordButton        ->show();
   ui->alarmLevelICPWidget ->show();
@@ -737,11 +726,11 @@ void MainPage::startSession()
 void MainPage::stopSession()
 {
   ui->sessionButton->setIcon(QIcon(":/icons/newSession.svg"), QIcon(":/icons/newSession_pressed.svg"));
-  //mCurrentGraphsArea->stopPlotting();
+  mCurrentGraphsArea->stopPlotting();
   //mController->closeSession();
 
-  emit (changeCurrentGraph());
-  emit (resetWaveGraph());
+  mCurrentGraphsArea->changeGraph();
+  mCurrentGraphsArea->resetGraphOfCurrentValues();
 
   ui->homeButton            ->show();
   ui->makeLabelButton       ->hide();
@@ -848,7 +837,7 @@ void MainPage::on_acceptIntervalButton_clicked()
     ui->speedRecordButton     ->setEnabled(true);
     ui->downloadGraphButton   ->setEnabled(true);
 
-    emit(changeRecordedGraphInteraction(true));
+    mCurrentGraphsArea->addOrDeleteNewItem(true);
 
     //const QString maxValuePreset = tr("Максимум\n%1"); //перевести потом
     //const QString averageValuePreset = tr("Среднее\n%1"); //перевести потом
@@ -902,31 +891,31 @@ void MainPage::on_rejectIntervalButton_clicked()
         ui->goToNextMarkButton      ->setEnabled(true);
     }
     mIntervalsCount--;
-    emit(changeRecordedGraphInteraction(false));
+    mCurrentGraphsArea->addOrDeleteNewItem(false);
 
 }
 
 
 void MainPage::on_goToInterval1Button_clicked()
 {
-    emit (changeCurrentRange(first));
+    mCurrentGraphsArea->changeXInterval(first);
 }
 
 void MainPage::on_goToInterval2Button_clicked()
 {
-    emit (changeCurrentRange(second));
+    mCurrentGraphsArea->changeXInterval(second);
 }
 
 void MainPage::on_goToPreviousMarkButton_clicked()
-{
-    emit (goToLabel(previous));
+{    
+    mCurrentGraphsArea->goToLabel(previous);
     updateLabelCounter();
 }
 
 
 void MainPage::on_goToNextMarkButton_clicked()
-{
-    emit (goToLabel(next));
+{    
+    mCurrentGraphsArea->goToLabel(next);
     updateLabelCounter();
 }
 

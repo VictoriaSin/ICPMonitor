@@ -40,6 +40,8 @@ protected:
 public:
     explicit AbstractMultipleGraphsAreasWidget(QWidget *parent = nullptr);
     ~AbstractMultipleGraphsAreasWidget();
+    /*! Смена графика */
+    virtual void changeGraph();
 
 protected:
     /*! Обновление имени установленного графика */
@@ -58,8 +60,7 @@ public:
     void scaleFont(float scaleFactor) override;
 
 public slots:
-    /*! Смена графика */
-    virtual void changeGraph();
+
 //    void changeButtonStatus();
 };
 

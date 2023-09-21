@@ -192,8 +192,8 @@ private:
     double mAverageValue;
     float AverageIntervalSec{1.5};
     int buffSize;
-    uint16_t first;
-    uint16_t last;
+    uint16_t firstBuffPointer;
+    uint16_t lastBuffPointer;
     double sum;
     uint16_t cnt;
     double *CurrDataForAverage;
@@ -202,17 +202,15 @@ public:
     void scaleFont(float scaleFactor) override;
     void installController(MonitorController *controller) override;
     void retranslate() override;
-
-public slots:
-    void addDataOnRecordedPlot();
-
     /*! Сброс графика с текущими значениями */
     void resetGraphOfCurrentValues();
-
     void addOrDeleteNewItem(bool state);
-
-    void changeXInterval(bool interval);
     void goToLabel(bool direction);
+    void changeXInterval(bool interval);
+    void addDataOnRecordedPlot();
+
+public slots:
+
     /*! Устанавливаем данные на график внутричерепного давления */
     void addDataOnWavePlot();//(uint32_t currX, uint32_t currY);
 protected slots:

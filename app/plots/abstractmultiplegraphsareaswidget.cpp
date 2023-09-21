@@ -5,6 +5,7 @@
 #include "animatedtoolbutton.h"
 
 #include "global_define.h"
+#include "unistd.h"
 
 AbstractMultipleGraphsAreasWidget::AbstractMultipleGraphsAreasWidget(QWidget *parent) :
     AbstractGraphAreaWidget(parent)
@@ -75,6 +76,7 @@ void AbstractMultipleGraphsAreasWidget::changeGraph()
     }
 
     // Скрываем текущий график
+    mGraphContainer[mCurrentGraphIndex]->clearGraphs();
     mGraphContainer[mCurrentGraphIndex]->hide();
 
     // Узнаём индекс следующего графика

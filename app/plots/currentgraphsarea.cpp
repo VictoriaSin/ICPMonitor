@@ -80,8 +80,8 @@ CurrentGraphsArea::CurrentGraphsArea(QWidget *parent) :
     buffSize =(int) (1000.0 / TIME_INTERVAL_FOR_WRITE_ON_GRAPH * AverageIntervalSec);
     mAverageValue = 0;
     CurrDataForAverage = new double[buffSize];
-    first = 0;
-    last = 0;
+    firstBuffPointer = 0;
+    lastBuffPointer = 0;
     sum = 0;
     cnt = 0;
 }
@@ -442,22 +442,6 @@ void CurrentGraphsArea::changePressureUnits()
 
 void CurrentGraphsArea::addDataOnWavePlot()//(unsigned int currX, unsigned int currY)
 {
-    //++mCounterSensorReadings;
-    //ComplexValue currValue;
-    // Если кол-во точек равно кол-ву прореживания
-    /*if (mCounterSensorReadings == mThinningSensorReadings)
-    {
-        currValue = mController->getLastConvertedSensorValue();
-        mWaveGraph->addDataOnGraphic(currValue);//(mController->getLastConvertedSensorValue());
-        if (isRecord)
-        {
-            currentBufferRecord == 1 ? addRawData(&bufferRecord_1) : addRawData(&bufferRecord_2);
-            mRecordedGraph->saveDataForGraphic(currValue);//mController->getLastConvertedSensorValue());// пока оставляем
-        }        
-        mCounterSensorReadings = 0;
-    }*/
-
-
     currIndex ++;
     READ_SPI();
     if (mICPSettings->getCurrentPressureIndex() == 1)
@@ -472,8 +456,27 @@ void CurrentGraphsArea::addDataOnWavePlot()//(unsigned int currX, unsigned int c
     {
         //currentBufferRecord == 1 ? addRawData(&bufferRecord_2) : addRawData(&bufferRecord_1);
         mRecordedGraph->saveDataForGraphic((unsigned int)(currIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH), data);
+        mRawDataFile.write((char*)&data, sizeof(data));//проверить кол-во
         //mRecordedGraph->addDataOnGraphic(currX, currY);
+
     }
+
+
+    //++mCounterSensorReadings;
+    //ComplexValue currValue;
+    // Если кол-во точек равно кол-ву прореживания
+    /*if (mCounterSensorReadings == mThinningSensorReadings)
+    {
+        currValue = mController->getLastConvertedSensorValue();
+        mWaveGraph->addDataOnGraphic(currValue);//(mController->getLastConvertedSensorValue());
+        if (isRecord)
+        {
+            currentBufferRecord == 1 ? addRawData(&bufferRecord_1) : addRawData(&bufferRecord_2);
+            mRecordedGraph->saveDataForGraphic(currValue);//mController->getLastConvertedSensorValue());// пока оставляем
+        }
+        mCounterSensorReadings = 0;
+    }*/
+
 }
 
 void CurrentGraphsArea::addRawData(_bufferRecord *buffer)
@@ -493,10 +496,10 @@ void CurrentGraphsArea::addRawData(_bufferRecord *buffer)
 
 void CurrentGraphsArea::writeRawData(_bufferRecord *buffer)
 {
-    mRawDataFile.open(QIODevice::WriteOnly | QIODevice::Append);
-    mRawDataFile.write((char*)buffer->field, buffer->currentPos * sizeof(_recordFields));//проверить кол-во    
-    mRawDataFile.close();
-    buffer->currentPos = 0;
+//    mRawDataFile.open(QIODevice::WriteOnly | QIODevice::Append);
+//    mRawDataFile.write((char*)buffer->field, buffer->currentPos * sizeof(_recordFields));//проверить кол-во
+//    mRawDataFile.close();
+//    buffer->currentPos = 0;
 }
 
 void CurrentGraphsArea::addDataOnRecordedPlot()
@@ -642,6 +645,7 @@ double tempOffset;
 // вынести в отдельную функцию
     if (interval == first)
     {
+        qDebug() << "11111";
         tempOffset = calcRangePercent(0, 1);
         if (calcPosInCoord(0) - tempOffset < 0) { leftPos = calcPosInCoord(0); }
         else { leftPos = tempOffset; }
@@ -653,6 +657,7 @@ double tempOffset;
     }
     else if (interval == second)
     {
+        qDebug() << "22222";
         tempOffset = calcRangePercent(2, 3);
         if (calcPosInCoord(2) - tempOffset < 0) { leftPos = calcPosInCoord(2); }
         else { leftPos = tempOffset; }
@@ -818,7 +823,7 @@ double CurrentGraphsArea::calcAverage(int data)
 {
     //qDebug() << "cnt" << cnt;
     //qDebug() << "data" << data;
-    first = (first + 1) % buffSize;
+    firstBuffPointer = (firstBuffPointer + 1) % buffSize;
     sum += data;
     if (cnt < buffSize)
     {
@@ -826,10 +831,10 @@ double CurrentGraphsArea::calcAverage(int data)
     }
     else
     {
-        last = (last + 1) % buffSize;
-        sum -= CurrDataForAverage[last];
+        lastBuffPointer = (lastBuffPointer + 1) % buffSize;
+        sum -= CurrDataForAverage[lastBuffPointer];
     }
-    CurrDataForAverage[first] = data;
+    CurrDataForAverage[firstBuffPointer] = data;
     //qDebug() << "average" << sum/cnt;
     return sum/cnt;
 }
