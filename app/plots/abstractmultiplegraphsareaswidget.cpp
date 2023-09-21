@@ -22,10 +22,6 @@ void AbstractMultipleGraphsAreasWidget::updateDisplayedGraphName()
 {
     switch (mDisplayedGraph)
     {
-//    case AbstractCustomPlot::GraphType::TrendGraph: {
-//        AbstractGraphAreaWidget::ui->nameGraphLabel->setText(tr("ТРЕНД"));
-//        break;
-//    }
     case AbstractCustomPlot::GraphType::WaveFormGraph: {
         AbstractGraphAreaWidget::ui->nameGraphLabel->setText(tr("СИГНАЛ ВЧД"));
         break;
@@ -102,21 +98,6 @@ void AbstractMultipleGraphsAreasWidget::changeGraph()
         }
     }
 //#endif    
-    // Если есть кнопка для изменения диапазона оси X графика тренда
-    //if (ui->xRangeGraphToolButton) {
-    //    // Если установленный график не Тренд, то скрываем кнопку
-    //    if (mDisplayedGraph != AbstractCustomPlot::GraphType::TrendGraph)
-    //    {
-    //        if (!ui->xRangeGraphToolButton->isHidden())
-    //        {
-    //            ui->xRangeGraphToolButton->hide();
-    //        }
-    //    }
-    //    else
-    //    {
-    //        ui->xRangeGraphToolButton->show();
-    //    }
-    //}
 
     // Показываем график
     graph->show();

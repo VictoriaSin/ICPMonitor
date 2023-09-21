@@ -49,7 +49,6 @@ SOURCES += \
     plots/markitem.cpp \
     plots/recordedplot.cpp \
     plots/statisticgraphsarea.cpp \
-    plots/trendplot.cpp \
     plots/abstractcustomplot.cpp \
     plots/waveformplot.cpp \
     plots/qcustomplot.cpp
@@ -94,7 +93,6 @@ HEADERS += \
     plots/markitem.h \
     plots/recordedplot.h \
     plots/statisticgraphsarea.h \
-    plots/trendplot.h \
     plots/abstractcustomplot.h \
     plots/waveformplot.h \
     plots/qcustomplot.h

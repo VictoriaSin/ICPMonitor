@@ -22,6 +22,11 @@ uint8_t mIntervalsCount {0};
 _bufferRecord bufferRecord_1, bufferRecord_2;
 uint8_t currentBufferRecord;
 
+#define READ_SPI() data = (12 + rand() % 20)
+#define TIME_INTERVAL_FOR_RECORD_IN_FILE (10)
+#define TIME_INTERVAL_FOR_WRITE_ON_GRAPH (40) //40 миллисекунд - 25 раз в секунду
+
+
 
 CurrentGraphsArea::CurrentGraphsArea(QWidget *parent) :
     AbstractMultipleGraphsAreasWidget(parent),
@@ -36,9 +41,6 @@ CurrentGraphsArea::CurrentGraphsArea(QWidget *parent) :
     mLabelItemsContainer.clear();
     // Записываем для быстрого доступа
     mWaveGraph = ui->waveGraph;
-    // Записываем для быстрого доступа и скрываем график и кнопку изменения диапазона X
-    //mTrendGraph = ui->trendGraph;
-    //mTrendGraph->hide();
     AbstractGraphAreaWidget::ui->xRangeGraphToolButton->hide();
 
     //Записываем для быстрого доступа и скрываем график
@@ -47,7 +49,6 @@ CurrentGraphsArea::CurrentGraphsArea(QWidget *parent) :
 
     // Добавляем графики в общий контейнер
     mGraphContainer.append(mWaveGraph);
-    //mGraphContainer.append(mTrendGraph);
     mGraphContainer.append(mRecordedGraph);
 
     // Указываем индекс отображаемого графика
@@ -55,27 +56,34 @@ CurrentGraphsArea::CurrentGraphsArea(QWidget *parent) :
     mDisplayedGraph = mGraphContainer[mCurrentGraphIndex]->type();
 
     // Заполняем контейнер масштабов и инициализируем кнопку смены диапазона по оси X
-    mXRangesOfSecondsWithIcons.append(IntervalAndButtonIcons(3600, QIcon(":/icons/oneHour_pressed.svg"), QIcon(":/icons/oneHour.svg")));
-    mXRangesOfSecondsWithIcons.append(IntervalAndButtonIcons(7200, QIcon(":/icons/twoHour_pressed.svg"), QIcon(":/icons/twoHour.svg")));
-    mXRangesOfSecondsWithIcons.append(IntervalAndButtonIcons(10800, QIcon(":/icons/threeHour_pressed.svg"), QIcon(":/icons/threeHour.svg")));
-    mXRangesOfSecondsWithIcons.append(IntervalAndButtonIcons(14400, QIcon(":/icons/fourHour_pressed.svg"), QIcon(":/icons/fourHour.svg")));
-    mXRangesOfSecondsWithIcons.append(IntervalAndButtonIcons(28800, QIcon(":/icons/eightHour_pressed.svg"), QIcon(":/icons/eightHour.svg")));
-    mXRangesOfSecondsWithIcons.append(IntervalAndButtonIcons(43200, QIcon(":/icons/twelveHour_pressed.svg"), QIcon(":/icons/twelveHour.svg")));
-    initializeXRangeToolButton();
+//    mXRangesOfSecondsWithIcons.append(IntervalAndButtonIcons(3600, QIcon(":/icons/oneHour_pressed.svg"), QIcon(":/icons/oneHour.svg")));
+//    mXRangesOfSecondsWithIcons.append(IntervalAndButtonIcons(7200, QIcon(":/icons/twoHour_pressed.svg"), QIcon(":/icons/twoHour.svg")));
+//    mXRangesOfSecondsWithIcons.append(IntervalAndButtonIcons(10800, QIcon(":/icons/threeHour_pressed.svg"), QIcon(":/icons/threeHour.svg")));
+//    mXRangesOfSecondsWithIcons.append(IntervalAndButtonIcons(14400, QIcon(":/icons/fourHour_pressed.svg"), QIcon(":/icons/fourHour.svg")));
+//    mXRangesOfSecondsWithIcons.append(IntervalAndButtonIcons(28800, QIcon(":/icons/eightHour_pressed.svg"), QIcon(":/icons/eightHour.svg")));
+//    mXRangesOfSecondsWithIcons.append(IntervalAndButtonIcons(43200, QIcon(":/icons/twelveHour_pressed.svg"), QIcon(":/icons/twelveHour.svg")));
+//    initializeXRangeToolButton();
     // Изменения диапазона графиков по оси X
-    connect(AbstractGraphAreaWidget::ui->xRangeGraphToolButton, &QToolButton::clicked, this, &CurrentGraphsArea::nextXRange);
+//    connect(AbstractGraphAreaWidget::ui->xRangeGraphToolButton, &QToolButton::clicked, this, &CurrentGraphsArea::nextXRange);
 
     // Изменения диапазона графиков по оси Y
-    connect(AbstractGraphAreaWidget::ui->yRangeGraphToolButton, &QToolButton::clicked, this, &CurrentGraphsArea::nextYRange);
+//    connect(AbstractGraphAreaWidget::ui->yRangeGraphToolButton, &QToolButton::clicked, this, &CurrentGraphsArea::nextYRange);
 
-//    // Устанавливаем фильтр событий для отслеживания нажатия на график тренда
-//    mTrendGraph->installEventFilter(this);
 
 
     // Устанавливаем фильтр событий для отслеживания нажатия на график записи
     mRecordedGraph->installEventFilter(this);
 
     //resetAllLabelItems();
+
+    AverageIntervalSec = mICPSettings->getCurrentAverageIntervalSec();
+    buffSize =(int) (1000.0 / TIME_INTERVAL_FOR_WRITE_ON_GRAPH * AverageIntervalSec);
+    mAverageValue = 0;
+    CurrDataForAverage = new double[buffSize];
+    first = 0;
+    last = 0;
+    sum = 0;
+    cnt = 0;
 }
 
 CurrentGraphsArea::~CurrentGraphsArea()
@@ -187,19 +195,6 @@ void CurrentGraphsArea::addOrDeleteNewItem(bool state)
 
 }
 
-//void CurrentGraphsArea::resetTrendGraph()
-//{
-////    // Если график тренда создан
-////    if (mTrendGraph) {
-////        mTrendGraph->resetGraph();
-////        resetAllLabelItems();
-////    }
-//
-////    mTotalTimeOfStoredReadingsMs = 0;
-////    mPrevTimeOfSensorReadingMs = 0;
-////    mDateTimeOfFirstData = QDateTime();
-////    mLastXRange = qMakePair(0, 0);
-//}
 
 void CurrentGraphsArea::resetRecordedGraph() //починить
 {
@@ -219,7 +214,6 @@ void CurrentGraphsArea::resetAllLabelItems()
 {
     // Освобождаем динамическую память от меток
     for (auto &labelItem : qAsConst(mLabelItemsContainer)) {
-        //!!!mTrendGraph->removeItem(labelItem);
         mRecordedGraph->removeItem(labelItem);
     }
 
@@ -227,7 +221,6 @@ void CurrentGraphsArea::resetAllLabelItems()
     mLabelItemsContainer.clear();
 
     // Очищаем список элементов оптимизации
-    //!!!mTrendGraph->clearOtimizationLabelItems();
     mRecordedGraph->clearOtimizationLabelItems();
 }
 
@@ -235,7 +228,6 @@ void CurrentGraphsArea::scaleFont(float scaleFactor)
 {
     AbstractMultipleGraphsAreasWidget::scaleFont(scaleFactor);
     mWaveGraph->scaleFont(scaleFactor);
-    //mTrendGraph->scaleFont(scaleFactor);
     mRecordedGraph->scaleFont(scaleFactor);
     // Скейлим шрифт для LabelItems
     mFontForLabelItems = FontScaling(mFontForLabelItems, scaleFactor);
@@ -251,8 +243,6 @@ void CurrentGraphsArea::installController(MonitorController *controller)
     // Для обновления данных на основном графике
     //connect(mController, &MonitorController::dataReadyForGraph, this, &CurrentGraphsArea::addDataOnWavePlot);
 
-    // Для обновления данных на графике тренда
-    //connect(mController, &MonitorController::dataReadyFromAverageICPController, this, &CurrentGraphsArea::addDataOnTrendGraph);
 
     // Установка диапазона осей и делений для графика текущих значений
     updateIntervalsOnGraphs();
@@ -265,7 +255,7 @@ void CurrentGraphsArea::installController(MonitorController *controller)
 
 bool CurrentGraphsArea::eventFilter(QObject *watched, QEvent *event)
 {
-    if (watched == mRecordedGraph) {  //!!!mTrendGraph){
+    if (watched == mRecordedGraph) {
         // Тип события
         const auto &eventType = event->type();
 
@@ -299,7 +289,6 @@ void CurrentGraphsArea::retranslate()
     AbstractMultipleGraphsAreasWidget::retranslate();
     ui->retranslateUi(this);
     mWaveGraph->retranslate();
-    //mTrendGraph->retranslate();
     mRecordedGraph->retranslate();
 }
 
@@ -316,18 +305,15 @@ void CurrentGraphsArea::controllerEventHandler(ControllerEvent event)//, const Q
     }
     case ControllerEvent::GlobalTimeUpdate: {
         //resetGraphOfCurrentValues();
-        //resetTrendGraph();
         resetRecordedGraph();
         break;
     }
     case ControllerEvent::LabelCreated: {
-        //addLabelOnTrendGraph();
         addLabelOnRecordedGraph();
         break;
     }
     case ControllerEvent::SessionStarted: {
         resetGraphOfCurrentValues();
-        //resetTrendGraph();
         resetRecordedGraph();
         break;
     }
@@ -349,19 +335,18 @@ void CurrentGraphsArea::controllerEventHandler(ControllerEvent event)//, const Q
 
 void CurrentGraphsArea::replotDisplayedGraph()
 {
-    switch (mDisplayedGraph) {
-//    case AbstractCustomPlot::GraphType::TrendGraph: {
-//        //mTrendGraph->replot(QCustomPlot::RefreshPriority::rpQueuedRefresh);
-//        break;
-//    }
-    case AbstractCustomPlot::GraphType::WaveFormGraph: {
+    switch (mDisplayedGraph)
+    {
+    case AbstractCustomPlot::GraphType::WaveFormGraph:
+        {
         replotWaveGraph();
         break;
-    }
-    case AbstractCustomPlot::GraphType::RecordedGraph: {
+        }
+    case AbstractCustomPlot::GraphType::RecordedGraph:
+        {
         replotRecordedGraph();
         break;
-    }
+        }
     default: break;
     }
 }
@@ -454,7 +439,8 @@ void CurrentGraphsArea::changePressureUnits()
     retranslate();
 }
 
-void CurrentGraphsArea::addDataOnWavePlot(unsigned int currX, unsigned int currY)
+
+void CurrentGraphsArea::addDataOnWavePlot()//(unsigned int currX, unsigned int currY)
 {
     //++mCounterSensorReadings;
     //ComplexValue currValue;
@@ -471,11 +457,22 @@ void CurrentGraphsArea::addDataOnWavePlot(unsigned int currX, unsigned int currY
         mCounterSensorReadings = 0;
     }*/
 
-    mWaveGraph->addDataOnGraphic(currX, currY);
+
+    currIndex ++;
+    READ_SPI();
+    if (mICPSettings->getCurrentPressureIndex() == 1)
+    {
+        data *= indexPressureH2O;
+    }
+    mAverageValue = calcAverage(data);
+    emit(averageReady(mAverageValue));
+    mWaveGraph->addDataOnGraphic((unsigned int)(currIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH), data);
+    //mWaveGraph->addDataOnGraphic(currX, currY);
     if (isRecord)
     {
         //currentBufferRecord == 1 ? addRawData(&bufferRecord_2) : addRawData(&bufferRecord_1);
-        mRecordedGraph->saveDataForGraphic(currX, currY);
+        mRecordedGraph->saveDataForGraphic((unsigned int)(currIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH), data);
+        //mRecordedGraph->addDataOnGraphic(currX, currY);
     }
 }
 
@@ -523,8 +520,6 @@ void CurrentGraphsArea::updateAlarmLevelsOnWidgets()
 
     mWaveGraph->setLowerAlarmLevelLine(LLA);
     mWaveGraph->setUpperAlarmLevelLine(HLA);
-    //mTrendGraph->setLowerAlarmLevelLine(LLA);
-    //mTrendGraph->setUpperAlarmLevelLine(HLA);
 }
 
 void CurrentGraphsArea::updateAlarmStatesOnWidgets()
@@ -543,8 +538,6 @@ void CurrentGraphsArea::updateAlarmStatesOnWidgets()
 
     mWaveGraph->enableLowerAlarm(LLSA);
     mWaveGraph->enableUpperAlarm(HLSA);
-    //mTrendGraph->enableLowerAlarm(LLSA);
-    //mTrendGraph->enableUpperAlarm(HLSA);
 }
 
 
@@ -738,54 +731,7 @@ void CurrentGraphsArea::colorInterval()
 //}
 
 
-//QPair<double, double> CurrentGraphsArea::setTrendGraphToTheCenter(int intervalSeconds, const QDateTime &timeOfLastReading)
-//{
-//    // Сбрасываем флаг нажатия на экран
-//    mUserTouchOrMouseEventOnTrendGraph = false;
 
-//    // Меняем диапазон
-//    const int halfInterval = intervalSeconds / 2;
-
-//    // Возвращаем установленный диапазон
-//    return mTrendGraph->setXRange(QCPAxisTickerDateTime::dateTimeToKey(timeOfLastReading.addSecs(-1 * halfInterval)),
-//                                  QCPAxisTickerDateTime::dateTimeToKey(timeOfLastReading.addSecs(halfInterval)));
-//}
-
-//void CurrentGraphsArea::addLabelOnTrendGraph()
-//{
-//    // Если нет графика тренда или контроллера
-//    if (!mTrendGraph || !mController) {
-//        return;
-//    }
-
-//    // Менеджер меток
-//    const LabelManager* const labelManager = mController->getLabelManager();
-
-//    // Если нет менеджера меток
-//    if (!labelManager) {
-//        return;
-//    }
-
-//    // Последняя созданная метка
-//    const std::shared_ptr<Label> label = labelManager->getLastCreatedLabel();
-
-//    // Если нет последней созданной метки
-//    if (!label) {
-//        return;
-//    }
-
-//    // Создаём метку
-//    LabelMarkItem *labelItem = new LabelMarkItem(mTrendGraph, label, mFontForLabelItems,
-//                                                 TopMarginForLabel, LabelOrientation::moVerticalTop);
-//    labelItem->setPositionMark(label->getTimeStartLabelMS() / 1000); // Установка позиции метки
-//    labelItem->addLine(); // Добавление вертикальной пунктирной линии
-
-//    // Добавляем элемент для оптимизации
-//    mTrendGraph->addOptimizationLabelItem(labelItem);
-
-//    // Добавляем в контейнер меток
-//    mLabelItemsContainer.append(labelItem);
-//}
 
 void CurrentGraphsArea::nextYRange()
 {
@@ -807,11 +753,8 @@ void CurrentGraphsArea::nextYRange()
 
 //    // Сброс индекса, если были перемещения по оси Y у какого-либо графика
 //    if (!qFuzzyCompare(mWaveGraph->yAxis->range().upper, range.second) ||
-//            !qFuzzyCompare(mWaveGraph->yAxis->range().lower, range.first) ||
-//            !qFuzzyCompare(mTrendGraph->yAxis->range().upper, range.second)||
-//            !qFuzzyCompare(mTrendGraph->yAxis->range().lower, range.first)) {
+//            !qFuzzyCompare(mWaveGraph->yAxis->range().lower, range.first)) {
 //        mWaveGraph->yAxis->setRange(range.first, range.second);
-//        mTrendGraph->yAxis->setRange(range.first, range.second);
 //        return;
 //    }
 
@@ -822,7 +765,6 @@ void CurrentGraphsArea::nextYRange()
 
 //    // Здесь всем графикам меняем приближение
 //    mWaveGraph->setYRange(newYRange.first, newYRange.second);
-//    mTrendGraph->setYRange(newYRange.first, newYRange.second);
 }
 
 bool CurrentGraphsArea::nextXRange()
@@ -838,12 +780,7 @@ bool CurrentGraphsArea::nextXRange()
     // Преобразуем время предыдущего показания в QDateTime
     //const QDateTime &prevTimeOfSensorReadingMs = QDateTime::fromMSecsSinceEpoch(mPrevTimeOfSensorReadingMs);
 
-//    // Обновление текущего диапазона, если были перемещения по оси X
-//    if (!qFuzzyCompare(mTrendGraph->xAxis->range().lower, mLastXRange.first) ||
-//            !qFuzzyCompare(mTrendGraph->xAxis->range().upper, mLastXRange.second)) {
-//        mLastXRange = setTrendGraphToTheCenter(mXRangesOfSecondsWithIcons[mCurrentXRangeIndex].interval, prevTimeOfSensorReadingMs);
-//        return true;
-//    }
+
 
     // Получаем объект
     ++mCurrentXRangeIndex;
@@ -853,8 +790,46 @@ bool CurrentGraphsArea::nextXRange()
     // Устанавливаем картинку кнопке
     AbstractGraphAreaWidget::ui->xRangeGraphToolButton->setIcon(intervalAndIcon.defaultButtonIcon, intervalAndIcon.pressedButtonIcon);
 
-    // Меняем диапазон
-    //mLastXRange = setTrendGraphToTheCenter(intervalAndIcon.interval, prevTimeOfSensorReadingMs);
+
 
     return true;
+}
+
+void CurrentGraphsArea::startWork()
+{
+  if (mTimerGetData == nullptr)
+  {
+    mTimerGetData = new QTimer(this);
+    //connect(mTimerGetData, &QTimer::timeout, this, &CurrentGraphsArea::timerGetData);
+    connect(mTimerGetData, &QTimer::timeout, this, &CurrentGraphsArea::addDataOnWavePlot);
+  }
+  currIndex = -1;
+  mTimerGetData->start(TIME_INTERVAL_FOR_WRITE_ON_GRAPH);
+  //startPlotting();
+}
+
+void CurrentGraphsArea::stopWork()
+{
+  mTimerGetData->stop();
+  //stopPlotting();
+}
+
+double CurrentGraphsArea::calcAverage(int data)
+{
+    //qDebug() << "cnt" << cnt;
+    //qDebug() << "data" << data;
+    first = (first + 1) % buffSize;
+    sum += data;
+    if (cnt < buffSize)
+    {
+        cnt++;
+    }
+    else
+    {
+        last = (last + 1) % buffSize;
+        sum -= CurrDataForAverage[last];
+    }
+    CurrDataForAverage[first] = data;
+    //qDebug() << "average" << sum/cnt;
+    return sum/cnt;
 }

@@ -532,8 +532,10 @@ void MainPage::on_recordButton_clicked()
     QString currentTime = QDateTime::currentDateTime().toString("yyyy_MM_dd@hh_mm_ss");
     if (isStart)
     {
-        mSensorDataManager->isStopSensorData = true;
+        //mSensorDataManager->isStopSensorData = true;
+        mCurrentGraphsArea->stopWork();
         emit (resetWaveGraph());
+        mCurrentGraphsArea->startWork();
         isStart = false;
         mCurrentRecordDir.setPath(mntDirectory+ "/" + currentTime);
         ui->recordButton->setIcon(QIcon(":/icons/stopRecord.svg"), QIcon(":/icons/stopRecord_pressed.svg"));
@@ -571,9 +573,10 @@ void MainPage::on_recordButton_clicked()
         }
         ui->mainWidgets   ->show();
         ui->sessionButton ->setEnabled(false);
-emit (resetWaveGraph());
-        mSensorDataManager->startRecord();
+
+        //mSensorDataManager->startRecord();
         mCurrentGraphsArea->isRecord = true;
+        emit (resetWaveGraph());
 
 
     }
@@ -623,10 +626,10 @@ emit (resetWaveGraph());
         //ui->averageICPWidget->hide();
 
         // Остановка считывания данных
-        mSensorDataManager->isRunning = false;
-        while(mSensorDataManager->isStopped == false) {}
+        //mSensorDataManager->isRunning = false;
+        //while(mSensorDataManager->isStopped == false) {}
 
-
+        mCurrentGraphsArea->stopWork();
         emit (changeCurrentGraph());
     }
 }
@@ -710,12 +713,12 @@ void MainPage::on_rejectMarkButton_clicked()
 void MainPage::startSession()
 {
   ui->sessionButton->setIcon(QIcon(":/icons/deleteSession.svg"), QIcon(":/icons/deleteSession_pressed.svg"));
-  mSensorDataManager = new SensorDataManager(this, mCurrentRecordDir.path());
-  connect(mSensorDataManager, &SensorDataManager::printDataOnGraph, mCurrentGraphsArea, &CurrentGraphsArea::addDataOnWavePlot);
-  connect(mSensorDataManager, &SensorDataManager::averageReady, this, &MainPage::setAverage);
+  //mSensorDataManager = new SensorDataManager(this, mCurrentRecordDir.path());
+  //connect(mSensorDataManager, &SensorDataManager::printDataOnGraph, mCurrentGraphsArea, &CurrentGraphsArea::addDataOnWavePlot);
+  connect(mCurrentGraphsArea, &CurrentGraphsArea::averageReady, this, &MainPage::setAverage);
   connect(this, &MainPage::setAveragePointerPos, ui->alarmLevelICPWidget, &AlarmLevelICPWidget::updateAverageValueOnWidgets);
 
-  mSensorDataManager->start();
+  //mSensorDataManager->start();
 
   ui->recordButton        ->show();
   ui->alarmLevelICPWidget ->show();
@@ -729,6 +732,7 @@ void MainPage::startSession()
   //ui->averageICPWidget->show();
   mCurrentLabelIndex = 0;
   mCurrentGraphsArea->startPlotting();
+  mCurrentGraphsArea->startWork();
 }
 void MainPage::stopSession()
 {
@@ -767,8 +771,10 @@ void MainPage::stopSession()
   //        ui->averageValue->show();// или скрывать вообще?
 
   // Остановка потока SensorDataManager - считывание данных
-  mSensorDataManager->isRunning = false;
-  while(mSensorDataManager->isStopped == false) {}
+  //mSensorDataManager->isRunning = false;
+  //while(mSensorDataManager->isStopped == false) {}
+
+  mCurrentGraphsArea->stopWork();
 }
 void MainPage::on_sessionButton_clicked()
 {

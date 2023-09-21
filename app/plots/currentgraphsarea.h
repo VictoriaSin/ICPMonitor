@@ -10,7 +10,6 @@ class CurrentGraphsArea;
 }
 
 class WaveFormPlot;
-class TrendPlot;
 class LabelMarkItem;
 class RecordedPlot;
 
@@ -68,8 +67,6 @@ class CurrentGraphsArea : public AbstractMultipleGraphsAreasWidget
     /*################################################################################
                                 Средние показания датчика
     ################################################################################*/
-//    //! График средних значений
-//    TrendPlot *mTrendGraph {nullptr};
 
     /*! Последний установленный диапазон X */
     QPair<double, double> mLastXRange {qMakePair(0, 0)};
@@ -146,11 +143,6 @@ private:
     */
     //QPair<double, double> setTrendGraphToTheCenter(int intervalSeconds, const QDateTime &timeOfLastReading);
 
-    /*! Устанавливает метку на график Тренда */
-    //void addLabelOnTrendGraph();
-
-    /*! Сброс графика со средними значениями */
-    //void resetTrendGraph();
 
     /*! Сброс всех меток */
     void resetAllLabelItems();
@@ -191,13 +183,20 @@ private slots:
     /*################################################################################
                                 Средние показания датчика
     ################################################################################*/
-    /*! Добавляем данные для графика тренда */
-    //void addDataOnTrendGraph();
+
 
 private:
     Ui::CurrentGraphsArea *ui;
-
-    // AbstractPlotAreaWidget interface
+    QTimer *mTimerGetData = nullptr;
+    unsigned short data;
+    double mAverageValue;
+    float AverageIntervalSec{1.5};
+    int buffSize;
+    uint16_t first;
+    uint16_t last;
+    double sum;
+    uint16_t cnt;
+    double *CurrDataForAverage;
 
 public:
     void scaleFont(float scaleFactor) override;
@@ -215,7 +214,7 @@ public slots:
     void changeXInterval(bool interval);
     void goToLabel(bool direction);
     /*! Устанавливаем данные на график внутричерепного давления */
-    void addDataOnWavePlot(uint32_t currX, uint32_t currY);
+    void addDataOnWavePlot();//(uint32_t currX, uint32_t currY);
 protected slots:
     void nextYRange() override;
 
@@ -238,6 +237,14 @@ public:
     void writeRawData(_bufferRecord *buffer);
     void addRawData(_bufferRecord *buffer);
     void colorInterval();
+
+    void startWork();
+    void stopWork();
+    int currIndex;
+protected:
+    double calcAverage(int data);
+signals:
+    void averageReady(double currAverage);
 };
 
 #endif // CURRENTGRAPHAREA_H

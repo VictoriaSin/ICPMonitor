@@ -114,12 +114,14 @@ void WaveFormPlot::addDataOnGraphic(unsigned int  x, unsigned int  y)//const Com
     double temp_x = (double) x/1000;
     double temp_y = (double) y;//1000;
 
-    mMainGraph->addData(temp_x, temp_y);
+
     if(mHistGraph->data()->size())
     {
         mHistGraph->data()->removeBefore(temp_x + 0.5);
-        mMainGraph->addData(temp_x, temp_y);
+        //mMainGraph->addData(temp_x, temp_y);
     }
+    mMainGraph->addData(temp_x, temp_y);
+
     //qDebug() << temp_x << temp_y;
 //    // Суммирование общего времени пришедших данных с датчика
 //    // для ограничения отображения данных в диапазоне допустимых

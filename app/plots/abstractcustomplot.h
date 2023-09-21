@@ -20,14 +20,12 @@ class AbstractCustomPlot : public QCustomPlot
 public:
     /*! Реализованные типы графиков
         WaveFormPlot - Основной график
-        TrendGraph - Средние значения
         BoxGraph -
         HistGraph -
         RecordedGraph - Записанный график
      */
     enum GraphType : uint8_t {
         WaveFormGraph,
-        TrendGraph,
         BoxGraph,
         HistGraph,
         RecordedGraph
