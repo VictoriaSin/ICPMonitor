@@ -10,6 +10,7 @@
 #include "plots/labelmarkitem.h"
 #include "controller/labels/label.h"
 #include "global_functions.h"
+#include "plots/intervalplot.h"
 
 
 
@@ -33,6 +34,8 @@ uint16_t mCurrentLabelIndex;
 
 bool isPlayRecord = true;
 int currSpeed = speed::SpeedX1;
+_mSPIData *mAllRecordedDataBuffer = nullptr;
+uint mSizeAllRecordedData = 0, mSizeFirstInterval = 0, mSizeSecondInterval = 0;
 
 MainPage::MainPage(QWidget *parent)
     : IPageWidget(parent)
@@ -67,11 +70,14 @@ MainPage::MainPage(QWidget *parent)
                       ui->sessionButton->setEnabled(true);
                       ui->rewindRecordButton->setEnabled(true);
                       ui->speedRecordButton->setEnabled(true);
+                      ui->zoomInterval1Button->setEnabled(true);
+                      ui->zoomInterval2Button->setEnabled(true);
                       ui->downloadGraphButton->setEnabled(true);// временно
                     } );
 
 
     ui->averageValue->hide();
+    mCurrentSelectedInterval = 0;
 }
 
 MainPage::~MainPage()
@@ -164,8 +170,8 @@ void MainPage::setupButtons()
     ui->goToNextMarkButton->hide();
     ui->labelsNavigation->hide();
 
-    ui->maxValueInterval1->hide();
-    ui->maxValueInterval2->hide();
+    ui->mInfoInterval1->hide();
+    ui->mInfoInterval2->hide();
 
     ui->alarmLevelICPWidget->hide();
     ui->averageICPWidget->hide();
@@ -190,6 +196,21 @@ void MainPage::setupButtons()
     ui->downloadGraphButton->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
     ui->downloadGraphButton->setStyleSheet(ToolButtonStyleSheet);
     ui->downloadGraphButton->hide();
+
+    ui->goBackToGraphButton->setIcon(QIcon(":/icons/goBack.svg"),QIcon(":/icons/goBack_pressed.svg"));
+    ui->goBackToGraphButton->setIconSize(QSize(BUT_SIZE_BIG, BUT_SIZE_BIG));
+    ui->goBackToGraphButton->setStyleSheet(ToolButtonStyleSheet);
+    ui->goBackToGraphButton->hide();
+
+    ui->zoomInterval1Button->setIcon(QIcon(":/icons/zoomFirstInterval.svg"),QIcon(":/icons/zoomFirstInterval_pressed.svg"));
+    ui->zoomInterval1Button->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
+    ui->zoomInterval1Button->setStyleSheet(ToolButtonStyleSheet);
+    ui->zoomInterval1Button->hide();
+
+    ui->zoomInterval2Button->setIcon(QIcon(":/icons/zoomSecondInterval.svg"),QIcon(":/icons/zoomSecondInterval_pressed.svg"));
+    ui->zoomInterval2Button->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
+    ui->zoomInterval2Button->setStyleSheet(ToolButtonStyleSheet);
+    ui->zoomInterval2Button->hide();
 }
 
 void MainPage::setupBottomInfoSVG()
@@ -409,8 +430,8 @@ void MainPage::scaleFont(float scaleFactor)
     mCurrentGraphsArea->scaleFont(scaleFactor);
     mMainMenu->scaleFont(scaleFactor);
     WFontScaling(ui->labelsNavigation, scaleFactor);
-    WFontScaling(ui->maxValueInterval1, scaleFactor);
-    WFontScaling(ui->maxValueInterval2, scaleFactor);
+    WFontScaling(ui->mInfoInterval1, scaleFactor);
+    WFontScaling(ui->mInfoInterval2, scaleFactor);
     WFontScaling(ui->averageValue, scaleFactor);
     //WFontScaling(ui->sensorInfoLabel, scaleFactor);
     //WFontScaling(ui->labelCounterLabel, scaleFactor);
@@ -565,8 +586,6 @@ void MainPage::on_recordButton_clicked()
 
         ui->mainWidgets   ->show();
         ui->sessionButton ->setEnabled(false);
-
-        //mSensorDataManager->startRecord();
         mCurrentGraphsArea->isRecord = true;
         mCurrentGraphsArea->resetGraphOfCurrentValues();
         mRawDataFile.open(QIODevice::WriteOnly | QIODevice::Append);
@@ -586,7 +605,7 @@ void MainPage::on_recordButton_clicked()
         isStart = true;
 
         mCurrentGraphsArea->isRecord = false;
-        mCurrentGraphsArea->addDataOnRecordedPlot();
+
 
 
 #define SET_VISIBLED_DISABLED(_UUII) {ui->_UUII->show();  ui->_UUII->setEnabled(false);}
@@ -599,9 +618,9 @@ void MainPage::on_recordButton_clicked()
         ui->downloadGraphButton ->show();
 
         ui->goToInterval1Button ->hide();
-        ui->maxValueInterval1   ->hide();
+        ui->mInfoInterval1      ->hide();
         ui->goToInterval2Button ->hide();
-        ui->maxValueInterval2   ->hide();
+        ui->mInfoInterval2      ->hide();
         ui->recordButton        ->hide();
         ui->alarmLevelICPWidget ->hide();
         ui->averageValue        ->hide();
@@ -615,15 +634,15 @@ void MainPage::on_recordButton_clicked()
         SET_VISIBLED_DISABLED(goToNextMarkButton);
         SET_VISIBLED_ENABLED(makeLabelButton);
 
-        //ui->averageICPWidget->hide();
-
-        // Остановка считывания данных
-        //mSensorDataManager->isRunning = false;
-        //while(mSensorDataManager->isStopped == false) {}
-
         mCurrentGraphsArea->stopWork();
-        mCurrentGraphsArea->changeGraph();
+        mCurrentGraphsArea->changeGraph(1);
         mRawDataFile.close();
+        mSizeAllRecordedData = mRawDataFile.size()/6;
+        mAllRecordedDataBuffer = new _mSPIData[mSizeAllRecordedData];
+        mRawDataFile.open(QIODevice::ReadOnly);
+        mRawDataFile.read((char*)mAllRecordedDataBuffer, mRawDataFile.size());
+        mRawDataFile.close();
+        mCurrentGraphsArea->addDataOnRecordedPlot();
     }
 }
 
@@ -643,6 +662,8 @@ void MainPage::on_makeLabelButton_clicked()
     ui->rewindRecordButton      ->setEnabled(false);
     ui->speedRecordButton       ->setEnabled(false);
     ui->downloadGraphButton     ->setEnabled(false);
+    ui->zoomInterval1Button     ->setEnabled(false);
+    ui->zoomInterval2Button     ->setEnabled(false);
 
     QTimer::singleShot(0, mController, [this](){ mController->makeLabel(); });
 
@@ -663,6 +684,8 @@ void MainPage::on_acceptMarkButton_clicked()
     ui->rewindRecordButton  ->setEnabled(true);
     ui->speedRecordButton   ->setEnabled(true);
     ui->downloadGraphButton ->setEnabled(true);
+    ui->zoomInterval1Button ->setEnabled(true);
+    ui->zoomInterval2Button ->setEnabled(true);
 
     mMarksFile.open(QIODevice::WriteOnly | QIODevice::Append);
     mMarksFile.write((QString::number(mLabelManagerGlobal->mCountLabels) + ": " + QString::number(mCoordLabelX) + "\n").toLatin1());
@@ -693,6 +716,8 @@ void MainPage::on_rejectMarkButton_clicked()
     ui->rewindRecordButton  ->setEnabled(true);
     ui->speedRecordButton   ->setEnabled(true);
     ui->downloadGraphButton ->setEnabled(true);
+    ui->zoomInterval1Button ->setEnabled(true);
+    ui->zoomInterval2Button ->setEnabled(true);
 
     if (mIntervalsCount < 4) { ui->intervalButton->show(); }
     mCurrentGraphsArea->addOrDeleteNewItem(false);
@@ -723,13 +748,14 @@ void MainPage::startSession()
   mCurrentGraphsArea->startPlotting();
   mCurrentGraphsArea->startWork();
 }
+
 void MainPage::stopSession()
 {
   ui->sessionButton->setIcon(QIcon(":/icons/newSession.svg"), QIcon(":/icons/newSession_pressed.svg"));
   mCurrentGraphsArea->stopPlotting();
   //mController->closeSession();
 
-  mCurrentGraphsArea->changeGraph();
+  mCurrentGraphsArea->changeGraph(0);
   mCurrentGraphsArea->resetGraphOfCurrentValues();
 
   ui->homeButton            ->show();
@@ -745,14 +771,16 @@ void MainPage::stopSession()
   ui->labelsNavigation      ->hide();
   ui->goToPreviousMarkButton->hide();
   ui->goToNextMarkButton    ->hide();
-  ui->maxValueInterval1     ->hide();
-  ui->maxValueInterval2     ->hide();
+  ui->mInfoInterval1        ->hide();
+  ui->mInfoInterval2        ->hide();
   ui->averageValue          ->hide();
   ui->alarmLevelICPWidget   ->hide(); //или оставить?
   ui->playRecord            ->hide();
   ui->rewindRecordButton    ->hide();
   ui->speedRecordButton     ->hide();
   ui->downloadGraphButton   ->hide();
+  ui->zoomInterval1Button   ->hide();
+  ui->zoomInterval2Button   ->hide();
   //ui->averageValueInterval1->hide();
   //ui->averageValueInterval2->hide();
   //ui->averageICPWidget->hide();
@@ -792,6 +820,8 @@ void MainPage::on_intervalButton_clicked()
     ui->rewindRecordButton      ->setEnabled(false);
     ui->speedRecordButton       ->setEnabled(false);
     ui->downloadGraphButton     ->setEnabled(false);
+    ui->zoomInterval1Button     ->setEnabled(false);
+    ui->zoomInterval2Button     ->setEnabled(false);
 
     mCurrentGraphsArea->addIntervalOnRecordedGraph();
     if (isIntervalCreating)
@@ -836,6 +866,8 @@ void MainPage::on_acceptIntervalButton_clicked()
     ui->rewindRecordButton    ->setEnabled(true);
     ui->speedRecordButton     ->setEnabled(true);
     ui->downloadGraphButton   ->setEnabled(true);
+    ui->zoomInterval1Button   ->setEnabled(true);
+    ui->zoomInterval2Button   ->setEnabled(true);
 
     mCurrentGraphsArea->addOrDeleteNewItem(true);
 
@@ -851,16 +883,18 @@ void MainPage::on_acceptIntervalButton_clicked()
         mCurrentGraphsArea->colorInterval();
         if (mIntervalsCount == 2)
         {
-            ui->maxValueInterval1->setText(intervalDataPreset.arg(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue, 0, 'f', 1).arg(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue, 0, 'f', 1));
+            ui->mInfoInterval1->setText(intervalDataPreset.arg(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue, 0, 'f', 1).arg(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue, 0, 'f', 1));
             ui->goToInterval1Button ->show();
-            ui->maxValueInterval1   ->show();
+            ui->mInfoInterval1   ->show();
+            ui->zoomInterval1Button ->show();
         }
         else
         {
-            ui->maxValueInterval2->setText(intervalDataPreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue, 'f', 1)).arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue, 'f', 1)));
+            ui->mInfoInterval2->setText(intervalDataPreset.arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->maxIntervalValue, 'f', 1)).arg(QString::number(mIntervalsContainer[mIntervalsCount-1]->averageIntervalValue, 'f', 1)));
             ui->goToInterval2Button ->show();
-            ui->maxValueInterval2   ->show();
+            ui->mInfoInterval2   ->show();
             ui->intervalButton      ->hide();
+            ui->zoomInterval2Button ->show();
         }
     }
     if (ui->labelsNavigation->text() != "0/0")
@@ -884,6 +918,8 @@ void MainPage::on_rejectIntervalButton_clicked()
     ui->rewindRecordButton    ->setEnabled(true);
     ui->speedRecordButton     ->setEnabled(true);
     ui->downloadGraphButton   ->setEnabled(true);
+    ui->zoomInterval1Button   ->setEnabled(true);
+    ui->zoomInterval2Button   ->setEnabled(true);
 
     if (ui->labelsNavigation->text() != "0/0")
     {
@@ -926,31 +962,33 @@ void MainPage::on_playRecord_clicked()
     {
         isPlayRecord = false;
         ui->playRecord->setIcon(QIcon(":/icons/pauseRecord.svg"),QIcon(":/icons/pauseRecord_pressed.svg"));
-        ui->intervalButton->setEnabled(false);
-        ui->goToInterval1Button->setEnabled(false);
-        ui->goToInterval2Button->setEnabled(false);
-        ui->goToNextMarkButton->setEnabled(false);
+        ui->intervalButton        ->setEnabled(false);
+        ui->goToInterval1Button   ->setEnabled(false);
+        ui->goToInterval2Button   ->setEnabled(false);
+        ui->goToNextMarkButton    ->setEnabled(false);
         ui->goToPreviousMarkButton->setEnabled(false);
-        ui->makeLabelButton->setEnabled(false);
-        ui->sessionButton->setEnabled(false);
-        ui->rewindRecordButton->setEnabled(false);
-        ui->speedRecordButton->setEnabled(false);
-        ui->downloadGraphButton->setEnabled(false);
+        ui->makeLabelButton       ->setEnabled(false);
+        ui->sessionButton         ->setEnabled(false);
+        ui->rewindRecordButton    ->setEnabled(false);
+        ui->speedRecordButton     ->setEnabled(false);
+        ui->downloadGraphButton   ->setEnabled(false);
+        ui->zoomInterval1Button   ->setEnabled(false);
+        ui->zoomInterval2Button   ->setEnabled(false);
     }
     else
     {
         isPlayRecord = true;
         ui->playRecord->setIcon(QIcon(":/icons/playRecord.svg"),QIcon(":/icons/playRecord_pressed.svg"));
-        ui->intervalButton->setEnabled(true);
-        ui->goToInterval1Button->setEnabled(true);
-        ui->goToInterval2Button->setEnabled(true);
-        ui->goToNextMarkButton->setEnabled(true);
+        ui->intervalButton        ->setEnabled(true);
+        ui->goToInterval1Button   ->setEnabled(true);
+        ui->goToInterval2Button   ->setEnabled(true);
+        ui->goToNextMarkButton    ->setEnabled(true);
         ui->goToPreviousMarkButton->setEnabled(true);
-        ui->makeLabelButton->setEnabled(true);
-        ui->sessionButton->setEnabled(true);
-        ui->rewindRecordButton->setEnabled(true);
-        ui->speedRecordButton->setEnabled(true);
-        ui->downloadGraphButton->setEnabled(true);
+        ui->makeLabelButton       ->setEnabled(true);
+        ui->sessionButton         ->setEnabled(true);
+        ui->rewindRecordButton    ->setEnabled(true);
+        ui->speedRecordButton     ->setEnabled(true);
+        ui->downloadGraphButton   ->setEnabled(true);
     }
 
     emit(playBtnPressed());
@@ -1006,4 +1044,84 @@ void MainPage::setAverage(double currAverage)
 {
     ui->averageValue->setText(QString::number(round(currAverage)));
     setAveragePointerPos(currAverage);
+}
+
+
+void MainPage::on_zoomInterval1Button_clicked()
+{
+    mCurrentGraphsArea->changeGraph(2); // 1 интервал
+    ui->goBackToGraphButton   ->show();
+    ui->mInfoInterval1        ->hide();
+    ui->intervalButton        ->hide();
+    ui->goToInterval1Button   ->hide();
+    ui->goToNextMarkButton    ->hide();
+    ui->goToPreviousMarkButton->hide();
+    ui->makeLabelButton       ->hide();
+    ui->sessionButton         ->hide();
+    ui->rewindRecordButton    ->hide();
+    ui->speedRecordButton     ->hide();
+    ui->zoomInterval1Button   ->hide();
+    ui->playRecord            ->hide();
+    ui->labelsNavigation      ->hide();
+    ui->downloadGraphButton   ->hide();
+    if (mIntervalsCount == 4)
+    {
+        ui->goToInterval2Button->hide();
+        ui->zoomInterval2Button->hide();
+        ui->mInfoInterval2->hide();
+    }
+
+}
+
+
+void MainPage::on_zoomInterval2Button_clicked()
+{
+    mCurrentGraphsArea->changeGraph(3); // 2 интервал
+    ui->goBackToGraphButton   ->show();
+    ui->mInfoInterval1        ->hide();
+    ui->intervalButton        ->hide();
+    ui->goToInterval1Button   ->hide();
+    ui->goToNextMarkButton    ->hide();
+    ui->goToPreviousMarkButton->hide();
+    ui->makeLabelButton       ->hide();
+    ui->sessionButton         ->hide();
+    ui->rewindRecordButton    ->hide();
+    ui->speedRecordButton     ->hide();
+    ui->zoomInterval1Button   ->hide();
+    ui->playRecord            ->hide();
+    ui->labelsNavigation      ->hide();
+    ui->goToInterval2Button   ->hide();
+    ui->zoomInterval2Button   ->hide();
+    ui->mInfoInterval2        ->hide();
+    ui->downloadGraphButton   ->hide();
+}
+
+
+void MainPage::on_goBackToGraphButton_clicked()
+{
+    mCurrentGraphsArea->changeGraph(1);
+    ui->goBackToGraphButton   ->hide();
+    ui->goToInterval1Button   ->show();
+    ui->goToNextMarkButton    ->show();
+    ui->goToPreviousMarkButton->show();
+    ui->makeLabelButton       ->show();
+    ui->sessionButton         ->show();
+    ui->rewindRecordButton    ->show();
+    ui->speedRecordButton     ->show();
+    ui->zoomInterval1Button   ->show();
+    ui->playRecord            ->show();
+    ui->labelsNavigation      ->show();
+    ui->mInfoInterval1        ->show();
+    ui->downloadGraphButton   ->show();
+    if (mIntervalsCount == 4)
+    {
+        ui->goToInterval2Button->show();
+        ui->zoomInterval2Button->show();
+        ui->mInfoInterval2->show();
+    }
+    else
+    {
+        ui->intervalButton->show();
+    }
+
 }

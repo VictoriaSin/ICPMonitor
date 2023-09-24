@@ -12,6 +12,7 @@ class CurrentGraphsArea;
 class WaveFormPlot;
 class LabelMarkItem;
 class RecordedPlot;
+class IntervalPlot;
 
 
 extern QFile mHeadFile;
@@ -107,6 +108,8 @@ class CurrentGraphsArea : public AbstractMultipleGraphsAreasWidget
 public:
     //! График записанных значений
     RecordedPlot *mRecordedGraph {nullptr};
+    IntervalPlot *mFirstInterval {nullptr};
+    IntervalPlot *mSecondInterval {nullptr};
     explicit CurrentGraphsArea(QWidget *parent = nullptr);
     ~CurrentGraphsArea();
 
@@ -188,7 +191,7 @@ private slots:
 private:
     Ui::CurrentGraphsArea *ui;
     QTimer *mTimerGetData = nullptr;
-    unsigned short data;
+    uint16_t data;
     double mAverageValue;
     float AverageIntervalSec{1.5};
     int buffSize;
@@ -240,7 +243,7 @@ public:
     void stopWork();
     int currIndex;
 protected:
-    double calcAverage(int data);
+    double calcAverage(uint16_t data);
 signals:
     void averageReady(double currAverage);
 };

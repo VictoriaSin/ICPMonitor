@@ -72,6 +72,8 @@ private:
     /*! Настройка контейнера с графиками */
     void setupGraphsContainer();
     QDir mCurrentRecordDir;
+    uint8_t mCurrentSelectedInterval;
+
 private slots:
     void controllerEventHandler(ControllerEvent event);//, const QVariantMap &args = {});
 
@@ -145,6 +147,12 @@ private slots:
     void on_speedRecordButton_clicked();
 
     void setAverage(double currAverage);
+
+    void on_zoomInterval1Button_clicked();
+
+    void on_goBackToGraphButton_clicked();
+
+    void on_zoomInterval2Button_clicked();
 
 private:
     Ui::MainPage *ui;

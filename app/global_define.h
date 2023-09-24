@@ -39,15 +39,15 @@ typedef struct
     uint16_t data; //
 }_mSPIData;
 
-typedef struct
-{
-    uint32_t index; // offset
-    _mSPIData record[MAXBUFFERSIZE];
-} _mSPIBuffer;
+//typedef struct
+//{
+//    uint32_t index; // offset
+//    _mSPIData record[MAXBUFFERSIZE];
+//} _mSPIBuffer;
 #pragma pack()
 
-extern _mSPIBuffer mSensorBuffer1, mSensorBuffer2;
-
+extern _mSPIData *mAllRecordedDataBuffer, *mFirstIntervalBuffer, *mSecondIntervalBuffer;//*mSensorBuffer1, *mSensorBuffer2;
+extern uint mSizeAllRecordedData, mSizeFirstInterval, mSizeSecondInterval;
 
 enum direction { previous = false, next = true};
 enum interval { first = false, second = true};

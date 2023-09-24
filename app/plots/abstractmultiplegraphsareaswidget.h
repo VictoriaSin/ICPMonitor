@@ -41,7 +41,7 @@ public:
     explicit AbstractMultipleGraphsAreasWidget(QWidget *parent = nullptr);
     ~AbstractMultipleGraphsAreasWidget();
     /*! Смена графика */
-    virtual void changeGraph();
+    virtual void changeGraph(uint8_t number);
 
 protected:
     /*! Обновление имени установленного графика */

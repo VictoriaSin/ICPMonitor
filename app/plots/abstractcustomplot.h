@@ -20,15 +20,12 @@ class AbstractCustomPlot : public QCustomPlot
 public:
     /*! Реализованные типы графиков
         WaveFormPlot - Основной график
-        BoxGraph -
-        HistGraph -
         RecordedGraph - Записанный график
      */
     enum GraphType : uint8_t {
         WaveFormGraph,
-        BoxGraph,
-        HistGraph,
-        RecordedGraph
+        RecordedGraph,
+        IntervalGraph
     };
     //bool labelMoved = false;
 

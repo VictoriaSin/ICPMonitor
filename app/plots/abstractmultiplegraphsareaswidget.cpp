@@ -27,10 +27,10 @@ void AbstractMultipleGraphsAreasWidget::updateDisplayedGraphName()
         AbstractGraphAreaWidget::ui->nameGraphLabel->setText(tr("СИГНАЛ ВЧД"));
         break;
     }
-    case AbstractCustomPlot::GraphType::BoxGraph: {
-        AbstractGraphAreaWidget::ui->nameGraphLabel->setText(tr("ЯЩИК С УСАМИ"));
-        break;
-    }
+//    case AbstractCustomPlot::GraphType::BoxGraph: {
+//        AbstractGraphAreaWidget::ui->nameGraphLabel->setText(tr("ЯЩИК С УСАМИ"));
+//        break;
+//    }
     //case AbstractCustomPlot::GraphType::HistGraph: {
     //    AbstractGraphAreaWidget::ui->nameGraphLabel->setText(tr("ГИСТОГРАММА"));
     //}
@@ -65,47 +65,53 @@ void AbstractMultipleGraphsAreasWidget::setupChangeGraphToolButton()
 
 }
 
-void AbstractMultipleGraphsAreasWidget::changeGraph()
+void AbstractMultipleGraphsAreasWidget::changeGraph(uint8_t number)
 {
     // Всего графиков
     const int countGraph = mGraphContainer.size();
 
     // Если графиков меньше двух
-    if (countGraph < 2) {
+    if (countGraph < 2 || number >= countGraph) {
         return;
     }
 
     // Скрываем текущий график
-    mGraphContainer[mCurrentGraphIndex]->clearGraphs();
+    //mGraphContainer[mCurrentGraphIndex]->clearGraphs(); //временно убрала, потом оставим, чтоб стерлось все
     mGraphContainer[mCurrentGraphIndex]->hide();
 
-    // Узнаём индекс следующего графика
-    ++mCurrentGraphIndex;
-    mCurrentGraphIndex %= countGraph;
+//    // Узнаём индекс следующего графика
+//    ++mCurrentGraphIndex;
+//    mCurrentGraphIndex %= countGraph;
+    mCurrentGraphIndex = number;
 
     // Берём график
     const auto graph = mGraphContainer[mCurrentGraphIndex];
 
     isLabelCreating = false;
     isIntervalCreating = false;
+
     // Устанавливаем тип отображаемого графика
     mDisplayedGraph = graph->type();
+    switch (mDisplayedGraph)
+    {
+        case
+    }
 
 //#ifdef QT_DEBUG // Для замера ФПС
     // Если график текущих значений
-    if (mDisplayedGraph == AbstractCustomPlot::GraphType::WaveFormGraph) {
-        // Если удалось скастовать
-        if (auto WaveGraph = dynamic_cast<WaveFormPlot *>(graph)) {
-            WaveGraph->benchTime = QDateTime::currentMSecsSinceEpoch();
-        }
-    }
+//    if (mDisplayedGraph == AbstractCustomPlot::GraphType::WaveFormGraph) {
+//        // Если удалось скастовать
+//        if (auto WaveGraph = dynamic_cast<WaveFormPlot *>(graph)) {
+//            WaveGraph->benchTime = QDateTime::currentMSecsSinceEpoch();
+//        }
+//    }
 //#endif    
 
     // Показываем график
     graph->show();
 
     // Обновляем имя текущего графика
-    updateDisplayedGraphName();
+    //updateDisplayedGraphName();
 }
 
 void AbstractMultipleGraphsAreasWidget::retranslate()

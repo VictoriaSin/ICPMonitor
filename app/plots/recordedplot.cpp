@@ -84,7 +84,7 @@ RecordedPlot::~RecordedPlot()
     mRecordedData.clear();
 }
 
-void RecordedPlot::addInterval(uint8_t num, QColor color)
+QVector<QPair<double, double>> RecordedPlot::addInterval(uint8_t num, QColor color)
 {
     mIntervalFirst = addGraph();
     mIntervalFirst->setAntialiased(true);
@@ -110,10 +110,12 @@ void RecordedPlot::addInterval(uint8_t num, QColor color)
     layer("intervalLayer")->setMode(QCPLayer::lmBuffered);
 
     QVector<double> temp;
-    for (int i=0; i<mRecordedData.count(); i++)
+    //for (int i=0; i<mRecordedData.count(); i++)
+    for (uint i=0; i<mSizeAllRecordedData; i++)
     {
-        temp.push_back(mRecordedData[i].first);
-        qDebug() << "mRecordedData[i].first" << mRecordedData[i].first;
+        //temp.push_back(mRecordedData[i].first);
+        //qDebug() << "mRecordedData[i].first" << mRecordedData[i].first;
+        temp.push_back((double)mAllRecordedDataBuffer[i].timeStamp/1000);
     }
 
     double t1 = (double)mIntervalsContainer[num-2]->mIntervalPos/1000.0;
@@ -145,14 +147,25 @@ qDebug() << "t2" << t2;
     int indexStop = temp.indexOf(second);
     qDebug() << "t1" << t1 << "indexStart" << indexStart;
     qDebug() << "t2" << t2 << "indexStop" << indexStop;
+    QVector<QPair<double, double>> intervalVec;
     for (int i=indexStart; i<=indexStop; i++)
     {
-        mIntervalFirst->addData(mRecordedData[i].first, mRecordedData[i].second);
-        if (mIntervalsContainer[num-1]->maxIntervalValue < mRecordedData[i].second) { mIntervalsContainer[num-1]->maxIntervalValue =  mRecordedData[i].second; }
-        mIntervalsContainer[num-1]->averageIntervalValue += mRecordedData[i].second;
+//        mIntervalFirst->addData(mRecordedData[i].first, mRecordedData[i].second);
+//        if (mIntervalsContainer[num-1]->maxIntervalValue < mRecordedData[i].second) { mIntervalsContainer[num-1]->maxIntervalValue =  mRecordedData[i].second; }
+//        mIntervalsContainer[num-1]->averageIntervalValue += mRecordedData[i].second;
+        //mIntervalFirst->addData((double)mAllRecordedDataBuffer[i].timeStamp/1000, mAllRecordedDataBuffer[i].data);
+        if (mIntervalsContainer[num-1]->maxIntervalValue < mAllRecordedDataBuffer[i].data)
+        {
+            mIntervalsContainer[num-1]->maxIntervalValue =  mAllRecordedDataBuffer[i].data;
+        }
+        mIntervalsContainer[num-1]->averageIntervalValue += mAllRecordedDataBuffer[i].data;
+        intervalVec.append(qMakePair((double)mAllRecordedDataBuffer[i].timeStamp/1000, mAllRecordedDataBuffer[i].data));
+        mIntervalFirst->addData(intervalVec.back().first, intervalVec.back().second);
     }
+//    QVector<QPair<double, double>> tttt = mRecordedData.mid(indexStart, (indexStop-indexStart+1));
+    //qDebug() << tttt;
     mIntervalsContainer[num-1]->averageIntervalValue /= (indexStop - indexStart + 1);
-
+    return intervalVec;
 }
 
 void RecordedPlot::saveDataForGraphic(unsigned int  x, unsigned int  y)//const ComplexValue &complexVal)
@@ -160,7 +173,7 @@ void RecordedPlot::saveDataForGraphic(unsigned int  x, unsigned int  y)//const C
     double temp_x = (double) x/1000;
     double temp_y = (double) y;
     mRecordedData.push_back(qMakePair(temp_x, temp_y));
-    qDebug() << "x" << temp_x;
+    //qDebug() << "x" << temp_x;
 //    // Суммирование общего времени пришедших данных с датчика
 //    // для ограничения отображения данных в диапазоне допустимых
 //    // значение времени на оси Х графика
@@ -235,16 +248,22 @@ void RecordedPlot::animateGraphic(int timerDelaySec)
 
 void RecordedPlot::addDataOnGraphic()
 {
-    double mNewUpperXValue = (double)mRecordedData.count()/25;// показаний в файле в секунду 50, а мы берем каждое второе
+    //double mNewUpperXValue = (double)mRecordedData.count()/25;// показаний в файле в секунду 50, а мы берем каждое второе
+    qDebug() << mSizeAllRecordedData;
+    qDebug() << "rr" <<mAllRecordedDataBuffer[mSizeAllRecordedData-1].timeStamp;
+    double mNewUpperXValue = (double)mAllRecordedDataBuffer[mSizeAllRecordedData-1].timeStamp/1000;
     if (mNewUpperXValue < xAxis->range().upper)
     {
         xAxis->setRangeUpper(mNewUpperXValue);
         //setInteraction(QCP::iRangeDrag, false);
     }
     mCurrentMaxXRange = mNewUpperXValue;
-    for (int i = 0; i < mRecordedData.count(); i++)
+    //for (int i = 0; i < mRecordedData.count(); i++)
+    for (uint i=0; i<mSizeAllRecordedData; i++)
     {
-        mMainGraph->addData(mRecordedData[i].first, mRecordedData[i].second);
+        //mMainGraph->addData(mRecordedData[i].first, mRecordedData[i].second);
+        mMainGraph->addData((double)mAllRecordedDataBuffer[i].timeStamp/1000, mAllRecordedDataBuffer[i].data);
+        qDebug() << "data" << mAllRecordedDataBuffer[i].data;
     }
 }
 

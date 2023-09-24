@@ -26,17 +26,11 @@ class RecordedPlot : public AbstractCustomPlot
                                            "%9:";
 
 public:
-    /*! Менеджер меток */
-    //LabelManager *mLabelManager {nullptr};
-
     bool event(QEvent *event) override;
     explicit RecordedPlot(QWidget *parent = nullptr);
     ~RecordedPlot();
 
-
-
     double mCurrentMaxXRange {60};
-
 
     /*! Добавление данных для отображения на графике */
     void saveDataForGraphic(unsigned int  x, unsigned int  y);//(const ComplexValue &complexVal);
@@ -44,17 +38,27 @@ public:
     /*! Добавление данных для отображения на графике */
     void addDataOnGraphic();
 
-    /*! Установка менеджера меток */
-    //void setLabelManager(LabelManager *labelManager);
-
     /*! Перевод */
     void retranslate();
+
+    void scaleFont(double scaleFactor) override;
+    void resetGraph() override;
+
+    QVector<QPair<double, double>> addInterval(uint8_t num, QColor color);
+    void downloadData(QByteArray *temp);
+
 
 //#ifdef QT_DEBUG
     uint64_t benchTime = 0;
     uint64_t avgBenchTime = 0;
     int benchCount = 0;
 //#endif
+
+    /*! Менеджер меток */
+    //LabelManager *mLabelManager {nullptr};
+
+    /*! Установка менеджера меток */
+    //void setLabelManager(LabelManager *labelManager);
 
 private:
     u32 pointStart;
@@ -66,24 +70,16 @@ private:
     QCPGraph *mIntervalSecond {nullptr};
     /*! Толщина линии графика с текущими показаниями */
     double mThicknessOfMainGraph {2};
-
+public:
     /*! Контейнер для точек графика*/
     QVector<QPair<double, double>> mRecordedData;
-
+private:
     /*! Время прихода последнего значения датчика */
     int64_t mPreviousSensorDataTime {0};
 
     /*! Суммарное время пришедших данных с датчика */
     double mSummarySensorDataTimePerXRange {0};
 
-public:
-    void scaleFont(double scaleFactor) override;
-    void resetGraph() override;
-
-    void addInterval(uint8_t num, QColor color);
-    void downloadData(QByteArray *temp);
-public slots:
-    void animateGraphic(int timerDelaySec);
 protected:
     bool editLabel(QMouseEvent *mouseEvent);
     bool editInterval(QMouseEvent *mouseEvent);
@@ -92,6 +88,10 @@ protected:
     bool editLabel(QTouchEvent *touchEvent);
     bool editInterval(QTouchEvent *touchEvent);
     bool editAxisRange(QTouchEvent *touchEvent);
+
+public slots:
+    void animateGraphic(int timerDelaySec);
+
 protected slots:
     /*! Обработка нажатий по элементам графика */
     void itemClicked(QCPAbstractItem *item, QMouseEvent *event);

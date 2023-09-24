@@ -4,6 +4,7 @@
 #include "controller/monitorcontroller.h"
 #include "controller/settings.h"
 #include "plots/waveformplot.h"
+#include "plots/intervalplot.h"
 #include "gui/gui_funcs.h"
 #include "plots/labelmarkitem.h"
 #include "controller/labels/labelmanager.h"
@@ -47,9 +48,17 @@ CurrentGraphsArea::CurrentGraphsArea(QWidget *parent) :
     mRecordedGraph = ui->recordedGraph;
     mRecordedGraph->hide();
 
+    mFirstInterval = ui->firstInterval;
+    mFirstInterval->hide();
+
+    mSecondInterval = ui->secondInterval;
+    mSecondInterval->hide();
+
     // Добавляем графики в общий контейнер
-    mGraphContainer.append(mWaveGraph);
-    mGraphContainer.append(mRecordedGraph);
+    mGraphContainer.append(mWaveGraph); // 0
+    mGraphContainer.append(mRecordedGraph); // 1
+    mGraphContainer.append(mFirstInterval); // 2
+    mGraphContainer.append(mSecondInterval); // 3
 
     // Указываем индекс отображаемого графика
     mCurrentGraphIndex = 0;
@@ -290,6 +299,8 @@ void CurrentGraphsArea::retranslate()
     ui->retranslateUi(this);
     mWaveGraph->retranslate();
     mRecordedGraph->retranslate();
+    mFirstInterval->retranslate();
+    mSecondInterval->retranslate();
 }
 
 void CurrentGraphsArea::controllerEventHandler(ControllerEvent event)//, const QVariantMap &args)
@@ -388,10 +399,9 @@ void CurrentGraphsArea::updateIntervalsOnGraphs()
     if (mICPSettings->getCurrentPressureIndex() == 1)
     {
         mWaveGraph->setYRange(10*indexPressureH2O, settings->getCurrentReadingsGraphIntervalY());
-//        mWaveGraph->setLowerAlarmLevelLine(settings->getLowLevelAlarm()*indexPressureH2O);
-//        mWaveGraph->setUpperAlarmLevelLine(settings->getHighLevelAlarm()*indexPressureH2O);
-//        mRecordedGraph->setXRange(0, settings->getCurrentReadingsGraphIntervalX()*indexPressureH2O);
         mRecordedGraph->setYRange(10*indexPressureH2O, settings->getCurrentReadingsGraphIntervalY());
+        mFirstInterval->setYRange(10*indexPressureH2O, settings->getCurrentReadingsGraphIntervalY());
+        mSecondInterval->setYRange(10*indexPressureH2O, settings->getCurrentReadingsGraphIntervalY());
    }
     else
     {
@@ -400,10 +410,16 @@ void CurrentGraphsArea::updateIntervalsOnGraphs()
         mWaveGraph->setUpperAlarmLevelLine(settings->getHighLevelAlarm());
         mRecordedGraph->setXRange(0, settings->getCurrentReadingsGraphIntervalX());
         mRecordedGraph->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
+        mFirstInterval->setXRange(0, settings->getCurrentReadingsGraphIntervalX());//
+        mFirstInterval->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
+        mSecondInterval->setXRange(0, settings->getCurrentReadingsGraphIntervalX());//
+        mSecondInterval->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
     }
 
     mWaveGraph->resetGraph();    
     mRecordedGraph->resetGraph();
+    mFirstInterval->resetGraph();
+    mSecondInterval->resetGraph();
 }
 
 void CurrentGraphsArea::updateTicksOnGraphs()
@@ -430,11 +446,15 @@ void CurrentGraphsArea::changePressureUnits()
     {
         mRecordedGraph->yAxis->setLabel(tr("мм рт ст"));
         mWaveGraph->yAxis->setLabel(tr("мм рт ст"));
+        mFirstInterval->xAxis->setLabel(tr("мм рт ст"));
+        mSecondInterval->xAxis->setLabel(tr("мм рт ст"));
     }
     else
     {
         mRecordedGraph->yAxis->setLabel(tr("мм вод ст"));
         mWaveGraph->yAxis->setLabel(tr("мм вод ст"));
+        mFirstInterval->xAxis->setLabel(tr("мм вод ст"));
+        mSecondInterval->xAxis->setLabel(tr("мм вод ст"));
     }
     retranslate();
 }
@@ -443,6 +463,7 @@ void CurrentGraphsArea::changePressureUnits()
 void CurrentGraphsArea::addDataOnWavePlot()//(unsigned int currX, unsigned int currY)
 {
     currIndex ++;
+    _mSPIData temp;
     READ_SPI();
     if (mICPSettings->getCurrentPressureIndex() == 1)
     {
@@ -453,12 +474,17 @@ void CurrentGraphsArea::addDataOnWavePlot()//(unsigned int currX, unsigned int c
     mWaveGraph->addDataOnGraphic((unsigned int)(currIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH), data);
     //mWaveGraph->addDataOnGraphic(currX, currY);
     if (isRecord)
-    {
-        //currentBufferRecord == 1 ? addRawData(&bufferRecord_2) : addRawData(&bufferRecord_1);
-        mRecordedGraph->saveDataForGraphic((unsigned int)(currIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH), data);
-        mRawDataFile.write((char*)&data, sizeof(data));//проверить кол-во
-        //mRecordedGraph->addDataOnGraphic(currX, currY);
+    {        
 
+        temp.timeStamp = (uint32_t)(currIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH);
+        temp.data = data;
+        //mRecordedGraph->saveDataForGraphic(timeSec, data);
+        //mRawDataFile.write((char*)&timeSec, sizeof(timeSec));//проверить кол-во
+        //mRawDataFile.write((char*)&data, sizeof(data));//проверить кол-во
+        mRawDataFile.write((char*)&temp, sizeof(_mSPIData));
+        qDebug() << "khem" << temp.timeStamp << temp.data;
+        //mRecordedGraph->addDataOnGraphic(currX, currY);
+        //currentBufferRecord == 1 ? addRawData(&bufferRecord_2) : addRawData(&bufferRecord_1);
     }
 
 
@@ -645,7 +671,6 @@ double tempOffset;
 // вынести в отдельную функцию
     if (interval == first)
     {
-        qDebug() << "11111";
         tempOffset = calcRangePercent(0, 1);
         if (calcPosInCoord(0) - tempOffset < 0) { leftPos = calcPosInCoord(0); }
         else { leftPos = tempOffset; }
@@ -657,7 +682,6 @@ double tempOffset;
     }
     else if (interval == second)
     {
-        qDebug() << "22222";
         tempOffset = calcRangePercent(2, 3);
         if (calcPosInCoord(2) - tempOffset < 0) { leftPos = calcPosInCoord(2); }
         else { leftPos = tempOffset; }
@@ -673,13 +697,16 @@ double tempOffset;
 void CurrentGraphsArea::colorInterval()
 {
     qDebug() << "interval count" << mIntervalsCount;
+    QVector<QPair <double, double>> tempVec;
     if (mIntervalsCount < 3)
     {
-        mRecordedGraph->addInterval(mIntervalsCount, QColor(Qt::magenta));// проверить
+        tempVec = mRecordedGraph->addInterval(mIntervalsCount, QColor(Qt::magenta));// проверить
+        mFirstInterval->setup(tempVec, QColor(Qt::magenta));
     }
     else
     {
-        mRecordedGraph->addInterval(mIntervalsCount, QColor(Qt::cyan));
+        tempVec = mRecordedGraph->addInterval(mIntervalsCount, QColor(Qt::cyan));
+        mSecondInterval->setup(tempVec, QColor(Qt::cyan));
     }
 }
 
@@ -819,7 +846,7 @@ void CurrentGraphsArea::stopWork()
   //stopPlotting();
 }
 
-double CurrentGraphsArea::calcAverage(int data)
+double CurrentGraphsArea::calcAverage(uint16_t data)
 {
     //qDebug() << "cnt" << cnt;
     //qDebug() << "data" << data;

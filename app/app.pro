@@ -43,12 +43,11 @@ SOURCES += \
     owi_protocol.cpp \
     plots/abstractgraphareawidget.cpp \
     plots/abstractmultiplegraphsareaswidget.cpp \
-    plots/boxplot.cpp \
     plots/currentgraphsarea.cpp \
+    plots/intervalplot.cpp \
     plots/labelmarkitem.cpp \
     plots/markitem.cpp \
     plots/recordedplot.cpp \
-    plots/statisticgraphsarea.cpp \
     plots/abstractcustomplot.cpp \
     plots/waveformplot.cpp \
     plots/qcustomplot.cpp
@@ -87,12 +86,11 @@ HEADERS += \
     owi_protocol.h \
     plots/abstractgraphareawidget.h \
     plots/abstractmultiplegraphsareaswidget.h \
-    plots/boxplot.h \
     plots/currentgraphsarea.h \
+    plots/intervalplot.h \
     plots/labelmarkitem.h \
     plots/markitem.h \
     plots/recordedplot.h \
-    plots/statisticgraphsarea.h \
     plots/abstractcustomplot.h \
     plots/waveformplot.h \
     plots/qcustomplot.h
@@ -119,8 +117,7 @@ FORMS += \
     gui/technicalaccesspage.ui \
     gui/zerosensorpage.ui \
     plots/abstractgraphareawidget.ui \
-    plots/currentgraphsarea.ui \
-    plots/statisticgraphsarea.ui
+    plots/currentgraphsarea.ui
 
 RESOURCES += \
     res/app_res.qrc

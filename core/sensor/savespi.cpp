@@ -35,14 +35,14 @@ void SaveSPI::fillFile()
     if (currBuffer == BUFFER_2)
     {
         qDebug() << "spi write buf1";
-        SPIData.write((char*)&mSensorBuffer1.record, mSensorBuffer1.index * sizeof(_mSPIData));
-        mSensorBuffer1.index = 0;
+        //SPIData.write((char*)&mSensorBuffer1.record, mSensorBuffer1.index * sizeof(_mSPIData));
+        //mSensorBuffer1.index = 0;
     }
     else
     {
         qDebug() << "spi write buf2";
-        SPIData.write((char*)&mSensorBuffer2.record, mSensorBuffer2.index * sizeof(_mSPIData));
-        mSensorBuffer2.index = 0;
+        //SPIData.write((char*)&mSensorBuffer2.record, mSensorBuffer2.index * sizeof(_mSPIData));
+        //mSensorBuffer2.index = 0;
     }
     SPIData.close();
 }

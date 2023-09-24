@@ -13,7 +13,7 @@
 
 #define selectCurrentBufferForRecord(_BUF) { currBuffer = _BUF;}
 uint8_t currBuffer = BUFFER_1;
-_mSPIBuffer mSensorBuffer1, mSensorBuffer2;
+//_mSPIBuffer mSensorBuffer1, mSensorBuffer2;
 
 #define TIME_INTERVAL_FOR_RECORD_IN_FILE (10)
 #define TIME_INTERVAL_FOR_WRITE_ON_GRAPH (40) //40 миллисекунд - 25 раз в секунду
@@ -28,8 +28,8 @@ _mSPIBuffer mSensorBuffer1, mSensorBuffer2;
 SensorDataManager::SensorDataManager(QObject *parent, QString dirPath) : QThread{parent}
 {
     currBuffer = BUFFER_1;
-    mSensorBuffer1.index = 0;
-    mSensorBuffer2.index = 0;
+    //mSensorBuffer1.index = 0;
+    //mSensorBuffer2.index = 0;
     AverageIntervalSec = mICPSettings->getCurrentAverageIntervalSec();
     buffSize =(int) (1000.0 / TIME_INTERVAL_FOR_WRITE_ON_GRAPH * AverageIntervalSec);
     mAverageValue = 0;

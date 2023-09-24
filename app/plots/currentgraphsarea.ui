@@ -31,6 +31,32 @@
     </widget>
    </item>
    <item>
+    <widget class="IntervalPlot" name="firstInterval" native="true">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="IntervalPlot" name="secondInterval" native="true">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="RecordedPlot" name="recordedGraph" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -53,6 +79,12 @@
    <class>RecordedPlot</class>
    <extends>QWidget</extends>
    <header>plots/recordedplot.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>IntervalPlot</class>
+   <extends>QWidget</extends>
+   <header>plots/intervalplot.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -763,6 +763,21 @@ this may lead to unforeseen consequences!</translation>
     </message>
 </context>
 <context>
+    <name>IntervalPlot</name>
+    <message>
+        <source>секунды</source>
+        <translation>seconds</translation>
+    </message>
+    <message>
+        <source>мм рт ст</source>
+        <translation>mmHg</translation>
+    </message>
+    <message>
+        <source>мм вод ст</source>
+        <translation>mmH2O</translation>
+    </message>
+</context>
+<context>
     <name>WaveFormPlot</name>
     <message>
         <source>секунды</source>
