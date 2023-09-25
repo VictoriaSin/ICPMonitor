@@ -77,7 +77,6 @@ MainPage::MainPage(QWidget *parent)
 
 
     ui->averageValue->hide();
-    mCurrentSelectedInterval = 0;
 }
 
 MainPage::~MainPage()
@@ -793,6 +792,9 @@ void MainPage::stopSession()
   //while(mSensorDataManager->isStopped == false) {}
 
   mCurrentGraphsArea->stopWork();
+  mCurrentGraphsArea->removeAllGraphs();
+  ui->intervalButton->setIcon(QIcon(":/icons/startInterval1.svg"), QIcon(":/icons/startInterval1_pressed.svg"));
+
 }
 void MainPage::on_sessionButton_clicked()
 {

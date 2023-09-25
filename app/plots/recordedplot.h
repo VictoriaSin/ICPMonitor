@@ -64,10 +64,11 @@ private:
     u32 pointStart;
     u32 pointStop;
     bool labelMoved;
+public:
     QCPGraph *mMainGraph {nullptr};
-
     QCPGraph *mIntervalFirst {nullptr};
     QCPGraph *mIntervalSecond {nullptr};
+private:
     /*! Толщина линии графика с текущими показаниями */
     double mThicknessOfMainGraph {2};
 public:

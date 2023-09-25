@@ -32,6 +32,7 @@ RecordedPlot::RecordedPlot(QWidget *parent):
 
     mMainGraph->setAdaptiveSampling(true);//&
 
+
     // Настраиваем ручку для отрисовки графика
     QColor color(51, 242, 67, 200); // зеленый
 
@@ -53,7 +54,6 @@ RecordedPlot::RecordedPlot(QWidget *parent):
 
     addLayer("lineLayer", nullptr, limAbove);
     layer("lineLayer")->setMode(QCPLayer::lmBuffered);
-
 
 
 //    // Разрешаем зумить и двигать по осям
@@ -86,10 +86,6 @@ RecordedPlot::~RecordedPlot()
 
 QVector<QPair<double, double>> RecordedPlot::addInterval(uint8_t num, QColor color)
 {
-    mIntervalFirst = addGraph();
-    mIntervalFirst->setAntialiased(true);
-    mIntervalFirst->setAdaptiveSampling(true);//?
-
     // Подготавливаем кисть
     QBrush brush;
     brush.setStyle(Qt::NoBrush);
@@ -103,9 +99,22 @@ QVector<QPair<double, double>> RecordedPlot::addInterval(uint8_t num, QColor col
     pen.setWidth(mThicknessOfMainGraph);
 
     // Устанавливаем браш и ручку для отрисовки основного графика
-    mIntervalFirst->setPen(pen);
-    mIntervalFirst->setBrush(brush);
-
+    if (num == 2)
+    {
+        mIntervalFirst = addGraph();
+        mIntervalFirst->setAntialiased(true);
+        mIntervalFirst->setAdaptiveSampling(true);//?
+        mIntervalFirst->setPen(pen);
+        mIntervalFirst->setBrush(brush);
+    }
+    else
+    {
+        mIntervalSecond = addGraph();
+        mIntervalSecond->setAntialiased(true);
+        mIntervalSecond->setAdaptiveSampling(true);//?
+        mIntervalSecond->setPen(pen);
+        mIntervalSecond->setBrush(brush);
+    }
 
     layer("intervalLayer")->setMode(QCPLayer::lmBuffered);
 
@@ -160,7 +169,8 @@ qDebug() << "t2" << t2;
         }
         mIntervalsContainer[num-1]->averageIntervalValue += mAllRecordedDataBuffer[i].data;
         intervalVec.append(qMakePair((double)mAllRecordedDataBuffer[i].timeStamp/1000, mAllRecordedDataBuffer[i].data));
-        mIntervalFirst->addData(intervalVec.back().first, intervalVec.back().second);
+        num == 2 ? mIntervalFirst->addData(intervalVec.back().first, intervalVec.back().second)
+                 : mIntervalSecond->addData(intervalVec.back().first, intervalVec.back().second);
     }
 //    QVector<QPair<double, double>> tttt = mRecordedData.mid(indexStart, (indexStop-indexStart+1));
     //qDebug() << tttt;
@@ -344,6 +354,8 @@ void RecordedPlot::resetGraph()
     mCurrentMaxXRange = 60;
     //mCurrentMaxYRange = 700; //60
     mMainGraph->data()->clear();
+    //mIntervalFirst->data().clear();
+    //mIntervalSecond->data().clear();
     qDebug() << "RecordedPlot reset";
 }
 #ifdef PC_BUILD

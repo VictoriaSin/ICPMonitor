@@ -15,6 +15,7 @@ public:
 
     void setup(QVector<QPair<double, double>> dataVector, QColor color);
 private:
+public:
     QCPGraph *mMainGraph {nullptr};
 signals:
 

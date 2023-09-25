@@ -29,12 +29,13 @@ public:
 //#endif
 
 private:
+public:
     /*! График с текущими показаниями */
     QCPGraph *mMainGraph {nullptr};
 
     /*! График с прошедшими показаниями */
     QCPGraph *mHistGraph {nullptr};
-
+private:
     /*! Линия верхнего уровня тревоги */
     QCPItemLine *mUpperAlarmLimit {nullptr};
 

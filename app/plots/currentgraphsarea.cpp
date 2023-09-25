@@ -867,3 +867,42 @@ double CurrentGraphsArea::calcAverage(uint16_t data)
     //qDebug() << "average" << sum/cnt;
     return sum/cnt;
 }
+
+void CurrentGraphsArea::removeAllGraphs()
+{
+//    mRecordedGraph->clearGraphs();
+//    mWaveGraph->clearGraphs();
+//    mFirstInterval->clearGraphs();
+//    mSecondInterval->clearGraphs();
+    //qDebug() << mRecordedGraph->mIntervalFirst->data().data();
+    if (mRecordedGraph->mIntervalFirst != nullptr)
+    {mRecordedGraph->removePlottable(mRecordedGraph->mIntervalFirst);}
+    //mRecordedGraph->mIntervalFirst->data().clear();
+    qDebug("1");
+    if (mRecordedGraph->mIntervalSecond != nullptr)
+    {mRecordedGraph->removePlottable(mRecordedGraph->mIntervalSecond);}
+    //mRecordedGraph->mIntervalSecond->data().clear();
+    qDebug("2");
+    mRecordedGraph->mMainGraph->data().clear();
+    qDebug("3");
+    mWaveGraph->mMainGraph->data().clear();
+    qDebug("4");
+    mWaveGraph->mHistGraph->data().clear();
+    qDebug("5");
+    mFirstInterval->mMainGraph->data().clear();
+    qDebug("6");
+    mSecondInterval->mMainGraph->data().clear();
+    qDebug("7");
+    for (int8_t i=0; i<mIntervalsCount; i++)
+    {
+        mRecordedGraph->removeItem(mIntervalsContainer[i]);
+    }
+    mIntervalsCount = 0;
+    for (int8_t i=0; i<mLabelItemsContainer.count(); i++)
+    {
+        mLabelItemsContainer[i]->deleteLine();
+    }
+    mLabelManagerGlobal->mCountLabels = 0;
+    mLabelItemsContainer.clear();
+
+}

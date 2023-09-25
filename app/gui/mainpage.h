@@ -72,7 +72,6 @@ private:
     /*! Настройка контейнера с графиками */
     void setupGraphsContainer();
     QDir mCurrentRecordDir;
-    uint8_t mCurrentSelectedInterval;
 
 private slots:
     void controllerEventHandler(ControllerEvent event);//, const QVariantMap &args = {});
