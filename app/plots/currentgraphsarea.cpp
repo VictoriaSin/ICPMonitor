@@ -240,6 +240,8 @@ void CurrentGraphsArea::scaleFont(float scaleFactor)
     mRecordedGraph->scaleFont(scaleFactor);
     // Скейлим шрифт для LabelItems
     mFontForLabelItems = FontScaling(mFontForLabelItems, scaleFactor);
+    mFirstInterval->scaleFont(scaleFactor);
+    mSecondInterval->scaleFont(scaleFactor);
 }
 
 void CurrentGraphsArea::installController(MonitorController *controller)

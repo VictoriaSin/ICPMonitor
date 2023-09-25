@@ -84,8 +84,8 @@ MainPage::~MainPage()
 {
     delete ui;
 }
-#define BUT_SIZE_BIG 85
-#define BUT_SIZE_SMALL 85
+#define BUT_SIZE_BIG (100*720/1280)
+#define BUT_SIZE_SMALL (100*480/720)
 void MainPage::setupButtons()
 {
     // Общий стиль для кнопок
@@ -433,6 +433,7 @@ void MainPage::scaleFont(float scaleFactor)
     WFontScaling(ui->mInfoInterval1, scaleFactor);
     WFontScaling(ui->mInfoInterval2, scaleFactor);
     WFontScaling(ui->averageValue, scaleFactor);
+    //WFontScaling(ui->speedRecordButton, scaleFactor);
     //WFontScaling(ui->sensorInfoLabel, scaleFactor);
     //WFontScaling(ui->labelCounterLabel, scaleFactor);
     //WFontScaling(ui->sessionID, scaleFactor);

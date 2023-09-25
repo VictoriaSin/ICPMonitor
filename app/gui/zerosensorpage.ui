@@ -23,7 +23,7 @@
        </property>
        <property name="font">
         <font>
-         <pointsize>25</pointsize>
+         <pointsize>20</pointsize>
         </font>
        </property>
        <property name="text">
@@ -48,7 +48,7 @@
       <widget class="QLabel" name="secondStepLabel">
        <property name="font">
         <font>
-         <pointsize>25</pointsize>
+         <pointsize>20</pointsize>
         </font>
        </property>
        <property name="text">
@@ -62,6 +62,12 @@
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="topMargin">
+        <number>50</number>
+       </property>
+       <property name="bottomMargin">
+        <number>50</number>
+       </property>
        <item>
         <widget class="AnimatedToolButton" name="resetSensorButton"/>
        </item>
