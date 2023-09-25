@@ -92,10 +92,10 @@ void AbstractMultipleGraphsAreasWidget::changeGraph(uint8_t number)
 
     // Устанавливаем тип отображаемого графика
     mDisplayedGraph = graph->type();
-    switch (mDisplayedGraph)
-    {
-        case
-    }
+//    switch (mDisplayedGraph)
+//    {
+//        case
+//    }
 
 //#ifdef QT_DEBUG // Для замера ФПС
     // Если график текущих значений
