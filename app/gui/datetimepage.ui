@@ -11,12 +11,6 @@
    </rect>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
-   <property name="leftMargin">
-    <number>20</number>
-   </property>
-   <property name="rightMargin">
-    <number>20</number>
-   </property>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
@@ -40,6 +34,12 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="maximumSize">
+        <size>
+         <width>400</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="font">
         <font>
          <pointsize>30</pointsize>
@@ -57,7 +57,7 @@
       <widget class="DecoratorSpinBox" name="inputTimeSpinBox" native="true">
        <property name="maximumSize">
         <size>
-         <width>500</width>
+         <width>400</width>
          <height>16777215</height>
         </size>
        </property>
@@ -91,7 +91,7 @@
        </property>
        <property name="maximumSize">
         <size>
-         <width>500</width>
+         <width>400</width>
          <height>16777215</height>
         </size>
        </property>
@@ -112,7 +112,7 @@
       <widget class="DecoratorSpinBox" name="inputDateSpinBox" native="true">
        <property name="maximumSize">
         <size>
-         <width>500</width>
+         <width>400</width>
          <height>16777215</height>
         </size>
        </property>
@@ -139,14 +139,27 @@
     </layout>
    </item>
    <item>
-    <widget class="NumKeyboard" name="keyboardWidget" native="true">
-     <property name="maximumSize">
-      <size>
-       <width>375</width>
-       <height>16777215</height>
-      </size>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <property name="topMargin">
+      <number>20</number>
      </property>
-    </widget>
+     <property name="bottomMargin">
+      <number>20</number>
+     </property>
+     <item>
+      <widget class="NumKeyboard" name="keyboardWidget" native="true">
+       <property name="maximumSize">
+        <size>
+         <width>180</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

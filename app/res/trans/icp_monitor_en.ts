@@ -337,7 +337,7 @@ READING</translation>
         <translation>Pressure units</translation>
     </message>
     <message>
-        <source>Интервал для подсчета среднего значения (с)</source>
+        <source>Интервал пересчета среднего давления (с)</source>
         <translation>Interval for calculating the average value (s)</translation>
     </message>
     <message>

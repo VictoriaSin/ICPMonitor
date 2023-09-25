@@ -14,8 +14,8 @@ DecoratorSpinBox::DecoratorSpinBox(QWidget *parent) :
     mPlusButton(new QPushButton("+", this)),
     mHBoxLayout(new QHBoxLayout(this))
 {
-    mMinusButton->setMinimumSize(QSize(75, 75));
-    mPlusButton->setMinimumSize(QSize(75, 75));
+    mMinusButton->setMinimumSize(QSize(50, 50));
+    mPlusButton->setMinimumSize(QSize(50, 50));
 
     mHBoxLayout->setSpacing(0);
     mHBoxLayout->addWidget(mMinusButton);

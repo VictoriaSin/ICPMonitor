@@ -37,9 +37,8 @@ MainMenu::MainMenu(QWidget *parent) :
 
     // Общий стиль для кнопок
     const QString ToolButtonStyleSheet = readStyleSheetFile(":/styles/ToolButtons.qss");
-
     // Настраиваем кнопку назад
-    setupBackButton(QIcon(":/icons/home.svg"), QIcon(":/icons/home_pressed.svg"), QSize(125, 125), ToolButtonStyleSheet);
+    setupBackButton(QIcon(":/icons/home.svg"), QIcon(":/icons/home_pressed.svg"), QSize(70, 83), ToolButtonStyleSheet);//QSize(125, 125), ToolButtonStyleSheet);
 
     // Кнопки для верхнего GridLayout
     addSettingButton("Обнуление датчика", QIcon(":/icons/zeroReset.svg"), QIcon(":/icons/zeroReset_pressed.svg"),

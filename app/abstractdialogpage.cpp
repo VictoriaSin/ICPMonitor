@@ -61,7 +61,7 @@ void AbstractDialogPage::setIconAcceptButton(const QIcon &defaultIcon, const QIc
 void AbstractDialogPage::setupAcceptButton()
 {
     ui->confirmButton->setIcon(QIcon(":/icons/accept.svg"), QIcon(":/icons/accept_pressed.svg"));
-    ui->confirmButton->setIconSize(QSize(100 ,100));
+    ui->confirmButton->setIconSize(QSize(70, 83));//(QSize(100 ,100));
     ui->confirmButton->setStyleSheet(ToolButtonStyleSheet);
     connect(ui->confirmButton, &QToolButton::clicked, this, &AbstractDialogPage::accept);
 }
@@ -69,7 +69,7 @@ void AbstractDialogPage::setupAcceptButton()
 void AbstractDialogPage::setupRejectButton()
 {
     ui->cancelButton->setIcon(QIcon(":/icons/reject.svg"), QIcon(":/icons/reject_pressed.svg"));
-    ui->cancelButton->setIconSize(QSize(100 ,100));
+    ui->cancelButton->setIconSize(QSize(70, 83));//(QSize(100 ,100));
     ui->cancelButton->setStyleSheet(ToolButtonStyleSheet);
     connect(ui->cancelButton, &QToolButton::clicked, this, &AbstractDialogPage::reject);
 }

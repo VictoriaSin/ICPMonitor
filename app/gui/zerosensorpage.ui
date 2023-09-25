@@ -11,29 +11,39 @@
    </rect>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="spacing">
+    <number>10</number>
+   </property>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QLabel" name="firstStepLabel">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+        <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <pointsize>22</pointsize>
         </font>
        </property>
        <property name="text">
         <string>1. Держите наконечник
 датчика влажным в течение
 всего процесса обнуления
-(Смотрите инструкцию к датчику)</string>
+(Смотрите инструкцию
+к датчику)</string>
+       </property>
+       <property name="textFormat">
+        <enum>Qt::PlainText</enum>
        </property>
        <property name="alignment">
         <set>Qt::AlignHCenter|Qt::AlignTop</set>
+       </property>
+       <property name="margin">
+        <number>0</number>
        </property>
       </widget>
      </item>
@@ -46,9 +56,15 @@
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
       <widget class="QLabel" name="secondStepLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <pointsize>22</pointsize>
         </font>
        </property>
        <property name="text">
@@ -62,14 +78,27 @@
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="leftMargin">
+        <number>10</number>
+       </property>
        <property name="topMargin">
-        <number>50</number>
+        <number>10</number>
+       </property>
+       <property name="rightMargin">
+        <number>10</number>
        </property>
        <property name="bottomMargin">
-        <number>50</number>
+        <number>10</number>
        </property>
        <item>
-        <widget class="AnimatedToolButton" name="resetSensorButton"/>
+        <widget class="AnimatedToolButton" name="resetSensorButton">
+         <property name="maximumSize">
+          <size>
+           <width>150</width>
+           <height>150</height>
+          </size>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -77,7 +106,7 @@
       <widget class="QLabel" name="readyOrNotLabel">
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <pointsize>22</pointsize>
         </font>
        </property>
        <property name="text">
