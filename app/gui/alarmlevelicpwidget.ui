@@ -48,7 +48,11 @@
     </widget>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="svgVerticalLayout"/>
+    <layout class="QVBoxLayout" name="svgVerticalLayout">
+     <property name="spacing">
+      <number>12</number>
+     </property>
+    </layout>
    </item>
   </layout>
  </widget>

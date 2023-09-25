@@ -265,6 +265,8 @@ bool initFlash(QString currRasdel)
 Settings *mICPSettings {nullptr};
 int main(int argc, char *argv[])
 {
+    QString ttt = executeAConsoleCommand("fbset", QStringList() << "--geometry" << "720" << "480" << "720" << "480" << "16" << "--timings" << "37037" << "60" << "16" << "30" << "9" << "62" << "6");
+    qDebug() << ttt;
     QApplication a(argc, argv);
 
     // Получение настроек из контроллера
