@@ -875,23 +875,23 @@ void CurrentGraphsArea::removeAllGraphs()
 //    mFirstInterval->clearGraphs();
 //    mSecondInterval->clearGraphs();
     //qDebug() << mRecordedGraph->mIntervalFirst->data().data();
-    if (mRecordedGraph->mIntervalFirst != nullptr)
-    {mRecordedGraph->removePlottable(mRecordedGraph->mIntervalFirst);}
-    //mRecordedGraph->mIntervalFirst->data().clear();
+//    if (mRecordedGraph->mIntervalFirst != nullptr)
+//    {mRecordedGraph->removePlottable(mRecordedGraph->mIntervalFirst);}
+    mRecordedGraph->mIntervalFirst->data().data()->clear();
     qDebug("1");
-    if (mRecordedGraph->mIntervalSecond != nullptr)
-    {mRecordedGraph->removePlottable(mRecordedGraph->mIntervalSecond);}
-    //mRecordedGraph->mIntervalSecond->data().clear();
+//    if (mRecordedGraph->mIntervalSecond != nullptr)
+//    {mRecordedGraph->removePlottable(mRecordedGraph->mIntervalSecond);}
+    mRecordedGraph->mIntervalSecond->data().data()->clear();
     qDebug("2");
     mRecordedGraph->mMainGraph->data().clear();
     qDebug("3");
-    mWaveGraph->mMainGraph->data().clear();
+    mWaveGraph->mMainGraph->data()->clear();//дописать?
     qDebug("4");
-    mWaveGraph->mHistGraph->data().clear();
+    mWaveGraph->mHistGraph->data().clear();//дописать?
     qDebug("5");
-    mFirstInterval->mMainGraph->data().clear();
+    mFirstInterval->mMainGraph->data().data()->clear();
     qDebug("6");
-    mSecondInterval->mMainGraph->data().clear();
+    mSecondInterval->mMainGraph->data().data()->clear();
     qDebug("7");
     for (int8_t i=0; i<mIntervalsCount; i++)
     {
