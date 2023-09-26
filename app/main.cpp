@@ -351,7 +351,7 @@ int main(int argc, char *argv[])
 
     sleep(1);
     //qDebug() << "currRasdel" << currRasdel;
-    //umount(&currRasdel);
+    //umount(&currRasdel);    
     qDebug() << "Exit" << exitCode;
     if (executeAConsoleCommand("umount", QStringList() << currRasdel) != "")
     {

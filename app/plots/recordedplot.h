@@ -11,6 +11,7 @@ class MonitorController;
 
 extern bool isPlayRecord;
 extern double mCurrentMaxYRange;
+extern QFile mRawDataFile;
 class RecordedPlot : public AbstractCustomPlot
 {
     Q_OBJECT
@@ -70,7 +71,7 @@ public:
     QCPGraph *mIntervalSecond {nullptr};
 private:
     /*! Толщина линии графика с текущими показаниями */
-    double mThicknessOfMainGraph {2};
+    double mThicknessOfMainGraph {1.7};
 public:
     /*! Контейнер для точек графика*/
     QVector<QPair<double, double>> mRecordedData;

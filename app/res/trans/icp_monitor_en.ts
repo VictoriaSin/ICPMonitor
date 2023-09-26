@@ -364,6 +364,14 @@ READING</translation>
         <source>Отключить</source>
         <translation>Turn off</translation>
     </message>
+    <message>
+        <source>мм рт ст</source>
+        <translation>mm Hg</translation>
+    </message>
+    <message>
+        <source>мм вод ст</source>
+        <translation>mm H2O</translation>
+    </message>
 </context>
 <context>
     <name>LanguagePage</name>

@@ -29,10 +29,10 @@ class FileImitSensor : public ISensor
 
     /*! Последнее показание, снятое с датчика */
     ComplexValue mLastReading {};
-
+public:
     /*! Текущий статус датчика */
     SensorStatus mStatus {SensorStatus::WaitInited};
-
+private:
     /*! Файл считан */
     bool mFileIsRead {false};
 

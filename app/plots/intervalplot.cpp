@@ -30,7 +30,7 @@ void IntervalPlot::setup(QVector<QPair<double, double>> dataVector, QColor color
     pen.setCapStyle(Qt::SquareCap);
     pen.setJoinStyle(Qt::MiterJoin);
     pen.setStyle(Qt::SolidLine);
-    pen.setWidth(2); // толщина линии
+    pen.setWidthF(1.7); // толщина линии
 
     // Устанавливаем браш и ручку для отрисовки основного графика
     mMainGraph->setPen(pen);

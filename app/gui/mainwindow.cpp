@@ -30,6 +30,7 @@ MainWindow::MainWindow( QWidget *parent)
     // Замена виджета
     connect(mMainPage, &IPageWidget::changePage, this, &MainWindow::setPage);
     connect(mMainPage, &IPageWidget::previousPage, this, &MainWindow::setPreviousPage);
+    connect(mMainPage, &MainPage::sessionStopped, this, &MainWindow::setZeroSensorPage);
 }
 
 MainWindow::~MainWindow()

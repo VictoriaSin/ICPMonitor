@@ -14,11 +14,11 @@
 GeneralSettingsPage::GeneralSettingsPage(QWidget *parent) :
     AbstractDialogPage(parent),
     ui(new Ui::GeneralSettingsPage)
-{
+{    
     ui->setupUi(AbstractDialogPage::ui->settingsPage);
-
     // Настройка окна сообщений
     setupMessageBox();
+
 
     setupAlarm();
 }
@@ -45,15 +45,18 @@ void GeneralSettingsPage::changeAlarmStatus()
 {
     QPushButton* button = (QPushButton*)(QObject::sender());
     qDebug() << button;
-    if (button->text() == "Отключить")
+
+    if (button->text() == tr("Отключить"))
     {
         qDebug() << "On";
-        button->setText("Включить");
+
+
+        button->setText(tr("Включить"));
     }
     else
     {
         qDebug() << "Off";
-        button->setText("Отключить");
+        button->setText(tr("Отключить"));
     }
 }
 
@@ -88,10 +91,10 @@ void GeneralSettingsPage::updateAlarmSettingsOnWidgets()
     const bool currentLowState = settings->getLowLevelStateAlarm();
     const bool currentHighState = settings->getHighLevelStateAlarm();
 
-
-    currentLowState == true ? ui->lowerAlarmSignalButton->setText("Отключить") : ui->lowerAlarmSignalButton->setText("Включить");
-    currentHighState == true ? ui->upperAlarmSignalButton->setText("Отключить") : ui->upperAlarmSignalButton->setText("Включить");
-
+    {
+        currentLowState == true ? ui->lowerAlarmSignalButton->setText(tr("Отключить")) : ui->lowerAlarmSignalButton->setText(tr("Включить"));
+        currentHighState == true ? ui->upperAlarmSignalButton->setText(tr("Отключить")) : ui->upperAlarmSignalButton->setText(tr("Включить"));
+    }
 }
 
 
@@ -179,8 +182,8 @@ qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
 
     bool mLowLevelStateAlarm = true;
     bool mHighLevelStateAlarm = true;
-    if (ui->lowerAlarmSignalButton->text() == "Включить") { mLowLevelStateAlarm = false; }
-    if (ui->upperAlarmSignalButton->text() == "Включить") { mHighLevelStateAlarm = false; }
+    if (ui->lowerAlarmSignalButton->text() == tr("Включить")) { mLowLevelStateAlarm = false; }
+    if (ui->upperAlarmSignalButton->text() == tr("Включить")) { mHighLevelStateAlarm = false; }
 
     if (isPressureUnitsChanged == true)
     {

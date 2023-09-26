@@ -24,7 +24,7 @@ _bufferRecord bufferRecord_1, bufferRecord_2;
 uint8_t currentBufferRecord;
 
 #define READ_SPI() data = (12 + rand() % 20)
-#define TIME_INTERVAL_FOR_RECORD_IN_FILE (10)
+#define TIME_INTERVAL_FOR_RECORD_IN_FILE (4)
 #define TIME_INTERVAL_FOR_WRITE_ON_GRAPH (40) //40 миллисекунд - 25 раз в секунду
 
 
@@ -467,24 +467,28 @@ void CurrentGraphsArea::addDataOnWavePlot()//(unsigned int currX, unsigned int c
     currIndex ++;
     _mSPIData temp;
     READ_SPI();
+
     if (mICPSettings->getCurrentPressureIndex() == 1)
     {
         data *= indexPressureH2O;
     }
-    mAverageValue = calcAverage(data);
-    emit(averageReady(mAverageValue));
-    mWaveGraph->addDataOnGraphic((unsigned int)(currIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH), data);
-    //mWaveGraph->addDataOnGraphic(currX, currY);
+    if ((currIndex % (TIME_INTERVAL_FOR_WRITE_ON_GRAPH / TIME_INTERVAL_FOR_RECORD_IN_FILE)) == 0)
+    {
+        plotIndex++;
+        mAverageValue = calcAverage(data);
+        emit(averageReady(mAverageValue));
+        mWaveGraph->addDataOnGraphic((unsigned int)(plotIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH), data);
+        //mWaveGraph->addDataOnGraphic(currX, currY);
+    }
+    //qDebug() << "plot" << plotIndex;
+    //qDebug() << "curr" << currIndex * TIME_INTERVAL_FOR_RECORD_IN_FILE;
     if (isRecord)
     {        
-
-        temp.timeStamp = (uint32_t)(currIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH);
-        temp.data = data;
-        //mRecordedGraph->saveDataForGraphic(timeSec, data);
-        //mRawDataFile.write((char*)&timeSec, sizeof(timeSec));//проверить кол-во
-        //mRawDataFile.write((char*)&data, sizeof(data));//проверить кол-во
+        temp.timeStamp = (uint32_t)(currIndex * TIME_INTERVAL_FOR_RECORD_IN_FILE);//(currIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH);
+        temp.data = data;        
         mRawDataFile.write((char*)&temp, sizeof(_mSPIData));
-        qDebug() << "khem" << temp.timeStamp << temp.data;
+        //qDebug() << "khem" << temp.timeStamp << temp.data;
+        //mRecordedGraph->saveDataForGraphic(timeSec, data);
         //mRecordedGraph->addDataOnGraphic(currX, currY);
         //currentBufferRecord == 1 ? addRawData(&bufferRecord_2) : addRawData(&bufferRecord_1);
     }
@@ -834,11 +838,11 @@ void CurrentGraphsArea::startWork()
   if (mTimerGetData == nullptr)
   {
     mTimerGetData = new QTimer(this);
-    //connect(mTimerGetData, &QTimer::timeout, this, &CurrentGraphsArea::timerGetData);
     connect(mTimerGetData, &QTimer::timeout, this, &CurrentGraphsArea::addDataOnWavePlot);
   }
   currIndex = -1;
-  mTimerGetData->start(TIME_INTERVAL_FOR_WRITE_ON_GRAPH);
+  plotIndex = -1;
+  mTimerGetData->start(TIME_INTERVAL_FOR_RECORD_IN_FILE);//TIME_INTERVAL_FOR_WRITE_ON_GRAPH);
   //startPlotting();
 }
 
@@ -875,23 +879,26 @@ void CurrentGraphsArea::removeAllGraphs()
 //    mFirstInterval->clearGraphs();
 //    mSecondInterval->clearGraphs();
     //qDebug() << mRecordedGraph->mIntervalFirst->data().data();
-//    if (mRecordedGraph->mIntervalFirst != nullptr)
+    if (mRecordedGraph->mIntervalFirst != nullptr)
 //    {mRecordedGraph->removePlottable(mRecordedGraph->mIntervalFirst);}
-    mRecordedGraph->mIntervalFirst->data().data()->clear();
+    {mRecordedGraph->mIntervalFirst->data().data()->clear();}
     qDebug("1");
-//    if (mRecordedGraph->mIntervalSecond != nullptr)
+    if (mRecordedGraph->mIntervalSecond != nullptr)
 //    {mRecordedGraph->removePlottable(mRecordedGraph->mIntervalSecond);}
-    mRecordedGraph->mIntervalSecond->data().data()->clear();
+    {mRecordedGraph->mIntervalSecond->data().data()->clear();}
     qDebug("2");
-    mRecordedGraph->mMainGraph->data().clear();
+    if (mRecordedGraph != nullptr)
+    {mRecordedGraph->mMainGraph->data().clear();}
     qDebug("3");
     mWaveGraph->mMainGraph->data()->clear();//дописать?
     qDebug("4");
     mWaveGraph->mHistGraph->data().clear();//дописать?
     qDebug("5");
-    mFirstInterval->mMainGraph->data().data()->clear();
+    if (mFirstInterval != nullptr)
+    {mFirstInterval->mMainGraph->data().data()->clear();}
     qDebug("6");
-    mSecondInterval->mMainGraph->data().data()->clear();
+    if (mSecondInterval != nullptr)
+    {mSecondInterval->mMainGraph->data().data()->clear();}
     qDebug("7");
     for (int8_t i=0; i<mIntervalsCount; i++)
     {

@@ -242,6 +242,7 @@ public:
     void startWork();
     void stopWork();
     int currIndex;
+    int plotIndex;
     void removeAllGraphs();
 protected:
     double calcAverage(uint16_t data);

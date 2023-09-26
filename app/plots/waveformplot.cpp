@@ -34,14 +34,14 @@ WaveFormPlot::WaveFormPlot(QWidget *parent) :
     pen.setCapStyle(Qt::SquareCap);
     pen.setJoinStyle(Qt::MiterJoin);
     pen.setStyle(Qt::SolidLine);
-    pen.setWidth(mThicknessOfMainGraph);
+    pen.setWidthF(mThicknessOfMainGraph);
 
     // Устанавливаем браш и ручку для отрисовки основного графика
     mMainGraph->setPen(pen);
     mMainGraph->setBrush(brush);
 
     // Настраиваем ручку для исторического графика
-    pen.setWidth(mThicknessOfHistGraph);
+    pen.setWidthF(mThicknessOfHistGraph);
 
     // Устанавливаем браш и ручку для отрисовки исторического графика
     mHistGraph->setPen(pen);
@@ -85,9 +85,9 @@ void WaveFormPlot::changePenColor(QColor mColor)
     pen.setCapStyle(Qt::SquareCap);
     pen.setJoinStyle(Qt::MiterJoin);
     pen.setStyle(Qt::SolidLine);
-    pen.setWidth(mThicknessOfMainGraph);
+    pen.setWidthF(mThicknessOfMainGraph);
     mMainGraph->setPen(pen);
-    pen.setWidth(mThicknessOfHistGraph);
+    pen.setWidthF(mThicknessOfHistGraph);
     mHistGraph->setPen(pen);
 }
 
@@ -113,7 +113,7 @@ void WaveFormPlot::addDataOnGraphic(unsigned int  x, unsigned int  y)//const Com
     }
     double temp_x = (double) x/1000;
     double temp_y = (double) y;//1000;
-
+qDebug() << "wave" << temp_x;
 
     if(mHistGraph->data()->size())
     {

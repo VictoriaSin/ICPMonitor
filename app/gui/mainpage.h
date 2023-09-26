@@ -194,6 +194,7 @@ protected:
     void playBtnPressed();
     void stopRecord();
     void setAveragePointerPos(double currAverage);
+    void sessionStopped();
 
     // IPageWidget interface
 public slots:

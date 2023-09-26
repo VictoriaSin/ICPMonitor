@@ -49,7 +49,7 @@ private:
     double mSummarySensorDataTimePerXRange {0};
 
     /*! Толщина линии графика с текущими показаниями */
-    double mThicknessOfMainGraph {2};
+    double mThicknessOfMainGraph {1.7};
 
     /*! Толщина линии графика с прошедшими показаниями */
     double mThicknessOfHistGraph {1};

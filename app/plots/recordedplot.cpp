@@ -10,6 +10,7 @@
 //LabelManager *mLabelManagerRecorded {nullptr};
 
 double mCurrentMaxYRange;
+
 RecordedPlot::RecordedPlot(QWidget *parent):
     AbstractCustomPlot(GraphType::RecordedGraph, parent),
     mTextEditDialog(new TextEditDialog(this))
@@ -46,7 +47,7 @@ RecordedPlot::RecordedPlot(QWidget *parent):
     pen.setCapStyle(Qt::SquareCap);
     pen.setJoinStyle(Qt::MiterJoin);
     pen.setStyle(Qt::SolidLine);
-    pen.setWidth(mThicknessOfMainGraph);
+    pen.setWidthF(mThicknessOfMainGraph);
 
     // Устанавливаем браш и ручку для отрисовки основного графика
     mMainGraph->setPen(pen);
@@ -96,7 +97,7 @@ QVector<QPair<double, double>> RecordedPlot::addInterval(uint8_t num, QColor col
     pen.setCapStyle(Qt::SquareCap);
     pen.setJoinStyle(Qt::MiterJoin);
     pen.setStyle(Qt::SolidLine);
-    pen.setWidth(mThicknessOfMainGraph);
+    pen.setWidthF(mThicknessOfMainGraph);
 
     // Устанавливаем браш и ручку для отрисовки основного графика
     if (num == 2)
@@ -259,22 +260,36 @@ void RecordedPlot::animateGraphic(int timerDelaySec)
 void RecordedPlot::addDataOnGraphic()
 {
     //double mNewUpperXValue = (double)mRecordedData.count()/25;// показаний в файле в секунду 50, а мы берем каждое второе
-    qDebug() << mSizeAllRecordedData;
-    qDebug() << "rr" <<mAllRecordedDataBuffer[mSizeAllRecordedData-1].timeStamp;
-    double mNewUpperXValue = (double)mAllRecordedDataBuffer[mSizeAllRecordedData-1].timeStamp/1000;
+    //qDebug() << mSizeAllRecordedData;
+    //qDebug() << "rr" <<mAllRecordedDataBuffer[mSizeAllRecordedData-1].timeStamp;
+    //double mNewUpperXValue = (double)mAllRecordedDataBuffer[mSizeAllRecordedData-1].timeStamp/1000;
+    double mNewUpperXValue;
+
+    //for (int i = 0; i < mRecordedData.count(); i++)
+    mRawDataFile.open(QIODevice::ReadOnly);
+    _mSPIData temp;
+    for (uint i=0; i<mRawDataFile.size()/6; i+=10) // 40/4=10
+    {
+        mRawDataFile.seek(i*sizeof(_mSPIData));
+        mRawDataFile.read((char*)&temp, sizeof(_mSPIData));
+        mMainGraph->addData((double)temp.timeStamp/1000, temp.data);
+        //qDebug() << "timestamp" << temp.timeStamp;
+        mNewUpperXValue = (double)temp.timeStamp/1000;
+    }
+    mRawDataFile.close();
+    qDebug() <<"x max"<< mNewUpperXValue;
     if (mNewUpperXValue < xAxis->range().upper)
     {
         xAxis->setRangeUpper(mNewUpperXValue);
         //setInteraction(QCP::iRangeDrag, false);
     }
     mCurrentMaxXRange = mNewUpperXValue;
-    //for (int i = 0; i < mRecordedData.count(); i++)
-    for (uint i=0; i<mSizeAllRecordedData; i++)
-    {
-        //mMainGraph->addData(mRecordedData[i].first, mRecordedData[i].second);
-        mMainGraph->addData((double)mAllRecordedDataBuffer[i].timeStamp/1000, mAllRecordedDataBuffer[i].data);
-        qDebug() << "data" << mAllRecordedDataBuffer[i].data;
-    }
+//    for (uint i=0; i<mSizeAllRecordedData; i++)
+//    {
+//        //mMainGraph->addData(mRecordedData[i].first, mRecordedData[i].second);
+//        mMainGraph->addData((double)mAllRecordedDataBuffer[i].timeStamp/1000, mAllRecordedDataBuffer[i].data);
+//        qDebug() << "data" << mAllRecordedDataBuffer[i].data;
+//    }
 }
 
 

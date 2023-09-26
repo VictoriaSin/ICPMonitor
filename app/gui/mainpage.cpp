@@ -11,6 +11,7 @@
 #include "controller/labels/label.h"
 #include "global_functions.h"
 #include "plots/intervalplot.h"
+#include "sensor/impl/fileimitsensor.h"
 
 
 
@@ -615,7 +616,7 @@ void MainPage::on_recordButton_clicked()
         ui->playRecord          ->show();
         ui->rewindRecordButton  ->show();
         ui->speedRecordButton   ->show();
-        ui->downloadGraphButton ->show();
+        //ui->downloadGraphButton ->show();
 
         ui->goToInterval1Button ->hide();
         ui->mInfoInterval1      ->hide();
@@ -661,7 +662,7 @@ void MainPage::on_makeLabelButton_clicked()
     ui->playRecord              ->setEnabled(false);
     ui->rewindRecordButton      ->setEnabled(false);
     ui->speedRecordButton       ->setEnabled(false);
-    ui->downloadGraphButton     ->setEnabled(false);
+    //ui->downloadGraphButton     ->setEnabled(false);
     ui->zoomInterval1Button     ->setEnabled(false);
     ui->zoomInterval2Button     ->setEnabled(false);
 
@@ -683,7 +684,7 @@ void MainPage::on_acceptMarkButton_clicked()
     ui->playRecord          ->setEnabled(true);
     ui->rewindRecordButton  ->setEnabled(true);
     ui->speedRecordButton   ->setEnabled(true);
-    ui->downloadGraphButton ->setEnabled(true);
+    //ui->downloadGraphButton ->setEnabled(true);
     ui->zoomInterval1Button ->setEnabled(true);
     ui->zoomInterval2Button ->setEnabled(true);
 
@@ -715,7 +716,7 @@ void MainPage::on_rejectMarkButton_clicked()
     ui->playRecord          ->setEnabled(true);
     ui->rewindRecordButton  ->setEnabled(true);
     ui->speedRecordButton   ->setEnabled(true);
-    ui->downloadGraphButton ->setEnabled(true);
+    //ui->downloadGraphButton ->setEnabled(true);
     ui->zoomInterval1Button ->setEnabled(true);
     ui->zoomInterval2Button ->setEnabled(true);
 
@@ -778,7 +779,7 @@ void MainPage::stopSession()
   ui->playRecord            ->hide();
   ui->rewindRecordButton    ->hide();
   ui->speedRecordButton     ->hide();
-  ui->downloadGraphButton   ->hide();
+  //ui->downloadGraphButton   ->hide();
   ui->zoomInterval1Button   ->hide();
   ui->zoomInterval2Button   ->hide();
   //ui->averageValueInterval1->hide();
@@ -794,6 +795,8 @@ void MainPage::stopSession()
   mCurrentGraphsArea->stopWork();
   mCurrentGraphsArea->removeAllGraphs();
   ui->intervalButton->setIcon(QIcon(":/icons/startInterval1.svg"), QIcon(":/icons/startInterval1_pressed.svg"));
+  //тут сброс сенсора и вызов следующей строки
+  //emit(sessionStopped());
 
 }
 void MainPage::on_sessionButton_clicked()
@@ -822,7 +825,7 @@ void MainPage::on_intervalButton_clicked()
     ui->playRecord              ->setEnabled(false);
     ui->rewindRecordButton      ->setEnabled(false);
     ui->speedRecordButton       ->setEnabled(false);
-    ui->downloadGraphButton     ->setEnabled(false);
+    //ui->downloadGraphButton     ->setEnabled(false);
     ui->zoomInterval1Button     ->setEnabled(false);
     ui->zoomInterval2Button     ->setEnabled(false);
 
@@ -868,7 +871,7 @@ void MainPage::on_acceptIntervalButton_clicked()
     ui->playRecord            ->setEnabled(true);
     ui->rewindRecordButton    ->setEnabled(true);
     ui->speedRecordButton     ->setEnabled(true);
-    ui->downloadGraphButton   ->setEnabled(true);
+    //ui->downloadGraphButton   ->setEnabled(true);
     ui->zoomInterval1Button   ->setEnabled(true);
     ui->zoomInterval2Button   ->setEnabled(true);
 
@@ -920,7 +923,7 @@ void MainPage::on_rejectIntervalButton_clicked()
     ui->playRecord            ->setEnabled(true);
     ui->rewindRecordButton    ->setEnabled(true);
     ui->speedRecordButton     ->setEnabled(true);
-    ui->downloadGraphButton   ->setEnabled(true);
+    //ui->downloadGraphButton   ->setEnabled(true);
     ui->zoomInterval1Button   ->setEnabled(true);
     ui->zoomInterval2Button   ->setEnabled(true);
 
@@ -974,7 +977,7 @@ void MainPage::on_playRecord_clicked()
         ui->sessionButton         ->setEnabled(false);
         ui->rewindRecordButton    ->setEnabled(false);
         ui->speedRecordButton     ->setEnabled(false);
-        ui->downloadGraphButton   ->setEnabled(false);
+        //ui->downloadGraphButton   ->setEnabled(false);
         ui->zoomInterval1Button   ->setEnabled(false);
         ui->zoomInterval2Button   ->setEnabled(false);
     }
@@ -991,7 +994,7 @@ void MainPage::on_playRecord_clicked()
         ui->sessionButton         ->setEnabled(true);
         ui->rewindRecordButton    ->setEnabled(true);
         ui->speedRecordButton     ->setEnabled(true);
-        ui->downloadGraphButton   ->setEnabled(true);
+        //ui->downloadGraphButton   ->setEnabled(true);
     }
 
     emit(playBtnPressed());
@@ -1066,7 +1069,7 @@ void MainPage::on_zoomInterval1Button_clicked()
     ui->zoomInterval1Button   ->hide();
     ui->playRecord            ->hide();
     ui->labelsNavigation      ->hide();
-    ui->downloadGraphButton   ->hide();
+    //ui->downloadGraphButton   ->hide();
     if (mIntervalsCount == 4)
     {
         ui->goToInterval2Button->hide();
@@ -1096,7 +1099,7 @@ void MainPage::on_zoomInterval2Button_clicked()
     ui->goToInterval2Button   ->hide();
     ui->zoomInterval2Button   ->hide();
     ui->mInfoInterval2        ->hide();
-    ui->downloadGraphButton   ->hide();
+    //ui->downloadGraphButton   ->hide();
 }
 
 
@@ -1115,7 +1118,7 @@ void MainPage::on_goBackToGraphButton_clicked()
     ui->playRecord            ->show();
     ui->labelsNavigation      ->show();
     ui->mInfoInterval1        ->show();
-    ui->downloadGraphButton   ->show();
+    //ui->downloadGraphButton   ->show();
     if (mIntervalsCount == 4)
     {
         ui->goToInterval2Button->show();

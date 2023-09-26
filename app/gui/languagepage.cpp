@@ -4,9 +4,11 @@
 #include "controller/monitorcontroller.h"
 #include "controller/settings.h"
 #include "gui_funcs.h"
+#include "../app/global_define.h"
 
 #include <QDialog>
 #include <QTimer>
+#include <QDebug>
 
 LanguagePage::LanguagePage(QWidget *parent) :
     AbstractDialogPage(parent),
@@ -76,16 +78,19 @@ void LanguagePage::done(int exodus)
     }
 
     // Установка языка приложения, выбранного пользователем
-    if (ui->rusLangRB->isChecked()) {
+    if (ui->rusLangRB->isChecked())
+    {
         QTimer::singleShot(0, mController, [this]() {
             mController->setAppLanguage(QLocale::Language::Russian);
         });
-    } else if (ui->engLangRB->isChecked()) {
+    }
+    else if (ui->engLangRB->isChecked())
+    {
         QTimer::singleShot(0, mController, [this]() {
             mController->setAppLanguage(QLocale::Language::English);
         });
     }
-
+    //mICPSettings->writeAllSetting();
     emit previousPage();
 }
 

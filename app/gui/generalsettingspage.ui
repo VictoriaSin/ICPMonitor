@@ -82,8 +82,8 @@
      <widget class="QWidget" name="scrollAreaWidgetContents">
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>0</y>
+        <x>-93</x>
+        <y>-43</y>
         <width>754</width>
         <height>755</height>
        </rect>
@@ -265,6 +265,12 @@
          <property name="text">
           <string>Отключить</string>
          </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
+         <property name="default">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
        <item row="6" column="3">
@@ -385,6 +391,12 @@
            <height>25</height>
           </size>
          </property>
+         <property name="baseSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="palette">
           <palette>
            <active>
@@ -509,18 +521,19 @@
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(255, 255, 255);</string>
+          <string notr="true">background-color: rgb(255, 255, 255);
+QComboBox::down-arrow { width: 100px;};</string>
          </property>
          <property name="currentText">
           <string>мм рт ст</string>
          </property>
          <property name="sizeAdjustPolicy">
-          <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+          <enum>QComboBox::AdjustToContents</enum>
          </property>
          <property name="iconSize">
           <size>
            <width>16</width>
-           <height>5</height>
+           <height>16</height>
           </size>
          </property>
          <item>
@@ -593,6 +606,12 @@
          </property>
          <property name="text">
           <string>Отключить</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
+         <property name="default">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
