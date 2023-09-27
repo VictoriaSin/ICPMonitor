@@ -2,6 +2,7 @@
 #include "global_functions.h"
 
 #include <QCoreApplication>
+#include "QDebug"
 
 LanguageSetting::LanguageSetting()
 {
@@ -62,7 +63,6 @@ bool LanguageSetting::setAppLanguage(QLocale::Language lang)
 
     // Запоминаем текущий язык
     mCurrentLanguage = lang;
-
     return true;
 }
 

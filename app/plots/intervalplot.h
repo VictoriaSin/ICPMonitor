@@ -2,6 +2,7 @@
 #define INTERVALPLOT_H
 
 #include "abstractcustomplot.h"
+class MarkItem;
 
 class IntervalPlot : public AbstractCustomPlot
 {
@@ -9,11 +10,11 @@ class IntervalPlot : public AbstractCustomPlot
 public:
     explicit IntervalPlot(QWidget *parent = nullptr);
     //~IntervalPlot();
-    //bool event(QEvent *event) override;
+    bool event(QEvent *event) override;
     void retranslate();
     void scaleFont(double scaleFactor) override;
 
-    void setup(QVector<QPair<double, double>> dataVector, QColor color);
+    void setup(QPair<int, int> points, QColor color);
 private:
 public:
     QCPGraph *mMainGraph {nullptr};

@@ -56,7 +56,8 @@ void Settings::readGeneralSettings()
 void Settings::writeGeneralSettings()
 {
     mSettings->beginGroup(mGeneralGroup);
-    mSettings->setValue("mCurrentLanguage", mLanguageSettings->getCurrentLanguage());
+    mSettings->setValue("mCurrentLanguage", QString::number(mLanguageSettings->getCurrentLanguage()));//mLanguageSettings->getCurrentLanguage());
+qDebug() << "lang" << QString::number(mLanguageSettings->getCurrentLanguage());
     mSettings->setValue("mSoftwareStorageUUID", mSoftwareStorageUUID);
     mSettings->setValue("mFlashDeviceMountPart", mFlashDeviceMountPart);
     //mSettings->setValue("mLastSavedDateTimestampSec", qlonglong(mLastSavedDateTimestampSec));

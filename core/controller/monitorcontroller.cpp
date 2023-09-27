@@ -357,7 +357,7 @@ bool MonitorController::setAppLanguage(QLocale::Language language)
 {
     // Установка языка приложения
     bool isOk = mICPSettings->setAppLanguage(language);
-
+    qDebug() << "language" << language << "isOK" << isOk;
     // Сохраняем все настройки
     if (isOk) {
         mICPSettings->writeAllSetting();

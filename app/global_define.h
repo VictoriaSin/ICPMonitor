@@ -49,6 +49,11 @@ typedef struct
 extern _mSPIData *mAllRecordedDataBuffer, *mFirstIntervalBuffer, *mSecondIntervalBuffer;//*mSensorBuffer1, *mSensorBuffer2;
 extern uint mSizeAllRecordedData, mSizeFirstInterval, mSizeSecondInterval;
 
+extern double mRecordedMaxXRange;
+extern double mCurrentMaxYRange;
+extern QPair<double, double> mFirstIntervalMinMaxXRange;
+extern QPair<double, double> mSecondIntervalMinMaxXRange;
+
 enum direction { previous = false, next = true};
 enum interval { first = false, second = true};
 #endif // GLOBAL_DEFINE_H

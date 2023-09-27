@@ -54,8 +54,6 @@ private:
     /*! Толщина линии графика с прошедшими показаниями */
     double mThicknessOfHistGraph {1};
 
-    uint8_t mCurrentMaxXRange {60};
-
 public slots:
     /*! Установка линии верхнего уровня тревоги */
     void setUpperAlarmLevelLine(double upperAlarmLimit);
@@ -70,7 +68,7 @@ public slots:
     void enableLowerAlarm(bool enable);
 
     /*! Проверка оси X на вхождение в интервал*/
-    void checkXAxisInterval(const QCPRange &range);
+    //void checkXAxisInterval(const QCPRange &range);
 
     // AbstractCustomPlot interface
 public:

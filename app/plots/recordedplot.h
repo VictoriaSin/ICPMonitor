@@ -10,7 +10,7 @@ class TextEditDialog;
 class MonitorController;
 
 extern bool isPlayRecord;
-extern double mCurrentMaxYRange;
+
 extern QFile mRawDataFile;
 class RecordedPlot : public AbstractCustomPlot
 {
@@ -27,11 +27,11 @@ class RecordedPlot : public AbstractCustomPlot
                                            "%9:";
 
 public:
-    bool event(QEvent *event) override;
+    //bool event(QEvent *event) override;
     explicit RecordedPlot(QWidget *parent = nullptr);
     ~RecordedPlot();
 
-    double mCurrentMaxXRange {60};
+    //double mCurrentMaxXRange {60};
 
     /*! Добавление данных для отображения на графике */
     void saveDataForGraphic(unsigned int  x, unsigned int  y);//(const ComplexValue &complexVal);
@@ -45,7 +45,7 @@ public:
     void scaleFont(double scaleFactor) override;
     void resetGraph() override;
 
-    QVector<QPair<double, double>> addInterval(uint8_t num, QColor color);
+    QPair<int, int> addInterval(uint8_t num, QColor color);
     void downloadData(QByteArray *temp);
 
 

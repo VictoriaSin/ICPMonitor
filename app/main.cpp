@@ -275,6 +275,8 @@ int main(int argc, char *argv[])
 #else
     mICPSettings = new Settings("/opt/ICPMonitor/bin/ICPMonitorSettings.ini");
 #endif
+    mICPSettings->registrateLangFile(QLocale::Language::English, ":/trans/core_en.qm");
+    mICPSettings->registrateLangFile(QLocale::Language::English, ":/trans/icp_monitor_en.qm");
     // Чтение настроек
     mICPSettings->readAllSetting();
     QString currUUID = mICPSettings->getSoftwareStorageUUID();
@@ -325,8 +327,7 @@ int main(int argc, char *argv[])
     // Создание контроллера приложения и его потока
     QThread mControllerThread;
     // Регистрация файлов перевода
-    mICPSettings->registrateLangFile(QLocale::Language::English, ":/trans/core_en.qm");
-    mICPSettings->registrateLangFile(QLocale::Language::English, ":/trans/icp_monitor_en.qm");
+
     // Установка контроллера виджетам
     w.installController(&monitorController);
     // Инициализация контроллера и сброс контроллера в поток

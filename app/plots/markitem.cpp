@@ -82,9 +82,47 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, uint8_t num, QColor color, const QFo
     // Устанавливаем запрет на выбор элемента кликом
     mLineThroughGraph->setSelectable(false);
     mLineThroughGraph->setVisible(true);
-
-    mTextItem->setSelectable(false);
 }
+
+MarkItem::MarkItem(QCustomPlot *parentPlot, const QString &text, const double position, const QFont &font) :
+    QCPAbstractItem(parentPlot),
+    mTextItem(new QCPItemText(parentPlot))
+{
+    // Установка слоя отрисовки
+    setLayer("overlay");
+
+    // Установка ориентации
+    setOrientation(moVerticalBottom);
+
+    // Настройка отрисовки элемента текста
+    mTextItem->setText(text); // Установка текста
+    mTextItem->setPen(QColor(Qt::black)); // Отрисовка прямоугольника
+    mTextItem->setBrush(QColor(Qt::yellow)); // Отрисовка заднего фона прямоугольника
+    mTextItem->setColor(QColor("#0c2731")); // Цвет текста
+
+    mTextItem->setPadding(QMargins(3, 0, 3, 0)); // Отступы от рамки прямоугольника к тексту
+    mTextItem->setFont(font); // Устанавливаем базовый шрифт
+    mTextItem->setSelectable(false); // Устанавливаем запрет на выбор элемента кликом
+
+    // Создаём линию
+    mLineThroughGraph = new QCPItemLine(mParentPlot);
+    // Вяжем начальную точку к якорю текста
+    mIntervalPos = position * 1000;
+    mTextItem->position->setCoords(position, 0.1); // abs, rel
+    mLineThroughGraph->end->setParentAnchor(mTextItem->position);
+    mLineThroughGraph->start->setCoords(position, 0); // abs
+    mLineThroughGraph->setLayer("legend");
+    mTextItem->setLayer("legend"); // На один слой ниже чем thiss
+
+    QPen dotPen;
+    dotPen.setColor(QColor(Qt::yellow));
+    dotPen.setStyle(Qt::DotLine);
+    dotPen.setWidth(3);
+    mLineThroughGraph->setPen(dotPen);
+    mLineThroughGraph->setSelectable(false);
+    mLineThroughGraph->setVisible(true);
+}
+
 
 MarkItem::~MarkItem()
 {

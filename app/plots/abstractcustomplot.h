@@ -14,6 +14,7 @@ class LabelMarkItem;
 extern QVector<LabelMarkItem *> mLabelItemsContainer;
 
 extern MarkItem * mIntervalsContainer[4];
+extern uint8_t mCurrentIntervalNum;
 
 class AbstractCustomPlot : public QCustomPlot
 {
@@ -113,6 +114,9 @@ private:
     /*! Базовая настройка сглаживания элементов декартовых координат */
     void settingAnalisingElements();
 
+    u32 pointStart;
+    u32 pointStop;
+    bool labelMoved;
 protected:
     //uint32_t pointStart;
     //uint32_t pointStop;
@@ -138,6 +142,9 @@ protected:
     /*! Коэффициент для рассчёта шага скрытия элементов */
     double mOptimizeLabelsKoeff {0.025};
 #endif
+    bool editLabel(QMouseEvent *mouseEvent);
+    bool editInterval(QMouseEvent *mouseEvent);
+    bool editAxisRange(QMouseEvent *mouseEvent, double minX, double maxX, double maxY);
 };
 
 #endif // ABSTRACTCUSTOMPLOT_H

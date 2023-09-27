@@ -36,6 +36,7 @@ public:
 
     MarkItem(QCustomPlot *parentPlot, const QString &text, const QFont &font, double level = 0, LabelOrientation orientation = LabelOrientation::moVerticalBottom);
     MarkItem(QCustomPlot *parentPlot, uint8_t num, QColor color, const QFont &font, const double position);
+    MarkItem(QCustomPlot *parentPlot, const QString &text, const double position, const QFont &font);
     ~MarkItem();
 
     /*! Добавление пунктирной линии */
@@ -67,6 +68,7 @@ public:
     double selectTest(const QPointF &pos, bool onlySelectable, QVariant *details) const override;
     void replotLine();
     void deleteLine();
+
 protected:
     /*! Составной элемент из других, отрисовывать нечего */
     void draw(QCPPainter *painter) override;

@@ -43,16 +43,17 @@ void LanguagePage::updateCurrentAppLanguageOnWidgets()
         return;
     }
 
-    switch (settings->getCurrentAppLanguage()) {
-    case QLocale::Language::Russian: {
-        ui->rusLangRB->setChecked(true);
-        break;
-    }
-    case QLocale::Language::English: {
-        ui->engLangRB->setChecked(true);
-        break;
-    }
-    default: break;
+    switch (settings->getCurrentAppLanguage())
+    {
+        case QLocale::Language::Russian: {
+            ui->rusLangRB->setChecked(true);
+            break;
+        }
+        case QLocale::Language::English: {
+            ui->engLangRB->setChecked(true);
+            break;
+        }
+        default: break;
     }
 }
 
@@ -80,15 +81,11 @@ void LanguagePage::done(int exodus)
     // Установка языка приложения, выбранного пользователем
     if (ui->rusLangRB->isChecked())
     {
-        QTimer::singleShot(0, mController, [this]() {
-            mController->setAppLanguage(QLocale::Language::Russian);
-        });
+        QTimer::singleShot(0, mController, [this]() {mController->setAppLanguage(QLocale::Language::Russian);});
     }
     else if (ui->engLangRB->isChecked())
     {
-        QTimer::singleShot(0, mController, [this]() {
-            mController->setAppLanguage(QLocale::Language::English);
-        });
+        QTimer::singleShot(0, mController, [this]() {mController->setAppLanguage(QLocale::Language::English);});
     }
     //mICPSettings->writeAllSetting();
     emit previousPage();

@@ -68,7 +68,7 @@ WaveFormPlot::WaveFormPlot(QWidget *parent) :
     mUpperAlarmLimit->setLayer("lineLayer");
 
     // Соединяем изменение диапазона оси X с проверкой вхождения в интервал
-    connect(xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(checkXAxisInterval(QCPRange)));
+    //connect(xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(checkXAxisInterval(QCPRange)));
 
     retranslate();
 }
@@ -91,18 +91,6 @@ void WaveFormPlot::changePenColor(QColor mColor)
     mHistGraph->setPen(pen);
 }
 
-void WaveFormPlot::checkXAxisInterval(const QCPRange &range)
-{
-    //!!! Добавить проверку
-    if (range.lower < 0)
-    {
-        xAxis->setRange(0, 12);
-    }
-    else if (range.upper > mCurrentMaxXRange)
-    {
-        xAxis->setRange(mCurrentMaxXRange - 12, mCurrentMaxXRange);
-    }
-}
 void WaveFormPlot::addDataOnGraphic(unsigned int  x, unsigned int  y)//const ComplexValue &complexVal)
 {
     x = x % ((unsigned int)xAxis->range().size()*1000);

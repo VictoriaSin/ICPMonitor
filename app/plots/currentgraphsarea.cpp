@@ -132,7 +132,7 @@ void CurrentGraphsArea::goToLabel(bool direction)
 {
     //qDebug() << "count" <<mLabelItemsContainer.count();
     uint16_t labelCount = mLabelItemsContainer.count();
-    double leftPos = 0, rightPos = mRecordedGraph->mCurrentMaxXRange;
+    double leftPos = 0, rightPos = mRecordedMaxXRange;//mRecordedGraph->mCurrentMaxXRange;
 
     direction == previous ? mCurrentLabelIndex = (mCurrentLabelIndex + labelCount - 1) % labelCount //назад
             : mCurrentLabelIndex = (mCurrentLabelIndex + 1) % labelCount; //вперед
@@ -140,9 +140,9 @@ qDebug() << "currind" << mCurrentLabelIndex;
     double curLabelPosX =mLabelItemsContainer[mCurrentLabelIndex]->getLabel()->mCurrentPos;
 
     double tempRangeDiv2 = (mRecordedGraph->xAxis->range().size())/2;
-    if (curLabelPosX + tempRangeDiv2 > mRecordedGraph->mCurrentMaxXRange)
+    if (curLabelPosX + tempRangeDiv2 > mRecordedMaxXRange)//mRecordedGraph->mCurrentMaxXRange)
     {
-        leftPos = curLabelPosX - (mRecordedGraph->mCurrentMaxXRange - curLabelPosX);
+        leftPos = curLabelPosX - (mRecordedMaxXRange/*mRecordedGraph->mCurrentMaxXRange*/ - curLabelPosX);
     }
     else
     if ((curLabelPosX - tempRangeDiv2) < 0)
@@ -634,7 +634,7 @@ void CurrentGraphsArea::addIntervalOnRecordedGraph()
             if (newIntervalPos <= prevIntervalPos)
             {
                 double offset = mRecordedGraph->xAxis->range().size() * 0.01;
-                if ((prevIntervalPos + offset) < mRecordedGraph->mCurrentMaxXRange)
+                if ((prevIntervalPos + offset) < mRecordedMaxXRange)//mRecordedGraph->mCurrentMaxXRange)
                 {
                     newIntervalPos = prevIntervalPos + offset;
                 }
@@ -681,7 +681,10 @@ double tempOffset;
         if (calcPosInCoord(0) - tempOffset < 0) { leftPos = calcPosInCoord(0); }
         else { leftPos = tempOffset; }
 
-        if (calcPosInCoord(1) + tempOffset > mRecordedGraph->mCurrentMaxXRange) { rightPos = mRecordedGraph->mCurrentMaxXRange - calcPosInCoord(1); }
+        if (calcPosInCoord(1) + tempOffset > mRecordedMaxXRange)//mRecordedGraph->mCurrentMaxXRange)
+        {
+            rightPos = mRecordedMaxXRange/*mRecordedGraph->mCurrentMaxXRange*/ - calcPosInCoord(1);
+        }
         else {rightPos = tempOffset; }
 
         setIntervalPosition(0, 1, leftPos, rightPos);
@@ -692,7 +695,10 @@ double tempOffset;
         if (calcPosInCoord(2) - tempOffset < 0) { leftPos = calcPosInCoord(2); }
         else { leftPos = tempOffset; }
 
-        if (calcPosInCoord(3) + tempOffset > mRecordedGraph->mCurrentMaxXRange) { rightPos = mRecordedGraph->mCurrentMaxXRange - calcPosInCoord(3); }
+        if (calcPosInCoord(3) + tempOffset > mRecordedMaxXRange)//mRecordedGraph->mCurrentMaxXRange)
+        {
+            rightPos = mRecordedMaxXRange/*mRecordedGraph->mCurrentMaxXRange*/ - calcPosInCoord(3);
+        }
         else {rightPos = tempOffset; }
 
         setIntervalPosition(2, 3, leftPos, rightPos);
@@ -703,16 +709,17 @@ double tempOffset;
 void CurrentGraphsArea::colorInterval()
 {
     qDebug() << "interval count" << mIntervalsCount;
-    QVector<QPair <double, double>> tempVec;
+    //QVector<QPair <double, double>> tempVec;
+    QPair <int, int> points;
     if (mIntervalsCount < 3)
     {
-        tempVec = mRecordedGraph->addInterval(mIntervalsCount, QColor(Qt::magenta));// проверить
-        mFirstInterval->setup(tempVec, QColor(Qt::magenta));
+        points = mRecordedGraph->addInterval(mIntervalsCount, QColor(Qt::magenta));// проверить
+        mFirstInterval->setup(points, QColor(Qt::magenta));
     }
     else
     {
-        tempVec = mRecordedGraph->addInterval(mIntervalsCount, QColor(Qt::cyan));
-        mSecondInterval->setup(tempVec, QColor(Qt::cyan));
+        points = mRecordedGraph->addInterval(mIntervalsCount, QColor(Qt::cyan));
+        mSecondInterval->setup(points, QColor(Qt::cyan));
     }
 }
 

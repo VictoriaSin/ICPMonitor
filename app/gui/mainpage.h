@@ -24,7 +24,7 @@ class Label;
 class RecordedPlot;
 
 extern bool isPlayRecord;
-
+extern uint8_t mCurrentIntervalNum;
 enum speed { SpeedX1 = 500, SpeedX2 = 250, SpeedX4 = 125};
 
 class MainPage : public IPageWidget

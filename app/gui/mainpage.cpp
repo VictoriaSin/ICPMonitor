@@ -38,6 +38,8 @@ int currSpeed = speed::SpeedX1;
 _mSPIData *mAllRecordedDataBuffer = nullptr;
 uint mSizeAllRecordedData = 0, mSizeFirstInterval = 0, mSizeSecondInterval = 0;
 
+uint8_t mCurrentIntervalNum {0};
+
 MainPage::MainPage(QWidget *parent)
     : IPageWidget(parent)
     , mUpdateDateTimeTimer(new QTimer(this))
@@ -1055,6 +1057,7 @@ void MainPage::setAverage(double currAverage)
 
 void MainPage::on_zoomInterval1Button_clicked()
 {
+    mCurrentIntervalNum = 1;
     mCurrentGraphsArea->changeGraph(2); // 1 интервал
     ui->goBackToGraphButton   ->show();
     ui->mInfoInterval1        ->hide();
@@ -1082,6 +1085,7 @@ void MainPage::on_zoomInterval1Button_clicked()
 
 void MainPage::on_zoomInterval2Button_clicked()
 {
+    mCurrentIntervalNum = 2;
     mCurrentGraphsArea->changeGraph(3); // 2 интервал
     ui->goBackToGraphButton   ->show();
     ui->mInfoInterval1        ->hide();
@@ -1129,5 +1133,6 @@ void MainPage::on_goBackToGraphButton_clicked()
     {
         ui->intervalButton->show();
     }
+    mCurrentIntervalNum = 0;
 
 }
