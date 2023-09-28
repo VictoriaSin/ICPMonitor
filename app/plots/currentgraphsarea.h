@@ -5,6 +5,7 @@
 #include "controller/controller_enums.h"
 #include "global_define.h"
 
+extern uint8_t mCurrentIntervalNum;
 namespace Ui {
 class CurrentGraphsArea;
 }
@@ -244,6 +245,7 @@ public:
     int currIndex;
     int plotIndex;
     void removeAllGraphs();
+    void replotIntervalGraph();
 protected:
     double calcAverage(uint16_t data);
 signals:

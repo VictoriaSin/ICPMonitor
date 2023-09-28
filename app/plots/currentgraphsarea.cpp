@@ -360,6 +360,11 @@ void CurrentGraphsArea::replotDisplayedGraph()
         replotRecordedGraph();
         break;
         }
+        case AbstractCustomPlot::GraphType::IntervalGraph:
+        {
+            replotIntervalGraph();
+            break;
+        }
     default: break;
     }
 }
@@ -384,6 +389,18 @@ void CurrentGraphsArea::replotRecordedGraph()
     mRecordedGraph->avgBenchTime += (curTime - mRecordedGraph->benchTime);
     mRecordedGraph->benchTime = curTime;
     mRecordedGraph->benchCount++;
+}
+
+void CurrentGraphsArea::replotIntervalGraph()
+{
+    if (mCurrentIntervalNum == 1)
+    {
+        mFirstInterval->replot();
+    }
+    else if (mCurrentIntervalNum == 2)
+    {
+        mSecondInterval->replot();
+    }
 }
 
 void CurrentGraphsArea::updateIntervalsOnGraphs()
@@ -714,11 +731,13 @@ void CurrentGraphsArea::colorInterval()
     if (mIntervalsCount < 3)
     {
         points = mRecordedGraph->addInterval(mIntervalsCount, QColor(Qt::magenta));// проверить
+        mCurrentIntervalNum = 1;
         mFirstInterval->setup(points, QColor(Qt::magenta));
     }
     else
     {
         points = mRecordedGraph->addInterval(mIntervalsCount, QColor(Qt::cyan));
+        mCurrentIntervalNum = 2;
         mSecondInterval->setup(points, QColor(Qt::cyan));
     }
 }

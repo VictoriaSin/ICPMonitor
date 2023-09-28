@@ -152,10 +152,12 @@ bool AbstractCustomPlot::editAxisRange(QMouseEvent *mouseEvent, double minX, dou
 
             if (!((xAxis->range().lower - deltaX < minX) || (xAxis->range().upper - deltaX > maxX)))
             {
+                //qDebug() << "minX" << minX << "lowX" << xAxis->range().lower << "delta" << deltaX;
                 xAxis->setRange(xAxis->range().lower - deltaX, xAxis->range().upper - deltaX);
             }
             if (!((yAxis->range().lower - deltaY < 0) || (yAxis->range().upper - deltaY > maxY)))
             {
+                //qDebug() << "maxY" << maxY << "lowY" << yAxis->range().lower << "delta" << deltaY;
                 yAxis->setRange(yAxis->range().lower - deltaY, yAxis->range().upper - deltaY);
             }
 
@@ -178,39 +180,45 @@ bool AbstractCustomPlot::editAxisRange(QMouseEvent *mouseEvent, double minX, dou
 
             if (eventWheel->delta() < 0)
             {
-              //qDebug("Zoom-");
               //qDebug() << "pointStartX:" << pointStartX << " (pointStartX *  DEF_ZOOM_IN_X)" << (pointStartX *  DEF_ZOOM_IN_X) << " xAxis->range().lower" << xAxis->range().lower;
               double startPlot;
               double endPlot;
               bool customPlot = false;
-              if ((pointStartX - (pointStartX * DEF_ZOOM_IN_X)) > xAxis->range().lower) // < 0
+              if ((pointStartX - (pointStartX * DEF_ZOOM_IN_X)) - minX < 0) // < 0
               {
+                  qDebug() << "minX";
+                qDebug() << "pointStartX" << pointStartX << "pointStartX * DEF_ZOOM_IN_X" << pointStartX * DEF_ZOOM_IN_X << "xAxis->range().lower" << xAxis->range().lower;
                 customPlot = true;
-                startPlot = 0;
+                startPlot = minX;
               }
 
               if ((xAxis->range().upper + (xAxis->range().upper *  DEF_ZOOM_IN_X)) > maxX) // > MAX
               {
+                qDebug() << "maxX";
+                if (!customPlot) startPlot = xAxis->range().lower * DEF_ZOOM_IN_X;
                 customPlot = true;
-                startPlot = xAxis->range().lower * DEF_ZOOM_IN_X;
                 endPlot = maxX;
               }
               else
               {
                 endPlot = xAxis->range().size() / DEF_ZOOM_IN_X;
+                qDebug() << "Zoom-3" << endPlot;
               }
 
               if (customPlot)
               {
+                if (startPlot >= endPlot)  { endPlot = maxX; }
                 xAxis->setRange(startPlot, endPlot);
+                qDebug() << "Zoom-1" << startPlot << endPlot;
                 return true;
               }
+              qDebug("Zoom-2");
               xAxis->scaleRange(DEF_ZOOM_OUT_X, pointStartX);
               return true;
             }
             else
             {
-              //qDebug("Zoom+");
+              qDebug("Zoom+");
               xAxis->scaleRange(DEF_ZOOM_IN_X, pointStartX);
             }
             return true;
@@ -419,20 +427,24 @@ bool RecordedPlot::editAxisRange(QTouchEvent *touchEvent, double maxX, double ma
 
 bool AbstractCustomPlot::event(QEvent *event)
 {
-    if (mGraphType == RecordedGraph)
+    if (mGraphType == RecordedGraph)        
     {
 #ifdef PC_BUILD
-        if (isLabelCreating == true)
+        const auto typeOfEvent = event->type();
+        if((typeOfEvent == QEvent::MouseButtonPress) || (typeOfEvent == QEvent::MouseButtonRelease) || (typeOfEvent == QEvent::MouseMove) || (typeOfEvent == QEvent::Wheel))
         {
-            if (editLabel((QMouseEvent*)event)) return true;
-        }
-        else if (isIntervalCreating == true)
-        {
-            if (editInterval((QMouseEvent*)event)) return true;
-        }
-        else
-        {
-            if (editAxisRange((QMouseEvent*)event, 0, mRecordedMaxXRange, mCurrentMaxYRange)) return true;
+            if (isLabelCreating == true)
+            {
+                if (editLabel((QMouseEvent*)event)) return true;
+            }
+            else if (isIntervalCreating == true)
+            {
+                if (editInterval((QMouseEvent*)event)) return true;
+            }
+            else
+            {
+                if (editAxisRange((QMouseEvent*)event, 0, mRecordedMaxXRange, mCurrentMaxYRange)) return true;
+            }
         }
 #else
 
@@ -452,13 +464,18 @@ bool AbstractCustomPlot::event(QEvent *event)
     }
     else if (mGraphType == IntervalGraph)
     {
-        if (mCurrentIntervalNum == 1)
+        const auto typeOfEvent = event->type();
+        if((typeOfEvent == QEvent::MouseButtonPress) || (typeOfEvent == QEvent::MouseButtonRelease) || (typeOfEvent == QEvent::MouseMove) || (typeOfEvent == QEvent::Wheel))
         {
-            if (editAxisRange((QMouseEvent*)event, mFirstIntervalMinMaxXRange.first, mFirstIntervalMinMaxXRange.second, mCurrentMaxYRange)) return true;
-        }
-        else if (mCurrentIntervalNum == 2)
-        {
-            if (editAxisRange((QMouseEvent*)event, mSecondIntervalMinMaxXRange.first, mSecondIntervalMinMaxXRange.second, mCurrentMaxYRange)) return true;
+            if (mCurrentIntervalNum == 1)
+            {
+                if (editAxisRange((QMouseEvent*)event, mFirstIntervalMinMaxXRange.first, mFirstIntervalMinMaxXRange.second, mCurrentMaxYRange)) return true;
+            }
+            else if (mCurrentIntervalNum == 2)
+            {
+                if (editAxisRange((QMouseEvent*)event, mSecondIntervalMinMaxXRange.first, mSecondIntervalMinMaxXRange.second, mCurrentMaxYRange)) return true;
+            }
+            return true;
         }
     }
     return QCustomPlot::event(event);

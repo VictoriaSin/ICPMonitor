@@ -1,7 +1,7 @@
 #include "intervalplot.h"
 #include "recordedplot.h"
 #include "gui/gui_funcs.h"
-#include "global_define.h"
+
 #include "markitem.cpp"
 
 extern QFile mRawDataFile;
@@ -69,6 +69,19 @@ void IntervalPlot::setup(QPair<int, int> points, QColor color)
     }
     QString ttt;
     QStringList list;
+    qDebug() << "mCurrentIntervalNum" << mCurrentIntervalNum;
+    if (mCurrentIntervalNum == 1)
+    {
+        mFirstIntervalMinMaxXRange.first = (double)tempArr[0].timeStamp/1000;
+        mFirstIntervalMinMaxXRange.second = (double)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000;
+        qDebug() << "tttt" << mFirstIntervalMinMaxXRange.first << mFirstIntervalMinMaxXRange.second;
+        //mFirstIntervalMinMaxXRange = qMakePair((double)tempArr[0].timeStamp/1000, (double)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000);
+    }
+    else
+    {
+        mSecondIntervalMinMaxXRange = qMakePair((double)tempArr[0].timeStamp/1000, (double)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000);
+    }
+
 
     mMarksFile.open(QIODevice::ReadOnly);
     if (mMarksFile.isOpen())
@@ -93,17 +106,9 @@ void IntervalPlot::setup(QPair<int, int> points, QColor color)
         }
     }
     qDebug() << list;
-    if (mCurrentIntervalNum == 1)
-    {
-        mFirstIntervalMinMaxXRange = qMakePair((double)tempArr[0].timeStamp/1000, (double)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000);
-    }
-    else
-    {
-        mSecondIntervalMinMaxXRange = qMakePair((double)tempArr[0].timeStamp/1000, (double)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000);
-    }
+
     xAxis->setRange((double)tempArr[0].timeStamp/1000, (double)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000);
 }
-
 
 void IntervalPlot::retranslate()
 {
@@ -123,3 +128,4 @@ bool IntervalPlot::event(QEvent *event)
     // сенсор
     return AbstractCustomPlot::event(event);
 }
+

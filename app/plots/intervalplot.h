@@ -2,6 +2,8 @@
 #define INTERVALPLOT_H
 
 #include "abstractcustomplot.h"
+#include "global_define.h"
+extern uint8_t mCurrentIntervalNum;
 class MarkItem;
 
 class IntervalPlot : public AbstractCustomPlot

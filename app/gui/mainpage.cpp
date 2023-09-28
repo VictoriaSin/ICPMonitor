@@ -1059,6 +1059,7 @@ void MainPage::on_zoomInterval1Button_clicked()
 {
     mCurrentIntervalNum = 1;
     mCurrentGraphsArea->changeGraph(2); // 1 интервал
+
     ui->goBackToGraphButton   ->show();
     ui->mInfoInterval1        ->hide();
     ui->intervalButton        ->hide();
@@ -1084,9 +1085,10 @@ void MainPage::on_zoomInterval1Button_clicked()
 
 
 void MainPage::on_zoomInterval2Button_clicked()
-{
+{    
     mCurrentIntervalNum = 2;
     mCurrentGraphsArea->changeGraph(3); // 2 интервал
+
     ui->goBackToGraphButton   ->show();
     ui->mInfoInterval1        ->hide();
     ui->intervalButton        ->hide();
@@ -1109,6 +1111,7 @@ void MainPage::on_zoomInterval2Button_clicked()
 
 void MainPage::on_goBackToGraphButton_clicked()
 {
+    mCurrentIntervalNum = 0;
     mCurrentGraphsArea->changeGraph(1);
     ui->goBackToGraphButton   ->hide();
     ui->goToInterval1Button   ->show();
@@ -1133,6 +1136,6 @@ void MainPage::on_goBackToGraphButton_clicked()
     {
         ui->intervalButton->show();
     }
-    mCurrentIntervalNum = 0;
+
 
 }
