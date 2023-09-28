@@ -56,7 +56,7 @@ void IntervalPlot::setup(QPair<int, int> points, QColor color)
 //    }
 //    xAxis->setRange(dataVector[0].first, dataVector[dataVector.count()-1].first);
     qDebug() << "start" << points.first << "stop" << points.second;
-    uint iterTemp = 0;
+    iterTemp = 0;
     iterTemp = ((points.second-points.first)*TIME_INTERVAL_DIFF)+1;
     _mSPIData tempArr[iterTemp];
     mRawDataFile.open(QIODevice::ReadOnly);
@@ -67,8 +67,8 @@ void IntervalPlot::setup(QPair<int, int> points, QColor color)
     {
         mMainGraph->addData((double)tempArr[i].timeStamp/1000, tempArr[i].data);
     }
-    QString ttt;
-    QStringList list;
+
+
     qDebug() << "mCurrentIntervalNum" << mCurrentIntervalNum;
     if (mCurrentIntervalNum == 1)
     {
@@ -79,36 +79,15 @@ void IntervalPlot::setup(QPair<int, int> points, QColor color)
     }
     else
     {
-        mSecondIntervalMinMaxXRange = qMakePair((double)tempArr[0].timeStamp/1000, (double)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000);
+        mSecondIntervalMinMaxXRange.first = (double)tempArr[0].timeStamp/1000;
+        mSecondIntervalMinMaxXRange.second = (double)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000;
+        qDebug() << "tttt" << mSecondIntervalMinMaxXRange.first << mSecondIntervalMinMaxXRange.second;
+        //mSecondIntervalMinMaxXRange = qMakePair((double)tempArr[0].timeStamp/1000, (double)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000);
     }
-
-
-    mMarksFile.open(QIODevice::ReadOnly);
-    if (mMarksFile.isOpen())
-    {
-        ttt = mMarksFile.readAll();
-        mMarksFile.seek(0);
-        mMarksFile.close();
-    }
-    else
-    {
-        qDebug() << "not open";
-    }
-    list = ttt.split("\n");
-    MarkItem *newMark = nullptr;
-    QFont mFontForLabelItems {"Sans Serif", 16};
-    for (int i=0; i<list.count()-1; i++)
-    {
-        double currPos = list[i].split(": ")[1].toDouble()/1000;
-        if (currPos > mMainGraph->data()->at(0)->key && currPos < mMainGraph->data()->at(iterTemp-1)->key)
-        {
-            newMark = new MarkItem(this, list[i].split(": ")[0], currPos, mFontForLabelItems);
-        }
-    }
-    qDebug() << list;
 
     xAxis->setRange((double)tempArr[0].timeStamp/1000, (double)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000);
 }
+
 
 void IntervalPlot::retranslate()
 {

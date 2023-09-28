@@ -1058,6 +1058,7 @@ void MainPage::setAverage(double currAverage)
 void MainPage::on_zoomInterval1Button_clicked()
 {
     mCurrentIntervalNum = 1;
+    mCurrentGraphsArea->setMarksOnInterval();
     mCurrentGraphsArea->changeGraph(2); // 1 интервал
 
     ui->goBackToGraphButton   ->show();
@@ -1087,6 +1088,7 @@ void MainPage::on_zoomInterval1Button_clicked()
 void MainPage::on_zoomInterval2Button_clicked()
 {    
     mCurrentIntervalNum = 2;
+    mCurrentGraphsArea->setMarksOnInterval();
     mCurrentGraphsArea->changeGraph(3); // 2 интервал
 
     ui->goBackToGraphButton   ->show();

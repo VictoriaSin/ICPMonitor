@@ -20,6 +20,8 @@ public:
 private:
 public:
     QCPGraph *mMainGraph {nullptr};
+    void setMarks();
+    uint iterTemp;
 signals:
 
 };

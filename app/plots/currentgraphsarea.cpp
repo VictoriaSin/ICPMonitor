@@ -733,13 +733,57 @@ void CurrentGraphsArea::colorInterval()
         points = mRecordedGraph->addInterval(mIntervalsCount, QColor(Qt::magenta));// проверить
         mCurrentIntervalNum = 1;
         mFirstInterval->setup(points, QColor(Qt::magenta));
+        setMarksOnInterval();
     }
     else
     {
         points = mRecordedGraph->addInterval(mIntervalsCount, QColor(Qt::cyan));
         mCurrentIntervalNum = 2;
         mSecondInterval->setup(points, QColor(Qt::cyan));
+        setMarksOnInterval();
     }
+}
+
+void CurrentGraphsArea::setMarksOnInterval()
+{
+    QString fileMarksData;
+    QStringList listOfMarks;
+    mMarksFile.open(QIODevice::ReadOnly);
+    if (mMarksFile.isOpen())
+    {
+        fileMarksData = mMarksFile.readAll();
+        mMarksFile.seek(0);
+        mMarksFile.close();
+    }
+    else
+    {
+        qDebug() << "not open";
+    }
+    listOfMarks = fileMarksData.split("\n");
+    MarkItem *newMark = nullptr;
+    QFont mFontForLabelItems {"Sans Serif", 16};
+
+
+    for (int i=0; i<listOfMarks.count()-1; i++)
+    {
+        double currPos = listOfMarks[i].split(": ")[1].toDouble()/1000;
+        if (mCurrentIntervalNum == 1)
+        {
+            if (currPos > mFirstInterval->mMainGraph->data()->at(0)->key && currPos < mFirstInterval->mMainGraph->data()->at(mFirstInterval->iterTemp-1)->key)
+            {
+                newMark = new MarkItem(mFirstInterval, listOfMarks[i].split(": ")[0], currPos, mFontForLabelItems);
+            }
+        }
+        else
+        {
+            if (currPos > mSecondInterval->mMainGraph->data()->at(0)->key && currPos < mSecondInterval->mMainGraph->data()->at(mSecondInterval->iterTemp-1)->key)
+            {
+                newMark = new MarkItem(mSecondInterval, listOfMarks[i].split(": ")[0], currPos, mFontForLabelItems);
+            }
+        }
+    }
+    newMark = nullptr;
+    //qDebug() << listOfMarks;
 }
 
 //void CurrentGraphsArea::addDataOnTrendGraph()

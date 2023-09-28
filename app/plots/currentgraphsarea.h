@@ -246,6 +246,7 @@ public:
     int plotIndex;
     void removeAllGraphs();
     void replotIntervalGraph();
+    void setMarksOnInterval();
 protected:
     double calcAverage(uint16_t data);
 signals:
