@@ -782,7 +782,6 @@ void CurrentGraphsArea::setMarksOnInterval()
             }
         }
     }
-    newMark = nullptr;
     //qDebug() << listOfMarks;
 }
 
