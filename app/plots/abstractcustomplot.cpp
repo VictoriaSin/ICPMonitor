@@ -173,54 +173,38 @@ bool AbstractCustomPlot::editAxisRange(QMouseEvent *mouseEvent, double minX, dou
 
         if (typeOfEvent == QEvent::Wheel)
         {
-            #define DEF_ZOOM_IN_X  (double)0.8
+            #define DEF_ZOOM_IN_X  (double)0.9
             #define DEF_ZOOM_OUT_X (double)(1.0/DEF_ZOOM_IN_X)
             QWheelEvent *eventWheel = (QWheelEvent*)mouseEvent;
             pointStartX = xAxis->pixelToCoord(mouseEvent->pos().x());
 
             if (eventWheel->delta() < 0)
             {
-              //qDebug() << "pointStartX:" << pointStartX << " (pointStartX *  DEF_ZOOM_IN_X)" << (pointStartX *  DEF_ZOOM_IN_X) << " xAxis->range().lower" << xAxis->range().lower;
-              double startPlot;
-              double endPlot;
+              double startPlot = minX;
+              double endPlot = xAxis->range().upper / DEF_ZOOM_IN_X;
               bool customPlot = false;
-              if ((pointStartX - (pointStartX * DEF_ZOOM_IN_X)) - minX < 0) // < 0
+              if (xAxis->range().lower - (pointStartX - (pointStartX * DEF_ZOOM_IN_X)) < minX ) // < minX
               {
-                  qDebug() << "minX";
-                qDebug() << "pointStartX" << pointStartX << "pointStartX * DEF_ZOOM_IN_X" << pointStartX * DEF_ZOOM_IN_X << "xAxis->range().lower" << xAxis->range().lower;
                 customPlot = true;
-                startPlot = minX;
               }
 
-              if ((xAxis->range().upper + (xAxis->range().upper *  DEF_ZOOM_IN_X)) > maxX) // > MAX
+              if (endPlot > maxX)
               {
-                qDebug() << "maxX";
                 if (!customPlot) startPlot = xAxis->range().lower * DEF_ZOOM_IN_X;
                 customPlot = true;
                 endPlot = maxX;
               }
-              else
-              {
-                endPlot = xAxis->range().size() / DEF_ZOOM_IN_X;
-                qDebug() << "Zoom-3" << endPlot;
-              }
 
               if (customPlot)
               {
-                if (startPlot >= endPlot)  { endPlot = maxX; }
                 xAxis->setRange(startPlot, endPlot);
-                qDebug() << "Zoom-1" << startPlot << endPlot;
                 return true;
               }
-              qDebug("Zoom-2");
               xAxis->scaleRange(DEF_ZOOM_OUT_X, pointStartX);
               return true;
             }
-            else
-            {
-              qDebug("Zoom+");
-              xAxis->scaleRange(DEF_ZOOM_IN_X, pointStartX);
-            }
+
+            xAxis->scaleRange(DEF_ZOOM_IN_X, pointStartX); // увеличение
             return true;
         }
     }

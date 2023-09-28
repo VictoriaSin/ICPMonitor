@@ -85,7 +85,7 @@ CurrentGraphsArea::CurrentGraphsArea(QWidget *parent) :
 
     //resetAllLabelItems();
 
-    AverageIntervalSec = mICPSettings->getCurrentAverageIntervalSec();
+    AverageIntervalSec = 1;// mICPSettings->getCurrentAverageIntervalSec();
     buffSize =(int) (1000.0 / TIME_INTERVAL_FOR_WRITE_ON_GRAPH * AverageIntervalSec);
     mAverageValue = 0;
     CurrDataForAverage = new double[buffSize];
