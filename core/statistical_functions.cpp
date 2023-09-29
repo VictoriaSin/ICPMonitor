@@ -1,7 +1,7 @@
 #include "statistical_functions.h"
 #include "global_structs.h"
 
-double calculateLowerQuartile(std::vector<ComplexValue> *values, bool &isOkey, bool isSorted)
+float calculateLowerQuartile(std::vector<ComplexValue> *values, bool &isOkey, bool isSorted)
 {
     // Если пришёл nullptr
     if (!values) {
@@ -28,7 +28,7 @@ double calculateLowerQuartile(std::vector<ComplexValue> *values, bool &isOkey, b
     return calculateMedian(&temp, isOkey, true);
 }
 
-double calculateUpperQuartile(std::vector<ComplexValue> *values, bool &isOkey, bool isSorted)
+float calculateUpperQuartile(std::vector<ComplexValue> *values, bool &isOkey, bool isSorted)
 {
     // Если пришёл nullptr
     if (!values) {
@@ -57,7 +57,7 @@ double calculateUpperQuartile(std::vector<ComplexValue> *values, bool &isOkey, b
     return calculateMedian(&temp, isOkey, true);
 }
 
-double calculateMedian(std::vector<ComplexValue> *values, bool &isOkey, bool isSorted)
+float calculateMedian(std::vector<ComplexValue> *values, bool &isOkey, bool isSorted)
 {
     // Если пришёл nullptr или значений нет
     if (!values || values->size() == 0) {

@@ -29,8 +29,8 @@ public:
     /*! Запись всех настроек */
     void writeAllSetting();
 
-    void setAllPressureParam(double mCurrentReadingsGraphIntervalY, double mTickCountY,
-                             double mHighLevelAlarm, double mLowLevelAlarm);
+    void setAllPressureParam(float mCurrentReadingsGraphIntervalY, float mTickCountY,
+                             float mHighLevelAlarm, float mLowLevelAlarm);
     /*################################################################################
                                       Общие настройки
     ################################################################################*/
@@ -61,11 +61,11 @@ public:
     void readCurrentSensorReadingsSettings();
     QString getRelativeCurrentSensorReadingsPath() const { return mRelativeCurrentSensorReadingsPath; };
     int64_t getMaxTimeStorageCurrentSensorReadingsMs() const { return mMaxTimeStorageCurrentSensorReadingsMs; };
-    double getCurrentReadingsGraphIntervalX() const { return mCurrentReadingsGraphIntervalX; };
-    //QVector<QPair<double, double>> getCurrentReadingsGraphYRanges() const { return mCurrentReadingsGraphYRanges; };
-    double getCurrentReadingsGraphIntervalY() const { return mCurrentReadingsGraphIntervalY; };
-    double getCurrentTickCountX() const { return mTickCountX; };
-    double getCurrentTickCountY() const { return mTickCountY; };
+    float getCurrentReadingsGraphIntervalX() const { return mCurrentReadingsGraphIntervalX; };
+    //QVector<QPair<float, float>> getCurrentReadingsGraphYRanges() const { return mCurrentReadingsGraphYRanges; };
+    float getCurrentReadingsGraphIntervalY() const { return mCurrentReadingsGraphIntervalY; };
+    float getCurrentTickCountX() const { return mTickCountX; };
+    float getCurrentTickCountY() const { return mTickCountY; };
     uint8_t getCurrentPressureIndex() const { return mPressureUnitsIndex; };
     float getCurrentAverageIntervalSec() const { return mAverageIntervalSec; };
     /*################################################################################
@@ -114,7 +114,7 @@ private:
     void writeCurrentSensorReadingsSettings();
     void setRelativeCurrentSensorReadingsPath(const QString &relativeCurrentSensorReadingsPath);
     void setMaxTimeStorageCurrentSensorReadingsMs(int64_t maxMs);
-//    void setCurrentReadingsGraphInterval(double currentReadingsGraphInterval);
+//    void setCurrentReadingsGraphInterval(float currentReadingsGraphInterval);
     /*################################################################################
                             Настройки средних показаний датчика
     ################################################################################*/
@@ -123,12 +123,12 @@ private:
     void setMaxTimeStorageAverageSensorReadingsSec(int64_t maxSec);
 
 private slots:
-    void setCurrentReadingsGraphIntervalX(double currentReadingsGraphIntervalX);
-    void setCurrentReadingsGraphIntervalY(double currentReadingsGraphIntervalYTo);
+    void setCurrentReadingsGraphIntervalX(float currentReadingsGraphIntervalX);
+    void setCurrentReadingsGraphIntervalY(float currentReadingsGraphIntervalYTo);
     void setCurrentTickCountX(float currentTickCountX);
     void setCurrentTickCountY(float currentTickCountY);
     void setCurrentPressureUnits(uint8_t currentPressureUnitsIndex);
-    void setCurrentAverageIntervalSec(double currentAverageIntervalSec);
+    void setCurrentAverageIntervalSec(float currentAverageIntervalSec);
 
 private:
     QSettings *mSettings {nullptr};
@@ -170,13 +170,13 @@ private:
     const QString mCurrentSensorReadingsGroup {"CurrentSensorReadingsGroup"};
     QString mRelativeCurrentSensorReadingsPath {"./ICPCurrentSensorReadings"};
     int64_t mMaxTimeStorageCurrentSensorReadingsMs {1 * 24 * 60 * 60 * 1000};
-    double mCurrentReadingsGraphIntervalX {12};
-    double mCurrentReadingsGraphIntervalY {60};
-    double mTickCountX {6};
-    double mTickCountY {3};
+    float mCurrentReadingsGraphIntervalX {12};
+    float mCurrentReadingsGraphIntervalY {60};
+    float mTickCountX {6};
+    float mTickCountY {3};
     uint8_t mPressureUnitsIndex {0};
 
-    /*QVector<QPair<double, double>> mCurrentReadingsGraphYRanges {
+    /*QVector<QPair<float, float>> mCurrentReadingsGraphYRanges {
         {0, 30},    {0, 50},
         {0, 75},    {0, 100},
         {-10, 20},  {-50, 50}

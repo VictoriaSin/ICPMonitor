@@ -35,10 +35,10 @@ public:
     bool event(QEvent *event) override;
 
     /*! Установка диапазона оси X (нижней) */
-    QPair<double, double> setXRange(double lower, double upper);
+    QPair<float, float> setXRange(float lower, float upper);
 
     /*! Установка диапазона оси Y (левой) */
-    void setYRange(double lower, double upper);
+    void setYRange(float lower, float upper);
 
     /*! Тип графика */
     GraphType type() const;
@@ -87,7 +87,7 @@ public:
     int optimizationLabelItemCount() const;
 
     /*! Увеличение шрифта на графике */
-    virtual void scaleFont(double scaleFactor);
+    virtual void scaleFont(float scaleFactor);
 
     /*! Сброс графика */
     virtual void resetGraph();
@@ -128,7 +128,7 @@ protected:
     bool mDoublePointsTouch {false};
 
     /*! Чувствительность приближения */
-    double scaleSensitivity {17.777};
+    float scaleSensitivity {17.777};
 
     /*! Включает адаптивную выборку меток */
     bool mAdaptiveSamplingLabelItems {false};
@@ -137,14 +137,18 @@ protected:
     QList<MarkItem *> mOptimizedItems;
 #ifdef PC_BUILD
     /*! Коэффициент для рассчёта шага скрытия элементов */
-    double mOptimizeLabelsKoeff {0.05};
-#else
-    /*! Коэффициент для рассчёта шага скрытия элементов */
-    double mOptimizeLabelsKoeff {0.025};
-#endif
+    float mOptimizeLabelsKoeff {0.05};
     bool editLabel(QMouseEvent *mouseEvent);
     bool editInterval(QMouseEvent *mouseEvent);
-    bool editAxisRange(QMouseEvent *mouseEvent, double minX, double maxX, double maxY);
+    bool editAxisRange(QMouseEvent *mouseEvent, float minX, float maxX, float maxY);
+#else
+    /*! Коэффициент для рассчёта шага скрытия элементов */
+    float mOptimizeLabelsKoeff {0.025};
+    bool editLabel(QTouchEvent *mouseEvent);
+    bool editInterval(QTouchEvent *mouseEvent);
+    bool editAxisRange(QTouchEvent *mouseEvent, float minX, float maxX, float maxY);
+#endif
+
 };
 
 #endif // ABSTRACTCUSTOMPLOT_H

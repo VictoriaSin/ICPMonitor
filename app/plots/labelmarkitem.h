@@ -8,7 +8,7 @@ class LabelMarkItem : public MarkItem
    /*! Метка */
     std::shared_ptr<Label> mLabel;
 public:
-    LabelMarkItem(QCustomPlot *parentPlot, const std::shared_ptr<Label> &label, const QFont &font, double level = 0, LabelOrientation orientation = LabelOrientation::moVerticalBottom);
+    LabelMarkItem(QCustomPlot *parentPlot, const std::shared_ptr<Label> &label, const QFont &font, float level = 0, LabelOrientation orientation = LabelOrientation::moVerticalBottom);
     ~LabelMarkItem();
 
     /*! Возвращает метку */

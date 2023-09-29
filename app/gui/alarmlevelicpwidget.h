@@ -62,7 +62,7 @@ private:
 public slots:
 
     /*! Обновление среднего значения на виджете */
-    void updateAverageValueOnWidgets(double currAverage);
+    void updateAverageValueOnWidgets(float currAverage);
 };
 
 #endif // ALARMLEVELICPWIDGET_H

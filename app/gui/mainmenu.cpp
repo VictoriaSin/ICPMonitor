@@ -60,10 +60,10 @@ MainMenu::MainMenu(QWidget *parent) :
     connect(mZeroSensorPage, &ZeroSensorPage::previousPage, this, &MainMenu::previousPage);
     connect(mDataExportPage, &DataDownloadPage::previousPage, this, &MainMenu::previousPage);
     connect(mDataExportPage, &DataDownloadPage::changePage, this, &MainMenu::changePage);
-    connect(mDateTimePage, &DateTimePage::previousPage, this, &MainMenu::previousPage);
-    connect(mDateTimePage, &DateTimePage::changePage, this, &MainMenu::changePage);
-    connect(mLanguagePage, &LanguagePage::previousPage, this, &MainMenu::previousPage);
-    connect(mLanguagePage, &LanguagePage::changePage, this, &MainMenu::changePage);
+    connect(mDateTimePage,   &DateTimePage::previousPage, this, &MainMenu::previousPage);
+    connect(mDateTimePage,   &DateTimePage::changePage, this, &MainMenu::changePage);
+    connect(mLanguagePage,   &LanguagePage::previousPage, this, &MainMenu::previousPage);
+    connect(mLanguagePage,   &LanguagePage::changePage, this, &MainMenu::changePage);
     connect(mGeneralSettingsPage, &GeneralSettingsPage::previousPage, this, &MainMenu::previousPage);
     connect(mGeneralSettingsPage, &GeneralSettingsPage::changePage, this, &MainMenu::changePage);
 }

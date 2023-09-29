@@ -99,9 +99,9 @@ void WaveFormPlot::addDataOnGraphic(unsigned int  x, unsigned int  y)//const Com
         *mHistGraph->data() = *mMainGraph->data();
         mMainGraph->data()->clear();
     }
-    double temp_x = (double) x/1000;
-    double temp_y = (double) y;//1000;
-qDebug() << "wave" << temp_x;
+    float temp_x = (float) x/1000;
+    float temp_y = (float) y;//1000;
+//qDebug() << "wave" << temp_x;
 
     if(mHistGraph->data()->size())
     {
@@ -168,18 +168,18 @@ void WaveFormPlot::resetGraph()
     qDebug() << "WavePlot reset";
 }
 
-void WaveFormPlot::scaleFont(double scaleFactor)
+void WaveFormPlot::scaleFont(float scaleFactor)
 {
     WFontGraphScaling(this, scaleFactor);
 }
 
-void WaveFormPlot::setUpperAlarmLevelLine(double upperAlarmLimit)
+void WaveFormPlot::setUpperAlarmLevelLine(float upperAlarmLimit)
 {
     mUpperAlarmLimit->start->setCoords(xAxis->range().lower, upperAlarmLimit);
     mUpperAlarmLimit->end->setCoords(xAxis->range().upper, upperAlarmLimit);
 }
 
-void WaveFormPlot::setLowerAlarmLevelLine(double lowerAlarmLimit)
+void WaveFormPlot::setLowerAlarmLevelLine(float lowerAlarmLimit)
 {
     mLowerAlarmLimit->start->setCoords(xAxis->range().lower, lowerAlarmLimit);
     mLowerAlarmLimit->end->setCoords(xAxis->range().upper, lowerAlarmLimit);

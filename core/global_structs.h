@@ -7,7 +7,7 @@
     и флагом валидности
  */
 struct ComplexValue{
-    double value {0};          ///< Показание
+    float value {0};          ///< Показание
     int64_t timestamp {0};     ///< Время получения значения, ms
 
     bool valid {false};        ///< Валидность/корректность значения

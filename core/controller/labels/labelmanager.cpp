@@ -1,6 +1,6 @@
 #include "labelmanager.h"
 #include "controller/labels/label.h"
-#include "controller/sessions/session.h"
+//#include "controller/sessions/session.h"
 #include "controller/databasemanager.h"
 #include "controller/labels/labelprovider.h"
 #include "controller/settings.h"
@@ -11,9 +11,8 @@
 #include <chrono>
 
 
-LabelManager::LabelManager(Settings *settings, DataBaseManager *dataBase)
-    : mDataBase(dataBase),
-      mSettings(settings)
+LabelManager::LabelManager(Settings *settings)//, DataBaseManager *dataBase) : mDataBase(dataBase),
+      :mSettings(settings)
 {
 
 }
@@ -24,13 +23,13 @@ void LabelManager::terminate()
 }
 
 
-void LabelManager::setSessionID(int sessionID)
-{
-    if (mCurrentSessionID != sessionID) {
-        mCurrentSessionID = sessionID;
-        mCountLabels = 0;
-    }
-}
+//void LabelManager::setSessionID(int sessionID)
+//{
+//    if (mCurrentSessionID != sessionID) {
+//        mCurrentSessionID = sessionID;
+//        mCountLabels = 0;
+//    }
+//}
 
 void LabelManager::deleteLabel()
 {
@@ -39,7 +38,7 @@ void LabelManager::deleteLabel()
     this->getLastCreatedLabel()->~Label();
 }
 
-std::shared_ptr<Label> LabelManager::createLabel(const QString &infoText, int64_t endTimeLabel)
+std::shared_ptr<Label> LabelManager::createLabel(const QString &/*infoText*/, int64_t /*endTimeLabel*/)
 {
     // Если нет БД или она не открыта, или текущая сессия не положительная или локальная
 //    if (!mDataBase || !mDataBase->isOpenConnection() || mCurrentSessionID < 1 || mCurrentSessionID == LOCAL_SESSION_ID) {
@@ -77,14 +76,11 @@ std::shared_ptr<Label> LabelManager::createLabel(const QString &infoText, int64_
 
     // Добавляем метку в базу данных
 //    int id = 1;//mDataBase->insertLabel(label.get()); // !!!!
-//    if (id == -1) {
-//        return {};
-//    }
+//    if (id == -1) {return {};}
 //    label->mLabelID = id;
 
     // Устанавливаем время создания последней метки
     mLastCreatedLabelTime = currentTimePoint;
-
     // Сохраняем метку
     mLastCreatedLabel = label;
 
@@ -106,12 +102,12 @@ std::shared_ptr<LabelProvider> LabelManager::getLabelProvider()
     return std::make_shared<LabelProvider>(this);
 }
 
-QVector<std::shared_ptr<Label>> LabelManager::getAllLabelsBelongSession(int sessionID)
-{
-    // Если нет БД
-    if (!mDataBase) {
-        return {};
-    }
-
-    return mDataBase->selectAllLabelsBelongSession(sessionID);
-}
+//QVector<std::shared_ptr<Label>> LabelManager::getAllLabelsBelongSession(int sessionID)
+//{
+//    // Если нет БД
+//    if (!mDataBase) {
+//        return {};
+//    }
+//
+//    return mDataBase->selectAllLabelsBelongSession(sessionID);
+//}

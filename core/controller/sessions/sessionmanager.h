@@ -16,10 +16,10 @@ class DataBaseManager;
 class SessionManager
 {
     /*! Текущая сессия */
-    std::shared_ptr<Session> mCurrentSession;
+    //std::shared_ptr<Session> mCurrentSession;
 
     /*! База данных */
-    DataBaseManager *mDataBase {nullptr};
+    //DataBaseManager *mDataBase {nullptr};
 
 public:
     explicit SessionManager(DataBaseManager *dataBase);
@@ -28,25 +28,25 @@ public:
         Если сессию не удалось создать,
         возвращается пустой shared_ptr.
     */
-    std::shared_ptr<Session> createSession();
+    //std::shared_ptr<Session> createSession();
 
     /*! Окончание текущей сессии
         true - сессия успешно окончена;
         false - отсутствует текущая сессия
      */
-    bool closeCurrentSession();
+    //bool closeCurrentSession();
 
     /*! Возврат текущей сессии */
-    const std::shared_ptr<Session> &getCurrentSession() const;
+    //const std::shared_ptr<Session> &getCurrentSession() const;
 
     /*! Активна ли сессия */
-    bool isActiveSession() const;
+    //bool isActiveSession() const;
 
     /*! Возвращает все сессии */
-    QVector<std::shared_ptr<Session>> getAllSession();
+    //QVector<std::shared_ptr<Session>> getAllSession();
 
     /*! Перед уничтоженим объекта */
-    void terminate();
+    //void terminate();
 };
 
 #endif // SESSIONMANAGER_H

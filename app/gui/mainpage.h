@@ -145,7 +145,7 @@ private slots:
 
     void on_speedRecordButton_clicked();
 
-    void setAverage(double currAverage);
+    void setAverage(uint currAverage); //void setAverage(float currAverage);
 
     void on_zoomInterval1Button_clicked();
 
@@ -193,7 +193,7 @@ protected:
     void goToLabel(bool direction);
     void playBtnPressed();
     void stopRecord();
-    void setAveragePointerPos(double currAverage);
+    void setAveragePointerPos(uint currAverage);//void setAveragePointerPos(float currAverage);
     void sessionStopped();
 
     // IPageWidget interface

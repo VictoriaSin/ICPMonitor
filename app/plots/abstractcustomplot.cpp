@@ -65,7 +65,6 @@ bool AbstractCustomPlot::editLabel(QMouseEvent *mouseEvent)
     }
     return false;
 }
-
 bool AbstractCustomPlot::editInterval(QMouseEvent *mouseEvent)
 {
     const auto typeOfEvent = mouseEvent->type();
@@ -126,8 +125,7 @@ bool AbstractCustomPlot::editInterval(QMouseEvent *mouseEvent)
     }
     return false;
 }
-
-bool AbstractCustomPlot::editAxisRange(QMouseEvent *mouseEvent, double minX, double maxX, double maxY)
+bool AbstractCustomPlot::editAxisRange(QMouseEvent *mouseEvent, float minX, float maxX, float maxY)
 {
     const auto typeOfEvent = mouseEvent->type();
     static bool isAxisMoving = false;
@@ -212,7 +210,7 @@ bool AbstractCustomPlot::editAxisRange(QMouseEvent *mouseEvent, double minX, dou
 }
 #else
 // Для тача
-bool RecordedPlot::editLabel(QTouchEvent *touchEvent)
+bool AbstractCustomPlot::editLabel(QTouchEvent *touchEvent)
 {
     const auto typeOfEvent = touchEvent->type();
     static bool isLabelDrag = false;
@@ -254,7 +252,7 @@ bool RecordedPlot::editLabel(QTouchEvent *touchEvent)
     return false;
 }
 
-bool RecordedPlot::editInterval(QTouchEvent *touchEvent)
+bool AbstractCustomPlot::editInterval(QTouchEvent *touchEvent)
 {
     const auto typeOfEvent = touchEvent->type();
     static bool isLabelDrag = false;
@@ -315,12 +313,12 @@ bool RecordedPlot::editInterval(QTouchEvent *touchEvent)
     return false;
 }
 
-bool RecordedPlot::editAxisRange(QTouchEvent *touchEvent, double maxX, double maxY)
+bool AbstractCustomPlot::editAxisRange(QTouchEvent *touchEvent, float minX, float maxX, float maxY)
 {
     const auto typeOfEvent = touchEvent->type();
     static bool isAxisMoving = false;
-    static double pointStartX, pointStartY;
-    static double pointStopX, pointStopY;
+    static float pointStartX, pointStartY;
+    static float pointStopX, pointStopY;
 
     if((typeOfEvent == QEvent::TouchBegin) || (typeOfEvent == QEvent::TouchEnd) || (typeOfEvent == QEvent::TouchUpdate))// || (typeOfEvent == QEvent::Wheel))
     {
@@ -335,8 +333,8 @@ bool RecordedPlot::editAxisRange(QTouchEvent *touchEvent, double maxX, double ma
         {
             pointStopX = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x());
             pointStopY = yAxis->pixelToCoord(touchEvent->touchPoints().last().pos().y());
-            double deltaX = pointStopX - pointStartX;
-            double deltaY = pointStopY - pointStartY;
+            float deltaX = pointStopX - pointStartX;
+            float deltaY = pointStopY - pointStartY;
 
             if (!((xAxis->range().lower - deltaX < 0) || (xAxis->range().upper - deltaX > maxX)))
             {
@@ -359,8 +357,8 @@ bool RecordedPlot::editAxisRange(QTouchEvent *touchEvent, double maxX, double ma
 
         /*if (typeOfEvent == QEvent::Wheel)
         {
-            #define DEF_ZOOM_IN_X  (double)0.8
-            #define DEF_ZOOM_OUT_X (double)(1.0/DEF_ZOOM_IN_X)
+            #define DEF_ZOOM_IN_X  (float)0.8
+            #define DEF_ZOOM_OUT_X (float)(1.0/DEF_ZOOM_IN_X)
             QWheelEvent *eventWheel = (QWheelEvent*)mouseEvent;
             pointStartX = xAxis->pixelToCoord(mouseEvent->pos().x());
 
@@ -368,8 +366,8 @@ bool RecordedPlot::editAxisRange(QTouchEvent *touchEvent, double maxX, double ma
             {
               //qDebug("Zoom-");
               //qDebug() << "pointStartX:" << pointStartX << " (pointStartX *  DEF_ZOOM_IN_X)" << (pointStartX *  DEF_ZOOM_IN_X) << " xAxis->range().lower" << xAxis->range().lower;
-              double startPlot;
-              double endPlot;
+              float startPlot;
+              float endPlot;
               bool customPlot = false;
               if ((pointStartX - (pointStartX * DEF_ZOOM_IN_X)) > xAxis->range().lower) // < 0
               {
@@ -442,10 +440,11 @@ bool AbstractCustomPlot::event(QEvent *event)
         }
         else
         {
-            if (editAxisRange((QTouchEvent*)event)) return true;
+            if (editAxisRange((QTouchEvent*)event, 0, mRecordedMaxXRange, mCurrentMaxYRange)) return true;
         }
 #endif
     }
+#ifdef PC_BUILD
     else if (mGraphType == IntervalGraph)
     {
         const auto typeOfEvent = event->type();
@@ -462,16 +461,34 @@ bool AbstractCustomPlot::event(QEvent *event)
             return true;
         }
     }
+#else
+    else if (mGraphType == IntervalGraph)
+    {
+        const auto typeOfEvent = event->type();
+        if((typeOfEvent == QEvent::MouseButtonPress) || (typeOfEvent == QEvent::MouseButtonRelease) || (typeOfEvent == QEvent::MouseMove) || (typeOfEvent == QEvent::Wheel))
+        {
+            if (mCurrentIntervalNum == 1)
+            {
+                if (editAxisRange((QTouchEvent*)event, mFirstIntervalMinMaxXRange.first, mFirstIntervalMinMaxXRange.second, mCurrentMaxYRange)) return true;
+            }
+            else if (mCurrentIntervalNum == 2)
+            {
+                if (editAxisRange((QTouchEvent*)event, mSecondIntervalMinMaxXRange.first, mSecondIntervalMinMaxXRange.second, mCurrentMaxYRange)) return true;
+            }
+            return true;
+        }
+    }
+#endif
     return QCustomPlot::event(event);
 }
 
-QPair<double, double> AbstractCustomPlot::setXRange(double lower, double upper)
+QPair<float, float> AbstractCustomPlot::setXRange(float lower, float upper)
 {
     xAxis->setRange(lower, upper);
     return qMakePair(xAxis->range().lower, xAxis->range().upper);
 }
 
-void AbstractCustomPlot::setYRange(double lower, double upper)
+void AbstractCustomPlot::setYRange(float lower, float upper)
 {
     yAxis->setRange(lower, upper);
 }
@@ -486,7 +503,7 @@ void AbstractCustomPlot::setAdaptiveSamplingLabelItems(bool enabled)
     mAdaptiveSamplingLabelItems = enabled;
 }
 
-void AbstractCustomPlot::scaleFont(double scaleFactor)
+void AbstractCustomPlot::scaleFont(float scaleFactor)
 {
     Q_UNUSED(scaleFactor);
 }
@@ -729,13 +746,13 @@ void AbstractCustomPlot::labelItemsOptimization()
         return;
     }
 
-    const double lowerTime = this->xAxis->range().lower;
-    const double upperTime = this->xAxis->range().upper;
-    const double hideTime = mOptimizeLabelsKoeff * (upperTime - lowerTime);
+    const float lowerTime = this->xAxis->range().lower;
+    const float upperTime = this->xAxis->range().upper;
+    const float hideTime = mOptimizeLabelsKoeff * (upperTime - lowerTime);
 
     mOptimizedItems[0]->setVisible(true);
 
-    double lastVisibleTime = mOptimizedItems[0]->getMarkPosition();
+    float lastVisibleTime = mOptimizedItems[0]->getMarkPosition();
     for (int i = 1; i < count; ++i) {
         MarkItem* const label= mOptimizedItems[i];
         if (label->getMarkPosition() < (lastVisibleTime + hideTime)) {

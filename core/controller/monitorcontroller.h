@@ -18,15 +18,15 @@
 
 class Settings;
 class AlarmController;
-class FileController;
+//class FileController;
 class BlockDeviceManager;
 class BlockDevice;
 class AverageICPController;
 class OutputICPSerializer;
-class SessionManager;
+//class SessionManager;
 class LabelManager;
 class DataBaseManager;
-class Session;
+//class Session;
 class Label;
 
 class ISensor;
@@ -57,16 +57,16 @@ public:
     AverageICPController *mAverageICPController {nullptr};
     AlarmController *mAlarmController {nullptr};
     //FileController *mFileController {nullptr};
-    BlockDeviceManager *mBlockDeviceManager {nullptr};
+    //BlockDeviceManager *mBlockDeviceManager {nullptr};
 
-    QThread *mSensorThread {nullptr};
-    ISensor *mSensor {nullptr};
+    //QThread *mSensorThread {nullptr};
+    //ISensor *mSensor {nullptr};
 
     /*! Поток для менеджера блочных устройств и сохранения скриншотов */
     //QThread *mWorkerThread {nullptr};
 
     /*! Последнее показание датчика */
-    ComplexValue mLastSensorValue {};
+    //ComplexValue mLastSensorValue {};
 
     /*! Последнее сконвертированое показание датчика
         Сконвертировано в зависимости
@@ -75,22 +75,22 @@ public:
     ComplexValue mLastConvertedSensorValue {};
 
     /*! Менеджер сессий */
-    SessionManager *mSessionManager {nullptr};
+    //SessionManager *mSessionManager {nullptr};
 
     /*! База данных приложения */
-    DataBaseManager* mDataBaseManager {nullptr};
+    //DataBaseManager* mDataBaseManager {nullptr};
 
     /*! Состояние базы данных приложения */
     ControllerEvent mDataBaseState {ControllerEvent::DataBaseUnavailable};
 
     /*! Кол-во попыток смонтировать программное хранилище */
-    const uint8_t MaxTryOpenDataBase {5};
+    //const uint8_t MaxTryOpenDataBase {5};
 
     /*! Текущее кол-во попыток смонтировать программное хранилище */
-    uint8_t mCurrentNumOpenDataBase {0};
+    //uint8_t mCurrentNumOpenDataBase {0};
 
     /*! Интервал попыток открытия базы данных */
-    uint16_t mIntervalOpenDataBaseMs {100};
+    //uint16_t mIntervalOpenDataBaseMs {100};
 
     ///*! Менеджер меток */
     //LabelManager *mLabelManager {nullptr};
@@ -105,10 +105,10 @@ public:
     const uint8_t MaxTryMountSoftwareStorage {5};
 
     /*! Текущее кол-во попыток смонтировать программное хранилище */
-    uint8_t mCurrentNumMountSoftwareStorage {0};
+    //uint8_t mCurrentNumMountSoftwareStorage {0};
 
     /*! Интервал попыток монтирования программного хранилища */
-    uint16_t mIntervalMountSoftwareStorageMs {250};
+    //uint16_t mIntervalMountSoftwareStorageMs {250};
 
 public slots:
     /*! Деинициализация контроллера */
@@ -157,10 +157,10 @@ public:
     /*! Возвращает текущую сессию
         Возвращает пустой shared_ptr, если сессии нет.
     */
-    std::shared_ptr<Session> getCurrentSession() const;
+    //std::shared_ptr<Session> getCurrentSession() const;
 
     /*! Возвращает все метки, принадлежащие указанной сессии */
-    QVector<std::shared_ptr<Label>> getAllLabelsBelongSession(int sessionID);
+    //QVector<std::shared_ptr<Label>> getAllLabelsBelongSession(int sessionID);
 
     /*! Возвращает менеджера меток */
     LabelManager *getLabelManager() const;
@@ -180,8 +180,8 @@ public:
     /*################################################################################
                                         График
     ################################################################################*/
-    bool setInetrvalsOnGraph(double mCurrentReadingsGraphIntervalX, double mCurrentReadingsGraphIntervalY,
-                             double mTickCountX, double mTickCountY);
+    bool setInetrvalsOnGraph(float mCurrentReadingsGraphIntervalX, float mCurrentReadingsGraphIntervalY,
+                             float mTickCountX, float mTickCountY);
     bool setPressureUnits(uint8_t mCurrentPressureUnitsIndex);
     bool setAverageInterval(float mAverageIntervalSec);
     /*################################################################################
@@ -211,7 +211,7 @@ public:
     void writeScreenFromLinuxFB();
 
     /*! Запись скриншота из виджета */
-    void writeScreenFromWidget(const QPixmap &screen);
+    //void writeScreenFromWidget(const QPixmap &screen);
 
     /*! Установка максимального кол-ва скриншотов */
     void setMaxScreens(uint maxScreens);
@@ -340,7 +340,7 @@ private:
     void updateFileController();
 
     /*! Инициализация модуля RTC (реального времени) */
-    void initRTCModule();
+    //void initRTCModule();
 
     /*! Создаёт сессию */
     //void createSession();
@@ -357,7 +357,7 @@ private slots:
 
 signals:
     void controllerEvent(ControllerEvent event, const QVariantMap &args = {});
-    void dataReadyForGraph();
+    //void dataReadyForGraph();
     void dataReadyFromAverageICPController();
 protected:
     //const QStringList search();

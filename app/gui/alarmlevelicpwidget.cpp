@@ -68,7 +68,8 @@ void AlarmLevelICPWidget::setupSVGWidgets()
     ui->svgVerticalLayout->addWidget(mLowLevelPressureSVG);
 }
 
-void AlarmLevelICPWidget::updateAverageValueOnWidgets(double currAverage)//()
+//void AlarmLevelICPWidget::updateAverageValueOnWidgets(float currAverage)//()
+void AlarmLevelICPWidget::updateAverageValueOnWidgets(float currAverage)//()
 {
 //    if (!mController) {
 //        return;

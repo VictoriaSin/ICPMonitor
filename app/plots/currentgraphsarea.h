@@ -71,7 +71,7 @@ class CurrentGraphsArea : public AbstractMultipleGraphsAreasWidget
     ################################################################################*/
 
     /*! Последний установленный диапазон X */
-    QPair<double, double> mLastXRange {qMakePair(0, 0)};
+    QPair<float, float> mLastXRange {qMakePair(0, 0)};
 
     /*! Максимальное хранимое в RAM время показаний в миллисекундах (12 часов) */
     const int64_t mMaxStoredTimeMs {43200000};
@@ -80,7 +80,7 @@ class CurrentGraphsArea : public AbstractMultipleGraphsAreasWidget
     int64_t mTotalTimeOfStoredReadingsMs {0};
 
     /*! Интервал смещения графика при полном заполнении в (процент сдвига / 100) */
-    double mXAxisShiftInPercent {0.05};
+    float mXAxisShiftInPercent {0.05};
 
     /*! Диапазон удаления старых значений в миллисекундах (1 минута)*/
     const int mDeleteIntervalMs {60000};
@@ -101,9 +101,9 @@ class CurrentGraphsArea : public AbstractMultipleGraphsAreasWidget
 
 #ifdef PC_BUILD
     /*! Отступ метки от верхней границы графика */
-    const double TopMarginForLabel {0.1};
+    const float TopMarginForLabel {0.1};
 #else
-    const double TopMarginForLabel {0.055};
+    const float TopMarginForLabel {0.055};
 #endif
 
 public:
@@ -145,7 +145,7 @@ private:
         intervalSeconds - необходимый отображаемый интервал в секундах;
         timeOfLastReading - время последнего пришедшего показания
     */
-    //QPair<double, double> setTrendGraphToTheCenter(int intervalSeconds, const QDateTime &timeOfLastReading);
+    //QPair<float, float> setTrendGraphToTheCenter(int intervalSeconds, const QDateTime &timeOfLastReading);
 
 
     /*! Сброс всех меток */
@@ -191,16 +191,17 @@ private slots:
 
 private:
     Ui::CurrentGraphsArea *ui;
-    QTimer *mTimerGetData = nullptr;
+    QTimer *mTimerGetDataGraph = nullptr;
+    QTimer *mTimerGetDataFile = nullptr;
     uint16_t data;
-    double mAverageValue;
+    float mAverageValue;
     float AverageIntervalSec{1.5};
-    int buffSize;
+    uint maxBuffSizeAvg;
     uint16_t firstBuffPointer;
     uint16_t lastBuffPointer;
-    double sum;
+    uint sum;//double sum;
     uint16_t cnt;
-    double *CurrDataForAverage;
+    float *CurrDataForAverage;
 
 public:
     void scaleFont(float scaleFactor) override;
@@ -236,8 +237,8 @@ protected slots:
 public:
     bool eventFilter(QObject *watched, QEvent *event) override;
 
-    void writeRawData(_bufferRecord *buffer);
-    void addRawData(_bufferRecord *buffer);
+    //void writeRawData(_bufferRecord *buffer);
+    //void addRawData(_bufferRecord *buffer);
     void colorInterval();
 
     void startWork();
@@ -248,9 +249,11 @@ public:
     void replotIntervalGraph();
     void setMarksOnInterval();
 protected:
-    double calcAverage(uint16_t data);
-signals:
-    void averageReady(double currAverage);
+    bool isNeedCalc;
+    float calcAverage(uint16_t data);
+    void addDataOnFile();
+  signals:
+    void averageReady(float currAverage);
 };
 
 #endif // CURRENTGRAPHAREA_H

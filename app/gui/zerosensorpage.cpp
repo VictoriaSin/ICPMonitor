@@ -12,13 +12,10 @@ ZeroSensorPage::ZeroSensorPage(QWidget *parent) :
     ui(new Ui::ZeroSensorPage)
 {
     ui->setupUi(AbstractDialogPage::ui->settingsPage);
-
     // Настройка кнопки сброса датчика
     setupResetSensorToolButton();
-
     // Меняем изображение для кнопки отменить
     setIconRejectButton(QIcon(":/icons/home.svg"), QIcon(":/icons/home_pressed.svg"));
-
     // Убираем кнопку подтвердить
     enableAcceptButton(false);
 }
@@ -129,7 +126,8 @@ void ZeroSensorPage::updateInfo()
 {
     // Установка информации внизу страницы
     switch (mLastSensorState) {
-    case ControllerEvent::SensorConnectionError: {
+    case ControllerEvent::SensorConnectionError:
+    {
         AbstractDialogPage::ui->infoLabel->setText(tr("Ошибка подключения к датчику"));
         break;
     }
@@ -186,43 +184,40 @@ void ZeroSensorPage::updateInfo()
         return;
     }
 
-    const ISensor * const sensor = mController->sensor();
-    if (!sensor) {
-        AbstractDialogPage::ui->infoLabel->setText("");
-        ui->readyOrNotLabel->setText(tr("Датчик не готов к обнулению"));
-        ui->resetSensorButton->setEnabled(false);
-        return;
-    }
+    //const ISensor * const sensor = mController->sensor();
+    //if (!sensor) {
+    //    AbstractDialogPage::ui->infoLabel->setText("");
+    //    ui->readyOrNotLabel->setText(tr("Датчик не готов к обнулению"));
+    //    ui->resetSensorButton->setEnabled(false);
+    //    return;
+    //}
 
     // Если датчик может быть обнулён и нуждается в этом
-    if (sensor->canMakeSensorReset() && sensor->needMakeSensorReset()) {
+    //if (sensor->canMakeSensorReset() && sensor->needMakeSensorReset()) {
         ui->readyOrNotLabel->setText(tr("Датчик готов к обнулению"));
         ui->resetSensorButton->setEnabled(true);
-    } else
-    {
-        ui->readyOrNotLabel->setText(tr("Датчик не готов к обнулению"));
-        ui->resetSensorButton->setEnabled(false);
-    }
+    //} else
+    //{
+    //    ui->readyOrNotLabel->setText(tr("Датчик не готов к обнулению"));
+    //    ui->resetSensorButton->setEnabled(false);
+    //}
 }
 
 void ZeroSensorPage::testResetSensor()
 {
     if (!mController) { return;}
 #ifdef PC_BUILD
-    QTimer::singleShot(0, mController, [this](){mController->testMakeSensorReset();});
+    //QTimer::singleShot(0, mController, [this](){mController->testMakeSensorReset();});
     //QTimer::singleShot(0, MainWindow, [this]() { mController->s(QDateTime(da, ti).toSecsSinceEpoch()); });
 #endif
-    QTimer::singleShot(0, mController, [this](){mController->testMakeSensorReset();});
+    //QTimer::singleShot(0, mController, [this](){mController->testMakeSensorReset();});
     emit previousPage();
 }
 
 void ZeroSensorPage::installController(MonitorController *controller)
 {
     AbstractDialogPage::installController(controller);
-
-    connect(mController, &MonitorController::controllerEvent,
-            this, &ZeroSensorPage::controllerEventHandler);
-
+    connect(mController, &MonitorController::controllerEvent, this, &ZeroSensorPage::controllerEventHandler);
     retranslate();
 }
 

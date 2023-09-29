@@ -33,15 +33,15 @@ public:
     bool setSpinBox(QAbstractSpinBox *spinBox);
 
     /*! Устанавливает для QSpinBox или QDoubleSpinBox диапазон допустимых значений */
-    bool setRange(double minimum, double maximum);
+    bool setRange(float minimum, float maximum);
 
     /*! Установка текущего значения */
-    bool setValue(double value);
+    bool setValue(float value);
 
     /*! Возврат текущего значения QSpinBox или QDoubleSpinBox
         ok - удалось ли получить значение
      */
-    double value(bool *ok) const;
+    float value(bool *ok) const;
 
     /*! Установка времени для QDateTimeEdit */
     bool setTime(const QTime &time);

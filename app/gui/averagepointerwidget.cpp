@@ -23,7 +23,7 @@ AveragePointerWidget::AveragePointerWidget(QWidget *parent) :
     connect(mBlinkAlarmTimer, &QTimer::timeout, this, &AveragePointerWidget::switchColor);
 }
 
-void AveragePointerWidget::setRange(double lower, double upper)
+void AveragePointerWidget::setRange(float lower, float upper)
 {
     mLowerValue = lower;
     mUpperValue = upper;
@@ -36,17 +36,17 @@ void AveragePointerWidget::setRange(double lower, double upper)
     update();
 }
 
-void AveragePointerWidget::setLowerValue(double lower)
+void AveragePointerWidget::setLowerValue(float lower)
 {
     setRange(lower, mUpperValue);
 }
 
-void AveragePointerWidget::setUpperValue(double upper)
+void AveragePointerWidget::setUpperValue(float upper)
 {
     setRange(mLowerValue, upper);
 }
 
-void AveragePointerWidget::setValue(double value)
+void AveragePointerWidget::setValue(float value)
 {
     mCurrentValue = value;
 
@@ -130,7 +130,7 @@ void AveragePointerWidget::paintEvent(QPaintEvent *event)
         }
 
         const int triangleLeftX = pointerPosX - triangleHeight; ///< Позиция X левой (вертикальной) стороны треугольника
-        const double dYTr = triangleHeight * 0.577; ///< Половина длины стороны треугольника
+        const float dYTr = triangleHeight * 0.577; ///< Половина длины стороны треугольника
 
         mTrianglePoly[0].setX(triangleLeftX);
         mTrianglePoly[0].setY(int(pointerPosY-dYTr));

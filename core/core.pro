@@ -26,13 +26,8 @@ HEADERS += \
     controller/averageicpcontroller.h \
     controller/controller_enums.h \
     controller/databasemanager.h \
-    controller/fileProcessing/binfileofindications.h \
-    controller/fileProcessing/cyclefilewriter.h \
     controller/fileProcessing/export_enums.h \
-    controller/fileProcessing/exporter.h \
-    controller/fileProcessing/filecontroller.h \
     controller/fileProcessing/filecontroller_events.h \
-    controller/fileProcessing/reader.h \
     controller/fileProcessing/serialization/abstracticpdataserializer.h \
     controller/fileProcessing/serialization/idataserializer.h \
     controller/labels/label.h \
@@ -41,8 +36,6 @@ HEADERS += \
     controller/languagesetting.h \
     controller/monitorcontroller.h \
     controller/screenwriter.h \
-    controller/sessions/session.h \
-    controller/sessions/sessionmanager.h \
     controller/settings.h \
     crc8table.h \
     global_enums.h \
@@ -53,7 +46,6 @@ HEADERS += \
     sensor/isensor.h \
     sensor/savespi.h \
     sensor/sensor_enums.h \
-    sensor/sensordatamanager.h \
     sensor/spi.h \
     statistical_functions.h \
     ultrafastconverting/countdecimaldigit.h \
@@ -71,12 +63,7 @@ SOURCES += \
     controller/alarmcontroller.cpp \
     controller/averageicpcontroller.cpp \
     controller/databasemanager.cpp \
-    controller/fileProcessing/binfileofindications.cpp \
-    controller/fileProcessing/cyclefilewriter.cpp \
     controller/fileProcessing/export_enums.cpp \
-    controller/fileProcessing/exporter.cpp \
-    controller/fileProcessing/filecontroller.cpp \
-    controller/fileProcessing/reader.cpp \
     controller/fileProcessing/serialization/abstracticpdataserializer.cpp \
     controller/labels/label.cpp \
     controller/labels/labelmanager.cpp \
@@ -84,15 +71,12 @@ SOURCES += \
     controller/languagesetting.cpp \
     controller/monitorcontroller.cpp \
     controller/screenwriter.cpp \
-    controller/sessions/session.cpp \
-    controller/sessions/sessionmanager.cpp \
     controller/settings.cpp \
     global_functions.cpp \
     global_structs.cpp \
     sensor/impl/bmp280temperaturespisensor.cpp \
     sensor/impl/fileimitsensor.cpp \
     sensor/savespi.cpp \
-    sensor/sensordatamanager.cpp \
     sensor/spi.cpp \
     statistical_functions.cpp \
     ultrafastconverting/countlut.cpp \

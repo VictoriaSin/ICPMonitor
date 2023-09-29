@@ -7,8 +7,8 @@
 extern QFile mRawDataFile;
 extern QFile mMarksFile;
 
-QPair<double, double> mFirstIntervalMinMaxXRange = qMakePair(0, 60);
-QPair<double, double> mSecondIntervalMinMaxXRange = qMakePair(0, 60);
+QPair<float, float> mFirstIntervalMinMaxXRange = qMakePair(0, 60);
+QPair<float, float> mSecondIntervalMinMaxXRange = qMakePair(0, 60);
 
 IntervalPlot::IntervalPlot(QWidget *parent):
     AbstractCustomPlot(GraphType::IntervalGraph, parent)
@@ -28,9 +28,7 @@ IntervalPlot::IntervalPlot(QWidget *parent):
 //    //
 //}
 
-#define TIME_INTERVAL_FOR_RECORD_IN_FILE (4)
-#define TIME_INTERVAL_FOR_WRITE_ON_GRAPH (40) //40 миллисекунд - 25 раз в секунду
-#define TIME_INTERVAL_DIFF (TIME_INTERVAL_FOR_WRITE_ON_GRAPH / TIME_INTERVAL_FOR_RECORD_IN_FILE)
+
 
 void IntervalPlot::setup(QPair<int, int> points, QColor color)
 {
@@ -65,27 +63,27 @@ void IntervalPlot::setup(QPair<int, int> points, QColor color)
     mRawDataFile.close();
     for (uint i=0; i<iterTemp; i++)
     {
-        mMainGraph->addData((double)tempArr[i].timeStamp/1000, tempArr[i].data);
+        mMainGraph->addData((float)tempArr[i].timeStamp/1000, tempArr[i].data);
     }
 
 
     qDebug() << "mCurrentIntervalNum" << mCurrentIntervalNum;
     if (mCurrentIntervalNum == 1)
     {
-        mFirstIntervalMinMaxXRange.first = (double)tempArr[0].timeStamp/1000;
-        mFirstIntervalMinMaxXRange.second = (double)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000;
+        mFirstIntervalMinMaxXRange.first = (float)tempArr[0].timeStamp/1000;
+        mFirstIntervalMinMaxXRange.second = (float)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000;
         qDebug() << "tttt" << mFirstIntervalMinMaxXRange.first << mFirstIntervalMinMaxXRange.second;
-        //mFirstIntervalMinMaxXRange = qMakePair((double)tempArr[0].timeStamp/1000, (double)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000);
+        //mFirstIntervalMinMaxXRange = qMakePair((float)tempArr[0].timeStamp/1000, (float)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000);
     }
     else
     {
-        mSecondIntervalMinMaxXRange.first = (double)tempArr[0].timeStamp/1000;
-        mSecondIntervalMinMaxXRange.second = (double)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000;
+        mSecondIntervalMinMaxXRange.first = (float)tempArr[0].timeStamp/1000;
+        mSecondIntervalMinMaxXRange.second = (float)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000;
         qDebug() << "tttt" << mSecondIntervalMinMaxXRange.first << mSecondIntervalMinMaxXRange.second;
-        //mSecondIntervalMinMaxXRange = qMakePair((double)tempArr[0].timeStamp/1000, (double)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000);
+        //mSecondIntervalMinMaxXRange = qMakePair((float)tempArr[0].timeStamp/1000, (float)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000);
     }
 
-    xAxis->setRange((double)tempArr[0].timeStamp/1000, (double)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000);
+    xAxis->setRange((float)tempArr[0].timeStamp/1000, (float)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000);
 }
 
 
@@ -97,7 +95,7 @@ void IntervalPlot::retranslate()
 
 }
 
-void IntervalPlot::scaleFont(double scaleFactor)
+void IntervalPlot::scaleFont(float scaleFactor)
 {
     WFontGraphScaling(this, scaleFactor);
 }

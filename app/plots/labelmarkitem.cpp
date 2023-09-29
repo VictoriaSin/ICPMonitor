@@ -2,7 +2,7 @@
 #include "controller/labels/label.h"
 #include "global_define.h"
 
-LabelMarkItem::LabelMarkItem(QCustomPlot *parentPlot, const std::shared_ptr<Label> &label, const QFont &font, double level, LabelOrientation orientation) :
+LabelMarkItem::LabelMarkItem(QCustomPlot *parentPlot, const std::shared_ptr<Label> &label, const QFont &font, float level, LabelOrientation orientation) :
     MarkItem(parentPlot, "", font, level, orientation),
     mLabel(label)
 {

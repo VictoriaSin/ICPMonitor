@@ -19,44 +19,44 @@ class DataBaseManager;
 class Session
 {
     /*! Информация хранящаяся в БД */
-    int mSessionID {-1};
-    int64_t mTimeStampStart {-1};
-    int64_t mTimeStampEnd {-1};
-    QString mInfo;
+    //int mSessionID {-1};
+    //int64_t mTimeStampStart {-1};
+    //int64_t mTimeStampEnd {-1};
+    //QString mInfo;
 
     /*! Доступ к базе данных */
-    DataBaseManager* mDB {nullptr};
+    //DataBaseManager* mDB {nullptr};
 
 private:
     /*! Закрытие сессии
         false - не удалось записать в БД;
         true - успешное закрытие
      */
-    bool closeSession();
+    //bool closeSession();
 
 public:
     explicit Session(DataBaseManager *dataBase);
 
     /*! Установка информации о сессии */
-    bool setSessionInfo(const QString &infoText);
+    //bool setSessionInfo(const QString &infoText);
 
     /*! Возвращает id сессии */
-    int getId() const;
+    //int getId() const;
 
     /*! Возвращает время начала сессии */
-    const int64_t &getTimeStartSession() const;
+    //const int64_t &getTimeStartSession() const;
 
     /*! Возвращает время окончания сессии */
-    const int64_t &getTimeEndSession() const;
+    //const int64_t &getTimeEndSession() const;
 
     /*! Возвращает информацию о сессии */
-    const QString &getInfoSession() const;
+    //const QString &getInfoSession() const;
 
-    friend class SessionManager;
-    friend class DataBaseManager;
+    //friend class SessionManager;
+    //friend class DataBaseManager;
 };
 
-QDebug operator<<(QDebug debug, const Session &val);
-QDebug operator<<(QDebug debug, const std::shared_ptr<Session> &val);
+//QDebug operator<<(QDebug debug, const Session &val);
+//QDebug operator<<(QDebug debug, const std::shared_ptr<Session> &val);
 
 #endif // SESSION_H

@@ -2,7 +2,7 @@
 #include "ui_mainpage.h"
 #include "controller/monitorcontroller.h"
 #include "controller/settings.h"
-#include "controller/sessions/session.h"
+//#include "controller/sessions/session.h"
 #include "sensor/isensor.h"
 #include "gui/gui_funcs.h"
 #include "gui/mainmenu.h"
@@ -693,7 +693,7 @@ void MainPage::on_acceptMarkButton_clicked()
     mMarksFile.open(QIODevice::WriteOnly | QIODevice::Append);
     mMarksFile.write((QString::number(mLabelManagerGlobal->mCountLabels) + ": " + QString::number(mCoordLabelX) + "\n").toLatin1());
     mMarksFile.close();
-    mLabelItemsContainer.back()->getLabel()->mCurrentPos = (double)mCoordLabelX/1000;
+    mLabelItemsContainer.back()->getLabel()->mCurrentPos = (float)mCoordLabelX/1000;
 
     if (mIntervalsCount < 4) { ui->intervalButton->show(); }
     mCurrentGraphsArea->addOrDeleteNewItem(true);
@@ -1048,9 +1048,10 @@ void MainPage::on_speedRecordButton_clicked()
     }
 }
 
-void MainPage::setAverage(double currAverage)
+void MainPage::setAverage(uint currAverage)
 {
-    ui->averageValue->setText(QString::number(round(currAverage)));
+    //ui->averageValue->setText(QString::number(round(currAverage)));
+  ui->averageValue->setText(QString::number(currAverage));
     setAveragePointerPos(currAverage);
 }
 

@@ -73,7 +73,7 @@ bool DecoratorSpinBox::setSpinBox(QAbstractSpinBox *spinBox)
     return false;
 }
 
-bool DecoratorSpinBox::setRange(double minimum, double maximum)
+bool DecoratorSpinBox::setRange(float minimum, float maximum)
 {
     if (!mCurrentSpinBox) {
         return false;
@@ -90,7 +90,7 @@ bool DecoratorSpinBox::setRange(double minimum, double maximum)
     return false;
 }
 
-bool DecoratorSpinBox::setValue(double value)
+bool DecoratorSpinBox::setValue(float value)
 {
     if (!mCurrentSpinBox) {
         return false;
@@ -107,7 +107,7 @@ bool DecoratorSpinBox::setValue(double value)
     return false;
 }
 
-double DecoratorSpinBox::value(bool *ok) const
+float DecoratorSpinBox::value(bool *ok) const
 {
     if (!mCurrentSpinBox) {
         return false;

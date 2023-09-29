@@ -12,18 +12,18 @@ class ComplexValue;
     ВХОДЯЩИЕ ПАРАМЕТРЫ:
     data - указатель на данные (будут отсортированы по возрастанию значения, если удастся посчитать медиану);
 */
-double calculateMedian(std::vector<ComplexValue> *values, bool &isOkey, bool isSorted = false);
+float calculateMedian(std::vector<ComplexValue> *values, bool &isOkey, bool isSorted = false);
 
 /*! Расчёт нижнего квартиля
     ВХОДЯЩИЕ ПАРАМЕТРЫ:
     data - указатель на данные (будут отсортированы по возрастанию значения, если удастся посчитать нижний квартиль);
 */
-double calculateLowerQuartile(std::vector<ComplexValue> *values, bool &isOkey, bool isSorted = false);
+float calculateLowerQuartile(std::vector<ComplexValue> *values, bool &isOkey, bool isSorted = false);
 
 /*! Расчёт верхнего квартиля
     ВХОДЯЩИЕ ПАРАМЕТРЫ:
     data - указатель на данные (будут отсортированы по возрастанию значения, если удастся посчитать верхний квартиль);
 */
-double calculateUpperQuartile(std::vector<ComplexValue> *values, bool &isOkey, bool isSorted = false);
+float calculateUpperQuartile(std::vector<ComplexValue> *values, bool &isOkey, bool isSorted = false);
 
 #endif // STATISTICAL_FUNCTIONS_H

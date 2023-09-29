@@ -70,15 +70,15 @@ void SettingsMenu::retranslate()
 void SettingsMenu::showEvent(QShowEvent */*event*/)
 {
     // Если контроллера нет, то запрещаем изменять время
-    if (!mController) {
-        mButtonGroup.button(IDDateTimeButton)->setDisabled(true);
-        return;
-    }
+    //if (!mController) {
+    //    mButtonGroup.button(IDDateTimeButton)->setDisabled(true);
+    //    return;
+    //}
 
-    // Если сессия есть, то запрещаем изменять время
-    if (const auto &session = mController->getCurrentSession()) {
-        mButtonGroup.button(IDDateTimeButton)->setDisabled(true);
-    } else {
-        mButtonGroup.button(IDDateTimeButton)->setDisabled(false);
-    }
+    //// Если сессия есть, то запрещаем изменять время
+    //if (const auto &session = mController->getCurrentSession()) {
+    //    mButtonGroup.button(IDDateTimeButton)->setDisabled(true);
+    //} else {
+    //    mButtonGroup.button(IDDateTimeButton)->setDisabled(false);
+    //}
 }

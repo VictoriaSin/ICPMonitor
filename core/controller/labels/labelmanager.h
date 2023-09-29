@@ -35,7 +35,7 @@ class LabelManager
     const int mRechargeLabelTimer = 1000;
 
     /*! Текущий ID сессии */
-    int mCurrentSessionID = -1;
+    //int mCurrentSessionID = -1;
 
     /*! Последняя созданная метка */
     std::shared_ptr<Label> mLastCreatedLabel;
@@ -45,13 +45,13 @@ public:
     /*! Количество сделанных меток в текущей сессии (Зависит от mCurrentSessionID) */
     int mCountLabels = 0;
 
-    explicit LabelManager(Settings *settings, DataBaseManager *dataBase);
+    explicit LabelManager(Settings *settings);//, DataBaseManager *dataBase);
 
     /*! Прекращает работу менеджера меток */
     void terminate();
 
     /*! Устанавливаем id сессии */
-    void setSessionID(int sessionID);
+    //void setSessionID(int sessionID);
 
     /*! Создаёт метку и возвращает её
         Если метку не удалось создать,
@@ -69,7 +69,7 @@ public:
     std::shared_ptr<LabelProvider> getLabelProvider();
 
     /*! Возвращает все метки, принаджежащие сессии */
-    QVector<std::shared_ptr<Label>> getAllLabelsBelongSession(int sessionID);
+    //QVector<std::shared_ptr<Label>> getAllLabelsBelongSession(int sessionID);
     void deleteLabel();
 };
 

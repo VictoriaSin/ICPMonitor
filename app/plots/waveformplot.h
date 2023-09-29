@@ -46,20 +46,20 @@ private:
     int64_t mPreviousSensorDataTime {0};
 
     /*! Суммарное время пришедших данных с датчика */
-    double mSummarySensorDataTimePerXRange {0};
+    float mSummarySensorDataTimePerXRange {0};
 
     /*! Толщина линии графика с текущими показаниями */
-    double mThicknessOfMainGraph {1.7};
+    float mThicknessOfMainGraph {1.7};
 
     /*! Толщина линии графика с прошедшими показаниями */
-    double mThicknessOfHistGraph {1};
+    float mThicknessOfHistGraph {1};
 
 public slots:
     /*! Установка линии верхнего уровня тревоги */
-    void setUpperAlarmLevelLine(double upperAlarmLimit);
+    void setUpperAlarmLevelLine(float upperAlarmLimit);
 
     /*! Установка линии нижнего уровня тревоги */
-    void setLowerAlarmLevelLine(double lowerAlarmLimit);
+    void setLowerAlarmLevelLine(float lowerAlarmLimit);
 
     /*! Включение/Выключение верхнего уровня тревоги */
     void enableUpperAlarm(bool enable);
@@ -74,7 +74,7 @@ public slots:
 public:
     void resetGraph() override;
 
-    void scaleFont(double scaleFactor) override;
+    void scaleFont(float scaleFactor) override;
 };
 
 #endif // WAVEFORMPLOT_H

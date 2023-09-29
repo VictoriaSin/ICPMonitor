@@ -31,7 +31,7 @@ public:
     explicit RecordedPlot(QWidget *parent = nullptr);
     ~RecordedPlot();
 
-    //double mCurrentMaxXRange {60};
+    //float mCurrentMaxXRange {60};
 
     /*! Добавление данных для отображения на графике */
     void saveDataForGraphic(unsigned int  x, unsigned int  y);//(const ComplexValue &complexVal);
@@ -42,7 +42,7 @@ public:
     /*! Перевод */
     void retranslate();
 
-    void scaleFont(double scaleFactor) override;
+    void scaleFont(float scaleFactor) override;
     void resetGraph() override;
 
     QPair<int, int> addInterval(uint8_t num, QColor color);
@@ -71,16 +71,16 @@ public:
     QCPGraph *mIntervalSecond {nullptr};
 private:
     /*! Толщина линии графика с текущими показаниями */
-    double mThicknessOfMainGraph {1.7};
+    float mThicknessOfMainGraph {1.7};
 public:
     /*! Контейнер для точек графика*/
-    QVector<QPair<double, double>> mRecordedData;
+    QVector<QPair<float, float>> mRecordedData;
 private:
     /*! Время прихода последнего значения датчика */
     int64_t mPreviousSensorDataTime {0};
 
     /*! Суммарное время пришедших данных с датчика */
-    double mSummarySensorDataTimePerXRange {0};
+    float mSummarySensorDataTimePerXRange {0};
 
 protected:
     bool editLabel(QMouseEvent *mouseEvent);

@@ -11,13 +11,13 @@ AverageICPWidget::AverageICPWidget(QWidget *parent) :
     ui(new Ui::AverageICPWidget)
 {
     ui->setupUi(this);
-
     mBufferAverageNumber = new char[mBufferSize];
 }
 
 AverageICPWidget::~AverageICPWidget()
 {
-    delete ui;
+  delete [] mBufferAverageNumber;
+  delete ui;
 }
 
 void AverageICPWidget::installController(MonitorController *controller)

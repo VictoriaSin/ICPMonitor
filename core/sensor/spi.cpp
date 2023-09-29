@@ -108,11 +108,10 @@ bool SPI::close()
 bool SPI::transferSPI(uint8_t const *TX, uint8_t *RX, uint32_t len)
 {
     // Если устройство не готово к чтению и записи
-    if (!mIsOpen) {
-        return false;
-    }
+    if (!mIsOpen) { return false; }
 
-    mMessage = {
+    mMessage =
+    {
         .tx_buf = (unsigned long)TX,
         .rx_buf = (unsigned long)RX,
         .len = len,
@@ -123,7 +122,8 @@ bool SPI::transferSPI(uint8_t const *TX, uint8_t *RX, uint32_t len)
     };
 
     // Передаём сообщение
-    if (ioctl(mFd, SPI_IOC_MESSAGE(1), &mMessage) < 1) {
+    if (ioctl(mFd, SPI_IOC_MESSAGE(1), &mMessage) < 1)
+    {
         return false;
     }
     return true;

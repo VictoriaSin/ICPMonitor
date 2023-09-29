@@ -2,8 +2,8 @@
 #include "controller/settings.h"
 #include "controller/averageicpcontroller.h"
 #include "controller/alarmcontroller.h"
-#include "controller/sessions/sessionmanager.h"
-#include "controller/sessions/session.h"
+//#include "controller/sessions/sessionmanager.h"
+//#include "controller/sessions/session.h"
 #include "controller/labels/labelmanager.h"
 #include "controller/labels/label.h"
 #include "controller/databasemanager.h"
@@ -45,11 +45,11 @@ MonitorController::MonitorController() //: mWorkerThread(new QThread(this))
     //mBlockDeviceManager = new BlockDeviceManager;
 
     // Создание менеджера базы данных приложения
-    mDataBaseManager = new DataBaseManager;
+    //mDataBaseManager = new DataBaseManager;
 
     // Создание менеджера сессий и меток
-    mSessionManager = new SessionManager(mDataBaseManager);
-    mLabelManagerGlobal = new LabelManager(mICPSettings, mDataBaseManager);
+    //!!!mSessionManager = new SessionManager(mDataBaseManager);
+    mLabelManagerGlobal = new LabelManager(mICPSettings);//, mDataBaseManager);
 
     // Создание файлового контроллера
     //mFileController = new FileController(mICPSettings, mLabelManagerGlobal, this);
@@ -192,24 +192,24 @@ void MonitorController::dataBaseAvailable()
     qDebug() << "DataBase Available";
     mDataBaseState = ControllerEvent::DataBaseAvailable;
     emit controllerEvent(mDataBaseState);
-    mCurrentNumOpenDataBase = 0;
+    //mCurrentNumOpenDataBase = 0;
 }
 void MonitorController::dataBaseUnavailable()
 {
     qDebug() << "DataBase Unavailable 1";
     mDataBaseState = ControllerEvent::DataBaseUnavailable;
     emit controllerEvent(mDataBaseState);
-    mCurrentNumOpenDataBase = 0;
+    //mCurrentNumOpenDataBase = 0;
 }
 void MonitorController::updateFileController()
 {
-    qDebug() << "Update FileController";
+    //qDebug() << "Update FileController";
     //mFileController->setSoftwareStorage(mSoftwareStorage);
 }
-void MonitorController::initRTCModule()
-{
-
-}
+//void MonitorController::initRTCModule()
+//{
+//
+//}
 bool MonitorController::isInitSoftwareStorage()
 {
     // Если программное хранилище отсутствует
@@ -232,30 +232,31 @@ ControllerEvent MonitorController::getSoftwareStorageState() const
 }
 void MonitorController::setSoftwareStorage(const std::shared_ptr<BlockDevice> &devStorage)
 {
-    if (!devStorage || !devStorage->isValid()) {
-        emit controllerEvent(ControllerEvent::NewSoftwareStorageError, QVariantMap{{GlobalEventsArgs::Message,
-                                                                                    tr("Программное хранилище\n"
-                                                                                    "не указано или не валидно!")}});
-        return;
-    }
+  //!!!!  if (!devStorage || !devStorage->isValid()) {
+  //!!!!      emit controllerEvent(ControllerEvent::NewSoftwareStorageError, QVariantMap{{GlobalEventsArgs::Message,
+  //!!!!                                                                                  tr("Программное хранилище\n"
+  //!!!!                                                                                  "не указано или не валидно!")}});
+  //!!!!      return;
+  //!!!!  }
 
-    // Получаем UUID
-    const QString devUUID = devStorage->getUUID();
-    if (devUUID.isEmpty()) {
-        emit controllerEvent(ControllerEvent::NewSoftwareStorageError, QVariantMap{{GlobalEventsArgs::Message,
-                                                                                    tr("У программного хранилища\n"
-                                                                                    "отсутствует UUID!")}});
-        return;
-    }
+  //!!!!  // Получаем UUID
+  const QString devUUID = devStorage->getUUID();
+  //!!!!  if (devUUID.isEmpty()) {
+  //!!!!      emit controllerEvent(ControllerEvent::NewSoftwareStorageError, QVariantMap{{GlobalEventsArgs::Message,
+  //!!!!                                                                                  tr("У программного хранилища\n"
+  //!!!!                                                                                  "отсутствует UUID!")}});
+  //!!!!      return;
+  //!!!!  }
 
     // Если есть активная сессия
-    if (mSessionManager->isActiveSession()) {
-        emit controllerEvent(ControllerEvent::NewSoftwareStorageError, QVariantMap{{GlobalEventsArgs::Message,
-                                                                                    tr("Программное хранилище\n"
-                                                                                    "не было сменено.\n"
-                                                                                    "Сессия активна!")}});
-        return;
-    }
+    //!!!if (mSessionManager->isActiveSession())
+    //!!!{
+    //!!!    emit controllerEvent(ControllerEvent::NewSoftwareStorageError, QVariantMap{{GlobalEventsArgs::Message,
+    //!!!                                                                                tr("Программное хранилище\n"
+    //!!!                                                                                "не было сменено.\n"
+    //!!!                                                                                "Сессия активна!")}});
+    //!!!    return;
+    //!!!}
 
     // Переводим в состояние недоступности программного хранилища
     //runState(State::DeinitSoftwareStorage);
@@ -274,43 +275,43 @@ std::shared_ptr<BlockDevice> MonitorController::getSoftwareStorage() const
 }
 QList<std::shared_ptr<BlockDevice> > MonitorController::getAvailableBlockDevices() const
 {
-    if (!mBlockDeviceManager) {
+    //!!!!if (!mBlockDeviceManager) {
         return {};
-    }
-    return mBlockDeviceManager->getAvailableBlockDevices();
+    //!!!!}
+    //!!!!return mBlockDeviceManager->getAvailableBlockDevices();
 }
 void MonitorController::initSensor()
 {
     // Создание определённого датчика
-    QVariantMap initMap;
-    mSensorThread = new QThread(this);
+    //QVariantMap initMap;
+    //mSensorThread = new QThread(this);
 
 #ifdef TEST_BUILD
-    mSensor = new FileImitSensor;
-    initMap.insert(FileImitSensor::FilePathProperty, ":/imit_data/ICP_data_60sec.csv");
+    //mSensor = new FileImitSensor;
+    //initMap.insert(FileImitSensor::FilePathProperty, ":/imit_data/ICP_data_60sec.csv");
 #else
     #ifdef PC_BUILD
-        mSensor = new FileImitSensor;
-        initMap.insert(FileImitSensor::FilePathProperty, ":/imit_data/ICP_data_60sec.csv");
+        //mSensor = new FileImitSensor;
+        //initMap.insert(FileImitSensor::FilePathProperty, ":/imit_data/ICP_data_60sec.csv");
     #else
-        mSensor = new BMP280TemperatureSpiSensor;
-        initMap.insert(BMP280TemperatureSpiSensor::PathToSPIDeviceProperty, "/dev/spidev0.0");
-        initMap.insert(BMP280TemperatureSpiSensor::SPISpeedProperty, 100000);
+        //mSensor = new BMP280TemperatureSpiSensor;
+        //initMap.insert(BMP280TemperatureSpiSensor::PathToSPIDeviceProperty, "/dev/spidev0.0");
+        //initMap.insert(BMP280TemperatureSpiSensor::SPISpeedProperty, 100000);
     #endif
 #endif
-    mSensor->moveToThread(mSensorThread);
-    mSensorThread->start(QThread::HighPriority);
+    //mSensor->moveToThread(mSensorThread);
+    //mSensorThread->start(QThread::HighPriority);
 
     //connect(mSensor, &ISensor::dataReady, this, &MonitorController::processSensorData);
-    connect(mSensor, &ISensor::sensorEvent, this, &MonitorController::processSensorEvent);
+    ////connect(mSensor, &ISensor::sensorEvent, this, &MonitorController::processSensorEvent);
 
     // Запускаем инициализацию датчика (АЦП)
-    QTimer::singleShot(0, mSensor, [this, initMap](){mSensor->init(initMap); });
+    ////QTimer::singleShot(0, mSensor, [this, initMap](){mSensor->init(initMap); });
 }
 void MonitorController::terminate()
 {
     // Останавливаем рассылку показаний датчика
-    QTimer::singleShot(0, mSensor, [this](){ mSensor->endSendingSensorReadings(); });
+    ////QTimer::singleShot(0, mSensor, [this](){ mSensor->endSendingSensorReadings(); });
 
     // Прекращаем работу контроллеров
     mAverageICPController->terminate();
@@ -318,15 +319,15 @@ void MonitorController::terminate()
     //mFileController->terminate();
 
     // Прекращаем работу менеджеров
-    mSessionManager->terminate();
+    //mSessionManager->terminate();
     mLabelManagerGlobal->terminate();
-    mDataBaseManager->terminate();
+    //mDataBaseManager->terminate();
     //QTimer::singleShot(0, mBlockDeviceManager, [this](){ mBlockDeviceManager->terminate(); });
 
     // Прекращаем запущенные потоки
 
-    mSensorThread->quit();
-    mSensorThread->wait(1000);
+    ////mSensorThread->quit();
+    ////mSensorThread->wait(1000);
     //mWorkerThread->quit();
     //mWorkerThread->wait(5000);
 
@@ -343,11 +344,10 @@ const ComplexValue &MonitorController::getLastConvertedSensorValue() const
 }
 const ComplexValue MonitorController::getLastSensorValue() const
 {
-    if (!mSensor) {
-        return {};
-    }
+  return {};
+  //if (!mSensor) { return {}; }
 
-    return mSensor->readData();
+  //  return mSensor->readData();
 }
 ComplexValue MonitorController::getLastAverageValue() const
 {
@@ -400,32 +400,32 @@ int MonitorController::getLabelsCountPerCurrentSession() const
 
     return mLabelManagerGlobal->getLabelsCountPerCurrentSession();
 }
-std::shared_ptr<Session> MonitorController::getCurrentSession() const
-{
-    if (!mSessionManager) {
-        return {};
-    }
-
-    return mSessionManager->getCurrentSession();
-}
-QVector<std::shared_ptr<Label>> MonitorController::getAllLabelsBelongSession(int sessionID)
-{
-
-    return mLabelManagerGlobal->getAllLabelsBelongSession(sessionID);
-}
+//std::shared_ptr<Session> MonitorController::getCurrentSession() const
+//{
+//    //!!!if (!mSessionManager) {
+//        return {};
+//    //!!!}
+//
+//    //!!!return mSessionManager->getCurrentSession();
+//}
+//QVector<std::shared_ptr<Label>> MonitorController::getAllLabelsBelongSession(int sessionID)
+//{
+//
+//    return mLabelManagerGlobal->getAllLabelsBelongSession(sessionID);
+//}
 LabelManager *MonitorController::getLabelManager() const
 {
     return mLabelManagerGlobal;
 }
 bool MonitorController::testMakeSensorReset()
 {
-    if(!mSensor){
-        return false;
-    }
-
-    QTimer::singleShot(0, mSensor, [this](){
-        mSensor->makeSensorReset();
-    });
+//  if(!mSensor){
+//        return false;
+//    }
+//
+//    QTimer::singleShot(0, mSensor, [this](){
+//        mSensor->makeSensorReset();
+//    });
 
     return true;
 }
@@ -435,8 +435,8 @@ void MonitorController::runState(State state)
     {
     case State::InitSystem: {
         //initSoftwareStorage();
-        initRTCModule();
-        initSensor();
+        //initRTCModule();
+        //initSensor();
         break;
     }
     case State::DeinitSystem: {
@@ -480,12 +480,12 @@ void MonitorController::runState(State state)
         updateFileController();
         break;
     }
-    case State::InitRTCModule: {
-        initRTCModule();
-        break;
-    }
+//    case State::InitRTCModule: {
+//        initRTCModule();
+//        break;
+//    }
     case State::InitSensor: {
-        initSensor();
+        //initSensor();
         break;
     }
     default: break;
@@ -515,25 +515,25 @@ void MonitorController::softwareStorageAvailable()
     qDebug() << "Software Storage Available";
     mSoftwareStorageState = ControllerEvent::SoftwareStorageAvailable;
     emit controllerEvent(mSoftwareStorageState);
-    mCurrentNumMountSoftwareStorage = 0;
+    //mCurrentNumMountSoftwareStorage = 0;
 }
 void MonitorController::softwareStorageUnavailable()
 {
     qDebug() << "Software Storage Unavailable";
     mSoftwareStorageState = ControllerEvent::SoftwareStorageUnavailable;
     emit controllerEvent(mSoftwareStorageState);
-    mCurrentNumMountSoftwareStorage = 0;
+    //mCurrentNumMountSoftwareStorage = 0;
 }
 void MonitorController::softwareStorageNotAssigned()
 {
     qDebug() << "Software Storage Not Assigned";
     mSoftwareStorageState = ControllerEvent::SoftwareStorageNotAssigned;
     emit controllerEvent(mSoftwareStorageState);
-    mCurrentNumMountSoftwareStorage = 0;
+    //mCurrentNumMountSoftwareStorage = 0;
 }
 const ISensor *MonitorController::sensor() const
 {
-    return mSensor;
+    //return mSensor;
 }
 bool MonitorController::setLevelsAndStatesAlarm(int lowLevelAlarm, int highLevelAlarm, bool lowEnabel, bool highEnable)
 {
@@ -597,15 +597,15 @@ bool MonitorController::setAverageInterval(float mAverageIntervalSec)
     return true;
 }
 
-bool MonitorController::setInetrvalsOnGraph(double mCurrentReadingsGraphIntervalX, double mCurrentReadingsGraphIntervalY,
-                                            double mTickCountX, double mTickCountY)
+bool MonitorController::setInetrvalsOnGraph(float mCurrentReadingsGraphIntervalX, float mCurrentReadingsGraphIntervalY,
+                                            float mTickCountX, float mTickCountY)
 {
     if (!mICPSettings) {
         return false;
     }
 
-    const double CXR = mICPSettings->getCurrentReadingsGraphIntervalX();
-    double CYR = mICPSettings->getCurrentReadingsGraphIntervalY();
+    const float CXR = mICPSettings->getCurrentReadingsGraphIntervalX();
+    float CYR = mICPSettings->getCurrentReadingsGraphIntervalY();
     const float TCX = mICPSettings->getCurrentTickCountX();
     float TCY = mICPSettings->getCurrentTickCountY();
 
@@ -669,10 +669,10 @@ void MonitorController::writeScreenFromLinuxFB()
 {
     //mFileController->writeScreenFromLinuxFB();
 }
-void MonitorController::writeScreenFromWidget(const QPixmap &screen)
-{
-    //mFileController->writeScreenFromWidget(screen);
-}
+// void MonitorController::writeScreenFromWidget(const QPixmap &screen)
+//{
+//    //mFileController->writeScreenFromWidget(screen);
+//}
 void MonitorController::setMaxScreens(uint maxScreens)
 {
     if (!mICPSettings) {
@@ -814,10 +814,10 @@ bool MonitorController::currentTimeIsValid() const
 //}
 void MonitorController::processSensorData()
 {
-    if (!mSensor)
-    {
-        return;
-    }
+//    if (!mSensor)
+//    {
+//        return;
+//    }
 
     // Берём у датчика последнее показание
     //mLastSensorValue = getLastSensorValue();
@@ -849,9 +849,7 @@ void MonitorController::processSensorEvent(SensorEvent event, const QVariantMap 
         break;
     case SensorEvent::Connected:
         qDebug() << "Connected Sensor";
-        QTimer::singleShot(0, mSensor, [this](){
-            mSensor->config("");
-        });
+        //QTimer::singleShot(0, mSensor, [this](){mSensor->config("");});
         emit controllerEvent(ControllerEvent::SensorConnected, args);
         break;
     case SensorEvent::ConnectionError:

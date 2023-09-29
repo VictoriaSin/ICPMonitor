@@ -33,7 +33,7 @@ class Label
     DataBaseManager* mDB {nullptr};
 
 public:
-    double mCurrentPos {0};
+    float mCurrentPos {0};
     int64_t mTimeStampStartMS {-1};
     explicit Label(DataBaseManager *dataBase);
 

@@ -9,9 +9,9 @@
 #include "unistd.h"
 //LabelManager *mLabelManagerRecorded {nullptr};
 
-double mCurrentMaxYRange;
-double mRecordedMaxXRange {60};
-double mRecordedMaxYRange {60};
+float mCurrentMaxYRange;
+float mRecordedMaxXRange {60};
+float mRecordedMaxYRange {60};
 
 RecordedPlot::RecordedPlot(QWidget *parent):
     AbstractCustomPlot(GraphType::RecordedGraph, parent),
@@ -121,24 +121,24 @@ QPair<int, int> RecordedPlot::addInterval(uint8_t num, QColor color)
 
     layer("intervalLayer")->setMode(QCPLayer::lmBuffered);
 
-    QVector<double> temp;
+    QVector<float> temp;
     //for (int i=0; i<mRecordedData.count(); i++)
 //    for (uint i=0; i<mSizeAllRecordedData; i++)
     for (int i=0; i<mMainGraph->data()->size(); i++)
     {
         //temp.push_back(mRecordedData[i].first);
         //qDebug() << "mRecordedData[i].first" << mRecordedData[i].first;
-        //temp.push_back((double)mAllRecordedDataBuffer[i].timeStamp/1000);
+        //temp.push_back((float)mAllRecordedDataBuffer[i].timeStamp/1000);
         qDebug() << mMainGraph->data()->at(i)->key;
         temp.push_back(mMainGraph->data()->at(i)->key);
     }
 
-    double t1 = (double)mIntervalsContainer[num-2]->mIntervalPos/1000.0;
-    double t2 = (double)mIntervalsContainer[num-1]->mIntervalPos/1000.0;
+    float t1 = (float)mIntervalsContainer[num-2]->mIntervalPos/1000.0;
+    float t2 = (float)mIntervalsContainer[num-1]->mIntervalPos/1000.0;
 qDebug() << "t1" << t1;
 qDebug() << "t2" << t2;
-    double first = 0.0;
-    double second = 0.0;
+    float first = 0.0;
+    float second = 0.0;
 
     //for (int i=floor(t1)*25; i<=ceil(t2)*25; i++) //25 показаний в секунду
     for (int i=0; i<=temp.count(); i++) //25 показаний в секунду
@@ -162,7 +162,7 @@ qDebug() << "t2" << t2;
     int indexStop = temp.indexOf(second);
     qDebug() << "t1" << t1 << "indexStart" << indexStart;
     qDebug() << "t2" << t2 << "indexStop" << indexStop;
-    //QVector<QPair<double, double>> intervalVec;
+    //QVector<QPair<float, float>> intervalVec;
     for (int i=indexStart; i<=indexStop; i++)
     {
 //        if (mIntervalsContainer[num-1]->maxIntervalValue < mAllRecordedDataBuffer[i].data)
@@ -170,7 +170,7 @@ qDebug() << "t2" << t2;
 //            mIntervalsContainer[num-1]->maxIntervalValue =  mAllRecordedDataBuffer[i].data;
 //        }
 //        mIntervalsContainer[num-1]->averageIntervalValue += mAllRecordedDataBuffer[i].data;
-//        intervalVec.append(qMakePair((double)mAllRecordedDataBuffer[i].timeStamp/1000, mAllRecordedDataBuffer[i].data));
+//        intervalVec.append(qMakePair((float)mAllRecordedDataBuffer[i].timeStamp/1000, mAllRecordedDataBuffer[i].data));
 //        num == 2 ? mIntervalFirst->addData(intervalVec.back().first, intervalVec.back().second)
 //                 : mIntervalSecond->addData(intervalVec.back().first, intervalVec.back().second);
 
@@ -183,7 +183,7 @@ qDebug() << "t2" << t2;
         num == 2 ? mIntervalFirst->addData(mMainGraph->data()->at(i)->key, mMainGraph->data()->at(i)->value)
                  : mIntervalSecond->addData(mMainGraph->data()->at(i)->key, mMainGraph->data()->at(i)->value);
     }
-//    QVector<QPair<double, double>> tttt = mRecordedData.mid(indexStart, (indexStop-indexStart+1));
+//    QVector<QPair<float, float>> tttt = mRecordedData.mid(indexStart, (indexStop-indexStart+1));
     //qDebug() << tttt;
     mIntervalsContainer[num-1]->averageIntervalValue /= (indexStop - indexStart + 1);
     return qMakePair(indexStart, indexStop); // индексы записанного гррафика, каждые 40 мс
@@ -191,8 +191,8 @@ qDebug() << "t2" << t2;
 
 void RecordedPlot::saveDataForGraphic(unsigned int  x, unsigned int  y)//const ComplexValue &complexVal)
 {
-    double temp_x = (double) x/1000;
-    double temp_y = (double) y;
+    float temp_x = (float) x/1000;
+    float temp_y = (float) y;
     mRecordedData.push_back(qMakePair(temp_x, temp_y));
     //qDebug() << "x" << temp_x;
 //    // Суммирование общего времени пришедших данных с датчика
@@ -269,25 +269,31 @@ void RecordedPlot::animateGraphic(int timerDelaySec)
 
 void RecordedPlot::addDataOnGraphic()
 {
-    //double mNewUpperXValue = (double)mRecordedData.count()/25;// показаний в файле в секунду 50, а мы берем каждое второе
+    //float mNewUpperXValue = (float)mRecordedData.count()/25;// показаний в файле в секунду 50, а мы берем каждое второе
     //qDebug() << mSizeAllRecordedData;
     //qDebug() << "rr" <<mAllRecordedDataBuffer[mSizeAllRecordedData-1].timeStamp;
-    //double mNewUpperXValue = (double)mAllRecordedDataBuffer[mSizeAllRecordedData-1].timeStamp/1000;
-    double mNewUpperXValue;
+    //float mNewUpperXValue = (float)mAllRecordedDataBuffer[mSizeAllRecordedData-1].timeStamp/1000;
+    float mNewUpperXValue;
 
     //for (int i = 0; i < mRecordedData.count(); i++)
 
     mRawDataFile.open(QIODevice::ReadOnly);
     _mSPIData temp;
-    for (uint i=0; i<mRawDataFile.size()/6; i+=10) // 40/4=10
+
+    uint recordDataCount = mRawDataFile.size();
+    float tempTimeOffset = 0;
+    //for (uint i=0; i< mRawDataFile.size()/6; i+=10) // 40/4=10
+    for (uint i=0; i < recordDataCount; i+=60) // 40/4=10
     {
-        mRawDataFile.seek(i*sizeof(_mSPIData));
+        //mRawDataFile.seek(i*sizeof(_mSPIData));
+        mRawDataFile.seek(i);
         mRawDataFile.read((char*)&temp, sizeof(_mSPIData));
-        mMainGraph->addData((double)temp.timeStamp/1000, temp.data);
-        //qDebug() << "timestamp" << temp.timeStamp;
-        mNewUpperXValue = (double)temp.timeStamp/1000;
+        qDebug() << "temp.timeStamp" <<temp.timeStamp;
+        tempTimeOffset = (float)temp.timeStamp/1000;
+        mMainGraph->addData(tempTimeOffset, temp.data);
     }
     mRawDataFile.close();
+    mNewUpperXValue = tempTimeOffset;
     qDebug() <<"x max"<< mNewUpperXValue;
     if (mNewUpperXValue < xAxis->range().upper)
     {
@@ -298,7 +304,7 @@ void RecordedPlot::addDataOnGraphic()
 //    for (uint i=0; i<mSizeAllRecordedData; i++)
 //    {
 //        //mMainGraph->addData(mRecordedData[i].first, mRecordedData[i].second);
-//        mMainGraph->addData((double)mAllRecordedDataBuffer[i].timeStamp/1000, mAllRecordedDataBuffer[i].data);
+//        mMainGraph->addData((float)mAllRecordedDataBuffer[i].timeStamp/1000, mAllRecordedDataBuffer[i].data);
 //        qDebug() << "data" << mAllRecordedDataBuffer[i].data;
 //    }
 }
@@ -365,7 +371,7 @@ void RecordedPlot::retranslate()
     mTextEditDialog->setWindowTitle(tr("Информация о метке"));
 }
 
-void RecordedPlot::scaleFont(double scaleFactor)
+void RecordedPlot::scaleFont(float scaleFactor)
 {
     WFontGraphScaling(this, scaleFactor);
     mTextEditDialog->scaleFont(scaleFactor);
@@ -491,8 +497,8 @@ bool RecordedPlot::editAxisRange(QMouseEvent *mouseEvent)
 {
     const auto typeOfEvent = mouseEvent->type();
     static bool isAxisMoving = false;
-    static double pointStartX, pointStartY;
-    static double pointStopX, pointStopY;
+    static float pointStartX, pointStartY;
+    static float pointStopX, pointStopY;
 
     if((typeOfEvent == QEvent::MouseButtonPress) || (typeOfEvent == QEvent::MouseButtonRelease) || (typeOfEvent == QEvent::MouseMove) || (typeOfEvent == QEvent::Wheel))
     {
@@ -507,8 +513,8 @@ bool RecordedPlot::editAxisRange(QMouseEvent *mouseEvent)
         {
             pointStopX = xAxis->pixelToCoord(mouseEvent->pos().x());
             pointStopY = yAxis->pixelToCoord(mouseEvent->pos().y());
-            double deltaX = pointStopX - pointStartX;
-            double deltaY = pointStopY - pointStartY;
+            float deltaX = pointStopX - pointStartX;
+            float deltaY = pointStopY - pointStartY;
 
             if (!((xAxis->range().lower - deltaX < 0) || (xAxis->range().upper - deltaX > mRecordedMaxXRange)))
             {
@@ -531,8 +537,8 @@ bool RecordedPlot::editAxisRange(QMouseEvent *mouseEvent)
 
         if (typeOfEvent == QEvent::Wheel)
         {
-            #define DEF_ZOOM_IN_X  (double)0.8
-            #define DEF_ZOOM_OUT_X (double)(1.0/DEF_ZOOM_IN_X)
+            #define DEF_ZOOM_IN_X  (float)0.8
+            #define DEF_ZOOM_OUT_X (float)(1.0/DEF_ZOOM_IN_X)
             QWheelEvent *eventWheel = (QWheelEvent*)mouseEvent;
             pointStartX = xAxis->pixelToCoord(mouseEvent->pos().x());
 
@@ -540,8 +546,8 @@ bool RecordedPlot::editAxisRange(QMouseEvent *mouseEvent)
             {
               //qDebug("Zoom-");
               //qDebug() << "pointStartX:" << pointStartX << " (pointStartX *  DEF_ZOOM_IN_X)" << (pointStartX *  DEF_ZOOM_IN_X) << " xAxis->range().lower" << xAxis->range().lower;
-              double startPlot;
-              double endPlot;
+              float startPlot;
+              float endPlot;
               bool customPlot = false;
               if ((pointStartX - (pointStartX * DEF_ZOOM_IN_X)) > xAxis->range().lower) // < 0
               {
@@ -689,8 +695,8 @@ bool RecordedPlot::editAxisRange(QTouchEvent *touchEvent)
 {
     const auto typeOfEvent = touchEvent->type();
     static bool isAxisMoving = false;
-    static double pointStartX, pointStartY;
-    static double pointStopX, pointStopY;
+    static float pointStartX, pointStartY;
+    static float pointStopX, pointStopY;
 
     if((typeOfEvent == QEvent::TouchBegin) || (typeOfEvent == QEvent::TouchEnd) || (typeOfEvent == QEvent::TouchUpdate))// || (typeOfEvent == QEvent::Wheel))
     {
@@ -705,8 +711,8 @@ bool RecordedPlot::editAxisRange(QTouchEvent *touchEvent)
         {
             pointStopX = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x());
             pointStopY = yAxis->pixelToCoord(touchEvent->touchPoints().last().pos().y());
-            double deltaX = pointStopX - pointStartX;
-            double deltaY = pointStopY - pointStartY;
+            float deltaX = pointStopX - pointStartX;
+            float deltaY = pointStopY - pointStartY;
 
             if (!((xAxis->range().lower - deltaX < 0) || (xAxis->range().upper - deltaX > mRecordedMaxXRange)))//mCurrentMaxXRange)))
             {
@@ -729,8 +735,8 @@ bool RecordedPlot::editAxisRange(QTouchEvent *touchEvent)
 
         /*if (typeOfEvent == QEvent::Wheel)
         {
-            #define DEF_ZOOM_IN_X  (double)0.8
-            #define DEF_ZOOM_OUT_X (double)(1.0/DEF_ZOOM_IN_X)
+            #define DEF_ZOOM_IN_X  (float)0.8
+            #define DEF_ZOOM_OUT_X (float)(1.0/DEF_ZOOM_IN_X)
             QWheelEvent *eventWheel = (QWheelEvent*)mouseEvent;
             pointStartX = xAxis->pixelToCoord(mouseEvent->pos().x());
 
@@ -738,8 +744,8 @@ bool RecordedPlot::editAxisRange(QTouchEvent *touchEvent)
             {
               //qDebug("Zoom-");
               //qDebug() << "pointStartX:" << pointStartX << " (pointStartX *  DEF_ZOOM_IN_X)" << (pointStartX *  DEF_ZOOM_IN_X) << " xAxis->range().lower" << xAxis->range().lower;
-              double startPlot;
-              double endPlot;
+              float startPlot;
+              float endPlot;
               bool customPlot = false;
               if ((pointStartX - (pointStartX * DEF_ZOOM_IN_X)) > xAxis->range().lower) // < 0
               {
@@ -855,7 +861,7 @@ bool RecordedPlot::editAxisRange(QTouchEvent *touchEvent)
 ////            const QTouchEvent::TouchPoint &touchPoint1 = touchPoints.last();
 
 ////            // Отношение текущей линии к предыдущей
-////            double scaleFactor =
+////            float scaleFactor =
 ////                    QLineF(touchPoint0.pos(), touchPoint1.pos()).length() /
 ////                    QLineF(touchPoint0.lastPos(), touchPoint1.lastPos()).length();
 

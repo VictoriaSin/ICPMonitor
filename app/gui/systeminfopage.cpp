@@ -80,7 +80,7 @@ void SystemInfoPage::updateRAMProgressBar()
     // Отображение доступного кол-ва оперативной памяти пользователю
     if (FreeRAMMB > 0 && TotalRAMMB > 0) {
         ui->ramValueLabel->setText(TemplateMemoryInfo.arg(FreeRAMMB).arg(tr("свободно")).arg(TotalRAMMB));
-        ui->ramPersentFreeSpaceProgressBar->setValue(100 - (FreeRAMMB / (double)TotalRAMMB) * 100);
+        ui->ramPersentFreeSpaceProgressBar->setValue(100 - (FreeRAMMB / (float)TotalRAMMB) * 100);
     } else {
         ui->ramValueLabel->setText(tr("Ошибка вычисления"));
         ui->ramPersentFreeSpaceProgressBar->setValue(0);
@@ -120,7 +120,7 @@ void SystemInfoPage::updateSoftwareStorageProgressBar()
 
     // Установка инфо в виджеты
     ui->sysMemValueLabel->setText(TemplateMemoryInfo.arg(AvailableMemMB).arg(tr("доступно")).arg(TotalMemMB));
-    ui->sysMemPersentFreeSpaceProgressBar->setValue(100 - (AvailableMemMB / (double)TotalMemMB) * 100);
+    ui->sysMemPersentFreeSpaceProgressBar->setValue(100 - (AvailableMemMB / (float)TotalMemMB) * 100);
 }
 
 void SystemInfoPage::installController(MonitorController *controller)

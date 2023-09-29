@@ -10,10 +10,10 @@ class AveragePointerWidget : public QWidget
 
     QTimer *mBlinkAlarmTimer {nullptr};
 
-    double mUpperValue {1};
-    double mLowerValue {0};
+    float mUpperValue {1};
+    float mLowerValue {0};
 
-    double mCurrentValue {0};
+    float mCurrentValue {0};
 
     QPen mLinePen;
 
@@ -35,10 +35,10 @@ class AveragePointerWidget : public QWidget
 public:
     explicit AveragePointerWidget(QWidget *parent = nullptr);
 
-    void setRange(double lower, double upper);
-    void setLowerValue(double lower);
-    void setUpperValue(double upper);
-    void setValue(double value);
+    void setRange(float lower, float upper);
+    void setLowerValue(float lower);
+    void setUpperValue(float upper);
+    void setValue(float value);
 
     /*! Устанавливает цвет указателя (треугольника) на текущее значение на шкале
         color - новый цвет треугольника

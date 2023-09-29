@@ -113,8 +113,8 @@ void GeneralSettingsPage::updateGraphSettingsOnWidgets()
     ui->intervalYLineEdit->setText(QString::number(settings->getCurrentReadingsGraphIntervalY()));
     ui->relativeCurrentPathLineEdit->setText(settings->getRelativeCurrentSensorReadingsPath());
     ui->currentMaxStorageTimeLineEdit->setText(QString::number(settings->getMaxTimeStorageCurrentSensorReadingsMs()));
-    double realDivisionXCount = (double)(settings->getCurrentReadingsGraphIntervalX()) / (settings->getCurrentTickCountX());
-    double realDivisionYCount = (double)(settings->getCurrentReadingsGraphIntervalY() - 10) / (settings->getCurrentTickCountY());
+    float realDivisionXCount = (float)(settings->getCurrentReadingsGraphIntervalX()) / (settings->getCurrentTickCountX());
+    float realDivisionYCount = (float)(settings->getCurrentReadingsGraphIntervalY() - 10) / (settings->getCurrentTickCountY());
     ui->tickCountXLineEdit->setText(QString::number(realDivisionXCount));//settings->getCurrentTickCountX()));
     ui->tickCountYLineEdit->setText(QString::number(realDivisionYCount));//settings->getCurrentTickCountY()));
     ui->pressureUnitsComboBox->setCurrentIndex(settings->getCurrentPressureIndex());
@@ -172,12 +172,12 @@ void GeneralSettingsPage::updateParameters()
 //        else { openAlarmInfoErrorDialog(tr("Верхний уровень должен\nбыть больше, чем нижний!"));}S
     }//);
 qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
-    double mCurrentReadingsGraphIntervalX = ui->intervalXLineEdit->text().toDouble();
-    double mCurrentReadingsGraphIntervalY = ui->intervalYLineEdit->text().toDouble();
-    double mTickCountX = (double)mCurrentReadingsGraphIntervalX / ui->tickCountXLineEdit->text().toDouble();
-    double mTickCountY = (double)(mCurrentReadingsGraphIntervalY - 10) / ui->tickCountYLineEdit->text().toDouble();
-    double mHighLevelAlarm = ui->upperAlarmLineEdit->text().toFloat();
-    double mLowLevelAlarm = ui->lowerAlarmLineEdit->text().toFloat();
+    float mCurrentReadingsGraphIntervalX = ui->intervalXLineEdit->text().toDouble();
+    float mCurrentReadingsGraphIntervalY = ui->intervalYLineEdit->text().toDouble();
+    float mTickCountX = (float)mCurrentReadingsGraphIntervalX / ui->tickCountXLineEdit->text().toDouble();
+    float mTickCountY = (float)(mCurrentReadingsGraphIntervalY - 10) / ui->tickCountYLineEdit->text().toDouble();
+    float mHighLevelAlarm = ui->upperAlarmLineEdit->text().toFloat();
+    float mLowLevelAlarm = ui->lowerAlarmLineEdit->text().toFloat();
     float mAverageIntervalSec = ui->averageIntervalSecLineEdit->text().toFloat();
 
     bool mLowLevelStateAlarm = true;

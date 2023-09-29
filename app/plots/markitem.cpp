@@ -1,7 +1,7 @@
 #include "markitem.h"
 
 
-MarkItem::MarkItem(QCustomPlot *parentPlot, const QString &text, const QFont &font, double level, LabelOrientation orientation) :
+MarkItem::MarkItem(QCustomPlot *parentPlot, const QString &text, const QFont &font, float level, LabelOrientation orientation) :
     QCPAbstractItem(parentPlot),
     mTextItem(new QCPItemText(parentPlot)),
     mOrientation(orientation)
@@ -24,11 +24,9 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, const QString &text, const QFont &fo
     mTextItem->setPadding(QMargins(3, 0, 3, 0)); // Отступы от рамки прямоугольника к тексту
     mTextItem->setFont(font); // Устанавливаем базовый шрифт
     mTextItem->setSelectable(false); // Устанавливаем запрет на выбор элемента кликом
-
-
 }
 
-MarkItem::MarkItem(QCustomPlot *parentPlot, uint8_t num, QColor color, const QFont &font, const double position) :
+MarkItem::MarkItem(QCustomPlot *parentPlot, uint8_t num, QColor color, const QFont &font, const float position) :
     QCPAbstractItem(parentPlot),
     mTextItem(new QCPItemText(parentPlot))
 {
@@ -84,7 +82,7 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, uint8_t num, QColor color, const QFo
     mLineThroughGraph->setVisible(true);
 }
 
-MarkItem::MarkItem(QCustomPlot *parentPlot, const QString &text, const double position, const QFont &font) :
+MarkItem::MarkItem(QCustomPlot *parentPlot, const QString &text, const float position, const QFont &font) :
     QCPAbstractItem(parentPlot),
     mTextItem(new QCPItemText(parentPlot))
 {
@@ -141,15 +139,15 @@ void MarkItem::replotLine()
 {
     if (isLabelCreating)
     {
-        mTextItem->position->setCoords(double(mCoordLabelX)/1000.0, 0.1);
+        mTextItem->position->setCoords(float(mCoordLabelX)/1000.0, 0.1);
         mLineThroughGraph->start->setParentAnchor(mTextItem->position);
-        mLineThroughGraph->end->setCoords(double(mCoordLabelX)/1000.0, 0);
+        mLineThroughGraph->end->setCoords(float(mCoordLabelX)/1000.0, 0);
     }
     else if (isIntervalCreating)
     {
-        mTextItem->position->setCoords(double(mIntervalPos)/1000.0, 0.9);
+        mTextItem->position->setCoords(float(mIntervalPos)/1000.0, 0.9);
         mLineThroughGraph->end->setParentAnchor(mTextItem->position);
-        mLineThroughGraph->start->setCoords(double(mIntervalPos)/1000.0, 1000);
+        mLineThroughGraph->start->setCoords(float(mIntervalPos)/1000.0, 1000);
     }
 
 }
@@ -177,8 +175,8 @@ void MarkItem::addLine()
 
     // Создаём линию
     mLineThroughGraph = new QCPItemLine(mParentPlot);
-    double mTempPointUpper = mParentPlot->xAxis->range().upper;
-    double mTempPointLower = mParentPlot->xAxis->range().lower;
+    float mTempPointUpper = mParentPlot->xAxis->range().upper;
+    float mTempPointLower = mParentPlot->xAxis->range().lower;
 
 
     // Вяжем начальную точку к якорю текста
@@ -228,7 +226,7 @@ void MarkItem::setOrientation(LabelOrientation orientation)
     updateMarkOrientation();
 }
 
-void MarkItem::setPositionMark(double position)
+void MarkItem::setPositionMark(float position)
 {
     if (!mTextItem) {
         return;
@@ -247,7 +245,7 @@ void MarkItem::setPositionMark(double position)
     mCurrentPosition = position;
 }
 
-void MarkItem::setMarkItemMargin(double level)
+void MarkItem::setMarkItemMargin(float level)
 {
     if (!mTextItem) {
         return;
@@ -272,7 +270,7 @@ void MarkItem::setText(const QString &text)
     }
 }
 
-double MarkItem::getMarkPosition() const
+float MarkItem::getMarkPosition() const
 {
     return mCurrentPosition;
 }
@@ -309,8 +307,8 @@ double MarkItem::selectTest(const QPointF &pos, bool onlySelectable, QVariant *d
     Q_UNUSED(onlySelectable);
 
     if(mTextItem){
-        double dist = mTextItem->selectTest(pos, false, details);
-        return dist;
+        float dist = mTextItem->selectTest(pos, false, details);
+        return (double)dist;
     }
 
     return -1;

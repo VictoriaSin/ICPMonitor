@@ -17,7 +17,7 @@ public:
     QTimer *mAverageTimer {nullptr};
 
     ComplexValue mLastAverageValue;
-    QVector<double> mData;
+    QVector<float> mData;
 #ifdef QT_DEBUG
     int64_t mDifTime {0};
     int mCountMiss {0};

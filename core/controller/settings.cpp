@@ -196,12 +196,12 @@ void Settings::setMaxTimeStorageCurrentSensorReadingsMs(int64_t maxMs)
     mMaxTimeStorageCurrentSensorReadingsMs = maxMs;
 }
 
-void Settings::setCurrentReadingsGraphIntervalX(double currentReadingsGraphIntervalX)
+void Settings::setCurrentReadingsGraphIntervalX(float currentReadingsGraphIntervalX)
 {
     mCurrentReadingsGraphIntervalX = currentReadingsGraphIntervalX;
 }
 
-void Settings::setCurrentReadingsGraphIntervalY(double currentReadingsGraphIntervalY)
+void Settings::setCurrentReadingsGraphIntervalY(float currentReadingsGraphIntervalY)
 {
     mCurrentReadingsGraphIntervalY = currentReadingsGraphIntervalY;
 }
@@ -221,13 +221,13 @@ void Settings::setCurrentPressureUnits(uint8_t currentPressureUnitsIndex)
     mPressureUnitsIndex = currentPressureUnitsIndex;
 }
 
-void Settings::setCurrentAverageIntervalSec(double currentAverageIntervalSec)
+void Settings::setCurrentAverageIntervalSec(float currentAverageIntervalSec)
 {
     mAverageIntervalSec = currentAverageIntervalSec;
 }
 
-void Settings::setAllPressureParam(double mCurrentReadingsGraphIntervalY, double mTickCountY,
-                         double mHighLevelAlarm, double mLowLevelAlarm)
+void Settings::setAllPressureParam(float mCurrentReadingsGraphIntervalY, float mTickCountY,
+                         float mHighLevelAlarm, float mLowLevelAlarm)
 {
     setCurrentReadingsGraphIntervalY(mCurrentReadingsGraphIntervalY);
     setCurrentTickCountY(mTickCountY);

@@ -26,17 +26,17 @@ class MarkItem : public QCPAbstractItem
     LabelOrientation mOrientation;
 
     /*! Текущая позиция метки относительно ориентации */
-    double mCurrentPosition = 0;
+    float mCurrentPosition = 0;
 
 public:
     uint32_t mIntervalPos = 0;
 
-    double maxIntervalValue = -1;
-    double averageIntervalValue = 0;
+    float maxIntervalValue = -1;
+    float averageIntervalValue = 0;
 
-    MarkItem(QCustomPlot *parentPlot, const QString &text, const QFont &font, double level = 0, LabelOrientation orientation = LabelOrientation::moVerticalBottom);
-    MarkItem(QCustomPlot *parentPlot, uint8_t num, QColor color, const QFont &font, const double position);
-    MarkItem(QCustomPlot *parentPlot, const QString &text, const double position, const QFont &font);
+    MarkItem(QCustomPlot *parentPlot, const QString &text, const QFont &font, float level = 0, LabelOrientation orientation = LabelOrientation::moVerticalBottom);
+    MarkItem(QCustomPlot *parentPlot, uint8_t num, QColor color, const QFont &font, const float position);
+    MarkItem(QCustomPlot *parentPlot, const QString &text, const float position, const QFont &font);
     ~MarkItem();
 
     /*! Добавление пунктирной линии */
@@ -52,13 +52,13 @@ public:
     void setOrientation(LabelOrientation orientation);
 
     /*! Устанавливаем позицию метки */
-    void setPositionMark(double position);
+    void setPositionMark(float position);
 
     /*! Отступ внутрь графика */
-    void setMarkItemMargin(double level = 0);
+    void setMarkItemMargin(float level = 0);
 
     /*! Текущая позиция метки относительно ориентации */
-    double getMarkPosition() const;
+    float getMarkPosition() const;
 
 private:
     /*! Обновляет ориентацию метки */

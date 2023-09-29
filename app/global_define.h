@@ -39,21 +39,21 @@ typedef struct
     uint16_t data; //
 }_mSPIData;
 
-//typedef struct
-//{
-//    uint32_t index; // offset
-//    _mSPIData record[MAXBUFFERSIZE];
-//} _mSPIBuffer;
 #pragma pack()
 
 extern _mSPIData *mAllRecordedDataBuffer, *mFirstIntervalBuffer, *mSecondIntervalBuffer;//*mSensorBuffer1, *mSensorBuffer2;
 extern uint mSizeAllRecordedData, mSizeFirstInterval, mSizeSecondInterval;
 
-extern double mRecordedMaxXRange;
-extern double mCurrentMaxYRange;
-extern QPair<double, double> mFirstIntervalMinMaxXRange;
-extern QPair<double, double> mSecondIntervalMinMaxXRange;
+extern float mRecordedMaxXRange;
+extern float mCurrentMaxYRange;
+extern QPair<float, float> mFirstIntervalMinMaxXRange;
+extern QPair<float, float> mSecondIntervalMinMaxXRange;
 
 enum direction { previous = false, next = true};
 enum interval { first = false, second = true};
+
+#define TIME_INTERVAL_FOR_RECORD_IN_FILE (4)
+#define TIME_INTERVAL_FOR_WRITE_ON_GRAPH (40) //40 миллисекунд - 25 раз в секунду
+#define TIME_INTERVAL_DIFF (TIME_INTERVAL_FOR_WRITE_ON_GRAPH / TIME_INTERVAL_FOR_RECORD_IN_FILE)
+
 #endif // GLOBAL_DEFINE_H
