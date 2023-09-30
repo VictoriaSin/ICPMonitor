@@ -249,6 +249,8 @@ bool initFlash(QString currRasdel)
                 qDebug() << "Result" << outputString;
               }
           }
+          else
+          {qDebug() << mntDirectory << "Try created directory" ;}
           QString result = executeAConsoleCommand("mount", QStringList() << currRasdel << mntDirectory);
           if (result != "")
           {
@@ -283,13 +285,13 @@ int main(int argc, char *argv[])
     qDebug() << currUUID;
     QString currRasdel = mICPSettings->getFlashDeviceMountPart();
     qDebug() << currRasdel;
-    u8 resultInit = initFlash(currRasdel);
-    if (resultInit != 0)
-    {
-      //mICPSettings->writeAllSetting();
-      //exit(resultInit);
-    }
-
+    //u8 resultInit = initFlash(currRasdel);
+    //if (resultInit != 0)
+    //{
+    //  //mICPSettings->writeAllSetting();
+    //  //exit(resultInit);
+    //}
+    mount(&currUUID, &currRasdel);
     Q_INIT_RESOURCE(core_res);
 
     // Игнорируемые события тача автоматически переопределять в MouseEvent
