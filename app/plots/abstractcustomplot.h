@@ -1,10 +1,10 @@
 #ifndef ABSTRACTCUSTOMPLOT_H
 #define ABSTRACTCUSTOMPLOT_H
 
-#include "plots/qcustomplot.h"
+#include "../app/plots/qcustomplot.h"
 //#include "currentgraphsarea.h"
 #include "controller/labels/labelmanager.h"
-#include "global_define.h"
+#include "../app/global_define.h"
 
 
 class MonitorController;

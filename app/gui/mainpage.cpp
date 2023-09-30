@@ -547,9 +547,9 @@ void MainPage::on_recordButton_clicked()
     if (isStart)
     {
         //mSensorDataManager->isStopSensorData = true;
-        mCurrentGraphsArea->stopWork();
+        //mCurrentGraphsArea->stopWork();
         mCurrentGraphsArea->resetGraphOfCurrentValues();
-        mCurrentGraphsArea->startWork();
+
         isStart = false;
         mCurrentRecordDir.setPath(mntDirectory+ "/" + currentTime);
         ui->recordButton->setIcon(QIcon(":/icons/stopRecord.svg"), QIcon(":/icons/stopRecord_pressed.svg"));
@@ -559,6 +559,7 @@ void MainPage::on_recordButton_clicked()
         mMarksFile.setFileName(mCurrentRecordDir.path()     + "/" + "MARKS.txt");
         mRawDataFile.setFileName(mCurrentRecordDir.path()   + "/" + "RAW_DATA.txt");
 
+        //mCurrentGraphsArea->startWork();
         qDebug() << mCurrentRecordDir.path();
         if (!mCurrentRecordDir.exists())
         {
@@ -589,7 +590,9 @@ void MainPage::on_recordButton_clicked()
 
         ui->mainWidgets   ->show();
         ui->sessionButton ->setEnabled(false);
-        mCurrentGraphsArea->isRecord = true;
+        //mCurrentGraphsArea->isRecord = true;
+        mCurrentGraphsArea->mSaveSPI->isRecording = true;
+
         mCurrentGraphsArea->resetGraphOfCurrentValues();
         mRawDataFile.open(QIODevice::WriteOnly | QIODevice::Append);
 
@@ -607,7 +610,7 @@ void MainPage::on_recordButton_clicked()
         }
         isStart = true;
 
-        mCurrentGraphsArea->isRecord = false;
+
 
 
 

@@ -4,6 +4,11 @@
 #include "plots/abstractmultiplegraphsareaswidget.h"
 #include "controller/controller_enums.h"
 #include "global_define.h"
+#include "../core/sensor/savespi.h"
+
+
+
+//! График текущих значений
 
 extern uint8_t mCurrentIntervalNum;
 namespace Ui {
@@ -14,6 +19,7 @@ class WaveFormPlot;
 class LabelMarkItem;
 class RecordedPlot;
 class IntervalPlot;
+
 
 
 extern QFile mHeadFile;
@@ -49,8 +55,8 @@ class CurrentGraphsArea : public AbstractMultipleGraphsAreasWidget
     /*################################################################################
                                 Текущие показания датчика
     ################################################################################*/
-    //! График текущих значений
-    WaveFormPlot *mWaveGraph {nullptr};
+//    //! График текущих значений
+//    WaveFormPlot *mWaveGraph {nullptr};
 
     /*! Отрисовка каждой {устанавливаемое число} точки на графике текущих значений */
     #define mThinningSensorReadings 16
@@ -107,6 +113,7 @@ class CurrentGraphsArea : public AbstractMultipleGraphsAreasWidget
 #endif
 
 public:
+    SaveSPI *mSaveSPI = nullptr;
     //! График записанных значений
     RecordedPlot *mRecordedGraph {nullptr};
     IntervalPlot *mFirstInterval {nullptr};
@@ -115,7 +122,7 @@ public:
     ~CurrentGraphsArea();
 
     //! Состояние записи
-    bool isRecord;
+    //bool isRecord;
 
     /*! Устанавливает интервал на график записанных показаний */
     void addIntervalOnRecordedGraph();
@@ -192,7 +199,7 @@ private slots:
 private:
     Ui::CurrentGraphsArea *ui;
     QTimer *mTimerGetDataGraph = nullptr;
-    QTimer *mTimerGetDataFile = nullptr;
+    //QTimer *mTimerGetDataFile = nullptr;
     uint16_t data;
     float mAverageValue;
     float AverageIntervalSec{1.5};

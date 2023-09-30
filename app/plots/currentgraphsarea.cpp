@@ -13,7 +13,9 @@
 #include "ui_mainpage.h"
 #include <QTimer>
 
+#include "global_define.h"
 
+WaveFormPlot *mWaveGraph {nullptr};
 
 QVector<LabelMarkItem *> mLabelItemsContainer {nullptr};
 MarkItem *mIntervalsContainer[4];
@@ -23,7 +25,7 @@ uint8_t mIntervalsCount {0};
 //_bufferRecord bufferRecord_1, bufferRecord_2;
 //uint8_t currentBufferRecord;
 
-#define READ_SPI() data = (12 + rand() % 20)
+
 //#define TIME_INTERVAL_FOR_RECORD_IN_FILE (4)
 //#define TIME_INTERVAL_FOR_WRITE_ON_GRAPH (40) //40 миллисекунд - 25 раз в секунду
 
@@ -470,72 +472,7 @@ void CurrentGraphsArea::changePressureUnits()
 }
 
 
-void CurrentGraphsArea::addDataOnFile()//(unsigned int currX, unsigned int currY)
-{
-  currIndex ++;
-  READ_SPI();
-  if (isRecord)
-  {
-    _mSPIData temp;
-    temp.timeStamp = (uint32_t)(currIndex * TIME_INTERVAL_FOR_RECORD_IN_FILE);//(currIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH);
-    temp.data = data;
-    mRawDataFile.write((char*)&temp, sizeof(_mSPIData));
-  }
-}
 
-void CurrentGraphsArea::addDataOnWavePlot()
-{
-    //currIndex ++;
-    //_mSPIData temp;
-    //READ_SPI();
-
-//    if (mICPSettings->getCurrentPressureIndex() == 1)
-//    {
-//        data *= indexPressureH2O;
-//    }
-//#define PERIOD_RECORD (TIME_INTERVAL_FOR_WRITE_ON_GRAPH / TIME_INTERVAL_FOR_RECORD_IN_FILE)
-//    if ((currIndex % (PERIOD_RECORD)) == 0)
-    {
-        plotIndex++;
-        if (isNeedCalc)
-        {
-            data *= indexPressureH2O;
-        }
-        mAverageValue = calcAverage(data);
-        emit(averageReady(mAverageValue));
-        mWaveGraph->addDataOnGraphic((unsigned int)(plotIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH), data);
-        //mWaveGraph->addDataOnGraphic(currX, currY);
-    }
-    //qDebug() << "plot" << plotIndex;
-    //qDebug() << "curr" << currIndex * TIME_INTERVAL_FOR_RECORD_IN_FILE;
-//    if (isRecord)
-//    {
-//        temp.timeStamp = (uint32_t)(currIndex * TIME_INTERVAL_FOR_RECORD_IN_FILE);//(currIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH);
-//        temp.data = data;
-//        //mRawDataFile.write((char*)&temp, sizeof(_mSPIData));
-//        //qDebug() << "khem" << temp.timeStamp << temp.data;
-//        //mRecordedGraph->saveDataForGraphic(timeSec, data);
-//        //mRecordedGraph->addDataOnGraphic(currX, currY);
-//        //currentBufferRecord == 1 ? addRawData(&bufferRecord_2) : addRawData(&bufferRecord_1);
-//    }
-
-
-    //++mCounterSensorReadings;
-    //ComplexValue currValue;
-    // Если кол-во точек равно кол-ву прореживания
-    /*if (mCounterSensorReadings == mThinningSensorReadings)
-    {
-        currValue = mController->getLastConvertedSensorValue();
-        mWaveGraph->addDataOnGraphic(currValue);//(mController->getLastConvertedSensorValue());
-        if (isRecord)
-        {
-            currentBufferRecord == 1 ? addRawData(&bufferRecord_1) : addRawData(&bufferRecord_2);
-            mRecordedGraph->saveDataForGraphic(currValue);//mController->getLastConvertedSensorValue());// пока оставляем
-        }
-        mCounterSensorReadings = 0;
-    }*/
-
-}
 
 void CurrentGraphsArea::addDataOnRecordedPlot()
 {
@@ -833,6 +770,43 @@ bool CurrentGraphsArea::nextXRange()
     return true;
 }
 
+void CurrentGraphsArea::addDataOnFile()
+{
+  //READ_SPI();
+  //if (isRecord)
+  //{
+  //  currIndex ++;
+  //  qDebug() << "currIndex" << currIndex;
+  //  _mSPIData temp;
+  //  temp.timeStamp = (uint32_t)(currIndex * TIME_INTERVAL_FOR_RECORD_IN_FILE);
+  //  temp.data = data;
+  //  mRawDataFile.write((char*)&temp, sizeof(_mSPIData));
+  //}
+}
+
+void CurrentGraphsArea::addDataOnWavePlot()
+{
+//  READ_SPI();
+//  if (isRecord)
+//  {
+//    currIndex ++;
+//    qDebug() << "currIndex" << currIndex;
+//    //_mSPIData temp;
+//    //temp.timeStamp = (uint32_t)(currIndex * TIME_INTERVAL_FOR_RECORD_IN_FILE);
+//    //temp.data = data;
+//    //mRawDataFile.write((char*)&temp, sizeof(_mSPIData));
+//  }
+//
+//  //plotIndex++;
+//  //if (isNeedCalc == 1)
+//  //{
+//  //  data *= indexPressureH2O;
+//  //}
+//  //mAverageValue = calcAverage(data);
+//  //emit(averageReady(mAverageValue));
+//  //mWaveGraph->addDataOnGraphic((unsigned int)(plotIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH), data);
+}
+
 void CurrentGraphsArea::startWork()
 {
   isNeedCalc        = mICPSettings->getCurrentPressureIndex();
@@ -844,27 +818,44 @@ void CurrentGraphsArea::startWork()
   sum               = 0;
   cnt               = 0;
   data              = 0;
-  if (mTimerGetDataGraph == nullptr)
-  {
-    mTimerGetDataGraph = new QTimer(this);
-    connect(mTimerGetDataGraph, &QTimer::timeout, this, &CurrentGraphsArea::addDataOnWavePlot);
-  }
 
-  if (mTimerGetDataFile== nullptr)
+  if (mSaveSPI == nullptr)
   {
-    mTimerGetDataFile = new QTimer(this);
-    connect(mTimerGetDataGraph, &QTimer::timeout, this, &CurrentGraphsArea::addDataOnFile);
+    mSaveSPI = new SaveSPI();
   }
+  qDebug() << "mSaveSPI->start()";
+  mSaveSPI->start();
 
-  mTimerGetDataFile ->start(TIME_INTERVAL_FOR_RECORD_IN_FILE);
-  mTimerGetDataGraph->start(TIME_INTERVAL_FOR_WRITE_ON_GRAPH);
+
+
+
+  //if (mTimerGetDataGraph == nullptr)
+  //{
+  //  mTimerGetDataGraph = new QTimer(this);
+  //  connect(mTimerGetDataGraph, &QTimer::timeout, this, &CurrentGraphsArea::addDataOnWavePlot);
+  //}
+
+  //if (mTimerGetDataFile== nullptr)
+  //{
+  //  mTimerGetDataFile = new QTimer(this);
+  //  connect(mTimerGetDataFile, &QTimer::timeout, this, &CurrentGraphsArea::addDataOnFile);
+  //}
+
+  //mTimerGetDataFile ->start(TIME_INTERVAL_FOR_RECORD_IN_FILE);
+  //mTimerGetDataGraph->start(100);//TIME_INTERVAL_FOR_RECORD_IN_FILE);//TIME_INTERVAL_FOR_WRITE_ON_GRAPH);
+
   //startPlotting();
 }
-
 void CurrentGraphsArea::stopWork()
 {
-  mTimerGetDataGraph->stop();
-  mTimerGetDataFile->stop();
+  if (mSaveSPI != nullptr)
+  {
+    mSaveSPI->isRunning = false;
+    while(mSaveSPI->isStopped == false);
+    mSaveSPI = nullptr;
+  }
+  //mTimerGetDataGraph->stop();
+  //mTimerGetDataFile->stop();
   //stopPlotting();
 }
 
@@ -895,24 +886,17 @@ void CurrentGraphsArea::removeAllGraphs()
     if (mRecordedGraph->mIntervalFirst != nullptr)
 //    {mRecordedGraph->removePlottable(mRecordedGraph->mIntervalFirst);}
     {mRecordedGraph->mIntervalFirst->data().data()->clear();}
-    qDebug("1");
     if (mRecordedGraph->mIntervalSecond != nullptr)
 //    {mRecordedGraph->removePlottable(mRecordedGraph->mIntervalSecond);}
     {mRecordedGraph->mIntervalSecond->data().data()->clear();}
-    qDebug("2");
     if (mRecordedGraph != nullptr)
     {mRecordedGraph->mMainGraph->data().clear();}
-    qDebug("3");
     mWaveGraph->mMainGraph->data()->clear();//дописать?
-    qDebug("4");
     mWaveGraph->mHistGraph->data().clear();//дописать?
-    qDebug("5");
     if (mFirstInterval != nullptr)
     {mFirstInterval->mMainGraph->data().data()->clear();}
-    qDebug("6");
     if (mSecondInterval != nullptr)
     {mSecondInterval->mMainGraph->data().data()->clear();}
-    qDebug("7");
     for (int8_t i=0; i<mIntervalsCount; i++)
     {
         mRecordedGraph->removeItem(mIntervalsContainer[i]);
@@ -1001,3 +985,31 @@ void CurrentGraphsArea::removeAllGraphs()
 //        mLastXRange = mTrendGraph->setXRange(currentXRange.lower + shiftSeconds, timestampInSeconds + shiftSeconds);
 //    }
 //}
+//qDebug() << "plot" << plotIndex;
+//qDebug() << "curr" << currIndex * TIME_INTERVAL_FOR_RECORD_IN_FILE;
+//    if (isRecord)
+//    {
+//        temp.timeStamp = (uint32_t)(currIndex * TIME_INTERVAL_FOR_RECORD_IN_FILE);//(currIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH);
+//        temp.data = data;
+//        //mRawDataFile.write((char*)&temp, sizeof(_mSPIData));
+//        //qDebug() << "khem" << temp.timeStamp << temp.data;
+//        //mRecordedGraph->saveDataForGraphic(timeSec, data);
+//        //mRecordedGraph->addDataOnGraphic(currX, currY);
+//        //currentBufferRecord == 1 ? addRawData(&bufferRecord_2) : addRawData(&bufferRecord_1);
+//    }
+
+
+//++mCounterSensorReadings;
+//ComplexValue currValue;
+// Если кол-во точек равно кол-ву прореживания
+/*if (mCounterSensorReadings == mThinningSensorReadings)
+{
+    currValue = mController->getLastConvertedSensorValue();
+    mWaveGraph->addDataOnGraphic(currValue);//(mController->getLastConvertedSensorValue());
+    if (isRecord)
+    {
+        currentBufferRecord == 1 ? addRawData(&bufferRecord_1) : addRawData(&bufferRecord_2);
+        mRecordedGraph->saveDataForGraphic(currValue);//mController->getLastConvertedSensorValue());// пока оставляем
+    }
+    mCounterSensorReadings = 0;
+}*/

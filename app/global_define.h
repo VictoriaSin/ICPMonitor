@@ -1,5 +1,6 @@
 #ifndef GLOBAL_DEFINE_H
 #define GLOBAL_DEFINE_H
+#include <QFile>
 #include <QString>
 #include <stdint.h>
 
@@ -28,6 +29,7 @@ extern uint16_t mCurrentLabelIndex;
 extern QString mntDirectory;
 extern Settings *mICPSettings;
 
+extern QFile mRawDataFile;
 
 #define MAXBUFFERSIZE 400
 extern float intervalCountPerSec; // Интервал между соседними измерениями
@@ -55,5 +57,7 @@ enum interval { first = false, second = true};
 #define TIME_INTERVAL_FOR_RECORD_IN_FILE (4)
 #define TIME_INTERVAL_FOR_WRITE_ON_GRAPH (40) //40 миллисекунд - 25 раз в секунду
 #define TIME_INTERVAL_DIFF (TIME_INTERVAL_FOR_WRITE_ON_GRAPH / TIME_INTERVAL_FOR_RECORD_IN_FILE)
+
+//#define READ_SPI() data = (12 + rand() % 20)
 
 #endif // GLOBAL_DEFINE_H
