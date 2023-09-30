@@ -87,15 +87,15 @@ CurrentGraphsArea::CurrentGraphsArea(QWidget *parent) :
 
     //resetAllLabelItems();
 
-    AverageIntervalSec = 1;// mICPSettings->getCurrentAverageIntervalSec();
-    maxBuffSizeAvg =(uint) (1000.0 / TIME_INTERVAL_FOR_WRITE_ON_GRAPH * AverageIntervalSec);
-    CurrDataForAverage = new float[maxBuffSizeAvg];
+   // AverageIntervalSec = 1;// mICPSettings->getCurrentAverageIntervalSec();
+   // maxBuffSizeAvg =(uint) (1000.0 / TIME_INTERVAL_FOR_WRITE_ON_GRAPH * AverageIntervalSec);
+   // CurrDataForAverage = new float[maxBuffSizeAvg];
 
 }
 
 CurrentGraphsArea::~CurrentGraphsArea()
 {
-  delete [] CurrDataForAverage;
+  //delete [] CurrDataForAverage;
   delete ui;
 }
 
@@ -109,7 +109,7 @@ void CurrentGraphsArea::resetGraphOfCurrentValues()
         mWaveGraph->resetGraph();
         if (isRecord)
         {
-            mWaveGraph->changePenColor(QColor(Qt::red));
+            mWaveGraph->changePenColor(QColor("#ff5000"));
         }
         else
         {
@@ -807,17 +807,18 @@ void CurrentGraphsArea::addDataOnWavePlot()
 //  //mWaveGraph->addDataOnGraphic((unsigned int)(plotIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH), data);
 }
 
+
 void CurrentGraphsArea::startWork()
 {
-  isNeedCalc        = mICPSettings->getCurrentPressureIndex();
-  currIndex         = -1;
-  plotIndex         = -1;
-  mAverageValue     = 0;
-  firstBuffPointer  = 0;
-  lastBuffPointer   = 0;
-  sum               = 0;
-  cnt               = 0;
-  data              = 0;
+  //isNeedCalc        = mICPSettings->getCurrentPressureIndex();
+  //currIndex         = -1;
+  //plotIndex         = -1;
+  //mAverageValue     = 0;
+  //firstBuffPointer  = 0;
+  //lastBuffPointer   = 0;
+  //sum               = 0;
+  //cnt               = 0;
+  //data              = 0;
 
 
   if (mSaveSPI == nullptr)
@@ -860,22 +861,22 @@ void CurrentGraphsArea::stopWork()
   //stopPlotting();
 }
 
-float CurrentGraphsArea::calcAverage(uint16_t data)
-{
-    firstBuffPointer = (++firstBuffPointer) % maxBuffSizeAvg;
-    sum += data;
-    if (cnt < maxBuffSizeAvg)
-    {
-        cnt++;
-    }
-    else
-    {
-        lastBuffPointer = (++lastBuffPointer) % maxBuffSizeAvg;
-        sum -= CurrDataForAverage[lastBuffPointer];
-    }
-    CurrDataForAverage[firstBuffPointer] = data;
-    return sum/cnt;
-}
+//float CurrentGraphsArea::calcAverage(uint16_t data)
+//{
+//    firstBuffPointer = (++firstBuffPointer) % maxBuffSizeAvg;
+//    sum += data;
+//    if (cnt < maxBuffSizeAvg)
+//    {
+//        cnt++;
+//    }
+//    else
+//    {
+//        lastBuffPointer = (++lastBuffPointer) % maxBuffSizeAvg;
+//        sum -= CurrDataForAverage[lastBuffPointer];
+//    }
+//    CurrDataForAverage[firstBuffPointer] = data;
+//    return sum/cnt;
+//}
 
 void CurrentGraphsArea::removeAllGraphs()
 {

@@ -198,17 +198,17 @@ private slots:
 
 private:
     Ui::CurrentGraphsArea *ui;
-    QTimer *mTimerGetDataGraph = nullptr;
+    //QTimer *mTimerGetDataGraph = nullptr;
     //QTimer *mTimerGetDataFile = nullptr;
     uint16_t data;
-    float mAverageValue;
-    float AverageIntervalSec{1.5};
-    uint maxBuffSizeAvg;
-    uint16_t firstBuffPointer;
-    uint16_t lastBuffPointer;
-    uint sum;//double sum;
-    uint16_t cnt;
-    float *CurrDataForAverage;
+    //float mAverageValue;
+    //float AverageIntervalSec{1.5};
+//    uint maxBuffSizeAvg;
+//    uint16_t firstBuffPointer;
+//    uint16_t lastBuffPointer;
+//    uint sum;//double sum;
+//    uint16_t cnt;
+//    float *CurrDataForAverage;
 
 public:
     void scaleFont(float scaleFactor) override;
@@ -257,10 +257,8 @@ public:
     void setMarksOnInterval();
 protected:
     bool isNeedCalc;
-    float calcAverage(uint16_t data);
+    //float calcAverage(uint16_t data);
     void addDataOnFile();
-  signals:
-    void averageReady(float currAverage);
 };
 
 #endif // CURRENTGRAPHAREA_H

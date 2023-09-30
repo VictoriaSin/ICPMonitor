@@ -14,6 +14,7 @@ class IPageWidget;
 class MonitorController;
 class MessageDialog;
 
+
 class MainWindow : public QWidget
 {
     Q_OBJECT
@@ -22,11 +23,12 @@ class MainWindow : public QWidget
     IPageWidget *mCurrentPage {nullptr};
     QStack<IPageWidget*> mStackOfWidgets;
 
-    MainPage *mMainPage {nullptr};
+
     /*! Диалоговое окно для уведомлений пользователя */
     MessageDialog *mMessageDialog {nullptr};
 
 public:
+    //MainPage *mMainPage {nullptr};
     MonitorController *mController {nullptr};
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

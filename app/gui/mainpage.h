@@ -1,14 +1,14 @@
 #ifndef MAINPAGE_H
 #define MAINPAGE_H
 
-#include "ipagewidget.h"
+#include "../app/ipagewidget.h"
 #include "controller/controller_enums.h"
 #include "blockDevices/blockdevice.h"
 
-#include "global_define.h"
+#include "../app/global_define.h"
 #include "sensor/sensordatamanager.h"
-#include "sensor/savespi.h"
-#include "plots/recordedplot.h"
+//#include "sensor/savespi.h"
+#include "../app/plots/recordedplot.h"
 namespace Ui {
 class MainPage;
 }
@@ -72,6 +72,8 @@ private:
     /*! Настройка контейнера с графиками */
     void setupGraphsContainer();
     QDir mCurrentRecordDir;
+
+
 
 private slots:
     void controllerEventHandler(ControllerEvent event);//, const QVariantMap &args = {});
@@ -145,7 +147,7 @@ private slots:
 
     void on_speedRecordButton_clicked();
 
-    void setAverage(uint currAverage); //void setAverage(float currAverage);
+
 
     void on_zoomInterval1Button_clicked();
 
@@ -199,6 +201,7 @@ protected:
     // IPageWidget interface
 public slots:
     void retranslate() override;
+    void setAverage(uint16_t currAverage);
 };
 
 #endif // MAINPAGE_H

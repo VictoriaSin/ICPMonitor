@@ -48,42 +48,39 @@ void IntervalPlot::setup(QPair<int, int> points, QColor color)
     mMainGraph->setPen(pen);
     mMainGraph->setBrush(brush);
 
-//    for (uint16_t i=0; i<dataVector.count(); i++)
-//    {
-//        mMainGraph->addData(dataVector[i].first, dataVector[i].second);
-//    }
-//    xAxis->setRange(dataVector[0].first, dataVector[dataVector.count()-1].first);
-    qDebug() << "start" << points.first << "stop" << points.second;
-    iterTemp = 0;
-    iterTemp = ((points.second-points.first)*TIME_INTERVAL_DIFF)+1;
-    _mSPIData tempArr[iterTemp];
+    points.first= (points.first - (points.first % 2)) * 3;
+    points.second = (points.second  - (points.second % 2)) * 3 ;
+
+    qDebug() << "start1" << points.first << "stop2" << points.second;
+
+    iterTemp = ((points.second-points.first)/6) + 1;
+
+    _mSPIData *tempArr = new _mSPIData[iterTemp];
     mRawDataFile.open(QIODevice::ReadOnly);
-    mRawDataFile.seek(points.first*TIME_INTERVAL_DIFF*sizeof(_mSPIData));
-    mRawDataFile.read((char*)&tempArr, sizeof(tempArr));
+    mRawDataFile.seek(points.first);
+    mRawDataFile.read((char*)tempArr, iterTemp*6);
     mRawDataFile.close();
+
     for (uint i=0; i<iterTemp; i++)
     {
         mMainGraph->addData((float)tempArr[i].timeStamp/1000, tempArr[i].data);
     }
-
-
     qDebug() << "mCurrentIntervalNum" << mCurrentIntervalNum;
     if (mCurrentIntervalNum == 1)
     {
         mFirstIntervalMinMaxXRange.first = (float)tempArr[0].timeStamp/1000;
-        mFirstIntervalMinMaxXRange.second = (float)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000;
+        mFirstIntervalMinMaxXRange.second = (float)tempArr[iterTemp-1].timeStamp/1000;
         qDebug() << "tttt" << mFirstIntervalMinMaxXRange.first << mFirstIntervalMinMaxXRange.second;
-        //mFirstIntervalMinMaxXRange = qMakePair((float)tempArr[0].timeStamp/1000, (float)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000);
     }
     else
     {
         mSecondIntervalMinMaxXRange.first = (float)tempArr[0].timeStamp/1000;
-        mSecondIntervalMinMaxXRange.second = (float)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000;
+        mSecondIntervalMinMaxXRange.second = (float)tempArr[iterTemp-1].timeStamp/1000;
         qDebug() << "tttt" << mSecondIntervalMinMaxXRange.first << mSecondIntervalMinMaxXRange.second;
-        //mSecondIntervalMinMaxXRange = qMakePair((float)tempArr[0].timeStamp/1000, (float)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000);
     }
 
-    xAxis->setRange((float)tempArr[0].timeStamp/1000, (float)tempArr[(points.second-points.first)*TIME_INTERVAL_DIFF].timeStamp/1000);
+    xAxis->setRange((float)tempArr[0].timeStamp/1000, (float)tempArr[iterTemp-1].timeStamp/1000);
+    delete[] tempArr;
 }
 
 

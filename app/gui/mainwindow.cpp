@@ -10,14 +10,16 @@
 
 #include <QDebug>
 
+MainPage *mMainPage = nullptr;
+
 MainWindow::MainWindow( QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::MainWindow)
-    , mMainPage(new MainPage(this))
+    //, mMainPage(new MainPage(this))
     , mMessageDialog(new MessageDialog(this))
 {
     ui->setupUi(this);
-
+    mMainPage = new MainPage(this);
     // Скрываем виджет для сообщений
     mMessageDialog->hide();
 

@@ -186,7 +186,8 @@ qDebug() << "t2" << t2;
 //    QVector<QPair<float, float>> tttt = mRecordedData.mid(indexStart, (indexStop-indexStart+1));
     //qDebug() << tttt;
     mIntervalsContainer[num-1]->averageIntervalValue /= (indexStop - indexStart + 1);
-    return qMakePair(indexStart, indexStop); // индексы записанного гррафика, каждые 40 мс
+    return qMakePair(first*1000, second*1000);
+    //return qMakePair(indexStart, indexStop); // индексы записанного гррафика, каждые 40 мс
 }
 
 void RecordedPlot::saveDataForGraphic(unsigned int  x, unsigned int  y)//const ComplexValue &complexVal)
@@ -288,7 +289,7 @@ void RecordedPlot::addDataOnGraphic()
         //mRawDataFile.seek(i*sizeof(_mSPIData));
         mRawDataFile.seek(i);
         mRawDataFile.read((char*)&temp, sizeof(_mSPIData));
-        qDebug() << "temp.timeStamp" <<temp.timeStamp;
+        //qDebug() << "temp.timeStamp" <<temp.timeStamp;
         tempTimeOffset = (float)temp.timeStamp/1000;
         mMainGraph->addData(tempTimeOffset, temp.data);
     }

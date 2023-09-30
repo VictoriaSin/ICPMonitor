@@ -730,9 +730,7 @@ void MainPage::on_rejectMarkButton_clicked()
 void MainPage::startSession()
 {
   ui->sessionButton->setIcon(QIcon(":/icons/deleteSession.svg"), QIcon(":/icons/deleteSession_pressed.svg"));
-  connect(mCurrentGraphsArea, &CurrentGraphsArea::averageReady, this, &MainPage::setAverage);
   connect(this, &MainPage::setAveragePointerPos, ui->alarmLevelICPWidget, &AlarmLevelICPWidget::updateAverageValueOnWidgets);
-
   ui->recordButton        ->show();
   ui->alarmLevelICPWidget ->show();
   ui->averageValue        ->show();
@@ -746,6 +744,8 @@ void MainPage::startSession()
   mCurrentLabelIndex = 0;
   mCurrentGraphsArea->startPlotting();
   mCurrentGraphsArea->startWork();
+
+
 }
 
 void MainPage::stopSession()
@@ -1044,11 +1044,11 @@ void MainPage::on_speedRecordButton_clicked()
     }
 }
 
-void MainPage::setAverage(uint currAverage)
+void MainPage::setAverage(uint16_t currAverage)
 {
-    //ui->averageValue->setText(QString::number(round(currAverage)));
+  //ui->averageValue->setText(QString::number(round(currAverage)));
   ui->averageValue->setText(QString::number(currAverage));
-    setAveragePointerPos(currAverage);
+  setAveragePointerPos(currAverage);
 }
 
 
