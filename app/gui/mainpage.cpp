@@ -559,7 +559,6 @@ void MainPage::on_recordButton_clicked()
         mMarksFile.setFileName(mCurrentRecordDir.path()     + "/" + "MARKS.txt");
         mRawDataFile.setFileName(mCurrentRecordDir.path()   + "/" + "RAW_DATA.txt");
 
-        //mCurrentGraphsArea->startWork();
         qDebug() << mCurrentRecordDir.path();
         if (!mCurrentRecordDir.exists())
         {
@@ -587,15 +586,13 @@ void MainPage::on_recordButton_clicked()
             mHeadFile.close();
         }
 
-
         ui->mainWidgets   ->show();
         ui->sessionButton ->setEnabled(false);
-        //mCurrentGraphsArea->isRecord = true;
-        mCurrentGraphsArea->mSaveSPI->isRecording = true;
-
-        mCurrentGraphsArea->resetGraphOfCurrentValues();
         mRawDataFile.open(QIODevice::WriteOnly | QIODevice::Append);
 
+        mCurrentGraphsArea->isRecord = true;
+        mCurrentGraphsArea->resetGraphOfCurrentValues();
+        mCurrentGraphsArea->mSaveSPI->isRecording = true;
     }
     else
     {
@@ -609,10 +606,6 @@ void MainPage::on_recordButton_clicked()
             mHeadFile.close();
         }
         isStart = true;
-
-
-
-
 
 #define SET_VISIBLED_DISABLED(_UUII) {ui->_UUII->show();  ui->_UUII->setEnabled(false);}
 #define SET_VISIBLED_ENABLED(_UUII) {ui->_UUII->show();  ui->_UUII->setEnabled(true);}
@@ -633,16 +626,16 @@ void MainPage::on_recordButton_clicked()
 
         ui->sessionButton       ->setEnabled(true);
 
-
         SET_VISIBLED_DISABLED(goToPreviousMarkButton);
         SET_VISIBLED_DISABLED(labelsNavigation);
         ui->labelsNavigation->setText("0/0");
         SET_VISIBLED_DISABLED(goToNextMarkButton);
         SET_VISIBLED_ENABLED(makeLabelButton);
 
+        mRawDataFile.close();
         mCurrentGraphsArea->stopWork();
         mCurrentGraphsArea->changeGraph(1);
-        mRawDataFile.close();
+
         mSizeAllRecordedData = mRawDataFile.size()/6;
         mAllRecordedDataBuffer = new _mSPIData[mSizeAllRecordedData];
         mRawDataFile.open(QIODevice::ReadOnly);

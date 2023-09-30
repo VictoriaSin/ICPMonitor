@@ -1,26 +1,26 @@
-#ifndef SAVESPI_H
-#define SAVESPI_H
+#ifndef SAVESPI_1_H
+#define SAVESPI_1_H
 
 #include <QObject>
 #include <QFile>
 #include <QThread>
-#include "savespi_1.h"
+#include "../app/global_define.h"
 
 class CurrentGraphsArea;
 
-class SaveSPI : public QThread
+class SaveSPI_1 : public QThread
 {
     Q_OBJECT
 
 public:
-    SaveSPI();
-    ~SaveSPI();
+    SaveSPI_1();
+    ~SaveSPI_1();
     volatile bool isStopped;
     volatile bool isRunning;
+    _mSPIData temp;
     volatile bool isRecording;
 protected:
-    SaveSPI_1 *mSaveSPI_1 = nullptr;
     void run();
 };
 
-#endif // SAVESPI_H
+#endif // SAVESPI_1_H

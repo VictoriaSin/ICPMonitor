@@ -45,6 +45,7 @@ HEADERS += \
     sensor/impl/fileimitsensor.h \
     sensor/isensor.h \
     sensor/savespi.h \
+    sensor/savespi_1.h \
     sensor/sensor_enums.h \
     sensor/spi.h \
     statistical_functions.h \
@@ -77,6 +78,7 @@ SOURCES += \
     sensor/impl/bmp280temperaturespisensor.cpp \
     sensor/impl/fileimitsensor.cpp \
     sensor/savespi.cpp \
+    sensor/savespi_1.cpp \
     sensor/spi.cpp \
     statistical_functions.cpp \
     ultrafastconverting/countlut.cpp \

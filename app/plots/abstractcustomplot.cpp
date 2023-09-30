@@ -728,7 +728,7 @@ void AbstractCustomPlot::settingUpYAxis2()
 void AbstractCustomPlot::settingAnalisingElements()
 {
     setNoAntialiasingOnDrag(false); // Включаем сглаживание при перетаскивании
-    setNotAntialiasedElements(QCP::aeAll); // Отключаем сглаживание всех элементов
+    setNotAntialiasedElements(QCP::aeNone); // Отключаем сглаживание всех элементов
     setAntialiasedElement(QCP::aePlottables, true); // Включаем сглаживание для графиков
 
     // При взаимодействии пользователя с тачем включаем сглаживание

@@ -819,11 +819,11 @@ void CurrentGraphsArea::startWork()
   cnt               = 0;
   data              = 0;
 
+
   if (mSaveSPI == nullptr)
   {
     mSaveSPI = new SaveSPI();
   }
-  qDebug() << "mSaveSPI->start()";
   mSaveSPI->start();
 
 
@@ -854,6 +854,7 @@ void CurrentGraphsArea::stopWork()
     while(mSaveSPI->isStopped == false);
     mSaveSPI = nullptr;
   }
+  isRecord = false;
   //mTimerGetDataGraph->stop();
   //mTimerGetDataFile->stop();
   //stopPlotting();

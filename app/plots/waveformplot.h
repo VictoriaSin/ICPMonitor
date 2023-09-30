@@ -73,7 +73,9 @@ public slots:
     // AbstractCustomPlot interface
 public:
     void resetGraph() override;
-
+    uint graphRangeSize;//xAxis->range().size()*1000;
+    uint graphCurrentMaxRange;
+    uint graphMinus;
     void scaleFont(float scaleFactor) override;
 };
 
