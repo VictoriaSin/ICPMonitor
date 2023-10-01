@@ -1,5 +1,4 @@
 #include "gui/mainwindow.h"
-
 #include <QApplication>
 #include <QThread>
 #include <QTimer>
@@ -18,6 +17,8 @@
 #include "global_define.h"
 #include "controller/settings.h"
 #include "clock.h"
+
+#include "../core/sensor/zsc.h"
 
 QString mntDirectory("/media/ICPMonitor");
 enum MOUNT_MESSAGE
@@ -265,13 +266,21 @@ bool initFlash(QString currRasdel)
 
 
 Settings *mICPSettings {nullptr};
+class ZSC;
 int main(int argc, char *argv[])
 {
-    QString ttt = executeAConsoleCommand("fbset", QStringList() << "--geometry" << "720" << "480" << "720" << "480" << "16" << "--timings" << "37037" << "60" << "16" << "30" << "9" << "62" << "6");
-    qDebug() << ttt;
-    QApplication a(argc, argv);
 
-    // Получение настроек из контроллера
+  QApplication a(argc, argv);
+  ZSC mZSC;
+  /* for test only */
+  mZSC.test(100, 100);
+  mZSC.terminate();
+  return 99;
+  /* end for test only */
+  QString ttt = executeAConsoleCommand("fbset", QStringList() << "--geometry" << "720" << "480" << "720" << "480" << "16" << "--timings" << "37037" << "60" << "16" << "30" << "9" << "62" << "6");
+  qDebug() << ttt;
+
+  // Получение настроек из контроллера
 #ifdef PC_BUILD
     mICPSettings = new Settings("ICPMonitorSettings.ini");
 #else
@@ -285,12 +294,6 @@ int main(int argc, char *argv[])
     qDebug() << currUUID;
     QString currRasdel = mICPSettings->getFlashDeviceMountPart();
     qDebug() << currRasdel;
-    //u8 resultInit = initFlash(currRasdel);
-    //if (resultInit != 0)
-    //{
-    //  //mICPSettings->writeAllSetting();
-    //  //exit(resultInit);
-    //}
     mount(&currUUID, &currRasdel);
     Q_INIT_RESOURCE(core_res);
 
@@ -324,23 +327,16 @@ int main(int argc, char *argv[])
 #endif
 
     MonitorController monitorController;
-    // Создание GUI
-    MainWindow w;
-    // Создание контроллера приложения и его потока
-    QThread mControllerThread;
-    // Регистрация файлов перевода
-
-    // Установка контроллера виджетам
-    w.installController(&monitorController);
-    // Инициализация контроллера и сброс контроллера в поток
-    monitorController.init();
+    MainWindow w;// Создание GUI
+    QThread mControllerThread;// Создание контроллера приложения и его потока
+    w.installController(&monitorController);// Установка контроллера виджетам
+    monitorController.init();// Инициализация контроллера и сброс контроллера в поток
     monitorController.moveToThread(&mControllerThread);
     mControllerThread.start();
 #ifndef PC_BUILD
     monitorController.controllerEvent(ControllerEvent::GlobalTimeUpdate);
 #endif
-    // Запуск виджетов
-    w.show();
+    w.show();// Запуск виджетов
     const int exitCode = a.exec();
 
     // завершение работы контроллера, выполняемое в потоке контроллера
@@ -353,8 +349,7 @@ int main(int argc, char *argv[])
     mControllerThread.wait(10000);
 
     sleep(1);
-    //qDebug() << "currRasdel" << currRasdel;
-    //umount(&currRasdel);    
+    //umount(&currRasdel);
     qDebug() << "Exit" << exitCode;
     if (executeAConsoleCommand("umount", QStringList() << currRasdel) != "")
     {

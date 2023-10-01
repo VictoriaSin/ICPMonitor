@@ -48,6 +48,7 @@ HEADERS += \
     sensor/savespi_1.h \
     sensor/sensor_enums.h \
     sensor/spi.h \
+    sensor/zsc.h \
     statistical_functions.h \
     ultrafastconverting/countdecimaldigit.h \
     ultrafastconverting/countlut.h \
@@ -80,6 +81,7 @@ SOURCES += \
     sensor/savespi.cpp \
     sensor/savespi_1.cpp \
     sensor/spi.cpp \
+    sensor/zsc.cpp \
     statistical_functions.cpp \
     ultrafastconverting/countlut.cpp \
     ultrafastconverting/dateconversion.cpp \
