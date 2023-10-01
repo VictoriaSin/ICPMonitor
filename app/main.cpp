@@ -1,5 +1,4 @@
 #include "gui/mainwindow.h"
-
 #include <QApplication>
 #include <QThread>
 #include <QTimer>
@@ -18,6 +17,8 @@
 #include "global_define.h"
 #include "controller/settings.h"
 #include "clock.h"
+
+#include "../core/sensor/zsc.h"
 
 QString mntDirectory("/media/ICPMonitor");
 enum MOUNT_MESSAGE
@@ -265,20 +266,21 @@ bool initFlash(QString currRasdel)
 
 
 Settings *mICPSettings {nullptr};
+class ZSC;
 int main(int argc, char *argv[])
 {
+
   QApplication a(argc, argv);
-OWI_InitPins();
-Test();
-//  OWI_SET_LINE_OUTPUT;
-//  OWI_CMD(START_CM);
+  ZSC mZSC;
+  /* for test only */
+  mZSC.test(100, 100);
+  mZSC.terminate();
+  return 99;
+  /* end for test only */
+  QString ttt = executeAConsoleCommand("fbset", QStringList() << "--geometry" << "720" << "480" << "720" << "480" << "16" << "--timings" << "37037" << "60" << "16" << "30" << "9" << "62" << "6");
+  qDebug() << ttt;
 
-
-return 99;
-QString ttt = executeAConsoleCommand("fbset", QStringList() << "--geometry" << "720" << "480" << "720" << "480" << "16" << "--timings" << "37037" << "60" << "16" << "30" << "9" << "62" << "6");
-qDebug() << ttt;
-
-    // Получение настроек из контроллера
+  // Получение настроек из контроллера
 #ifdef PC_BUILD
     mICPSettings = new Settings("ICPMonitorSettings.ini");
 #else
@@ -292,12 +294,6 @@ qDebug() << ttt;
     qDebug() << currUUID;
     QString currRasdel = mICPSettings->getFlashDeviceMountPart();
     qDebug() << currRasdel;
-    //u8 resultInit = initFlash(currRasdel);
-    //if (resultInit != 0)
-    //{
-    //  //mICPSettings->writeAllSetting();
-    //  //exit(resultInit);
-    //}
     mount(&currUUID, &currRasdel);
     Q_INIT_RESOURCE(core_res);
 

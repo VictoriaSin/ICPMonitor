@@ -40,7 +40,6 @@ SOURCES += \
     main.cpp \
     gui/mainwindow.cpp \
     gui/mainpage.cpp \
-    owi_protocol.cpp \
     plots/abstractgraphareawidget.cpp \
     plots/abstractmultiplegraphsareaswidget.cpp \
     plots/currentgraphsarea.cpp \
@@ -83,7 +82,6 @@ HEADERS += \
     gui/technicalaccesspage.h \
     gui/zerosensorpage.h \
     ipagewidget.h \
-    owi_protocol.h \
     plots/abstractgraphareawidget.h \
     plots/abstractmultiplegraphsareaswidget.h \
     plots/currentgraphsarea.h \

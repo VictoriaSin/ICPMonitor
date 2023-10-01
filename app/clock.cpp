@@ -2,6 +2,8 @@
 #include "global_functions.h"
 #include <linux/i2c.h>
 #include <linux/i2o-dev.h>
+#include <unistd.h>
+#include <qdebug.h>
 
 #define DEV_ADDRESS 0x68
 #define DEV_REGISTERS_NUM 7
