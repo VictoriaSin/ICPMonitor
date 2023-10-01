@@ -333,15 +333,17 @@ bool AbstractCustomPlot::editAxisRange(QTouchEvent *touchEvent, float minX, floa
         {
             pointStopX = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x());
             pointStopY = yAxis->pixelToCoord(touchEvent->touchPoints().last().pos().y());
-            float deltaX = pointStopX - pointStartX;
-            float deltaY = pointStopY - pointStartY;
+            //qDebug() << "pointStopY" << pointStopY << "pointStartY" << pointStartY;
+            double deltaX = pointStopX - pointStartX;
+            double deltaY = pointStopY - pointStartY;
 
-            if (!((xAxis->range().lower - deltaX < 0) || (xAxis->range().upper - deltaX > maxX)))
+            if (!((xAxis->range().lower - deltaX < minX) || (xAxis->range().upper - deltaX > maxX)))
             {
                 xAxis->setRange(xAxis->range().lower - deltaX, xAxis->range().upper - deltaX);
             }
             if (!((yAxis->range().lower - deltaY < 0) || (yAxis->range().upper - deltaY > maxY)))
             {
+                //qDebug() << "maxY" << maxY << "lowY" << yAxis->range().lower << "delta" << deltaY;
                 yAxis->setRange(yAxis->range().lower - deltaY, yAxis->range().upper - deltaY);
             }
 
@@ -444,10 +446,11 @@ bool AbstractCustomPlot::event(QEvent *event)
         }
 #endif
     }
-#ifdef PC_BUILD
     else if (mGraphType == IntervalGraph)
     {
         const auto typeOfEvent = event->type();
+#ifdef PC_BUILD
+
         if((typeOfEvent == QEvent::MouseButtonPress) || (typeOfEvent == QEvent::MouseButtonRelease) || (typeOfEvent == QEvent::MouseMove) || (typeOfEvent == QEvent::Wheel))
         {
             if (mCurrentIntervalNum == 1)
@@ -460,12 +463,9 @@ bool AbstractCustomPlot::event(QEvent *event)
             }
             return true;
         }
-    }
+
 #else
-    else if (mGraphType == IntervalGraph)
-    {
-        const auto typeOfEvent = event->type();
-        if((typeOfEvent == QEvent::MouseButtonPress) || (typeOfEvent == QEvent::MouseButtonRelease) || (typeOfEvent == QEvent::MouseMove) || (typeOfEvent == QEvent::Wheel))
+        if((typeOfEvent == QEvent::TouchBegin) || (typeOfEvent == QEvent::TouchEnd) || (typeOfEvent == QEvent::TouchUpdate))// || (typeOfEvent == QEvent::Wheel))
         {
             if (mCurrentIntervalNum == 1)
             {

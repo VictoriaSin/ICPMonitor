@@ -60,10 +60,14 @@ void IntervalPlot::setup(QPair<int, int> points, QColor color)
     mRawDataFile.seek(points.first);
     mRawDataFile.read((char*)tempArr, iterTemp*6);
     mRawDataFile.close();
-
+    float param = 1.0;
+    if (mICPSettings->getCurrentPressureIndex() == 1)
+    {
+        param = indexPressureH2O;
+    }
     for (uint i=0; i<iterTemp; i++)
     {
-        mMainGraph->addData((float)tempArr[i].timeStamp/1000, tempArr[i].data);
+        mMainGraph->addData((float)tempArr[i].timeStamp/1000, tempArr[i].data*param);
     }
     qDebug() << "mCurrentIntervalNum" << mCurrentIntervalNum;
     if (mCurrentIntervalNum == 1)
@@ -97,9 +101,9 @@ void IntervalPlot::scaleFont(float scaleFactor)
     WFontGraphScaling(this, scaleFactor);
 }
 
-bool IntervalPlot::event(QEvent *event)
-{
-    // сенсор
-    return AbstractCustomPlot::event(event);
-}
+//bool IntervalPlot::event(QEvent *event)
+//{
+//    // сенсор
+//    return AbstractCustomPlot::event(event);
+//}
 

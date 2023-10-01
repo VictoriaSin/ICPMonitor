@@ -2,6 +2,11 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <qdebug.h>
+#include <cstring>
+#include <sys/ioctl.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include "../linux/spi/spidev.h"
 
 #define u8  uint8_t
 #define u16 uint16_t
@@ -18,10 +23,12 @@
 #define GPIO_PIN_PATH_RESET "/sys/class/gpio/gpio25"
 #define GPIO_PIN_PATH_OWI "/sys/class/gpio/gpio26"
 
-void OWI_CMD(u8 CMD);
-void OWI_CMD_Data16(u8 CMD, u16 data);
-void OWI_readData(u16* data);
-u16  OWI_getReg(u8 reg, u8 memType);
+void ResetZSC();
+
+//void OWI_CMD(u8 CMD);
+//void OWI_CMD_Data16(u8 CMD, u16 data);
+//void OWI_readData(u16* data);
+//u16  OWI_getReg(u8 reg, u8 memType);
 void OWI_InitPins();
 void Test();
 
@@ -38,8 +45,9 @@ extern FILE *fp;
 
 #define SLAVE_ADDR_W 0xF0
 #define SLAVE_ADDR_R 0xF1
-#define SET_LINE_INPUT  { fp=fopen(GPIO_PIN_PATH_RESET"/direction","w"); fprintf(fp,"in"); fclose(fp);}
-#define SET_LINE_OUTPUT { fp=fopen(GPIO_PIN_PATH_RESET"/direction","w"); fprintf(fp,"out"); fclose(fp);}
+
+#define OWI_SET_LINE_INPUT  { fp=fopen(GPIO_PIN_PATH_OWI"/direction","w"); fprintf(fp,"in"); fclose(fp);}
+#define OWI_SET_LINE_OUTPUT { fp=fopen(GPIO_PIN_PATH_OWI"/direction","w"); fprintf(fp,"out"); fclose(fp);}
 #define LINE_IS_0       //!LL_GPIO_IsInputPinSet(OWI_GPIO_Port, OWI_Pin)
 #define LINE_IS_1       //LL_GPIO_IsInputPinSet(OWI_GPIO_Port, OWI_Pin)
 

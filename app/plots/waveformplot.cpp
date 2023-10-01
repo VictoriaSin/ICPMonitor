@@ -96,8 +96,6 @@ void WaveFormPlot::addDataOnGraphic(unsigned int  x, unsigned int  y)//const Com
 {
   if (x > graphCurrentMaxRange)
   {
-    //x = x % ((unsigned int)xAxis->range().size()*1000);
-    //if (x == 0)
     {
         *mHistGraph->data() = *mMainGraph->data();
         mMainGraph->data()->clear();
@@ -107,18 +105,18 @@ void WaveFormPlot::addDataOnGraphic(unsigned int  x, unsigned int  y)//const Com
   }
 
     x-= graphMinus;
-
-
-
-
     float temp_x = (float) x/1000;
-    float temp_y = (float) y;//1000;
-//qDebug() << "wave" << temp_x;
+    float temp_y = (float) y;
+
 
     if(mHistGraph->data()->size())
     {
         mHistGraph->data()->removeBefore(temp_x + 0.5);
         //mMainGraph->addData(temp_x, temp_y);
+    }
+    if (mICPSettings->getCurrentPressureIndex() == 1)
+    {
+        temp_y *= indexPressureH2O;
     }
     mMainGraph->addData(temp_x, temp_y);
 }

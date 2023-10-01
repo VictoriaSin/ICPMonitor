@@ -591,8 +591,9 @@ void MainPage::on_recordButton_clicked()
         mRawDataFile.open(QIODevice::WriteOnly | QIODevice::Append);
 
         mCurrentGraphsArea->isRecord = true;
-        mCurrentGraphsArea->resetGraphOfCurrentValues();
         mCurrentGraphsArea->mSaveSPI->isRecording = true;
+        mCurrentGraphsArea->resetGraphOfCurrentValues();
+
     }
     else
     {
@@ -1059,7 +1060,6 @@ void MainPage::on_zoomInterval1Button_clicked()
     mCurrentGraphsArea->changeGraph(2); // 1 интервал
 
     ui->goBackToGraphButton   ->show();
-    ui->mInfoInterval1        ->hide();
     ui->intervalButton        ->hide();
     ui->goToInterval1Button   ->hide();
     ui->goToNextMarkButton    ->hide();
@@ -1087,7 +1087,7 @@ void MainPage::on_zoomInterval2Button_clicked()
     mCurrentIntervalNum = 2;
     mCurrentGraphsArea->setMarksOnInterval();
     mCurrentGraphsArea->changeGraph(3); // 2 интервал
-
+    ui->mInfoInterval2->show();
     ui->goBackToGraphButton   ->show();
     ui->mInfoInterval1        ->hide();
     ui->intervalButton        ->hide();
@@ -1103,7 +1103,6 @@ void MainPage::on_zoomInterval2Button_clicked()
     ui->labelsNavigation      ->hide();
     ui->goToInterval2Button   ->hide();
     ui->zoomInterval2Button   ->hide();
-    ui->mInfoInterval2        ->hide();
     //ui->downloadGraphButton   ->hide();
 }
 
@@ -1123,7 +1122,7 @@ void MainPage::on_goBackToGraphButton_clicked()
     ui->zoomInterval1Button   ->show();
     ui->playRecord            ->show();
     ui->labelsNavigation      ->show();
-    ui->mInfoInterval1        ->show();
+    ui->mInfoInterval1->show();
     //ui->downloadGraphButton   ->show();
     if (mIntervalsCount == 4)
     {

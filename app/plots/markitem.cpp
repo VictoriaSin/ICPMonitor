@@ -110,7 +110,8 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, const QString &text, const float pos
     mLineThroughGraph->end->setParentAnchor(mTextItem->position);
     mLineThroughGraph->start->setCoords(position, 0); // abs
     mLineThroughGraph->setLayer("legend");
-    mTextItem->setLayer("legend"); // На один слой ниже чем thiss
+    mTextItem->setLayer("legend"); // На один слой ниже чем this
+
 
     QPen dotPen;
     dotPen.setColor(QColor(Qt::yellow));

@@ -283,6 +283,11 @@ void RecordedPlot::addDataOnGraphic()
 
     uint recordDataCount = mRawDataFile.size();
     float tempTimeOffset = 0;
+    float param = 1.0;
+    if (mICPSettings->getCurrentPressureIndex() == 1)
+    {
+        param = indexPressureH2O;
+    }
     //for (uint i=0; i< mRawDataFile.size()/6; i+=10) // 40/4=10
     for (uint i=0; i < recordDataCount; i+=60) // 40/4=10
     {
@@ -291,7 +296,8 @@ void RecordedPlot::addDataOnGraphic()
         mRawDataFile.read((char*)&temp, sizeof(_mSPIData));
         //qDebug() << "temp.timeStamp" <<temp.timeStamp;
         tempTimeOffset = (float)temp.timeStamp/1000;
-        mMainGraph->addData(tempTimeOffset, temp.data);
+
+        mMainGraph->addData(tempTimeOffset, temp.data*param);
     }
     mRawDataFile.close();
     mNewUpperXValue = tempTimeOffset;
