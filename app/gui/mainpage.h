@@ -155,6 +155,12 @@ private slots:
 
     void on_zoomInterval2Button_clicked();
 
+    void on_funcFirstButton_clicked();
+
+    void on_funcSecondButton_clicked();
+
+    void on_funcThirdButton_clicked();
+
 private:
     Ui::MainPage *ui;
 

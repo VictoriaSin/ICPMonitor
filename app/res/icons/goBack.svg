@@ -12,11 +12,11 @@
    inkscape:export-filename="home.svg"
    inkscape:export-xdpi="25.4"
    inkscape:export-ydpi="25.4"
-   xml:space="preserve"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
      id="namedview7"
      pagecolor="#505050"
      bordercolor="#eeeeee"
@@ -27,9 +27,9 @@
      inkscape:document-units="mm"
      showgrid="false"
      width="200mm"
-     inkscape:zoom="0.96102398"
-     inkscape:cx="277.30838"
-     inkscape:cy="386.56684"
+     inkscape:zoom="1.0998546"
+     inkscape:cx="308.22256"
+     inkscape:cy="423.23776"
      inkscape:window-width="1920"
      inkscape:window-height="1001"
      inkscape:window-x="-9"
@@ -37,48 +37,36 @@
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1"
      inkscape:showpageshadow="0"
-     inkscape:deskcolor="#505050"><inkscape:page
-       x="0"
-       y="0"
-       width="200"
-       height="200"
-       id="page1"
-       margin="0"
-       bleed="0" /><inkscape:page
-       x="210"
-       y="0"
-       width="6.35"
-       height="6.35"
-       id="page2" /></sodipodi:namedview><defs
-     id="defs2"><linearGradient
-       id="swatch1"
-       inkscape:swatch="solid"><stop
-         style="stop-color:#000000;stop-opacity:1;"
-         offset="0"
-         id="stop1" /></linearGradient></defs><g
+     inkscape:deskcolor="#505050" />
+  <defs
+     id="defs2" />
+  <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-24.495907,-32.70782)"><rect
-       style="fill:#0c2731;fill-opacity:1;stroke:#ffffff;stroke-width:2.00961;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     transform="translate(-24.495907,-32.70782)">
+    <rect
+       style="fill:#0c2731;fill-opacity:1;stroke:#f0f0f0;stroke-width:2.00961;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.941176"
        id="rect382"
        width="197.99039"
        height="197.99039"
        x="25.500711"
-       y="33.305332"
-       ry="45.006634" /><rect
+       y="33.712624"
+       ry="45.006634" />
+    <rect
        style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.83577;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.941176"
        id="rect382-3"
        width="180.86423"
        height="180.8642"
        x="34.033142"
        y="42.305744"
-       ry="41.113567" /><path
-       d="M 64.137434,62.0927 C 73.69989,54.367697 86.89377,49.59269 100,49.59269 a 50.000063,50.000008 0 1 1 -50.000126,50.000013 6.2500078,6.2500007 0 0 0 -12.49987,0 c 0,34.518767 27.98107,62.500007 62.499996,62.500007 34.51871,0 62.49999,-27.98124 62.49999,-62.500007 0,-34.51876 -27.98128,-62.499999 -62.49999,-62.499999 -15.9312,0 -31.91885,5.724991 -43.749976,15.306237 v -9.056244 a 6.2500471,6.2500401 0 0 0 -12.50008,0 v 24.999996 a 6.2500078,6.2500007 0 0 0 6.24993,6.250014 H 75.00004 a 6.2500116,6.2500047 0 0 0 0,-12.500007 z"
+       ry="41.113567" />
+    <path
+       d="M 88.633342,95.207811 C 98.195798,87.482805 111.38968,82.707798 124.49591,82.707798 a 50.000063,50.000008 0 1 1 -50.000128,50.000012 6.2500078,6.2500007 0 0 0 -12.49987,0 c 0,34.51877 27.98107,62.50001 62.499998,62.50001 34.51871,0 62.49999,-27.98124 62.49999,-62.50001 0,-34.518759 -27.98128,-62.499998 -62.49999,-62.499998 -15.9312,0 -31.918852,5.724991 -43.749978,15.306237 v -9.056244 a 6.2500471,6.2500401 0 0 0 -12.50008,0 V 101.4578 a 6.2500078,6.2500007 0 0 0 6.24993,6.25001 h 25.000166 a 6.2500116,6.2500047 0 0 0 0,-12.499999 z"
        fill="#000000"
        fill-rule="nonzero"
        id="path1-9"
        style="fill:#0c2731;fill-opacity:1;stroke:#0c2731;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"
-       inkscape:label="path1"
-       transform="translate(24.495907,32.70782)" /></g><title
-     id="title1">reload</title></svg>
+       inkscape:label="path1" />
+  </g>
+</svg>
