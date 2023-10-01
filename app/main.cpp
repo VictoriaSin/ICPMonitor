@@ -267,9 +267,16 @@ bool initFlash(QString currRasdel)
 Settings *mICPSettings {nullptr};
 int main(int argc, char *argv[])
 {
-    QString ttt = executeAConsoleCommand("fbset", QStringList() << "--geometry" << "720" << "480" << "720" << "480" << "16" << "--timings" << "37037" << "60" << "16" << "30" << "9" << "62" << "6");
-    qDebug() << ttt;
-    QApplication a(argc, argv);
+  QApplication a(argc, argv);
+OWI_InitPins();
+Test();
+//  OWI_SET_LINE_OUTPUT;
+//  OWI_CMD(START_CM);
+
+
+return 99;
+QString ttt = executeAConsoleCommand("fbset", QStringList() << "--geometry" << "720" << "480" << "720" << "480" << "16" << "--timings" << "37037" << "60" << "16" << "30" << "9" << "62" << "6");
+qDebug() << ttt;
 
     // Получение настроек из контроллера
 #ifdef PC_BUILD
@@ -324,23 +331,16 @@ int main(int argc, char *argv[])
 #endif
 
     MonitorController monitorController;
-    // Создание GUI
-    MainWindow w;
-    // Создание контроллера приложения и его потока
-    QThread mControllerThread;
-    // Регистрация файлов перевода
-
-    // Установка контроллера виджетам
-    w.installController(&monitorController);
-    // Инициализация контроллера и сброс контроллера в поток
-    monitorController.init();
+    MainWindow w;// Создание GUI
+    QThread mControllerThread;// Создание контроллера приложения и его потока
+    w.installController(&monitorController);// Установка контроллера виджетам
+    monitorController.init();// Инициализация контроллера и сброс контроллера в поток
     monitorController.moveToThread(&mControllerThread);
     mControllerThread.start();
 #ifndef PC_BUILD
     monitorController.controllerEvent(ControllerEvent::GlobalTimeUpdate);
 #endif
-    // Запуск виджетов
-    w.show();
+    w.show();// Запуск виджетов
     const int exitCode = a.exec();
 
     // завершение работы контроллера, выполняемое в потоке контроллера
@@ -353,7 +353,6 @@ int main(int argc, char *argv[])
     mControllerThread.wait(10000);
 
     sleep(1);
-    //qDebug() << "currRasdel" << currRasdel;
     //umount(&currRasdel);    
     qDebug() << "Exit" << exitCode;
     if (executeAConsoleCommand("umount", QStringList() << currRasdel) != "")
