@@ -32,7 +32,11 @@ void SaveSPI::run()
   sum               = 0;
   cnt               = 0;
 
-
+  float param = 1.0;
+  if (mICPSettings->getCurrentPressureIndex() == 1)
+  {
+      param = indexPressureH2O;
+  }
   maxBuffSizeAvg =(uint) (1000.0 / TIME_INTERVAL_FOR_WRITE_ON_GRAPH * AverageIntervalSec);
   CurrDataForAverage = new uint16_t[maxBuffSizeAvg];
 
@@ -55,12 +59,14 @@ void SaveSPI::run()
     READ_SPI_DATA();
     temp.timeStamp = (uint32_t)(currentTime - startTime);
 
-    mMainPage->setAverage(calcAverage(temp.data));
+    mMainPage->setAverage(calcAverage(temp.data*param));
     mWaveGraph->addDataOnGraphic(temp.timeStamp, temp.data);
   }
 
   if (isRunning)
   {
+    mWaveGraph->mMainGraph->data()->clear();
+    mWaveGraph->mHistGraph->data()->clear();
     if (mSaveSPI_1 == nullptr)
     {
       mSaveSPI_1 = new SaveSPI_1();
@@ -70,8 +76,6 @@ void SaveSPI::run()
     temp.timeStamp = 0;
     mWaveGraph->graphCurrentMaxRange = mWaveGraph->graphRangeSize;
     mWaveGraph->graphMinus = 0;
-    mWaveGraph->mMainGraph->data().clear();
-    mWaveGraph->mHistGraph->data().clear();
     //qDebug() << "SaveSPI start record";
     startTime = getCurrentTimeStamp_ms();
     stopTimeGraph = startTime + TIME_INTERVAL_FOR_WRITE_ON_GRAPH;
@@ -81,7 +85,7 @@ void SaveSPI::run()
       if (currentTime > stopTimeGraph)
       {
         stopTimeGraph += TIME_INTERVAL_FOR_WRITE_ON_GRAPH;
-        mMainPage->setAverage(calcAverage(mSaveSPI_1->temp.data));
+        mMainPage->setAverage(calcAverage(mSaveSPI_1->temp.data*param));
         mWaveGraph->addDataOnGraphic(mSaveSPI_1->temp.timeStamp, mSaveSPI_1->temp.data);
         QThread::msleep(5);
       }

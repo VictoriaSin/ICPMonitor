@@ -122,5 +122,11 @@
         <file>icons/zoomFirstInterval.svg</file>
         <file>icons/zoomSecondInterval_pressed.svg</file>
         <file>icons/zoomSecondInterval.svg</file>
+        <file>icons/func1_pressed.svg</file>
+        <file>icons/func1.svg</file>
+        <file>icons/func2_pressed.svg</file>
+        <file>icons/func2.svg</file>
+        <file>icons/func3_pressed.svg</file>
+        <file>icons/func3.svg</file>
     </qresource>
 </RCC>

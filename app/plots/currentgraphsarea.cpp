@@ -233,10 +233,11 @@ void CurrentGraphsArea::scaleFont(float scaleFactor)
     AbstractMultipleGraphsAreasWidget::scaleFont(scaleFactor);
     mWaveGraph->scaleFont(scaleFactor);
     mRecordedGraph->scaleFont(scaleFactor);
-    // Скейлим шрифт для LabelItems
-    mFontForLabelItems = FontScaling(mFontForLabelItems, scaleFactor);
     mFirstInterval->scaleFont(scaleFactor);
     mSecondInterval->scaleFont(scaleFactor);
+    // Скейлим шрифт для LabelItems
+    mFontForLabelItems = FontScaling(mFontForLabelItems, scaleFactor);
+
 }
 
 void CurrentGraphsArea::installController(MonitorController *controller)
@@ -406,7 +407,7 @@ void CurrentGraphsArea::updateIntervalsOnGraphs()
     if (!settings) {
         return;
     }
-#define indexPressureH2O 13.595
+//#define indexPressureH2O 13.595
     mWaveGraph->setXRange(0, settings->getCurrentReadingsGraphIntervalX());
     if (mICPSettings->getCurrentPressureIndex() == 1)
     {
@@ -450,6 +451,9 @@ void CurrentGraphsArea::updateTicksOnGraphs()
 
     mRecordedGraph->xAxis->ticker()->setTickCount(settings->getCurrentTickCountX());
     mRecordedGraph->yAxis->ticker()->setTickCount(settings->getCurrentTickCountY());
+
+    mFirstInterval->yAxis->ticker()->setTickCount(settings->getCurrentTickCountY()); // нужны ли деления по оси x
+    mSecondInterval->yAxis->ticker()->setTickCount(settings->getCurrentTickCountY()); // нужны ли деления по оси x
 }
 
 void CurrentGraphsArea::changePressureUnits()
@@ -684,7 +688,6 @@ void CurrentGraphsArea::setMarksOnInterval()
     }
     listOfMarks = fileMarksData.split("\n");
     MarkItem *newMark = nullptr;
-    QFont mFontForLabelItems {"Sans Serif", 16};
 
 
     for (int i=0; i<listOfMarks.count()-1; i++)

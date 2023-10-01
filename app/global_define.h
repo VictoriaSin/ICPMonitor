@@ -58,6 +58,7 @@ enum interval { first = false, second = true};
 #define TIME_INTERVAL_FOR_WRITE_ON_GRAPH (40) //40 миллисекунд - 25 раз в секунду
 #define TIME_INTERVAL_DIFF (TIME_INTERVAL_FOR_WRITE_ON_GRAPH / TIME_INTERVAL_FOR_RECORD_IN_FILE)
 
-#define READ_SPI_DATA() temp.data = (uint16_t)(30 + 15 * sin(3.14 * (double)((temp.timeStamp % 2000) + 1)/500));//(12 + rand() % 20)
+#define READ_SPI_DATA() temp.data = (uint16_t)(30 + 15 * sin(3.14 * (double)((temp.timeStamp % 2000) + 1)/500))//(12 + rand() % 20)
+#define indexPressureH2O 13.595
 
 #endif // GLOBAL_DEFINE_H

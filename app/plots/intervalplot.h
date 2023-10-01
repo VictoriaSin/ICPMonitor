@@ -12,7 +12,7 @@ class IntervalPlot : public AbstractCustomPlot
 public:
     explicit IntervalPlot(QWidget *parent = nullptr);
     //~IntervalPlot();
-    bool event(QEvent *event) override;
+    //bool event(QEvent *event) override;
     void retranslate();
     void scaleFont(float scaleFactor) override;
 

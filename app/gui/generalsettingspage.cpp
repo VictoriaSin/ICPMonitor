@@ -136,7 +136,7 @@ void GeneralSettingsPage::updateGeneralSettingsOnWidgets()
     ui->softwareStorageUUIDLineEdit->setText(settings->getSoftwareStorageUUID());    
 }
 
-#define indexPressureH2O 13.595
+//#define indexPressureH2O 13.595
 void GeneralSettingsPage::updateParameters()
 {
     if (!mController) {

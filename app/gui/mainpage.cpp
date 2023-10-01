@@ -176,7 +176,7 @@ void MainPage::setupButtons()
     ui->mInfoInterval2->hide();
 
     ui->alarmLevelICPWidget->hide();
-    ui->averageICPWidget->hide();
+    //ui->averageICPWidget->hide();
     ui->sensorStateLabel->hide();
 
     ui->playRecord->setIcon(QIcon(":/icons/playRecord.svg"),QIcon(":/icons/playRecord_pressed.svg"));
@@ -213,6 +213,21 @@ void MainPage::setupButtons()
     ui->zoomInterval2Button->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
     ui->zoomInterval2Button->setStyleSheet(ToolButtonStyleSheet);
     ui->zoomInterval2Button->hide();
+
+    ui->funcFirstButton->setIcon(QIcon(":/icons/func1.svg"),QIcon(":/icons/func1_pressed.svg"));
+    ui->funcFirstButton->setIconSize(QSize(BUT_SIZE_BIG, BUT_SIZE_BIG));
+    ui->funcFirstButton->setStyleSheet(ToolButtonStyleSheet);
+    ui->funcFirstButton->hide();
+
+    ui->funcSecondButton->setIcon(QIcon(":/icons/func2.svg"),QIcon(":/icons/func2_pressed.svg"));
+    ui->funcSecondButton->setIconSize(QSize(BUT_SIZE_BIG, BUT_SIZE_BIG));
+    ui->funcSecondButton->setStyleSheet(ToolButtonStyleSheet);
+    ui->funcSecondButton->hide();
+
+    ui->funcThirdButton->setIcon(QIcon(":/icons/func3.svg"),QIcon(":/icons/func3_pressed.svg"));
+    ui->funcThirdButton->setIconSize(QSize(BUT_SIZE_BIG, BUT_SIZE_BIG));
+    ui->funcThirdButton->setStyleSheet(ToolButtonStyleSheet);
+    ui->funcThirdButton->hide();
 }
 
 void MainPage::setupBottomInfoSVG()
@@ -591,8 +606,9 @@ void MainPage::on_recordButton_clicked()
         mRawDataFile.open(QIODevice::WriteOnly | QIODevice::Append);
 
         mCurrentGraphsArea->isRecord = true;
-        mCurrentGraphsArea->resetGraphOfCurrentValues();
         mCurrentGraphsArea->mSaveSPI->isRecording = true;
+        mCurrentGraphsArea->resetGraphOfCurrentValues();
+
     }
     else
     {
@@ -1058,8 +1074,10 @@ void MainPage::on_zoomInterval1Button_clicked()
     mCurrentGraphsArea->setMarksOnInterval();
     mCurrentGraphsArea->changeGraph(2); // 1 интервал
 
+    ui->funcFirstButton->show();
+    ui->funcSecondButton->show();
+    ui->funcThirdButton->show();
     ui->goBackToGraphButton   ->show();
-    ui->mInfoInterval1        ->hide();
     ui->intervalButton        ->hide();
     ui->goToInterval1Button   ->hide();
     ui->goToNextMarkButton    ->hide();
@@ -1088,6 +1106,10 @@ void MainPage::on_zoomInterval2Button_clicked()
     mCurrentGraphsArea->setMarksOnInterval();
     mCurrentGraphsArea->changeGraph(3); // 2 интервал
 
+    ui->funcFirstButton->show();
+    ui->funcSecondButton->show();
+    ui->funcThirdButton->show();
+    ui->mInfoInterval2->show();
     ui->goBackToGraphButton   ->show();
     ui->mInfoInterval1        ->hide();
     ui->intervalButton        ->hide();
@@ -1103,7 +1125,6 @@ void MainPage::on_zoomInterval2Button_clicked()
     ui->labelsNavigation      ->hide();
     ui->goToInterval2Button   ->hide();
     ui->zoomInterval2Button   ->hide();
-    ui->mInfoInterval2        ->hide();
     //ui->downloadGraphButton   ->hide();
 }
 
@@ -1113,6 +1134,9 @@ void MainPage::on_goBackToGraphButton_clicked()
     mCurrentIntervalNum = 0;
     mCurrentGraphsArea->changeGraph(1);
     ui->goBackToGraphButton   ->hide();
+    ui->funcFirstButton       ->hide();
+    ui->funcSecondButton      ->hide();
+    ui->funcThirdButton       ->hide();
     ui->goToInterval1Button   ->show();
     ui->goToNextMarkButton    ->show();
     ui->goToPreviousMarkButton->show();
@@ -1123,7 +1147,7 @@ void MainPage::on_goBackToGraphButton_clicked()
     ui->zoomInterval1Button   ->show();
     ui->playRecord            ->show();
     ui->labelsNavigation      ->show();
-    ui->mInfoInterval1        ->show();
+    ui->mInfoInterval1->show();
     //ui->downloadGraphButton   ->show();
     if (mIntervalsCount == 4)
     {
@@ -1138,3 +1162,21 @@ void MainPage::on_goBackToGraphButton_clicked()
 
 
 }
+
+void MainPage::on_funcFirstButton_clicked()
+{
+//
+}
+
+
+void MainPage::on_funcSecondButton_clicked()
+{
+//
+}
+
+
+void MainPage::on_funcThirdButton_clicked()
+{
+//
+}
+
