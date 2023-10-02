@@ -291,6 +291,8 @@ class ZSC
     ZSC();
     void terminate();
     void test(u16 iter, u32 delay_ms);
+    u16 data[2];
+    void oneShot();
   protected:
     int mFd {-1};
     bool mIsOpen = false;
@@ -320,10 +322,8 @@ class ZSC
     u16 signature(u16* eepcont, u16 N);
     void resetZSC();
     void initPins();
-
-
-
-
+    void initZSC();
+    bool spi_saveReg(u8 reg, u16 data, u8 memType);
 };
 
 #endif // ZSC_H

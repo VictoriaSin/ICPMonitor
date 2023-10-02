@@ -28,8 +28,48 @@ ZSC::ZSC()
 
   initPins();
   spi_open();
+  initZSC();
 }
+void ZSC::initZSC()
+{
+  bool result;
+  QThread::msleep(100);
+  result = spi_open(); if (result == false) { qDebug() << "errror spi_open()"; return; }
 
+  resetZSC();
+  SPI_CMD(START_CM);
+
+  u16 regs[32];
+  char rBuf[200];
+
+  // set registers value DANYA
+
+  u16 regsValue[32]
+  {
+    0x0100, 0x2000, 0x0000, 0x0000,
+    0x0000, 0x0000, 0x0000, 0x0000,
+    0x0000, 0x07FF, 0x1000, 0x2000,
+    0x0000, 0x1000, 0x2000, 0x0000,
+    0x0000, 0x1F00, 0x0000, 0x0000,
+    0xFFFF, 0x0000, 0x0048, 0x0015,
+    0x7629, 0x900C, 0x0124, 0x8060,
+    0x15C9, 0xE2A2, 0x0000, 0x0001
+  };
+  for (u8 reg = 0; reg < 32; reg++)
+  {
+    spi_saveReg(reg, regsValue[reg], ZSC_RAM);
+  }
+  // show registers
+  for (u8 reg = 0; reg < 32; reg++)
+  {
+    regs[reg] = spi_getReg(reg, ZSC_RAM);
+    sprintf(rBuf, "Reg[0x%02X]=0x%04X", reg, regs[reg]);
+    qDebug() << rBuf;
+  }
+ // QThread::msleep(2000);
+  SPI_CMD(START_CYC_RAM); QThread::msleep(10); // Start measurement cycle including initialization from RAM
+  SPI_CMD(START_NOM);     QThread::msleep(100);
+}
 void ZSC::terminate()
 {
   spi_close();
@@ -72,7 +112,6 @@ bool ZSC::spi_readSPI()
   CS_H();
   return true;
 }
-
 bool ZSC::spi_write()
 {
   CS_L();
@@ -80,7 +119,6 @@ bool ZSC::spi_write()
   CS_H();
   return true;
 }
-
 bool ZSC::SPI_CMD(u8 CMD)
 {
 
@@ -101,7 +139,17 @@ u16 ZSC::spi_getReg(u8 reg, u8 memType)
   CS_H();
   return ((u16)(rxBuffer[0]<<8) + rxBuffer[1]);
 }
-
+bool ZSC::spi_saveReg(u8 reg, u16 data, u8 memType)
+{
+  txBuffer[0] = SLAVE_ADDR_W;
+  txBuffer[1] = reg + memType + 0x70;
+  txBuffer[2] = (u8)(data >> 8);
+  txBuffer[3] = (u8)data;
+  mMessageTX.len = 4;
+  CS_L();
+  if (ioctl(mFd, SPI_IOC_MESSAGE(1), &mMessageTX) < 1) { CS_H(); return false; }
+  CS_H();
+}
 bool ZSC::spi_getArray(u16 *data)
 {
   CS_L();
@@ -142,7 +190,6 @@ void ZSC::resetZSC()
   fprintf(fpReset_2,"0");
   fclose(fpReset_2);
 }
-
 void ZSC::initPins()
 {
   FILE *fpReset = nullptr;
@@ -170,30 +217,13 @@ void ZSC::initPins()
 
   qDebug() << "Pins init";
 }
-
+void ZSC::oneShot()
+{
+  spi_getArray(data);
+}
 void ZSC::test(u16 iter, u32 delay_ms)
 {
-  bool result;
-  QThread::msleep(100);
-  result = spi_open(); if (result == false) { qDebug() << "errror spi_open()"; return; }
-
-  resetZSC();
-  SPI_CMD(START_CM);
-
-  u16 regs[32];
   char rBuf[200];
-    for (u8 reg = 0; reg < 32; reg++)
-    {
-      regs[reg] = spi_getReg(reg, ZSC_RAM);
-      sprintf(rBuf, "Reg[0x%02X]=0x%04X", reg, regs[reg]);
-      qDebug() << rBuf;
-    }
-    QThread::msleep(100);
-
-  SPI_CMD(START_CYC_RAM); QThread::msleep(10); // Start measurement cycle including initialization from RAM
-  SPI_CMD(START_NOM);     QThread::msleep(100);
-  u16 data[2];
-
   for (u16 i = 0; i < iter; i++)
   {
     spi_getArray(data);
