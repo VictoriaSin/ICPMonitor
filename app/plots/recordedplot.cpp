@@ -221,9 +221,14 @@ void RecordedPlot::saveDataForGraphic(unsigned int  x, unsigned int  y)//const C
 //    qDebug() << mRecordedData.size();
 }
 
-void RecordedPlot::downloadData(QByteArray */*temp*/)
+void RecordedPlot::downloadData(QByteArray *temp)
 {
-    //
+//    mMainGraph->data().clear();
+//    _mSPIData ttt;
+//    for (int i=0; i< temp->size()/6; i++)
+//    {
+//        ttt
+//    }
 }
 
 //#define timerDelay 5
@@ -274,14 +279,24 @@ void RecordedPlot::addDataOnGraphic()
     //qDebug() << mSizeAllRecordedData;
     //qDebug() << "rr" <<mAllRecordedDataBuffer[mSizeAllRecordedData-1].timeStamp;
     //float mNewUpperXValue = (float)mAllRecordedDataBuffer[mSizeAllRecordedData-1].timeStamp/1000;
+    QFile *currFile;
+    if (isDownloadGraph)
+    {
+        mMainGraph->data()->clear();
+        currFile = &mTestData;
+    }
+    else
+    {
+        currFile = &mRawDataFile;
+    }
     float mNewUpperXValue;
 
     //for (int i = 0; i < mRecordedData.count(); i++)
 
-    mRawDataFile.open(QIODevice::ReadOnly);
+    currFile->open(QIODevice::ReadOnly);
     _mSPIData temp;
 
-    uint recordDataCount = mRawDataFile.size();
+    uint recordDataCount = currFile->size();
     float tempTimeOffset = 0;
     float param = 1.0;
     if (mICPSettings->getCurrentPressureIndex() == 1)
@@ -292,14 +307,14 @@ void RecordedPlot::addDataOnGraphic()
     for (uint i=0; i < recordDataCount; i+=60) // 40/4=10
     {
         //mRawDataFile.seek(i*sizeof(_mSPIData));
-        mRawDataFile.seek(i);
-        mRawDataFile.read((char*)&temp, sizeof(_mSPIData));
+        currFile->seek(i);
+        currFile->read((char*)&temp, sizeof(_mSPIData));
         //qDebug() << "temp.timeStamp" <<temp.timeStamp;
         tempTimeOffset = (float)temp.timeStamp/1000;
 
-        mMainGraph->addData(tempTimeOffset, temp.data*param);
+        mMainGraph->addData(tempTimeOffset, (float)temp.data*param);
     }
-    mRawDataFile.close();
+    currFile->close();
     mNewUpperXValue = tempTimeOffset;
     qDebug() <<"x max"<< mNewUpperXValue;
     if (mNewUpperXValue < xAxis->range().upper)

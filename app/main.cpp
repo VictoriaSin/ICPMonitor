@@ -266,8 +266,10 @@ bool initFlash(QString currRasdel)
 
 
 Settings *mICPSettings {nullptr};
+#ifndef PC_BUILD
 class ZSC;
 ZSC mZSC;
+#endif
 int main(int argc, char *argv[])
 {
 

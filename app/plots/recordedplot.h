@@ -10,8 +10,9 @@ class TextEditDialog;
 class MonitorController;
 
 extern bool isPlayRecord;
-
+extern bool isDownloadGraph;
 extern QFile mRawDataFile;
+extern QFile mTestData;
 class RecordedPlot : public AbstractCustomPlot
 {
     Q_OBJECT
