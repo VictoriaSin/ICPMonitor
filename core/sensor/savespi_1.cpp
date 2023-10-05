@@ -1,8 +1,10 @@
 #include "savespi_1.h"
 #include <QDebug>
 #include "../app/plots/waveformplot.h"
+#include "../core/sensor/zsc.h"
 
-
+class ZSC;
+extern ZSC mZSC;
 class WaveFormPlot;
 extern  WaveFormPlot *mWaveGraph;
 SaveSPI_1::SaveSPI_1() : QThread()
@@ -37,12 +39,14 @@ void SaveSPI_1::run()
     {
       stopTimeFile += TIME_INTERVAL_FOR_RECORD_IN_FILE;
       READ_SPI_DATA();
+      temp.data = mZSC.data[0];
       temp.timeStamp = (uint32_t)(currentTime - startTime);
       //qDebug() << "temp.timeStamp" << temp.timeStamp;
       mRawDataFile.write((char*)&temp, sizeof(_mSPIData));
       //QThread::msleep(1);
+      mZSC.oneShot();
     }
-    else QThread::usleep(400);
+    else QThread::usleep(50); //400
   }
   qDebug() << "SaveSPI_1 stopped";
   isStopped = true;

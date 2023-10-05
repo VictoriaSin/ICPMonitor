@@ -267,15 +267,16 @@ bool initFlash(QString currRasdel)
 
 Settings *mICPSettings {nullptr};
 class ZSC;
+ZSC mZSC;
 int main(int argc, char *argv[])
 {
 
   QApplication a(argc, argv);
-  ZSC mZSC;
+
   /* for test only */
-  mZSC.test(1000, 200);
-  mZSC.terminate();
-  return 99;
+  //mZSC.test(1000, 200);
+  //mZSC.terminate();
+  //return 99;
   /* end for test only */
   QString ttt = executeAConsoleCommand("fbset", QStringList() << "--geometry" << "720" << "480" << "720" << "480" << "16" << "--timings" << "37037" << "60" << "16" << "30" << "9" << "62" << "6");
   qDebug() << ttt;
