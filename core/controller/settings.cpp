@@ -49,6 +49,14 @@ void Settings::readGeneralSettings()
     mSoftwareStorageUUID = mSettings->value("mSoftwareStorageUUID", mSoftwareStorageUUID).toString();
     mFlashDeviceMountPart = mSettings->value("mFlashDeviceMountPart", mFlashDeviceMountPart).toString();
     //mLastSavedDateTimestampSec = mSettings->value("mLastSavedDateTimestampSec", qlonglong(mLastSavedDateTimestampSec)).toLongLong();
+    QString regString = mSettings->value("regString", regString).toString();
+    QString temp = regString; // не работает с той же строкой
+    QStringList regList = temp.split("_"); // через разделители , и ; не воспринимает как строку
+    for (uint8_t i=0; i<32; i++)
+    {
+        mRegValues[i] = regList[i].toUInt(nullptr, 16);//.split("0x")[1]
+        qDebug() << mRegValues[i];
+    }
     mFontScaleFactor = mSettings->value("mFontScaleFactor", mFontScaleFactor).toFloat();
     mSettings->endGroup();
 }
@@ -62,6 +70,16 @@ qDebug() << "lang" << QString::number(mLanguageSettings->getCurrentLanguage());
     mSettings->setValue("mFlashDeviceMountPart", mFlashDeviceMountPart);
     //mSettings->setValue("mLastSavedDateTimestampSec", qlonglong(mLastSavedDateTimestampSec));
     mSettings->setValue("mFontScaleFactor", QString::number(mFontScaleFactor));
+    QString regString;
+    for (uint8_t i=0; i<32; i++)
+    {
+        regString += "0x" + QString::number(mRegValues[i], 16).rightJustified(4, '0').toUpper();
+        if (i != 31)
+        {
+            regString += "_";
+        }
+    }
+    mSettings->setValue("regString", regString);
     mSettings->endGroup();
     mSettings->sync();
 }
@@ -69,6 +87,14 @@ qDebug() << "lang" << QString::number(mLanguageSettings->getCurrentLanguage());
 void Settings::setFontScaleFactor(float fontScaleFactor)
 {
     mFontScaleFactor = fontScaleFactor;
+}
+
+void Settings::setRegsValues(uint16_t* regs)
+{
+    for (uint i=0; i<32; i++)
+    {
+        mRegValues[i] = regs[i];
+    }
 }
 
 bool Settings::setAppLanguage(QLocale::Language language)
@@ -160,11 +186,11 @@ void Settings::readCurrentSensorReadingsSettings()
     mRelativeCurrentSensorReadingsPath = mSettings->value("mRelativeCurrentSensorReadingsPath", mRelativeCurrentSensorReadingsPath).toString();
     mMaxTimeStorageCurrentSensorReadingsMs = mSettings->value("mMaxTimeStorageCurrentSensorReadingsMs", qlonglong(mMaxTimeStorageCurrentSensorReadingsMs)).toLongLong();
 
-    mCurrentReadingsGraphIntervalX = mSettings->value("mCurrentReadingsGraphIntervalX", mCurrentReadingsGraphIntervalX).toDouble();    
-    mCurrentReadingsGraphIntervalY = mSettings->value("mCurrentReadingsGraphIntervalY", mCurrentReadingsGraphIntervalY).toDouble();
+    mCurrentReadingsGraphIntervalX = mSettings->value("mCurrentReadingsGraphIntervalX", mCurrentReadingsGraphIntervalX).toFloat();
+    mCurrentReadingsGraphIntervalY = mSettings->value("mCurrentReadingsGraphIntervalY", mCurrentReadingsGraphIntervalY).toFloat();
 
-    mTickCountX = mSettings->value("mTickCountX", mTickCountX).toDouble();
-    mTickCountY = mSettings->value("mTickCountY", mTickCountY).toDouble();
+    mTickCountX = mSettings->value("mTickCountX", mTickCountX).toFloat();
+    mTickCountY = mSettings->value("mTickCountY", mTickCountY).toFloat();
 
     mPressureUnitsIndex = mSettings->value("mPressureUnitsIndex", mPressureUnitsIndex).toUInt();
     mAverageIntervalSec = mSettings->value("mAverageIntervalSec", mAverageIntervalSec).toFloat();
@@ -176,8 +202,8 @@ void Settings::writeCurrentSensorReadingsSettings()
     mSettings->beginGroup(mCurrentSensorReadingsGroup);
     mSettings->setValue("mRelativeCurrentSensorReadingsPath", mRelativeCurrentSensorReadingsPath);
     mSettings->setValue("mMaxTimeStorageCurrentSensorReadingsMs", qlonglong(mMaxTimeStorageCurrentSensorReadingsMs));
-    mSettings->setValue("mCurrentReadingsGraphIntervalX", mCurrentReadingsGraphIntervalX);
-    mSettings->setValue("mCurrentReadingsGraphIntervalY", mCurrentReadingsGraphIntervalY);
+    mSettings->setValue("mCurrentReadingsGraphIntervalX", QString::number(mCurrentReadingsGraphIntervalX));
+    mSettings->setValue("mCurrentReadingsGraphIntervalY", QString::number(mCurrentReadingsGraphIntervalY));
     mSettings->setValue("mTickCountX", QString::number(mTickCountX));
     mSettings->setValue("mTickCountY", QString::number(mTickCountY));
     mSettings->setValue("mPressureUnitsIndex", mPressureUnitsIndex);

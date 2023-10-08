@@ -44,17 +44,11 @@ void ZSC::initZSC()
 
   // set registers value DANYA
 
-  u16 regsValue[32]
+  for (uint i=0; i<32; i++)
   {
-    0x0100, 0x2000, 0x0000, 0x0000,
-    0x0000, 0x0000, 0x0000, 0x0000,
-    0x0000, 0x07FF, 0x1000, 0x2000,
-    0x0000, 0x1000, 0x2000, 0x0000,
-    0x0000, 0x1F00, 0x0000, 0x0000,
-    0xFFFF, 0x0000, 0x0048, 0x0015,
-    0x7629, 0x900C, 0x0124, 0x8060,
-    0x15C9, 0xE2A2, 0x0000, 0x0001
-  };
+      regsValue[i] = initRegs[i];//mICPSettings->getRegValues()[i];
+  }
+
   for (u8 reg = 0; reg < 32; reg++)
   {
     spi_saveReg(reg, regsValue[reg], ZSC_RAM);
@@ -70,6 +64,17 @@ void ZSC::initZSC()
   SPI_CMD(START_CYC_RAM); QThread::msleep(10); // Start measurement cycle including initialization from RAM
   SPI_CMD(START_NOM);     QThread::msleep(100);
 }
+
+void ZSC::resetRegsValues()
+{
+    resetZSC();
+    SPI_CMD(START_CM);
+    for (uint i=0; i<32; i++)
+    {
+        regsValue[i] = mICPSettings->getRegValues()[i];
+    }
+}
+
 void ZSC::terminate()
 {
   spi_close();

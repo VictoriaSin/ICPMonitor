@@ -264,10 +264,12 @@ bool initFlash(QString currRasdel)
   return 11;
 }
 
-
+//#ifndef PC_BUILD убрать вообще
+//    class ZSC;
+//    ZSC mZSC;
+//#endif
 Settings *mICPSettings {nullptr};
-class ZSC;
-ZSC mZSC;
+
 int main(int argc, char *argv[])
 {
 
@@ -291,6 +293,7 @@ int main(int argc, char *argv[])
     mICPSettings->registrateLangFile(QLocale::Language::English, ":/trans/icp_monitor_en.qm");
     // Чтение настроек
     mICPSettings->readAllSetting();
+
     QString currUUID = mICPSettings->getSoftwareStorageUUID();
     qDebug() << currUUID;
     QString currRasdel = mICPSettings->getFlashDeviceMountPart();

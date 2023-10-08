@@ -29,6 +29,7 @@ SOURCES += \
     gui/decoratorspinbox.cpp \
     gui/generalsettingspage.cpp \
     gui/gui_funcs.cpp \
+    gui/hexkeyboard.cpp \
     gui/languagepage.cpp \
     gui/mainmenu.cpp \
     gui/numkeyboard.cpp \
@@ -72,6 +73,7 @@ HEADERS += \
     gui/decoratorspinbox.h \
     gui/generalsettingspage.h \
     gui/gui_funcs.h \
+    gui/hexkeyboard.h \
     gui/languagepage.h \
     gui/mainmenu.h \
     gui/mainwindow.h \
@@ -107,6 +109,7 @@ FORMS += \
     gui/dialogWindows/texteditdialog.ui \
     gui/downloadData/datadownloadpage.ui \
     gui/generalsettingspage.ui \
+    gui/hexkeyboard.ui \
     gui/languagepage.ui \
     gui/mainwindow.ui \
     gui/mainpage.ui \

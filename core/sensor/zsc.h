@@ -4,6 +4,7 @@
 #include "../linux/spi/spidev.h"
 #include <stdio.h>
 #include <string>
+#include "../app/global_define.h"
 
 #define u8  uint8_t
 #define u16 uint16_t
@@ -293,7 +294,8 @@ class ZSC
     void test(u16 iter, u32 delay_ms);
     u16 data[2];
     void oneShot();
-  protected:
+    void resetRegsValues();
+protected:
     int mFd {-1};
     bool mIsOpen = false;
     std::string spi_name;
@@ -324,6 +326,20 @@ class ZSC
     void initPins();
     void initZSC();
     bool spi_saveReg(u8 reg, u16 data, u8 memType);
+
+    const u16 initRegs[32]
+    {
+      0x0100, 0x2000, 0x0000, 0x0000,
+      0x0000, 0x0000, 0x0000, 0x0000,
+      0x0000, 0x07FF, 0x1000, 0x2000,
+      0x0000, 0x1000, 0x2000, 0x0000,
+      0x0000, 0x1F00, 0x0000, 0x0000,
+      0xFFFF, 0x0000, 0x0048, 0x0015,
+      0x7629, 0x900C, 0x0124, 0x8060,
+      0x15C9, 0xE2A2, 0x0000, 0x0001
+    };
+    u16 regsValue[32];
+
 };
 
 #endif // ZSC_H

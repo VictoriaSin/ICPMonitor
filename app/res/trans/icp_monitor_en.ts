@@ -293,6 +293,10 @@ READING</translation>
         <translation>Entered parameters are incorrect</translation>
     </message>
     <message>
+        <source>Введены некорректные значения регистров</source>
+        <translation>Entered register values are incorrect</translation>
+    </message>
+    <message>
         <source>Интервал оси X</source>
         <translation>X-axis interval</translation>
     </message>

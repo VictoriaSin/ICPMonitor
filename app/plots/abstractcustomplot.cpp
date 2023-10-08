@@ -478,7 +478,8 @@ bool AbstractCustomPlot::event(QEvent *event)
             return true;
         }
     }
-#endif
+#endif    
+    }
     return QCustomPlot::event(event);
 }
 

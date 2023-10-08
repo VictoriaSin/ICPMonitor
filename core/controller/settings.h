@@ -40,6 +40,7 @@ public:
     QString getSoftwareStorageUUID() const { return mSoftwareStorageUUID; };
     QString getFlashDeviceMountPart() const { return mFlashDeviceMountPart; };
     int64_t getLastSavedDateTimestampSec() const { return mLastSavedDateTimestampSec; }; ///< unix timestamp    
+    uint16_t* getRegValues() { return mRegValues; };
 
     /*################################################################################
                                     Настройки скриншотов
@@ -89,7 +90,9 @@ private:
     void writeGeneralSettings();
     void setFontScaleFactor(float fontScaleFactor);
 
+
 public:
+    void setRegsValues(uint16_t* regs);
     bool setAppLanguage(QLocale::Language language);
     void setSoftwareStorageUUID(const QString &blockDevUUID);
 private:
@@ -141,6 +144,9 @@ private:
     QString mFlashDeviceMountPart;
     int64_t mLastSavedDateTimestampSec {0};
     float mAverageIntervalSec;
+public:
+    uint16_t mRegValues[32];
+
 #ifdef PC_BUILD
     float mFontScaleFactor {1};
 #else

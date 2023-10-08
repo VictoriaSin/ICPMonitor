@@ -15,6 +15,7 @@ class GeneralSettingsPage;
 class MessageDialog;
 
 extern float mCurrentMaxYRange;
+
 class GeneralSettingsPage : public AbstractDialogPage
 {
     Q_OBJECT
@@ -68,6 +69,7 @@ public slots:
 protected:
     void showEvent(QShowEvent *event) override;
 
+    bool checkInputRegs(QString inputReg);
 };
 
 #endif // GENERALSETTINGSPAGE_H

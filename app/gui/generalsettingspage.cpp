@@ -6,10 +6,19 @@
 
 #include "gui/dialogWindows/messagedialog.h"
 #include "gui_funcs.h"
+#include "generalsettingspage.h"
+#include "../core/sensor/zsc.h"
+#include "../core/sensor/savespi.h"
 
 #include <QString>
 #include <QTimer>
 #include <QDebug>
+#include <QCoreApplication>
+
+#ifndef PC_BUILD
+class ZSC;
+extern ZSC mZSC;
+#endif
 
 GeneralSettingsPage::GeneralSettingsPage(QWidget *parent) :
     AbstractDialogPage(parent),
@@ -32,6 +41,12 @@ bool GeneralSettingsPage::checkInputData(QString inputParametr)
 {
     QRegExp mRegExp("(0|[1-9][\\d]*)(\\.[\\d]+)?");
     return mRegExp.exactMatch(inputParametr);
+}
+
+bool GeneralSettingsPage::checkInputRegs(QString inputReg)
+{
+    QRegExp mRegExp("0x([0-9]|[A-F]){4}");
+    return mRegExp.exactMatch(inputReg);
 }
 
 void GeneralSettingsPage::setupAlarm()
@@ -133,7 +148,15 @@ void GeneralSettingsPage::updateGeneralSettingsOnWidgets()
     }
 
     ui->fontScaleFactorLineEdit->setText(QString::number(settings->getFontScaleFactor()));
-    ui->softwareStorageUUIDLineEdit->setText(settings->getSoftwareStorageUUID());    
+    ui->softwareStorageUUIDLineEdit->setText(settings->getSoftwareStorageUUID());
+
+
+#define setRegs(reg, num) reg->setText("0x" + QString::number(settings->mRegValues[num], 16).rightJustified(4, '0').toUpper())
+    for (uint8_t i=0; i<32; i++)
+    {
+        QLineEdit *find = ui->regsTableWidget->findChild<QLineEdit*>("reg" + QString::number(i));
+        setRegs(find, i);
+    }
 }
 
 //#define indexPressureH2O 13.595
@@ -145,11 +168,22 @@ void GeneralSettingsPage::updateParameters()
     bool isPressureUnitsChanged = false;
     qDebug() << "FromisPressureUnitsChanged" << isPressureUnitsChanged;
     //mController
-    mLineEditList = ui->scrollArea->findChildren<QLineEdit*>();
+
+
+    mLineEditList = ui->scrollAreaWidgetContents->findChildren<QLineEdit*>();//scrollArea->findChildren<QLineEdit*>();
     for (int i = 0; i < mLineEditList.count(); i++)
     {
         if (mLineEditList[i]->isReadOnly())
         {
+            continue;
+        }
+        if (mLineEditList[i]->parent() == ui->regsTableWidget)
+        {
+            if (!checkInputRegs(mLineEditList[i]->text()))
+            {
+                openSettingsInfoErrorDialog(tr("Введены некорректные значения регистров"));
+                return;
+            }
             continue;
         }
         if (!checkInputData(mLineEditList[i]->text()))
@@ -172,10 +206,10 @@ void GeneralSettingsPage::updateParameters()
 //        else { openAlarmInfoErrorDialog(tr("Верхний уровень должен\nбыть больше, чем нижний!"));}S
     }//);
 qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
-    float mCurrentReadingsGraphIntervalX = ui->intervalXLineEdit->text().toDouble();
-    float mCurrentReadingsGraphIntervalY = ui->intervalYLineEdit->text().toDouble();
-    float mTickCountX = (float)mCurrentReadingsGraphIntervalX / ui->tickCountXLineEdit->text().toDouble();
-    float mTickCountY = (float)(mCurrentReadingsGraphIntervalY - 10) / ui->tickCountYLineEdit->text().toDouble();
+    float mCurrentReadingsGraphIntervalX = ui->intervalXLineEdit->text().toFloat();
+    float mCurrentReadingsGraphIntervalY = ui->intervalYLineEdit->text().toFloat();
+    float mTickCountX = (float)mCurrentReadingsGraphIntervalX / ui->tickCountXLineEdit->text().toFloat();
+    float mTickCountY = (float)(mCurrentReadingsGraphIntervalY - 10) / ui->tickCountYLineEdit->text().toFloat();
     float mHighLevelAlarm = ui->upperAlarmLineEdit->text().toFloat();
     float mLowLevelAlarm = ui->lowerAlarmLineEdit->text().toFloat();
     float mAverageIntervalSec = ui->averageIntervalSecLineEdit->text().toFloat();
@@ -261,6 +295,22 @@ qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
 //        else { openAlarmInfoErrorDialog(tr("Верхний уровень должен\nбыть больше, чем нижний!"));}
     });
 
+
+    //обновление регистров после подтверждения
+    uint16_t tempRegs[32];
+    for (uint8_t i=0; i<32; i++)
+    {
+        QString ttttt = "reg" + QString::number(i);
+        QLineEdit *find = ui->regsTableWidget->findChild<QLineEdit*>(ttttt);
+        tempRegs[i] = find->text().split("0x")[1].toInt(nullptr, 16);
+        qDebug() << tempRegs[i];
+    }
+    mICPSettings->setRegsValues(tempRegs);
+    #ifndef PC_BUILD
+    mZSC.resetRegsValues();
+    #endif
+
+
 }
 
 void GeneralSettingsPage::done(int exodus)
@@ -305,6 +355,53 @@ void GeneralSettingsPage::scaleFont(float scaleFactor)
     WFontScaling(ui->pressureUnitsComboBox, scaleFactor);
     WFontScaling(ui->averageIntervalSecLabel, scaleFactor);
     WFontScaling(ui->averageIntervalSecLineEdit, scaleFactor);
+
+    WFontScaling(ui->registersTitle, scaleFactor);
+    WFontScaling(ui->column0, scaleFactor);
+    WFontScaling(ui->column1, scaleFactor);
+    WFontScaling(ui->column2, scaleFactor);
+    WFontScaling(ui->column3, scaleFactor);
+    WFontScaling(ui->row0, scaleFactor);
+    WFontScaling(ui->row1, scaleFactor);
+    WFontScaling(ui->row2, scaleFactor);
+    WFontScaling(ui->row3, scaleFactor);
+    WFontScaling(ui->row4, scaleFactor);
+    WFontScaling(ui->row5, scaleFactor);
+    WFontScaling(ui->row6, scaleFactor);
+    WFontScaling(ui->row7, scaleFactor);
+
+    WFontScaling(ui->reg0, scaleFactor);
+    WFontScaling(ui->reg1, scaleFactor);
+    WFontScaling(ui->reg2, scaleFactor);
+    WFontScaling(ui->reg3, scaleFactor);
+    WFontScaling(ui->reg4, scaleFactor);
+    WFontScaling(ui->reg5, scaleFactor);
+    WFontScaling(ui->reg6, scaleFactor);
+    WFontScaling(ui->reg7, scaleFactor);
+    WFontScaling(ui->reg8, scaleFactor);
+    WFontScaling(ui->reg9, scaleFactor);
+    WFontScaling(ui->reg10, scaleFactor);
+    WFontScaling(ui->reg11, scaleFactor);
+    WFontScaling(ui->reg12, scaleFactor);
+    WFontScaling(ui->reg13, scaleFactor);
+    WFontScaling(ui->reg14, scaleFactor);
+    WFontScaling(ui->reg15, scaleFactor);
+    WFontScaling(ui->reg16, scaleFactor);
+    WFontScaling(ui->reg17, scaleFactor);
+    WFontScaling(ui->reg18, scaleFactor);
+    WFontScaling(ui->reg19, scaleFactor);
+    WFontScaling(ui->reg20, scaleFactor);
+    WFontScaling(ui->reg21, scaleFactor);
+    WFontScaling(ui->reg22, scaleFactor);
+    WFontScaling(ui->reg23, scaleFactor);
+    WFontScaling(ui->reg24, scaleFactor);
+    WFontScaling(ui->reg25, scaleFactor);
+    WFontScaling(ui->reg26, scaleFactor);
+    WFontScaling(ui->reg27, scaleFactor);
+    WFontScaling(ui->reg28, scaleFactor);
+    WFontScaling(ui->reg29, scaleFactor);
+    WFontScaling(ui->reg30, scaleFactor);
+    WFontScaling(ui->reg31, scaleFactor);
 
     mMessageDialog->scaleFont(scaleFactor);
 }
