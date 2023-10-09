@@ -27,8 +27,6 @@ GeneralSettingsPage::GeneralSettingsPage(QWidget *parent) :
     ui->setupUi(AbstractDialogPage::ui->settingsPage);
     // Настройка окна сообщений
     setupMessageBox();
-
-
     setupAlarm();
 }
 

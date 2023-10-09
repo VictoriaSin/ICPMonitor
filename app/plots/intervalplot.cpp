@@ -3,6 +3,7 @@
 #include "gui/gui_funcs.h"
 
 #include "markitem.cpp"
+#include "tavgfilter.h"
 extern QFile mTestData;
 extern QFile mRawDataFile;
 extern QFile mMarksFile;
@@ -18,6 +19,7 @@ IntervalPlot::IntervalPlot(QWidget *parent):
     average = addGraph();
     substract = addGraph();
     amplitude = addGraph();
+    filter = addGraph();
 
     mMainGraph->setAntialiased(true);
     addLayer("lineLayer", nullptr, limAbove);
@@ -69,6 +71,9 @@ void IntervalPlot::setup(QPair<int, int> points, QColor color)
     pen.setColor(Qt::GlobalColor::lightGray);
     amplitude->setPen(pen);
     amplitude->setBrush(brush);
+    pen.setColor(Qt::GlobalColor::white);
+    filter->setPen(pen);
+    filter->setBrush(brush);
 
 //500 50
     if (isDownloadGraph)
@@ -165,28 +170,48 @@ void IntervalPlot::Compliance()
 {
     uint16_t widthWin = 30;
     uint32_t N = mMainGraph->data()->size();
+
+    // рекурсивный сглаживающий фильтр
+    //Добавляем один график в widget
+    //ui->customPlot->addGraph();
+
+    QVector<double> xf(N), yf(N);
+    //xf=xData;
+    TAVGFilter fl(50,15);
+    double yi, yfi;
+    for (uint i = 0; i < N; i++){
+        //yi=yData[i];
+        xf[i] = mMainGraph->data()->at(i)->key;
+        yi=mMainGraph->data()->at(i)->value;
+        yfi=fl.Filtrate(yi);
+        yf[i]=yfi;
+    }
+
+    //Говорим, что отрисовать нужно график по нашим двум массивам x и y
+    //ui->customPlot->graph(1)->setData(xf, yf);
+    filter->setData(xf, yf);
+
     // скользящее среднее
     if(N-widthWin>0)
     {
         double mid=0.0;
         //    QVector<double> win(widthWin);
         QVector<double> xf(N - widthWin), yf(N-widthWin);
-        for (uint16_t i = widthWin; i < N; i++)
+        for (int i = widthWin; i < N; i++)
         {
             mid=0.0;
             for(int j=0;j<widthWin;j++)
             {
                 //        win[j]=yData[i-widthWin+j];
                 //mid += yData[i - widthWin+j];
-                mid += mMainGraph->data()->at(i - widthWin+j)->value;
+                mid += mMainGraph->data()->at(i - widthWin+j)->value;//filter->data()->at(i - widthWin+j)->value
             }
             yf[i-widthWin]=mid/widthWin;
             //xf[i-widthWin]=xData[i];
-            xf[i-widthWin]=mMainGraph->data()->at(i)->key;
+            xf[i-widthWin]=mMainGraph->data()->at(i)->key;//filter->data()->at(i)->key;
         }
         //ui->customPlot->addGraph();
-
-        average->addData(xf, yf);
+        average->setData(xf, yf);
 
 
         QVector<double> yd(N-widthWin); // вычитание графиков
@@ -194,12 +219,11 @@ void IntervalPlot::Compliance()
         for (uint16_t i = widthWin; i < N; i++)
         {
             //yd[i-widthWin]=yData[i] - yf[i-widthWin];
-            yd[i-widthWin]=mMainGraph->data()->at(i)->value - yf[i-widthWin];
+            yd[i-widthWin]=mMainGraph->data()->at(i)->value - yf[i-widthWin]; //filter->data()->at(i)->value - yf[i-widthWin];
         }
         //ui->customPlot->addGraph();
         //ui->customPlot->graph(2)->setData(xf, yd);
-
-        substract->addData(xf, yd);
+        substract->setData(xf, yd);
 
         QVector<double> xa,ya; // амплитудный график
         bool bp=false;
@@ -248,7 +272,122 @@ void IntervalPlot::Compliance()
 fin:
         //ui->customPlot->addGraph();
         //ui->customPlot->graph(3)->setData(xaData, yaData);
-
-        amplitude->addData(xaData, yaData);
+        amplitude->setData(xaData, yaData);
     }
+
+    double avg = 0;
+    double amin=amplitude->data()->at(0)->value, amax=amplitude->data()->at(0)->value;
+    int k=0;
+    int n = amplitude->data()->size();
+    for (int i=0; i<amplitude->data()->size(); i++)
+    {
+        float currY = amplitude->data()->at(i)->value;
+        if(currY < amin) {amin=currY;}
+        if(currY>amax) {amax=currY;}
+        avg += amplitude->data()->at(i)->value;
+    }
+    avg /= n;
+    qDebug() << "среднее" << avg;
+    QCPItemLine *m_lineH; //Горизонтальная линия
+    m_lineH = new QCPItemLine(this);//Горизонтальная линия
+    m_lineH->setLayer("overlay");
+    QPen linesPen(Qt::white, 2, Qt::DashLine);
+    m_lineH->setPen(linesPen);
+    m_lineH->setClipToAxisRect(true);
+    m_lineH->start->setCoords(amplitude->data()->at(0)->key, avg);
+    m_lineH->end->setCoords(amplitude->data()->at(n-1)->key, avg);
+
+//расчет
+    n = amplitude->data()->size();
+    QVector<double> xa,ya; // выдохи
+    bool bp=(amplitude->data()->at(0)->value > avg);
+    double ydiff, xmax=amplitude->data()->at(0)->key, ymax=amin-avg;
+
+    for (int i=0; i<n; i++)
+    {
+        ydiff=amplitude->data()->at(i)->value - avg;
+        if(ydiff>0)
+        {
+          if(ydiff>ymax)
+          {
+            ymax=ydiff;
+            xmax=amplitude->data()->at(i)->key;
+          }
+          bp=true;
+        }
+        else
+        {
+          if(bp)
+          {
+            xa.append(xmax);
+            ya.append(ymax+avg);
+            ymax=0;
+            xmax=amplitude->data()->at(i)->key;
+          }
+          bp=false;
+        }
+    }
+    if(bp)
+    {
+      xa.append(xmax);
+      ya.append(ymax+avg);
+    }
+    n = xa.size();
+    double _sum=0.0;
+    for(int i = 0; i < n; i++)
+    {
+        _sum += ya[i];
+    }
+    qDebug() << "_sum_ex" << _sum;
+    double mid_exhale = _sum/n;
+//    ui->customPlot->addGraph();
+    //ui->customPlot->graph(ct-1)->setData(xa, ya);
+
+
+    n = amplitude->data()->size();
+    xa.clear();
+    ya.clear();
+
+    bp=(amplitude->data()->at(0)->value < avg);
+    double xmin=amplitude->data()->at(0)->key, ymin=amax;
+    for(int i = 0; i < n; i++)
+    {
+      ydiff=amplitude->data()->at(i)->value - avg;
+      if(ydiff < 0)
+      {
+        if(ydiff < ymin)
+        {
+          ymin=ydiff;
+          xmin=amplitude->data()->at(i)->key;
+        }
+        bp=true;
+      }
+      else
+      {
+        if(bp)
+        {
+          xa.append(xmin);
+          ya.append(ymin+avg);
+          ymin=amax;
+          xmin=amplitude->data()->at(i)->key;
+        }
+        bp=false;
+      }
+    }
+    if(bp)
+    {
+      xa.append(xmin);
+      ya.append(ymin+avg);
+    }
+    n=xa.size();
+    _sum=0.0;
+    for(int i = 0; i < n; i++)
+    {
+      _sum += ya[i];
+    }
+    double mid_inhale = _sum/n;
+//    ui->customPlot->addGraph();
+//    ui->customPlot->graph(ct-1)->setData(xa, ya);
+qDebug() << "вдохи" << mid_inhale << "выдохи" << mid_exhale;
 }
+

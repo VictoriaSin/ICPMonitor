@@ -13,6 +13,7 @@
 #include "plots/intervalplot.h"
 #include "sensor/impl/fileimitsensor.h"
 
+
 #include <QTimer>
 #include <QDateTime>
 #include <QPushButton>
@@ -54,9 +55,14 @@ MainPage::MainPage(QWidget *parent)
     // Настройка контейнера с графиками
     setupGraphsContainer();
 
-
     // Настраиваем обновление виджета с текущим временем
-    mUpdateDateTimeTimer->setInterval(60000);
+    mUpdateDateTimeTimer->setInterval(60000);    
+
+    mVolumeInputPage = new VolumeInputPage(this);
+    mVolumeInputPage->hide();
+    connect(mVolumeInputPage, &VolumeInputPage::previousPage, this, &MainPage::previousPage);
+    connect(mVolumeInputPage, &VolumeInputPage::changePage, this, &MainPage::changePage);
+
     connect(mUpdateDateTimeTimer, &QTimer::timeout, this, &MainPage::updateDateTime);
 
     connect(this, &MainPage::playBtnPressed, [this](){mCurrentGraphsArea->mRecordedGraph->animateGraphic(currSpeed);});//&RecordedPlot::animateGraphic);
@@ -227,6 +233,11 @@ void MainPage::setupButtons()
     ui->funcThirdButton->setIconSize(QSize(BUT_SIZE_BIG, BUT_SIZE_BIG));
     ui->funcThirdButton->setStyleSheet(ToolButtonStyleSheet);
     ui->funcThirdButton->hide();
+
+    ui->dVInputButton->setIcon(QIcon(":/icons/func1.svg"),QIcon(":/icons/func1_pressed.svg"));
+    ui->dVInputButton->setIconSize(QSize(BUT_SIZE_BIG, BUT_SIZE_BIG));
+    ui->dVInputButton->setStyleSheet(ToolButtonStyleSheet);
+    ui->dVInputButton->hide();
 }
 
 void MainPage::setupBottomInfoSVG()
@@ -630,6 +641,7 @@ void MainPage::on_recordButton_clicked()
         ui->rewindRecordButton  ->show();
         ui->speedRecordButton   ->show();
         ui->downloadGraphButton ->show();
+        ui->dVInputButton       ->show();
 
         ui->goToInterval1Button ->hide();
         ui->mInfoInterval1      ->hide();
@@ -1191,5 +1203,11 @@ void MainPage::on_funcSecondButton_clicked()
 void MainPage::on_funcThirdButton_clicked()
 {
 //
+}
+
+
+void MainPage::on_dVInputButton_clicked()
+{
+    emit changePage(mVolumeInputPage);
 }
 

@@ -36,6 +36,7 @@ SOURCES += \
     gui/settingsmenu.cpp \
     gui/systeminfopage.cpp \
     gui/technicalaccesspage.cpp \
+    gui/volumeinputpage.cpp \
     gui/zerosensorpage.cpp \
     ipagewidget.cpp \
     main.cpp \
@@ -49,6 +50,7 @@ SOURCES += \
     plots/markitem.cpp \
     plots/recordedplot.cpp \
     plots/abstractcustomplot.cpp \
+    plots/tavgfilter.cpp \
     plots/waveformplot.cpp \
     plots/qcustomplot.cpp
 
@@ -82,6 +84,7 @@ HEADERS += \
     gui/settingsmenu.h \
     gui/systeminfopage.h \
     gui/technicalaccesspage.h \
+    gui/volumeinputpage.h \
     gui/zerosensorpage.h \
     ipagewidget.h \
     plots/abstractgraphareawidget.h \
@@ -92,6 +95,7 @@ HEADERS += \
     plots/markitem.h \
     plots/recordedplot.h \
     plots/abstractcustomplot.h \
+    plots/tavgfilter.h \
     plots/waveformplot.h \
     plots/qcustomplot.h
 
@@ -116,6 +120,7 @@ FORMS += \
     gui/numkeyboard.ui \
     gui/systeminfopage.ui \
     gui/technicalaccesspage.ui \
+    gui/volumeinputpage.ui \
     gui/zerosensorpage.ui \
     plots/abstractgraphareawidget.ui \
     plots/currentgraphsarea.ui

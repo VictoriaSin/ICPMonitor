@@ -27,6 +27,7 @@ private:
     QCPGraph* average;
     QCPGraph* substract;
     QCPGraph* amplitude;
+    QCPGraph* filter;
     void averagePlot(_mSPIData temp);
 public:
     QCPGraph *mMainGraph {nullptr};

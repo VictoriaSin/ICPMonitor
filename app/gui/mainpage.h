@@ -9,6 +9,8 @@
 #include "sensor/sensordatamanager.h"
 //#include "sensor/savespi.h"
 #include "../app/plots/recordedplot.h"
+#include "volumeinputpage.h"
+
 namespace Ui {
 class MainPage;
 }
@@ -161,6 +163,8 @@ private slots:
 
     void on_funcThirdButton_clicked();
 
+    void on_dVInputButton_clicked();
+
 private:
     Ui::MainPage *ui;
 
@@ -179,7 +183,7 @@ private:
     /*! Номер текущего графика */
     uint8_t mGraphNumber = 0;
 
-
+    VolumeInputPage * mVolumeInputPage {nullptr};
 
     /*! Для отображения на экране */
     QString mLastDateTime {};
