@@ -7,6 +7,7 @@
 
 #include "gui/mainpage.h"
 #include "unistd.h"
+#include "tavgfilter.h"
 //LabelManager *mLabelManagerRecorded {nullptr};
 
 float mCurrentMaxYRange;
@@ -303,18 +304,59 @@ void RecordedPlot::addDataOnGraphic()
     {
         param = indexPressureH2O;
     }
+    QVector<float> filterData;
     //for (uint i=0; i< mRawDataFile.size()/6; i+=10) // 40/4=10
-    for (uint i=0; i < recordDataCount; i+=60) // 40/4=10
+    for (uint i=0; i < recordDataCount; i+=60)
     {
-        //mRawDataFile.seek(i*sizeof(_mSPIData));
-        currFile->seek(i);
-        currFile->read((char*)&temp, sizeof(_mSPIData));
-        //qDebug() << "temp.timeStamp" <<temp.timeStamp;
-        tempTimeOffset = (float)temp.timeStamp/1000;
 
+        //mRawDataFile.seek(i*sizeof(_mSPIData));
+        currFile->seek(i);        
+        currFile->read((char*)&temp, sizeof(_mSPIData));
+        tempTimeOffset = (float)temp.timeStamp/1000;
         mMainGraph->addData(tempTimeOffset, (float)temp.data*param);
+//        currFile->seek(i);
+//        for (int j=0; j< 10; j++)
+//        {
+//            currFile->seek(i+j);
+//            currFile->read((char*)&temp, sizeof(_mSPIData));
+//            filterData.append((float)temp.data);
+//        }
+        //qDebug() << "temp.timeStamp" <<temp.timeStamp;
     }
+    qDebug() << "vector size" << filterData.size();
     currFile->close();
+
+//    TAVGFilter *filterGraph = new TAVGFilter(50, 15);
+//    float filter_y;
+//    uint N = filterData.size();
+//    QVector<float> maxY;
+//    QVector<float> minY;
+//    float lastY = -1;
+//    for (uint i = 0; i < N; i++)
+//    {
+//        filter_y = filterGraph->Filtrate(filterData[i]);
+//        filterData[i] = filter_y;
+//        if (i == 1)
+//        {
+//            if (filterData[0] < filterData[1])
+//            {
+//                minY.push_back(filterData[0]);
+//            }
+//            else
+//            {
+//                maxY.push_back(filterData[0]);
+//            }
+//            lastY = filterData[1];
+//        }
+//        else
+//        {
+//            if (filter_y > lastY)
+//            {
+
+//            }
+//        }
+//    }
+//    delete filterGraph;
     mNewUpperXValue = tempTimeOffset;
     qDebug() <<"x max"<< mNewUpperXValue;
     if (mNewUpperXValue < xAxis->range().upper)

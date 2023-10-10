@@ -4,12 +4,23 @@
 
 #include "markitem.cpp"
 #include "tavgfilter.h"
+//#include "../gui/volumeinputpage.h"
+
 extern QFile mTestData;
 extern QFile mRawDataFile;
 extern QFile mMarksFile;
 
 QPair<float, float> mFirstIntervalMinMaxXRange = qMakePair(0, 60);
 QPair<float, float> mSecondIntervalMinMaxXRange = qMakePair(0, 60);
+
+
+//extern QLineEdit *inputValueLineEdit;
+//extern QLineEdit *windowWidthLineEdit;
+//extern QLineEdit *offsetAverageLineEdit;
+
+extern uint32_t windowWidth;
+extern float offsetAverage;
+
 
 IntervalPlot::IntervalPlot(QWidget *parent):
     AbstractCustomPlot(GraphType::IntervalGraph, parent)
@@ -117,7 +128,8 @@ void IntervalPlot::setup(QPair<int, int> points, QColor color)
         mMainGraph->addData((float)tempArr[i].timeStamp/1000, tempArr[i].data*param);
         //averagePlot(tempArr[i]);
     }
-    Compliance();
+    //Compliance();
+    averagePlot();
     qDebug() << "mCurrentIntervalNum" << mCurrentIntervalNum;
     if (mCurrentIntervalNum == 1)
     {
@@ -152,18 +164,70 @@ void IntervalPlot::scaleFont(float scaleFactor)
 }
 
 
-void IntervalPlot::averagePlot(_mSPIData temp)
+void IntervalPlot::averagePlot(/*_mSPIData temp*/)
 {
-    firstBuffPointer = (++firstBuffPointer) % maxBuffSizeAvg;
-    sum += temp.data;
-    if (cnt < maxBuffSizeAvg) { cnt++; }
-    else
+//    firstBuffPointer = (++firstBuffPointer) % maxBuffSizeAvg;
+//    sum += temp.data;
+//    if (cnt < maxBuffSizeAvg) { cnt++; }
+//    else
+//    {
+//        lastBuffPointer = (++lastBuffPointer) % maxBuffSizeAvg;
+//        sum -= CurrDataForAverage[lastBuffPointer];
+//    }
+//    CurrDataForAverage[firstBuffPointer] = temp.data;
+//    mAvgGraph->addData((float)temp.timeStamp/1000, (float)sum/cnt);
+
+
+    average->data()->clear();
+    filter->data()->clear();
+    substract->data()->clear();
+    this->replot();
+    uint32_t N = mMainGraph->data()->size();
+    float avgBuff[windowWidth];
+    double avgValue = 0;
+    for (uint i=0; i<N-windowWidth; i++)
     {
-        lastBuffPointer = (++lastBuffPointer) % maxBuffSizeAvg;
-        sum -= CurrDataForAverage[lastBuffPointer];
+        avgValue = 0;
+        for (uint32_t j=0; j<windowWidth; j++)
+        {
+            avgValue += mMainGraph->data()->at(i+j)->value;
+        }
+        avgValue /= windowWidth;
+        average->addData(mMainGraph->data()->at(i)->key, avgValue);
     }
-    CurrDataForAverage[firstBuffPointer] = temp.data;
-    mAvgGraph->addData((float)temp.timeStamp/1000, (float)sum/cnt);
+    N = average->data()->size();
+    for (uint i=0; i<N; i++)
+    {
+        filter->addData(average->data()->at(i)->key, average->data()->at(i)->value + offsetAverage);
+    }
+    N = mMainGraph->data()->size();
+    QVector<double> amplitudeVector;
+    QVector<double> amplitudeVectorX;
+    float mxValue;
+    uint32_t mxIndex = 0;
+    bool isMaxFound = false;
+    for (uint i=0; i<N; i++)
+    {
+        if (mMainGraph->data()->at(i)->value >= filter->data()->at(i)->value)
+        {
+            if (mMainGraph->data()->at(i)->value > mxValue)
+            {
+                mxValue = mMainGraph->data()->at(i)->value;
+                mxIndex = i;
+            }
+            isMaxFound = true;
+        }
+        else if (isMaxFound)
+        {
+            amplitudeVector.append(mxValue);// - average->data()->at(mxIndex)->value);
+            amplitudeVectorX.append(filter->data()->at(mxIndex)->key);
+            isMaxFound = false;
+            mxValue = -1;
+            mxIndex = 0;
+        }
+    }
+    substract->setData(amplitudeVectorX, amplitudeVector);
+
 }
 
 void IntervalPlot::Compliance()

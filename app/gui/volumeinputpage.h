@@ -2,10 +2,15 @@
 #define VOLUMEINPUTPAGE_H
 
 #include "../abstractdialogpage.h"
+#include <QLabel>
+#include <QLineEdit>
+
+
 
 namespace Ui {
 class VolumeInputPage;
 }
+
 
 class VolumeInputPage : public AbstractDialogPage
 {
@@ -16,6 +21,16 @@ public:
     //void scaleFont(float scaleFactor) override;
     ~VolumeInputPage();
 
+    void setupVolume();
+    void setupParam();
+
+    QLabel *dVolume;
+    QLineEdit *inputValueLineEdit;
+    QLabel *windowWidthLabel;
+    QLineEdit *windowWidthLineEdit;
+    QLabel *offsetAverageLabel;
+    QLineEdit *offsetAverageLineEdit;
+
 private:
     Ui::VolumeInputPage *ui;
 
@@ -25,7 +40,7 @@ public slots:
 
 protected:
     //void showEvent(QShowEvent *event) override;
-    bool checkValue();
+    bool checkValue(QString inputString);
 };
 
 #endif // VOLUMEINPUTPAGE_H

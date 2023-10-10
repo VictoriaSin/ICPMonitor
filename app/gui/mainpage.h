@@ -183,7 +183,8 @@ private:
     /*! Номер текущего графика */
     uint8_t mGraphNumber = 0;
 
-    VolumeInputPage * mVolumeInputPage {nullptr};
+    VolumeInputPage *mVolumeInputPage {nullptr};
+    VolumeInputPage *mParamInputPage {nullptr};
 
     /*! Для отображения на экране */
     QString mLastDateTime {};
