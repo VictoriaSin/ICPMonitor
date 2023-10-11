@@ -27,7 +27,7 @@ public:
 
     void setSensorAverageData();
 
-    void terminate();
+
 
     AlarmEvent currentStateAlarm() const;
 

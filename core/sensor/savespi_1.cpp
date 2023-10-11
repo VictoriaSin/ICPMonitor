@@ -43,12 +43,14 @@ void SaveSPI_1::run()
 #ifdef PC_BUILD
       READ_SPI_DATA();
 #else
+#ifdef FOR_TEST_ONLY
+  READ_SPI_DATA();
+#else
       temp.data = mZSC.data[0];
 #endif
+#endif
       temp.timeStamp = (uint32_t)(currentTime - startTime);
-      //qDebug() << "temp.timeStamp" << temp.timeStamp;
       mRawDataFile.write((char*)&temp, sizeof(_mSPIData));
-      //QThread::msleep(1);
 #ifndef PC_BUILD
       mZSC.oneShot();
 #endif

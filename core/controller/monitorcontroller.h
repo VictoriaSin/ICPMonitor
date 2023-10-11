@@ -56,44 +56,10 @@ class MonitorController : public QObject
 public:
     AverageICPController *mAverageICPController {nullptr};
     AlarmController *mAlarmController {nullptr};
-    //FileController *mFileController {nullptr};
-    //BlockDeviceManager *mBlockDeviceManager {nullptr};
-
-    //QThread *mSensorThread {nullptr};
-    //ISensor *mSensor {nullptr};
-
-    /*! Поток для менеджера блочных устройств и сохранения скриншотов */
-    //QThread *mWorkerThread {nullptr};
-
-    /*! Последнее показание датчика */
-    //ComplexValue mLastSensorValue {};
-
-    /*! Последнее сконвертированое показание датчика
-        Сконвертировано в зависимости
-        от выбора пользователя
-    */
     ComplexValue mLastConvertedSensorValue {};
-
-    /*! Менеджер сессий */
-    //SessionManager *mSessionManager {nullptr};
-
-    /*! База данных приложения */
-    //DataBaseManager* mDataBaseManager {nullptr};
 
     /*! Состояние базы данных приложения */
     ControllerEvent mDataBaseState {ControllerEvent::DataBaseUnavailable};
-
-    /*! Кол-во попыток смонтировать программное хранилище */
-    //const uint8_t MaxTryOpenDataBase {5};
-
-    /*! Текущее кол-во попыток смонтировать программное хранилище */
-    //uint8_t mCurrentNumOpenDataBase {0};
-
-    /*! Интервал попыток открытия базы данных */
-    //uint16_t mIntervalOpenDataBaseMs {100};
-
-    ///*! Менеджер меток */
-    //LabelManager *mLabelManager {nullptr};
 
     /*! Программное хранилище */
     std::shared_ptr<BlockDevice> mSoftwareStorage;

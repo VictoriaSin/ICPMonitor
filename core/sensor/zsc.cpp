@@ -163,11 +163,7 @@ bool ZSC::spi_getArray(u16 *data)
   if (ioctl(mFd, SPI_IOC_MESSAGE(1), &mMessageTX) < 1) { CS_H(); return false; }
   mMessageRX.len = 4;
   if (ioctl(mFd, SPI_IOC_MESSAGE(1), &mMessageRX) < 1) { CS_H(); return false; }
-  //data[0] = (u16)(((float)(((u16)(rxBuffer[0]<<8) + rxBuffer[1]))*0.0471 - 58.7036)/13.595);
   data[0] = (u16)(((u16)(rxBuffer[0]<<8) + rxBuffer[1]));
-  qDebug() << data[0];
-  data[0] = (u16)(((float)(((u16)(rxBuffer[0]<<8) + rxBuffer[1]))*0.056 - 38.26)/13.595);
-  //data[1] = ((u16)(rxBuffer[2]<<8) + rxBuffer[3]);
   CS_H();
   return true;
 }

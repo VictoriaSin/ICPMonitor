@@ -17,20 +17,6 @@ LabelManager::LabelManager(Settings *settings)//, DataBaseManager *dataBase) : m
 
 }
 
-void LabelManager::terminate()
-{
-
-}
-
-
-//void LabelManager::setSessionID(int sessionID)
-//{
-//    if (mCurrentSessionID != sessionID) {
-//        mCurrentSessionID = sessionID;
-//        mCountLabels = 0;
-//    }
-//}
-
 void LabelManager::deleteLabel()
 {
     // добавить функционал на удаление из БД, пока заглушка

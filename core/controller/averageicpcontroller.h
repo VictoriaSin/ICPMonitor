@@ -26,7 +26,7 @@ public:
 
 
     AverageICPController(Settings *settings, QObject *parent = nullptr);
-
+    ~AverageICPController();
 
 
     /*! Возвращает последнее вычисленное среднее значение */

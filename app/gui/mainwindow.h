@@ -4,6 +4,9 @@
 #include <QWidget>
 #include <QStack>
 #include "controller/controller_enums.h"
+#include <QThread>
+#include "controller/monitorcontroller.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -28,7 +31,7 @@ class MainWindow : public QWidget
     MessageDialog *mMessageDialog {nullptr};
 
 public:
-    //MainPage *mMainPage {nullptr};
+    //MonitorController monitorController;
     MonitorController *mController {nullptr};
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

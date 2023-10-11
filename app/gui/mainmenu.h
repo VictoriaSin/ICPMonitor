@@ -41,7 +41,6 @@ public:
 private slots:
     void controllerEventHandler(ControllerEvent event);//, const QVariantMap &args = {});
 
-    // IPageWidget interface
 public:
     void scaleFont(float scaleFactor) override;
     void installController(MonitorController *controller) override;
@@ -49,8 +48,8 @@ public:
     // IPageWidget interface
 public slots:
     void retranslate() override;
-signals:
-    void Test();
+protected slots:
+    void powerOff(int id);
 };
 
 #endif // MAINMENU_H

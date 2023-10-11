@@ -47,9 +47,6 @@ public:
 
     explicit LabelManager(Settings *settings);//, DataBaseManager *dataBase);
 
-    /*! Прекращает работу менеджера меток */
-    void terminate();
-
     /*! Устанавливаем id сессии */
     //void setSessionID(int sessionID);
 

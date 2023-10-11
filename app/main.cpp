@@ -1,6 +1,5 @@
 #include "gui/mainwindow.h"
 #include <QApplication>
-#include <QThread>
 #include <QTimer>
 #include <QDebug>
 
@@ -269,12 +268,9 @@ bool initFlash(QString currRasdel)
 //    ZSC mZSC;
 //#endif
 Settings *mICPSettings {nullptr};
-
 int main(int argc, char *argv[])
 {
-qDebug() << "Start";
   QApplication a(argc, argv);
-
   QString ttt = executeAConsoleCommand("fbset", QStringList() << "--geometry" << "720" << "480" << "720" << "480" << "16" << "--timings" << "37037" << "60" << "16" << "30" << "9" << "62" << "6");
   qDebug() << ttt;
 
@@ -309,9 +305,9 @@ qDebug() << "Start";
     QCoreApplication::setApplicationName(APP_NAME);
     QCoreApplication::setOrganizationName(ORG_NAME);
     QCoreApplication::setApplicationVersion(version::VERSION_STRING2);
-    //qDebug() << QString("%1 v%2").arg(APP_NAME, version::VERSION_STRING);
 
 #ifndef PC_BUILD
+#ifndef FOR_TEST_ONLY
     uint8_t clockBuffer[7];
     if (getRTC(clockBuffer) == I2C_RESULT::I2C_OK)
     {
@@ -324,36 +320,36 @@ qDebug() << "Start";
       exit(66);
     }
 #endif
-
-    MonitorController monitorController;
-    MainWindow w;// Создание GUI
-    QThread mControllerThread;// Создание контроллера приложения и его потока
-    w.installController(&monitorController);// Установка контроллера виджетам
-    monitorController.init();// Инициализация контроллера и сброс контроллера в поток
-    monitorController.moveToThread(&mControllerThread);
-    mControllerThread.start();
-#ifndef PC_BUILD
-    monitorController.controllerEvent(ControllerEvent::GlobalTimeUpdate);
 #endif
+
+
+    MainWindow w;// Создание GUI
     w.show();// Запуск виджетов
     const int exitCode = a.exec();
 
     // завершение работы контроллера, выполняемое в потоке контроллера
-    QTimer::singleShot(0, &monitorController, [controller = &monitorController]()
-    {
-        controller->terminate();
-    });
+//    QTimer::singleShot(0, &monitorController, [controller = &monitorController]()
+//    {
+//        controller->terminate();
+//    });
 
-    mControllerThread.quit();
-    mControllerThread.wait(10000);
+//    mControllerThread.quit();
+//    mControllerThread.wait(10000);
 
     sleep(1);
-    //umount(&currRasdel);    
+
     qDebug() << "Exit" << exitCode;
+    #ifndef PC_BUILD
     if (executeAConsoleCommand("umount", QStringList() << currRasdel) != "")
+    {
+        exit (111);
+    }
+    #endif
+    if (executeAConsoleCommand("clear", QStringList() ) != "")
     {
         exit (11);
     }
+
     return exitCode;
 }
 

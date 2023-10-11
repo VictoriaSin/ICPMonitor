@@ -12,8 +12,16 @@ AverageICPController::AverageICPController(Settings *settings,
     , mAverageTimer(new QTimer(this))
 {
     mAverageTimer->setInterval(settings->getConstIntervalBetweenAverageSensorReadingsMs());
+}
 
-    //connect(mAverageTimer, &QTimer::timeout, this, &AverageICPController::recalcAverage);
+AverageICPController::~AverageICPController()
+{
+  if (mAverageTimer!= nullptr)
+  {
+    mAverageTimer->stop();
+    delete mAverageTimer;
+    mAverageTimer = nullptr;
+  }
 }
 
 void AverageICPController::start()

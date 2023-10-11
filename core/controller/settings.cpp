@@ -48,17 +48,35 @@ void Settings::readGeneralSettings()
     mLanguageSettings->setAppLanguage(QLocale::Language(mSettings->value("mCurrentLanguage", mLanguageSettings->getCurrentLanguage()).toUInt()));
     mSoftwareStorageUUID = mSettings->value("mSoftwareStorageUUID", mSoftwareStorageUUID).toString();
     mFlashDeviceMountPart = mSettings->value("mFlashDeviceMountPart", mFlashDeviceMountPart).toString();
-    //mLastSavedDateTimestampSec = mSettings->value("mLastSavedDateTimestampSec", qlonglong(mLastSavedDateTimestampSec)).toLongLong();
-    QString regString = mSettings->value("regString", regString).toString();
-    QString temp = regString; // не работает с той же строкой
-    QStringList regList = temp.split("_"); // через разделители , и ; не воспринимает как строку
-    for (uint8_t i=0; i<32; i++)
+#define REGS_CNT 32
+    const char defRegs[] = "0x0100 0x2000 0x0000 0x0000 0x0000 0x0000 0x0000 0x0000 0x0000 0x07FF 0x1000 0x2000 0x0000 0x1000 0x2000 0x0000 0x0000 0x1F00 0x0000 0x0000 0xFFFF 0x0000 0x0048 0x0015 0x76A9 0x9F0C 0x0124 0x8060 0x15C9 0xE2A2 0x0000 0x0001";
+    QString regString;
+    QVariant rValue = mSettings->value("regString", regString);
+    bool needSave = false;
+    if (rValue != "")
     {
-        mRegValues[i] = regList[i].toUInt(nullptr, 16);//.split("0x")[1]
+      regString = rValue.toString();
+    }
+    else
+    {
+      regString = defRegs;
+      mSettings->setValue("regString", regString);
+      needSave = true;
+    }
+    QStringList regList = regString.split(' ');
+    if (regList.count() != REGS_CNT)
+    {
+      qDebug("Incorrect params regs");
+      exit(66);
+    }
+    for (uint8_t i = 0; i < REGS_CNT; i++)
+    {
+        mRegValues[i] = regList[i].toUInt(nullptr, 16);
         qDebug() << mRegValues[i];
     }
     mFontScaleFactor = mSettings->value("mFontScaleFactor", mFontScaleFactor).toFloat();
     mSettings->endGroup();
+    if (needSave) {mSettings->sync(); }
 }
 
 void Settings::writeGeneralSettings()
@@ -76,7 +94,7 @@ qDebug() << "lang" << QString::number(mLanguageSettings->getCurrentLanguage());
         regString += "0x" + QString::number(mRegValues[i], 16).rightJustified(4, '0').toUpper();
         if (i != 31)
         {
-            regString += "_";
+            regString += " ";
         }
     }
     mSettings->setValue("regString", regString);

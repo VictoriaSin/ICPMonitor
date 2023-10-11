@@ -54,8 +54,8 @@ MainMenu::MainMenu(QWidget *parent) :
     addSettingButton("Технический доступ", QIcon(":/icons/tools.svg"),             QIcon(":/icons/tools_pressed.svg"),
                      QSize(125, 125), ToolButtonStyleSheet, mGeneralSettingsPage,   2, 1, PageID::General);
     addSettingButton("Выключение", QIcon(":/icons/powerOff.svg"),                  QIcon(":/icons/powerOff_pressed.svg"),
-                     QSize(125, 125), ToolButtonStyleSheet, [this]() {Test();},     3, 0, PageID::PowerOff);
-    // Смена виджета на предыдущий
+                     QSize(125, 125), ToolButtonStyleSheet, nullptr,     3, 0, PageID::PowerOff);
+
     connect(mSystemInfoPage, &AbstractDialogPage::previousPage, this, &MainMenu::previousPage);
     connect(mZeroSensorPage, &ZeroSensorPage::previousPage, this, &MainMenu::previousPage);
     connect(mDataExportPage, &DataDownloadPage::previousPage, this, &MainMenu::previousPage);
@@ -66,6 +66,7 @@ MainMenu::MainMenu(QWidget *parent) :
     connect(mLanguagePage,   &LanguagePage::changePage, this, &MainMenu::changePage);
     connect(mGeneralSettingsPage, &GeneralSettingsPage::previousPage, this, &MainMenu::previousPage);
     connect(mGeneralSettingsPage, &GeneralSettingsPage::changePage, this, &MainMenu::changePage);
+    connect(&mButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(powerOff(int)));
 }
 
 MainMenu::~MainMenu()
@@ -73,6 +74,19 @@ MainMenu::~MainMenu()
 
 }
 
+void MainMenu::powerOff(int id)
+{
+  if (id == PageID::PowerOff)
+  {
+    DESTROY_CLASS(mSystemInfoPage);
+    DESTROY_CLASS(mZeroSensorPage);
+    DESTROY_CLASS(mDataExportPage);
+    DESTROY_CLASS(mDateTimePage);
+    DESTROY_CLASS(mLanguagePage);
+    DESTROY_CLASS(mGeneralSettingsPage);
+    mController->terminate();
+  }
+}
 
 void MainMenu::controllerEventHandler(ControllerEvent event)//, const QVariantMap &args)
 {

@@ -66,9 +66,12 @@ void SaveSPI::run()
 #ifdef PC_BUILD
     READ_SPI_DATA();
 #else
+  #ifdef FOR_TEST_ONLY
+    READ_SPI_DATA();
+#else
     temp.data = mZSC.data[0];
 #endif
-    //qDebug() << temp.data;
+#endif
     temp.timeStamp = (uint32_t)(currentTime - startTime);
     mMainPage->setAverage(calcAverage(temp.data*param));
     mWaveGraph->addDataOnGraphic(temp.timeStamp, temp.data);

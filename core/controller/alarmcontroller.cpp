@@ -19,10 +19,6 @@ void AlarmController::setSensorAverageData()
     setICPState();
 }
 
-void AlarmController::terminate()
-{
-
-}
 
 AlarmEvent AlarmController::currentStateAlarm() const
 {

@@ -3,7 +3,7 @@
 #include "controller/settings.h"
 #include "gui/mainpage.h"
 #include "gui/datetimepage.h"
-#include "controller/monitorcontroller.h"
+
 #include "dialogWindows/messagedialog.h"
 #include "gui/zerosensorpage.h"
 //#include "mainmenu.h"
@@ -11,12 +11,8 @@
 #include <QDebug>
 
 MainPage *mMainPage = nullptr;
-
-MainWindow::MainWindow( QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::MainWindow)
-    //, mMainPage(new MainPage(this))
-    , mMessageDialog(new MessageDialog(this))
+QThread mControllerThread {nullptr};
+MainWindow::MainWindow( QWidget *parent) : QWidget(parent) , ui(new Ui::MainWindow) , mMessageDialog(new MessageDialog(this))
 {
     ui->setupUi(this);
     mMainPage = new MainPage(this);
@@ -33,6 +29,15 @@ MainWindow::MainWindow( QWidget *parent)
     connect(mMainPage, &IPageWidget::changePage, this, &MainWindow::setPage);
     connect(mMainPage, &IPageWidget::previousPage, this, &MainWindow::setPreviousPage);
     connect(mMainPage, &MainPage::sessionStopped, this, &MainWindow::setZeroSensorPage);
+    mController = new MonitorController;
+    installController(mController);// Установка контроллера виджетам
+    mController->init();
+    mController->moveToThread(&mControllerThread);
+    mControllerThread.start();
+
+#ifndef PC_BUILD
+    mController->controllerEvent(ControllerEvent::GlobalTimeUpdate);
+#endif
 }
 
 MainWindow::~MainWindow()
@@ -53,16 +58,8 @@ void MainWindow::installController(MonitorController *controller)
 
     // Переводим приложение
     retranslate();
-
-    // Скейлим шрифты
     scaleFonts();
-
     setZeroSensorPage();
-    // Если текущая дата не валидная, то выводим экран установки даты
-//    if (!mController->currentTimeIsValid())
-//    {
-//        setCurrentDatePage();
-//    }
 }
 
 void MainWindow::retranslate()
