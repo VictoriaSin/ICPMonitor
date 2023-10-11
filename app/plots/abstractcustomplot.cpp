@@ -477,7 +477,6 @@ bool AbstractCustomPlot::event(QEvent *event)
             }
             return true;
         }
-    }
 #endif    
     }
     return QCustomPlot::event(event);

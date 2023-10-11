@@ -272,14 +272,9 @@ Settings *mICPSettings {nullptr};
 
 int main(int argc, char *argv[])
 {
-
+qDebug() << "Start";
   QApplication a(argc, argv);
 
-  /* for test only */
-  //mZSC.test(1000, 200);
-  //mZSC.terminate();
-  //return 99;
-  /* end for test only */
   QString ttt = executeAConsoleCommand("fbset", QStringList() << "--geometry" << "720" << "480" << "720" << "480" << "16" << "--timings" << "37037" << "60" << "16" << "30" << "9" << "62" << "6");
   qDebug() << ttt;
 
