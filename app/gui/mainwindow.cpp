@@ -6,32 +6,26 @@
 
 #include "dialogWindows/messagedialog.h"
 #include "gui/zerosensorpage.h"
-//#include "mainmenu.h"
 
 #include <QDebug>
+#include <QTimer>
 
 MainPage *mMainPage = nullptr;
-QThread mControllerThread {nullptr};
+
 MainWindow::MainWindow( QWidget *parent) : QWidget(parent) , ui(new Ui::MainWindow) , mMessageDialog(new MessageDialog(this))
 {
     ui->setupUi(this);
     mMainPage = new MainPage(this);
-    // Скрываем виджет для сообщений
     mMessageDialog->hide();
-
     // Принимаем события тачскрина
     setAttribute(Qt::WA_AcceptTouchEvents);
-
-    // Устанавливаем текущую страницу
     setPage(mMainPage);
-
-    // Замена виджета
     connect(mMainPage, &IPageWidget::changePage, this, &MainWindow::setPage);
     connect(mMainPage, &IPageWidget::previousPage, this, &MainWindow::setPreviousPage);
     connect(mMainPage, &MainPage::sessionStopped, this, &MainWindow::setZeroSensorPage);
     mController = new MonitorController;
     installController(mController);// Установка контроллера виджетам
-    mController->init();
+    connect(mController,SIGNAL(destroyThread()),this, SLOT(destroyMonitorController()));
     mController->moveToThread(&mControllerThread);
     mControllerThread.start();
 
@@ -44,19 +38,25 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+void destroyApp()
+{
+  qDebug("Close MainWindow");
+  qApp->exit(0);
+}
 
+void MainWindow::destroyMonitorController()
+{
+  mControllerThread.quit();
+  mControllerThread.wait(10000);
+  QTimer::singleShot(100, this, destroyApp);
+}
 void MainWindow::installController(MonitorController *controller)
 {
-    if (!controller) {
-        return;
-    }    
+    if (!controller) { return; }
     mController = controller;
     mMainPage->installController(mController);
-
     // Обработка событий контроллера
     connect(mController, &MonitorController::controllerEvent, this, &MainWindow::controllerEventHandler);
-
-    // Переводим приложение
     retranslate();
     scaleFonts();
     setZeroSensorPage();
@@ -67,7 +67,6 @@ void MainWindow::retranslate()
     mMainPage->retranslate();
     mMessageDialog->retranslate();
 }
-
 void MainWindow::scaleFonts()
 {
     if (!mController) {
@@ -84,7 +83,6 @@ void MainWindow::scaleFonts()
     mMainPage->scaleFont(scaleFactor);
     mMessageDialog->scaleFont(scaleFactor);
 }
-
 bool MainWindow::changeCurrentPage(IPageWidget *installedPage)
 {
     if (mCurrentPage == installedPage) {
@@ -105,8 +103,6 @@ bool MainWindow::changeCurrentPage(IPageWidget *installedPage)
 
     return mCurrentPage != nullptr;
 }
-
-
 void MainWindow::setZeroSensorPage()
 {
     if (!mController) {
@@ -130,7 +126,6 @@ void MainWindow::setZeroSensorPage()
     });
     setPage(setZeroSensorPage);
 }
-
 void MainWindow::setCurrentDatePage()
 {
     if (!mController) {

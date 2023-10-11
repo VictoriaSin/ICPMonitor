@@ -32,6 +32,7 @@ class MainWindow : public QWidget
 
 public:
     //MonitorController monitorController;
+    QThread mControllerThread {nullptr};
     MonitorController *mController {nullptr};
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -45,7 +46,9 @@ public:
     void scaleFonts();
 
     void setZeroSensorPage();
-private:
+  public slots:
+    void destroyMonitorController();
+  private:
     /*! Изменяет текущую страницу
         installedPage - указатель на устанавливаемую страницу
         Возвращает значения:

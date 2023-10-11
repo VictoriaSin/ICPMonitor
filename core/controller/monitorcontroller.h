@@ -44,7 +44,7 @@ class MonitorController : public QObject
         ReinitSystem = 2,
         InitSoftwareStorage = 3,
         DeinitSoftwareStorage = 4,
-        UpdateSoftwareStorage = 5,
+        //UpdateSoftwareStorage = 5,
         InitDataBase = 6,
         DeinitDataBase = 7,
         ReinitDataBase = 8,
@@ -78,14 +78,14 @@ public:
 
 public slots:
     /*! Деинициализация контроллера */
-    void deinit();
+    //void deinit();
 //signals:
 //    void stopAverageTimer();
 public:    
     explicit MonitorController();
 
     /*! Инициализация контроллера */
-    void init();
+    //void init();
 
 //    /*! Деинициализация контроллера */
 //    void deinit();
@@ -154,10 +154,10 @@ public:
                                         Время
     ################################################################################*/
     /*! Сохранение текущего времени системы */
-    void saveCurrentDateTime();
+    //void saveCurrentDateTime();
 
     /*! Установка текущего времени и даты */
-    void setDateTime(int64_t timestamp);
+    //void setDateTime(int64_t timestamp);
 
     /*! Проверка на корректность даты.
         Сравнивается с Settings->MinDateTime (минимальной валидной датой)
@@ -167,7 +167,7 @@ public:
     /*! Проверка на корректность текущей даты.
         Сравнивается с Settings::MinDateTime (минимальной валидной датой)
      */
-    bool currentTimeIsValid() const;
+    //bool currentTimeIsValid() const;
     /*################################################################################
                                       Изображения
     ################################################################################*/
@@ -215,14 +215,14 @@ public:
         intervalStartTimeSeconds - начало интервала средних значений;
         intervalEndTimeSeconds - конец интервала средних значений.
     */
-    QVector<ComplexValue> getAverageSensorReadingsFromTheInterval(uint64_t intervalStartTimeSeconds, uint64_t intervalEndTimeSeconds);
+    //QVector<ComplexValue> getAverageSensorReadingsFromTheInterval(uint64_t intervalStartTimeSeconds, uint64_t intervalEndTimeSeconds);
 
     /*! Возвращает отсортированный по увеличению времени контейнер средних значений, попадающих в указанный интервал
         и принадлежащих текущей сессии
         intervalStartTimeSeconds - начало интервала средних значений;
         intervalEndTimeSeconds - конец интервала средних значений.
     */
-    QVector<ComplexValue> getAverageSensorReadingsFromTheIntervalForTheCurrentSession(uint64_t intervalStartTimeSeconds, uint64_t intervalEndTimeSeconds);
+    //QVector<ComplexValue> getAverageSensorReadingsFromTheIntervalForTheCurrentSession(uint64_t intervalStartTimeSeconds, uint64_t intervalEndTimeSeconds);
     /*################################################################################
                                         Датчик
     ################################################################################*/
@@ -314,19 +314,12 @@ private:
 
 
 private slots:
-    void processSensorData();
-    void processSensorEvent(SensorEvent event, const QVariantMap &args = {});
     void processAlarmEvent(AlarmEvent event, const QVariantMap &args = {});
-    void processFileControllerEvent(FileControllerEvent event, const QVariantMap &args = {});
-    void processBlockDevicesControllerEvent(BlockDeviceManagerEvent event, const QVariantMap &args = {});
-    //void processAverageSensorValue();
 
 signals:
+    void destroyThread();
     void controllerEvent(ControllerEvent event, const QVariantMap &args = {});
-    //void dataReadyForGraph();
     void dataReadyFromAverageICPController();
-protected:
-    //const QStringList search();
 };
 
 #endif // MONITORCONTROLLER_H
