@@ -35,7 +35,6 @@ HEADERS += \
     controller/labels/labelprovider.h \
     controller/languagesetting.h \
     controller/monitorcontroller.h \
-    controller/screenwriter.h \
     controller/settings.h \
     crc8table.h \
     global_enums.h \
@@ -72,7 +71,6 @@ SOURCES += \
     controller/labels/labelprovider.cpp \
     controller/languagesetting.cpp \
     controller/monitorcontroller.cpp \
-    controller/screenwriter.cpp \
     controller/settings.cpp \
     global_functions.cpp \
     global_structs.cpp \

@@ -33,22 +33,23 @@ MainWindow::MainWindow( QWidget *parent) : QWidget(parent) , ui(new Ui::MainWind
     mController->controllerEvent(ControllerEvent::GlobalTimeUpdate);
 #endif
 }
-
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-void destroyApp()
-{
-  qDebug("Close MainWindow");
-  qApp->exit(0);
-}
-
 void MainWindow::destroyMonitorController()
 {
-  mControllerThread.quit();
-  mControllerThread.wait(10000);
-  QTimer::singleShot(100, this, destroyApp);
+  //qDebug("Try DESTROY_CLASS(mMainPage)");
+  //DESTROY_CLASS(mMainPage);
+  //qDebug("DESTROY_CLASS(mMainPage)");
+  QTimer::singleShot(100, [this]()
+  {
+    DESTROY_CLASS(mController);
+    mControllerThread.quit();
+    mControllerThread.wait(100000);
+    qDebug("Close MainWindow");
+    qApp->exit(0);
+  });
 }
 void MainWindow::installController(MonitorController *controller)
 {
@@ -61,7 +62,6 @@ void MainWindow::installController(MonitorController *controller)
     scaleFonts();
     setZeroSensorPage();
 }
-
 void MainWindow::retranslate()
 {
     mMainPage->retranslate();
@@ -148,7 +148,6 @@ void MainWindow::setCurrentDatePage()
     });
     setPage(settingsCurrentTimePage);
 }
-
 void MainWindow::controllerEventHandler(ControllerEvent event, const QVariantMap &args)
 {
     // Если есть какое-то сообщение от контроллера
@@ -165,7 +164,6 @@ void MainWindow::controllerEventHandler(ControllerEvent event, const QVariantMap
         scaleFonts();
     }
 }
-
 void MainWindow::setPage(IPageWidget *installedPage)
 {
     // Заменяем текущую страницу на устанавливаемую, если возможно
@@ -173,7 +171,6 @@ void MainWindow::setPage(IPageWidget *installedPage)
         mStackOfWidgets.push(installedPage); // Добавляем в стек страниц
     }
 }
-
 void MainWindow::setPreviousPage()
 {
     // Если в стэке больше одной страницы
@@ -182,7 +179,6 @@ void MainWindow::setPreviousPage()
         changeCurrentPage(mStackOfWidgets.top()); // Заменяем отображение текущей страницы на предыдущую
     }
 }
-
 void MainWindow::changeEvent(QEvent *event)
 {
     if (event->type() == QEvent::LanguageChange) {

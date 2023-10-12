@@ -32,7 +32,6 @@ __inline bool findFlashDevices(QStringList *mDevicesByUUIDList)
 {
   QStringList cmdAllDevList = executeAConsoleCommand("ls", QStringList() << "-l" << "/dev/disk/by-uuid").split("\n");
   uint8_t tempIndex = 0;
-  qDebug("FINDFLASHDEVICES");
   for (uint8_t i = 1; i< cmdAllDevList.count()-1; i++)
   {
     tempIndex = cmdAllDevList[i].split(" ").indexOf("->");
@@ -47,7 +46,6 @@ __inline bool findFlashDevices(QStringList *mDevicesByUUIDList)
     return false;
   }
   return true;
-  //qDebug() << *mDevicesByUUIDList;//UUID+" "+раздел
 }
 __inline void removeMountsPoints(/*QStringList *Devices*/)
 {
@@ -73,25 +71,22 @@ __inline void removeMountsPoints(/*QStringList *Devices*/)
     }
   }
 }
-__inline bool isMntDirectoryCreated()//QDir *mICPReadingsDir)
+__inline bool isMntDirectoryCreated()
 {
   QDir mICPReadingsDir(mntDirectory);
   return mICPReadingsDir.exists();
 }
-__inline QString findMountRecordInProcMounts()//QStringList mDevicesByUUIDList)
+__inline QString findMountRecordInProcMounts()
 {
   QStringList mounts = executeAConsoleCommand("cat", QStringList() << "/proc/mounts").split("\n");
   for (uint8_t i=0; i<mounts.count(); i++)
   {
     if (mounts[i].contains(mntDirectory))
     {
-
       qDebug() << "Find mount point " << mounts[i] ;
-      //break;
       return mounts[i].split(" ")[0];
     }
   }
-  qDebug() << "No find mount point ";
   return "";
 }
 __inline bool findUUIDInDevicesList(QString *UUID, QStringList mDevicesByUUIDList, QString *rasdel)
@@ -109,7 +104,6 @@ __inline bool findUUIDInDevicesList(QString *UUID, QStringList mDevicesByUUIDLis
 }
 __inline bool tryCreateMountPoint(QString *rasdel)
 {
-  qDebug() << "Try create mount point" << "/dev/"+*rasdel << mntDirectory;
 #ifdef PC_BUILD
   QString result = executeAConsoleCommand("sudo", QStringList() << "mount" << "/dev/"+*rasdel << mntDirectory);
 #else
@@ -117,6 +111,7 @@ __inline bool tryCreateMountPoint(QString *rasdel)
 #endif
   if (result == "")
   {
+    qDebug() << "Created mount point" << "/dev/"+*rasdel << mntDirectory;
     return true;
   }
   else
@@ -134,13 +129,12 @@ u8 mount(QString *UUID, QString *rasdel)
   if (!findFlashDevices(&mDevicesByUUIDList)) {return MOUNT_MESSAGE::ERROR_FLASH_ABSEND; } // ищем все флешки
   removeMountsPoints(/*&Devices*/);
   // всегда монтируем в папку /media/ICPMonitor = mntDirectory
-  if (isMntDirectoryCreated())//&mICPReadingsDir)) // проверяем есть ли уже такая директория
+  if (isMntDirectoryCreated()) // проверяем есть ли уже такая директория
   {
     qDebug("MntDirectoryCreated isExist");
     if (*UUID != "")
     {
-      qDebug("UUID not empty");
-      if ((newRasdel = findMountRecordInProcMounts(/*mDevicesByUUIDList*/)) != "") // допустим папка есть, но данных нет (ну не записали туда ничего еще !!!) - проверяем смонтирована ли флешка в записях файла /proc/mounts
+      if ((newRasdel = findMountRecordInProcMounts()) != "") // допустим папка есть, но данных нет (ну не записали туда ничего еще !!!) - проверяем смонтирована ли флешка в записях файла /proc/mounts
       {
         qDebug() << "new" << newRasdel;
         *UUID = executeAConsoleCommand("lsblk", QStringList() << "-o" << "UUID" << newRasdel).split("\n")[1];
@@ -159,7 +153,6 @@ u8 mount(QString *UUID, QString *rasdel)
       qDebug() << "Directory" << mntDirectory << "not created"; return MOUNT_MESSAGE::ERROR_CREATED_DIRECTORY;
       qDebug() << "Result" << outputString;
     }
-
   }
 
   if (*UUID == "")
@@ -222,7 +215,7 @@ QString convertDateTimeToString(u8 *data)
 {
   char strOut[150];
   sprintf(strOut, "20%02x-%02x-%02x %02x:%02x:%02x",
-          data[6],
+      data[6],
       data[5],
       data[4],
       data[1],
@@ -263,14 +256,12 @@ bool initFlash(QString currRasdel)
   return 11;
 }
 
-//#ifndef PC_BUILD убрать вообще
-//    class ZSC;
-//    ZSC mZSC;
-//#endif
+
 Settings *mICPSettings {nullptr};
 int main(int argc, char *argv[])
 {
   QApplication a(argc, argv);
+  // fbset --geometry 720 480 720 480 16 --timings 37037 60 16 30 9 62 6
   QString ttt = executeAConsoleCommand("fbset", QStringList() << "--geometry" << "720" << "480" << "720" << "480" << "16" << "--timings" << "37037" << "60" << "16" << "30" << "9" << "62" << "6");
   qDebug() << ttt;
 
@@ -286,18 +277,17 @@ int main(int argc, char *argv[])
   mICPSettings->readAllSetting();
 
   QString currUUID = mICPSettings->getSoftwareStorageUUID();
-  qDebug() << currUUID;
+  //qDebug() << currUUID;
   QString currRasdel = mICPSettings->getFlashDeviceMountPart();
-  qDebug() << currRasdel;
+  //qDebug() << currRasdel;
   mount(&currUUID, &currRasdel);
   Q_INIT_RESOURCE(core_res);
-
   // Игнорируемые события тача автоматически переопределять в MouseEvent
   QCoreApplication::setAttribute(Qt::AA_SynthesizeTouchForUnhandledMouseEvents, true);
 
-  qRegisterMetaType<SensorEvent>();
+  //qRegisterMetaType<SensorEvent>();
   qRegisterMetaType<ControllerEvent>();
-  qRegisterMetaType<FileControllerEvent>();
+  //qRegisterMetaType<FileControllerEvent>();
   qRegisterMetaType<BlockDeviceManagerEvent>();
 
   const QString APP_NAME = "ICPMonitor";
@@ -322,38 +312,18 @@ int main(int argc, char *argv[])
 #endif
 #endif
 
-
-  MainWindow w;// Создание GUI
-  w.show();// Запуск виджетов
+  MainWindow w;
+  w.show();
   const int exitCode = a.exec();
 
-  // завершение работы контроллера, выполняемое в потоке контроллера
-  //    QTimer::singleShot(0, &monitorController, [controller = &monitorController]()
-  //    {
-  //        controller->terminate();
-  //    });
-
-  //    mControllerThread.quit();
-  //    mControllerThread.wait(10000);
-
-  sleep(1);
-
-  qDebug() << "Exit" << exitCode;
 #ifndef PC_BUILD
-  QString umountDev = "/dev/" + currRasdel;
-  if (executeAConsoleCommand("umount", QStringList() << umountDev) != "")
+  if (executeAConsoleCommand("umount", QStringList() << "/dev/" + currRasdel) != "")
   {
-    qDebug()   << "umount error" << currRasdel;
+    qDebug() << "umount error" << currRasdel;
     exit (111);
   }
 #endif
-//  QString res = executeAConsoleCommand("clear", QStringList());
-//  if (res != "")
-//  {
-//    qDebug()   << "clear error" << res;
-//    exit (11);
-//  }
-
+  qDebug() << "Exit" << exitCode;
   return exitCode;
 }
 

@@ -8,25 +8,21 @@
 #include <QLocale>
 
 #include "controller_enums.h"
-#include "sensor/sensor_enums.h"
+//#include "sensor/sensor_enums.h"
 #include "global_enums.h"
 #include "controller/alarm_enums.h"
-#include "controller/fileProcessing/filecontroller_events.h"
+//#include "controller/fileProcessing/filecontroller_events.h"
 #include "controller/fileProcessing/export_enums.h"
 #include "blockDevices/blockdevicemanager_enums.h"
 #include "global_structs.h"
 
 class Settings;
 class AlarmController;
-//class FileController;
 class BlockDeviceManager;
 class BlockDevice;
 class AverageICPController;
 class OutputICPSerializer;
-//class SessionManager;
 class LabelManager;
-class DataBaseManager;
-//class Session;
 class Label;
 
 class ISensor;
@@ -39,18 +35,18 @@ class MonitorController : public QObject
 
     /*! Состояния системы */
     enum class State {
-        InitSystem = 0,
-        DeinitSystem = 1,
-        ReinitSystem = 2,
+        //InitSystem = 0,
+        //DeinitSystem = 1,
+        //ReinitSystem = 2,
         InitSoftwareStorage = 3,
-        DeinitSoftwareStorage = 4,
+        //DeinitSoftwareStorage = 4,
         //UpdateSoftwareStorage = 5,
-        InitDataBase = 6,
-        DeinitDataBase = 7,
-        ReinitDataBase = 8,
-        UpdateDataBase = 9,
-        UpdateFileController = 10,
-        InitRTCModule = 11,
+        //InitDataBase = 6,
+        //DeinitDataBase = 7,
+        //ReinitDataBase = 8,
+        //UpdateDataBase = 9,
+        //UpdateFileController = 10,
+        //InitRTCModule = 11,
         InitSensor = 12,
     };
 public:
@@ -103,7 +99,7 @@ public:
     QList<std::shared_ptr<BlockDevice>> getAvailableBlockDevices() const;
 
     /*! Инициализация датчика */
-    void initSensor();
+    //void initSensor();
 
     void terminate();
 
@@ -174,7 +170,7 @@ public:
     /*! Запись скриншота из Linux Frame Buffer (/dev/fb0)
         Будет работать только если видеокарта рисует в него
     */
-    void writeScreenFromLinuxFB();
+
 
     /*! Запись скриншота из виджета */
     //void writeScreenFromWidget(const QPixmap &screen);
@@ -200,7 +196,7 @@ public:
         exportValues - значения, необходимые для экспорта;
         dateConverterFunc - функция для конвертации даты.
     */
-    void exportLastAbsoluteTimeCurrentSensorReadings(uint64_t exportTimeMs, uint32_t exportValues, ExportDataFunc func);
+    //void exportLastAbsoluteTimeCurrentSensorReadings(uint64_t exportTimeMs, uint32_t exportValues, ExportDataFunc func);
     /*################################################################################
                                 Средние показания датчика
     ################################################################################*/
@@ -209,7 +205,7 @@ public:
         exportValues - значения, необходимые для экспорта;
         dateConverterFunc - функция для конвертации даты.
     */
-    void exportLastAbsoluteTimeAverageSensorReadings(uint64_t exportTimeSec, uint32_t exportValues, ExportDataFunc func);
+    //void exportLastAbsoluteTimeAverageSensorReadings(uint64_t exportTimeSec, uint32_t exportValues, ExportDataFunc func);
 
     /*! Возвращает отсортированный по увеличению времени контейнер средних значений, попадающих в указанный интервал
         intervalStartTimeSeconds - начало интервала средних значений;
@@ -230,7 +226,7 @@ public:
         Запрещается связывание сигналов сенсора!
         Обязательно проверять на nullptr!
     */
-    const ISensor *sensor() const;
+    //const ISensor *sensor() const;
 
     /*! Возврат последнего показания
         датчика, сконвертированного в
@@ -239,10 +235,10 @@ public:
     const ComplexValue &getLastConvertedSensorValue() const;
 
     /*! Возврат последнего показания датчика */
-    const ComplexValue getLastSensorValue() const;
+    //const ComplexValue getLastSensorValue() const;
 
     /*! Тестовая, очень простая реализация! */
-    bool testMakeSensorReset();
+    //bool testMakeSensorReset();
 
     /*! Закрывает сессию */
     //void closeSession();
@@ -250,7 +246,7 @@ public:
     //QString getFlashDevice(QString pathPartDevice);
 private:
     /*! Запуск состояния */
-    void runState(State state);
+    //void runState(State state);
 
     /*! Инициализация программного хранилища
         Монтирование происходит асинхронно.
@@ -261,49 +257,49 @@ private:
     //void initSoftwareStorage();
 
     /*! Обновление программного хранилища */
-    void updateSoftwareStorage();
+    //void updateSoftwareStorage();
 
     /*! Инициализировано ли программное хранилище */
-    bool isInitSoftwareStorage();
+    //bool isInitSoftwareStorage();
 
     /*! Программное хранилище подключилось */
-    void softwareStorageConnected();
+    //void softwareStorageConnected();
 
     /*! Программное хранилище отключилось */
-    void softwareStorageDisconnected();
+    //void softwareStorageDisconnected();
 
     /*! В программном хранилище произошли изменения */
-    void softwareStorageChanged();
+    //void softwareStorageChanged();
 
     /*! Программное хранилище стало доступно */
-    void softwareStorageAvailable();
+    //void softwareStorageAvailable();
 
     /*! Программное хранилище стало доступно */
     void softwareStorageUnavailable();
 
     /*! Программное хранилище не назначено */
-    void softwareStorageNotAssigned();
+    //void softwareStorageNotAssigned();
 
     /*! Деинициализация программного хранилища */
-    void deinitSoftwareStorage();
+    //void deinitSoftwareStorage();
 
     /*! Инициализация базы данных */
-    void initDataBase();
+    //void initDataBase();
 
     /*! Деинициализация базы данных */
-    void deinitDataBase();
+    //void deinitDataBase();
 
     /*! Обновление базы данных */
-    void updateDataBase();
+    //void updateDataBase();
 
     /*! База данных доступна */
-    void dataBaseAvailable();
+    //void dataBaseAvailable();
 
     /*! База данных не доступна */
-    void dataBaseUnavailable();
+    //void dataBaseUnavailable();
 
     /*! Обновление контроллера файлов */
-    void updateFileController();
+    //void updateFileController();
 
     /*! Инициализация модуля RTC (реального времени) */
     //void initRTCModule();

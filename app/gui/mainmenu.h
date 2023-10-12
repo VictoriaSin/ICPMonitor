@@ -7,7 +7,7 @@
 class AlarmSetupPage;
 class SystemInfoPage;
 class ZeroSensorPage;
-class DataDownloadPage;
+//class DataDownloadPage;
 class DateTimePage;
 class LanguagePage;
 class GeneralSettingsPage;
@@ -20,7 +20,7 @@ class MainMenu : public AbstractMenuPage
     enum PageID : uint8_t {
         SystemInfo = 0,
         ZeroSensor = 1,
-        DataExport = 2,
+        //DataExport = 2,
         DateTime = 3,
         Language = 4,
         General = 5,
@@ -29,7 +29,7 @@ class MainMenu : public AbstractMenuPage
 
     SystemInfoPage *mSystemInfoPage {nullptr};
     ZeroSensorPage *mZeroSensorPage {nullptr};
-    DataDownloadPage *mDataExportPage {nullptr};
+    //DataDownloadPage *mDataExportPage {nullptr};
     DateTimePage *mDateTimePage {nullptr};
     LanguagePage *mLanguagePage {nullptr};
     GeneralSettingsPage *mGeneralSettingsPage {nullptr};

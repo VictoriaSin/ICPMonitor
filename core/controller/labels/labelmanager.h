@@ -63,7 +63,7 @@ public:
     int getLabelsCountPerCurrentSession() const;
 
     /*! Создаёт итератор для перемещения по меткам */
-    std::shared_ptr<LabelProvider> getLabelProvider();
+    //std::shared_ptr<LabelProvider> getLabelProvider();
 
     /*! Возвращает все метки, принаджежащие сессии */
     //QVector<std::shared_ptr<Label>> getAllLabelsBelongSession(int sessionID);

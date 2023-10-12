@@ -112,7 +112,7 @@ void SaveSPI::run()
       }
     }
 
-    delete [] CurrDataForAverage;
+    if (CurrDataForAverage != nullptr) delete [] CurrDataForAverage;
     mSaveSPI_1->isRunning = false;
     while(mSaveSPI_1->isStopped == false);
   }

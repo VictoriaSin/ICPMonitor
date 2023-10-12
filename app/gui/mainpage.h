@@ -38,11 +38,8 @@ class MainPage : public IPageWidget
 
     /*! Отслеживание состояния датчика */
     ControllerEvent mLastSensorState = ControllerEvent::SensorDisconnected;
-
     bool isStart = true;
-
     bool isSessionStart = true;
-
     bool isStartInterval = true;
 
     int iconCount = 0;
@@ -157,13 +154,13 @@ private slots:
 
     void on_zoomInterval2Button_clicked();
 
-    void on_funcFirstButton_clicked();
+    //void on_funcFirstButton_clicked();
 
-    void on_funcSecondButton_clicked();
+    //void on_funcSecondButton_clicked();
 
-    void on_funcThirdButton_clicked();
+    //void on_funcThirdButton_clicked();
 
-    void on_dVInputButton_clicked();
+    //void on_dVInputButton_clicked();
 
 private:
     Ui::MainPage *ui;
@@ -183,8 +180,8 @@ private:
     /*! Номер текущего графика */
     uint8_t mGraphNumber = 0;
 
-    VolumeInputPage *mVolumeInputPage {nullptr};
-    VolumeInputPage *mParamInputPage {nullptr};
+    //VolumeInputPage *mVolumeInputPage {nullptr};
+    //VolumeInputPage *mParamInputPage {nullptr};
 
     /*! Для отображения на экране */
     QString mLastDateTime {};
@@ -206,7 +203,7 @@ protected:
     void goToLabel(bool direction);
     void playBtnPressed();
     void stopRecord();
-    void setAveragePointerPos(uint currAverage);//void setAveragePointerPos(float currAverage);
+    void setAveragePointerPos(uint currAverage);
     void sessionStopped();
 
     // IPageWidget interface

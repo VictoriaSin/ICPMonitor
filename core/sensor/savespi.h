@@ -26,7 +26,7 @@ protected:
     uint16_t lastBuffPointer;
     uint sum;//double sum;
     uint16_t cnt;
-    uint16_t *CurrDataForAverage;
+    uint16_t *CurrDataForAverage{nullptr};
 
     SaveSPI_1 *mSaveSPI_1 = nullptr;
     void run();

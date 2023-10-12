@@ -16,19 +16,15 @@ AverageICPWidget::AverageICPWidget(QWidget *parent) :
 
 AverageICPWidget::~AverageICPWidget()
 {
-  delete [] mBufferAverageNumber;
+  if (mBufferAverageNumber!= nullptr)  delete[] mBufferAverageNumber;
   delete ui;
 }
 
 void AverageICPWidget::installController(MonitorController *controller)
 {
     mController = controller;
-
-    connect(mController, &MonitorController::controllerEvent,
-            this, &AverageICPWidget::controllerEventHandler);
-
-    connect(mController, &MonitorController::dataReadyFromAverageICPController,
-                this, &AverageICPWidget::updateAverage);
+    connect(mController, &MonitorController::controllerEvent, this, &AverageICPWidget::controllerEventHandler);
+    connect(mController, &MonitorController::dataReadyFromAverageICPController, this, &AverageICPWidget::updateAverage);
 }
 
 void AverageICPWidget::scaleFont(float scaleFactor)
@@ -46,7 +42,8 @@ void AverageICPWidget::retranslate()
 void AverageICPWidget::updateAverage()
 {
     const auto val = mController->getLastAverageValue();
-    if(val.valid){
+    if(val.valid)
+    {
         memset(mBufferAverageNumber, 0, mBufferSize);
         i32toa_countlut((int)std::round(val.value), mBufferAverageNumber);
         ui->averageValueLabel->setText(mBufferAverageNumber);

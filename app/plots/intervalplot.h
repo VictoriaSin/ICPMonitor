@@ -22,12 +22,12 @@ private:
     uint16_t lastBuffPointer;
     uint sum;//double sum;
     uint16_t cnt;
-    uint16_t *CurrDataForAverage;
-    QCPGraph *mAvgGraph;
-    QCPGraph* average;
-    QCPGraph* substract;
-    QCPGraph* amplitude;
-    QCPGraph* filter;
+    uint16_t *CurrDataForAverage {nullptr};
+    QCPGraph *mAvgGraph{nullptr};
+    QCPGraph* average{nullptr};
+    QCPGraph* substract{nullptr};
+    QCPGraph* amplitude{nullptr};
+    QCPGraph* filter{nullptr};
 public:
     void averagePlot(/*_mSPIData temp*/);
 public:

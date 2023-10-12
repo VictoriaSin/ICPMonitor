@@ -24,7 +24,6 @@ SOURCES += \
     gui/dialogWindows/movedatadialog.cpp \
     gui/dialogWindows/selectiondialog.cpp \
     gui/dialogWindows/texteditdialog.cpp \
-    gui/downloadData/datadownloadpage.cpp \
     gui/datetimepage.cpp \
     gui/decoratorspinbox.cpp \
     gui/generalsettingspage.cpp \
@@ -70,7 +69,6 @@ HEADERS += \
     gui/dialogWindows/movedatadialog.h \
     gui/dialogWindows/selectiondialog.h \
     gui/dialogWindows/texteditdialog.h \
-    gui/downloadData/datadownloadpage.h \
     gui/datetimepage.h \
     gui/decoratorspinbox.h \
     gui/generalsettingspage.h \
@@ -111,7 +109,6 @@ FORMS += \
     gui/dialogWindows/movedatadialog.ui \
     gui/dialogWindows/selectiondialog.ui \
     gui/dialogWindows/texteditdialog.ui \
-    gui/downloadData/datadownloadpage.ui \
     gui/generalsettingspage.ui \
     gui/hexkeyboard.ui \
     gui/languagepage.ui \
