@@ -52,8 +52,23 @@ MainPage::MainPage(QWidget *parent)
   setupBottomInfoSVG();   // Настройки нижних иконок-уведомлений
   setupGraphsContainer(); // Настройка контейнера с графиками
 
+  mVolumeInputPage = new VolumeInputPage(this);
+  mVolumeInputPage->setupVolume();
+  mVolumeInputPage->hide();
+  connect(mVolumeInputPage, &VolumeInputPage::previousPage, this, &MainPage::previousPage);
+  connect(mVolumeInputPage, &VolumeInputPage::changePage, this, &MainPage::changePage);
+
+
+  mParamInputPage = new VolumeInputPage(this);
+  mParamInputPage->setupParam();
+  mParamInputPage->hide();
+  connect(mParamInputPage, &VolumeInputPage::previousPage, this, &MainPage::previousPage);
+  connect(mParamInputPage, &VolumeInputPage::changePage, this, &MainPage::changePage);
+
+
   // Настраиваем обновление виджета с текущим временем
   mUpdateDateTimeTimer->setInterval(60000);
+  connect(mParamInputPage, &VolumeInputPage::intervalParamUpdated, [this]() { mCurrentGraphsArea->mFirstInterval->averagePlot();});
 
   connect(mUpdateDateTimeTimer, &QTimer::timeout, this, &MainPage::updateDateTime);
   connect(this, &MainPage::playBtnPressed, [this](){mCurrentGraphsArea->mRecordedGraph->animateGraphic(currSpeed);});//&RecordedPlot::animateGraphic);
@@ -931,4 +946,17 @@ void MainPage::on_goBackToGraphButton_clicked()
   }
 }
 
+
+
+void MainPage::on_dVInputButton_clicked()
+{
+    emit changePage(mVolumeInputPage);
+}
+
+void MainPage::on_funcFirstButton_clicked()
+{
+    emit changePage(mParamInputPage);
+    //mCurrentGraphsArea->mFirstInterval->averagePlot();
+    //mCurrentGraphsArea->replotIntervalGraph();
+}
 

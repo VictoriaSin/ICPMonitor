@@ -169,22 +169,10 @@ void IntervalPlot::scaleFont(float scaleFactor)
 
 void IntervalPlot::averagePlot(/*_mSPIData temp*/)
 {
-  //    firstBuffPointer = (++firstBuffPointer) % maxBuffSizeAvg;
-  //    sum += temp.data;
-  //    if (cnt < maxBuffSizeAvg) { cnt++; }
-  //    else
-  //    {
-  //        lastBuffPointer = (++lastBuffPointer) % maxBuffSizeAvg;
-  //        sum -= CurrDataForAverage[lastBuffPointer];
-  //    }
-  //    CurrDataForAverage[firstBuffPointer] = temp.data;
-  //    mAvgGraph->addData((float)temp.timeStamp/1000, (float)sum/cnt);
-
-
   average->data()->clear();
   filter->data()->clear();
   substract->data()->clear();
-  this->replot();
+  //this->replot();
   uint32_t N = mMainGraph->data()->size();
   float avgBuff[windowWidth];
   double avgValue = 0;
@@ -230,7 +218,18 @@ void IntervalPlot::averagePlot(/*_mSPIData temp*/)
     }
   }
   substract->setData(amplitudeVectorX, amplitudeVector);
+  this->replot();
 
+  //    firstBuffPointer = (++firstBuffPointer) % maxBuffSizeAvg;
+  //    sum += temp.data;
+  //    if (cnt < maxBuffSizeAvg) { cnt++; }
+  //    else
+  //    {
+  //        lastBuffPointer = (++lastBuffPointer) % maxBuffSizeAvg;
+  //        sum -= CurrDataForAverage[lastBuffPointer];
+  //    }
+  //    CurrDataForAverage[firstBuffPointer] = temp.data;
+  //    mAvgGraph->addData((float)temp.timeStamp/1000, (float)sum/cnt);
 }
 
 void IntervalPlot::Compliance()

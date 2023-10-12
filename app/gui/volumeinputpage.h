@@ -33,6 +33,8 @@ public:
 
 private:
     Ui::VolumeInputPage *ui;
+    uint32_t startValueWW;
+    float startValueOA;
 
 public slots:
     void retranslate() override;
@@ -41,6 +43,9 @@ public slots:
 protected:
     //void showEvent(QShowEvent *event) override;
     bool checkValue(QString inputString);
+    void showEvent(QShowEvent *event) override;
+signals:
+    void intervalParamUpdated();
 };
 
 #endif // VOLUMEINPUTPAGE_H

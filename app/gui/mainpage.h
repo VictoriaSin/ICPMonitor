@@ -71,7 +71,8 @@ private:
     /*! Настройка контейнера с графиками */
     void setupGraphsContainer();
     QDir mCurrentRecordDir;
-
+    VolumeInputPage *mVolumeInputPage{nullptr};
+    VolumeInputPage *mParamInputPage{nullptr};
 
 
 private slots:
@@ -161,6 +162,10 @@ private slots:
     //void on_funcThirdButton_clicked();
 
     //void on_dVInputButton_clicked();
+
+    void on_dVInputButton_clicked();
+
+    void on_funcFirstButton_clicked();
 
 private:
     Ui::MainPage *ui;

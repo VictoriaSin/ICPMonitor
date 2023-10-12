@@ -90,11 +90,14 @@ bool VolumeInputPage::checkValue(QString inputString)
 
 void VolumeInputPage::done(int exodus)
 {
-    if (exodus != QDialog::Accepted) {
+    if (exodus != QDialog::Accepted) {        
         emit previousPage();
+        windowWidthLineEdit->setText(QString::number(startValueWW));
+        offsetAverageLineEdit->setText(QString::number(startValueOA));
         return;
     }
     QList<QLineEdit*> list = this->findChildren<QLineEdit*>();
+    //qDebug() << list;
     for (uint8_t i=0; i<list.size(); i++)
     {
         if (!checkValue(list[i]->text()))
@@ -102,9 +105,14 @@ void VolumeInputPage::done(int exodus)
             return;
         }
     }
-    windowWidth = windowWidthLineEdit->text().toUInt();
-    offsetAverage = offsetAverageLineEdit->text().toFloat();
+    if (list.size() > 1)
+    {
+        windowWidth = windowWidthLineEdit->text().toUInt();
+        offsetAverage = offsetAverageLineEdit->text().toFloat();
+        emit intervalParamUpdated();
+    }
     emit previousPage();
+
 }
 
 void VolumeInputPage::retranslate()
@@ -114,4 +122,10 @@ void VolumeInputPage::retranslate()
 
     setUpperNamePageLabel(tr("Ввод параметров"));
     setBottomInfoLabel(tr(""));
+}
+
+void VolumeInputPage::showEvent(QShowEvent */*event*/)
+{
+    startValueWW = windowWidthLineEdit->text().toUInt();
+    startValueOA = offsetAverageLineEdit->text().toFloat();
 }

@@ -68,7 +68,6 @@ public slots:
     // QWidget interface
 protected:
     void showEvent(QShowEvent *event) override;
-
     bool checkInputRegs(QString inputReg);
 };
 

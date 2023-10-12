@@ -11,6 +11,7 @@ class ZeroSensorPage;
 class DateTimePage;
 class LanguagePage;
 class GeneralSettingsPage;
+class ExportDataPage;
 
 class MainMenu : public AbstractMenuPage
 {
@@ -24,7 +25,8 @@ class MainMenu : public AbstractMenuPage
         DateTime = 3,
         Language = 4,
         General = 5,
-        PowerOff = 6
+        ExportData = 6,
+        PowerOff = 7
     };
 
     SystemInfoPage *mSystemInfoPage {nullptr};
@@ -33,6 +35,7 @@ class MainMenu : public AbstractMenuPage
     DateTimePage *mDateTimePage {nullptr};
     LanguagePage *mLanguagePage {nullptr};
     GeneralSettingsPage *mGeneralSettingsPage {nullptr};
+    ExportDataPage *mExportDataPage {nullptr};
 
 public:
     explicit MainMenu(QWidget *parent = nullptr);

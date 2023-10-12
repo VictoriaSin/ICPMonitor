@@ -114,10 +114,6 @@ void WaveFormPlot::addDataOnGraphic(unsigned int  x, unsigned int  y)//const Com
         mHistGraph->data()->removeBefore(temp_x + 0.5);
         //mMainGraph->addData(temp_x, temp_y);
     }
-    if (mICPSettings->getCurrentPressureIndex() == 1)
-    {
-        temp_y *= indexPressureH2O;
-    }
     mMainGraph->addData(temp_x, temp_y);
 }
 

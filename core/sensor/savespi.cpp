@@ -74,7 +74,7 @@ void SaveSPI::run()
 #endif
     temp.timeStamp = (uint32_t)(currentTime - startTime);
     mMainPage->setAverage(calcAverage(temp.data*param));
-    mWaveGraph->addDataOnGraphic(temp.timeStamp, temp.data);
+    mWaveGraph->addDataOnGraphic(temp.timeStamp, temp.data*param);
 #ifndef PC_BUILD
     mZSC.oneShot();
 #endif
@@ -103,7 +103,7 @@ void SaveSPI::run()
       {
         stopTimeGraph += TIME_INTERVAL_FOR_WRITE_ON_GRAPH;
         mMainPage->setAverage(calcAverage(mSaveSPI_1->temp.data*param));
-        mWaveGraph->addDataOnGraphic(mSaveSPI_1->temp.timeStamp, mSaveSPI_1->temp.data);
+        mWaveGraph->addDataOnGraphic(mSaveSPI_1->temp.timeStamp, mSaveSPI_1->temp.data*param);
         QThread::msleep(5);
       }
       else

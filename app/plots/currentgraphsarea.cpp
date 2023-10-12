@@ -346,15 +346,15 @@ void CurrentGraphsArea::replotDisplayedGraph()
 {
     switch (mDisplayedGraph)
     {
-    case AbstractCustomPlot::GraphType::WaveFormGraph:
+        case AbstractCustomPlot::GraphType::WaveFormGraph:
         {
-        replotWaveGraph();
-        break;
+            replotWaveGraph();
+            break;
         }
-    case AbstractCustomPlot::GraphType::RecordedGraph:
+        case AbstractCustomPlot::GraphType::RecordedGraph:
         {
-        replotRecordedGraph();
-        break;
+            replotRecordedGraph();
+            break;
         }
         case AbstractCustomPlot::GraphType::IntervalGraph:
         {
