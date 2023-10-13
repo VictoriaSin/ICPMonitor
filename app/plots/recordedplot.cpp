@@ -185,7 +185,7 @@ qDebug() << "t2" << t2;
                  : mIntervalSecond->addData(mMainGraph->data()->at(i)->key, mMainGraph->data()->at(i)->value);
     }
 //    QVector<QPair<float, float>> tttt = mRecordedData.mid(indexStart, (indexStop-indexStart+1));
-    //qDebug() << tttt;
+    qDebug() << "indexStart" << indexStart << "indexStop" << indexStop;
     mIntervalsContainer[num-1]->averageIntervalValue /= (indexStop - indexStart + 1);
     return qMakePair(first*1000, second*1000);
     //return qMakePair(indexStart, indexStop); // индексы записанного гррафика, каждые 40 мс

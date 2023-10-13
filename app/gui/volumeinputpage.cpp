@@ -92,8 +92,11 @@ void VolumeInputPage::done(int exodus)
 {
     if (exodus != QDialog::Accepted) {        
         emit previousPage();
-        windowWidthLineEdit->setText(QString::number(startValueWW));
-        offsetAverageLineEdit->setText(QString::number(startValueOA));
+        if (this->findChildren<QLineEdit*>().size() != 1)
+        {
+            windowWidthLineEdit->setText(QString::number(startValueWW));
+            offsetAverageLineEdit->setText(QString::number(startValueOA));
+        }
         return;
     }
     QList<QLineEdit*> list = this->findChildren<QLineEdit*>();
@@ -126,6 +129,9 @@ void VolumeInputPage::retranslate()
 
 void VolumeInputPage::showEvent(QShowEvent */*event*/)
 {
+    if (this->findChildren<QLineEdit*>().size() != 1)
+    {
     startValueWW = windowWidthLineEdit->text().toUInt();
     startValueOA = offsetAverageLineEdit->text().toFloat();
+    }
 }

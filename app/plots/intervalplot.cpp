@@ -88,7 +88,7 @@ void IntervalPlot::setup(QPair<int, int> points, QColor color)
   pen.setColor(Qt::GlobalColor::white);
   filter->setPen(pen);
   filter->setBrush(brush);
-
+qDebug() << "1=" << points.first << "2=" << points.second;
   //500 50
   if (isDownloadGraph)
   {
@@ -108,6 +108,7 @@ void IntervalPlot::setup(QPair<int, int> points, QColor color)
   iterTemp = ((points.second-points.first)/6) + 1;
 
   _mSPIData *tempArr = new _mSPIData[iterTemp];
+  qDebug() << "iterTemp" << iterTemp ;
   QFile *currFile;
   if (isDownloadGraph)
   {
@@ -134,6 +135,7 @@ void IntervalPlot::setup(QPair<int, int> points, QColor color)
   //Compliance();
   averagePlot();
   qDebug() << "mCurrentIntervalNum" << mCurrentIntervalNum;
+  qDebug() << "tempArr[iterTemp-1]" << tempArr[iterTemp-1].data << tempArr[iterTemp-1].timeStamp;
   if (mCurrentIntervalNum == 1)
   {
     mFirstIntervalMinMaxXRange.first = (float)tempArr[0].timeStamp/1000;
