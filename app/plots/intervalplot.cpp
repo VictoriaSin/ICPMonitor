@@ -112,11 +112,13 @@ qDebug() << "1=" << points.first << "2=" << points.second;
   QFile *currFile;
   if (isDownloadGraph)
   {
-    currFile = &mTestData;
+      qDebug() << "TestDataFile";
+      currFile = &mTestData;
   }
   else
   {
-    currFile = &mRawDataFile;
+      qDebug() << "rawDataFile";
+      currFile = &mRawDataFile;
   }
   currFile->open(QIODevice::ReadOnly);
   currFile->seek(points.first);
@@ -129,6 +131,7 @@ qDebug() << "1=" << points.first << "2=" << points.second;
   }
   for (uint i=0; i<iterTemp; i++)
   {
+      qDebug() << "x" << (float)tempArr[i].timeStamp/1000 << "y" << tempArr[i].data*param;
     mMainGraph->addData((float)tempArr[i].timeStamp/1000, tempArr[i].data*param);
     //averagePlot(tempArr[i]);
   }

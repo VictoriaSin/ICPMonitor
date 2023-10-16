@@ -4,6 +4,14 @@
 #include "abstractdialogpage.h"
 #include <QScrollArea>
 #include <QGridLayout>
+#include <QLabel>
+#include <QCheckBox>
+
+struct dirsItem
+{
+    QLabel *label;
+    QCheckBox *checkBox;
+};
 
 namespace Ui {
 class ExportDataPage;
@@ -19,18 +27,20 @@ public:
 
     void scaleFont(float scaleFactor) override;
     //void installController(MonitorController *controller) override;
-
+    void resetLayout();
 private:
     Ui::ExportDataPage *ui;
-    void clearLayout(QLayout *layout);
+    void clearLayout();
+    //QVector<dirsItem> dirsVector;
+    dirsItem *dirsVector;
+    uint arrSize = 0;
 public slots:
     void retranslate() override;
     void done(int exodus) override;
 protected:
     void showEvent(QShowEvent *event) override;
-    QScrollArea *scrollArea1 {nullptr};
-    QWidget *widget {nullptr};
-    QGridLayout *gridLayout {nullptr};
+    QGridLayout *gridLayout;
+    void deleteItemDir(uint number);
 protected slots:
     void selectAll();
     void clearSelection();

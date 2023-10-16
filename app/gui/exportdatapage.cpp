@@ -13,17 +13,14 @@
 
 extern QString mntDirectory;
 
+
+
 ExportDataPage::ExportDataPage(QWidget *parent) :
     AbstractDialogPage(parent),
     ui(new Ui::ExportDataPage)
 {
     ui->setupUi(AbstractDialogPage::ui->settingsPage);
-    scrollArea1 = new QScrollArea(this);
-    ui->verticalLayout_2->addWidget(scrollArea1);
-    scrollArea1->setWidgetResizable(true);
-    widget = new QWidget();
-    gridLayout = new QGridLayout(widget);
-    scrollArea1->setWidget(widget);
+    gridLayout = ui->gridLayout1;
     connect(ui->selectAllButton, &QPushButton::clicked, this, &ExportDataPage::selectAll);
     connect(ui->clearAllSelectionsButton, &QPushButton::clicked, this, &ExportDataPage::clearSelection);
     connect(ui->downloadButton, &QPushButton::clicked, this, &ExportDataPage::exportData);
@@ -42,6 +39,7 @@ void ExportDataPage::scaleFont(float scaleFactor)
     WFontScaling(ui->clearAllSelectionsButton, scaleFactor);
     WFontScaling(ui->downloadButton, scaleFactor);
     WFontScaling(ui->deleteButton, scaleFactor);
+    WFontScaling(ui->scrollArea, scaleFactor);
 }
 
 void ExportDataPage::retranslate()
@@ -67,63 +65,75 @@ void ExportDataPage::done(int exodus)
 
 void ExportDataPage::showEvent(QShowEvent */*event*/)
 {
+    resetLayout();
+}
+
+void ExportDataPage::resetLayout()
+{
+    clearLayout();
     QDir dir(mntDirectory);
     dir.setFilter(QDir::Dirs | QDir::NoDot | QDir::NoDotDot);
     //QList <QLabel *> dirsContainer;
     QFileInfoList dirList = dir.entryInfoList();
     QFont fontLabel;
     fontLabel.setPixelSize(20);
-//    if (gridLayout->rowCount()!=1)
-//    {
-//    //for (int i = 0; i < gridLayout->rowCount(); i++)
-
-////    {
-////        gridLayout->removeWidget(gridLayout->itemAt(i)->widget());
-////    }
-
-//    }
-//    if ( gridLayout->layout() != NULL )
-//    {
-//        QLayoutItem* item;
-//        while ( ( item = gridLayout->layout()->takeAt( 0 ) ) != NULL )
-//        {
-//            //item = gridLayout->layout()->itemAt(i);
-//            delete item->widget();
-//            delete item;
-//        }
-//    }
-    clearLayout(gridLayout);
-    for (int i = 0; i < dirList.size(); ++i)
+    dirsItem *tempItem = new dirsItem;
+    uint N = dirList.size();
+    arrSize = N;
+    qDebug() << "dirs" << N;
+    dirsVector = new dirsItem[arrSize];
+    for (uint i = 0; i < N; ++i)
     {
         QFileInfo fileInfo = dirList.at(i);
-        QLabel* dirLabel = new QLabel(widget);
+        QLabel* dirLabel = new QLabel();//ui->scrollArea//widget);
         dirLabel->setText(fileInfo.fileName());
         dirLabel->setFont(fontLabel);
         QCheckBox *checkBox = new QCheckBox();
-        checkBox->setStyleSheet("QCheckBox::{backgraund-color:white;}"); //"QCheckBox::indicator {color:black;}");
+
+        checkBox->setStyleSheet("QCheckBox::{backgraund-color:white;}");
+#ifdef TEST_BUILD
+        checkBox->setStyleSheet("QCheckBox::indicator {width: 20px; height: 20px;}");
+#endif
         checkBox->setCheckable(true);
         checkBox->setFont(fontLabel);
-        gridLayout->addWidget(dirLabel, i, 0);
-        gridLayout->addWidget(checkBox, i, 1);
+        //tempItem = new dirsItem();
+        tempItem->label = dirLabel;
+        tempItem->checkBox = checkBox;
+        //dirsVector.append(*tempItem);
+        dirsVector[i] = *tempItem;
+        gridLayout->addWidget(dirsVector[i].label, i, 0);
+        gridLayout->addWidget(dirsVector[i].checkBox, i, 1);
+        //delete dirLabel;
+        //delete checkBox;
     }
-
+    delete tempItem;
 }
 
-void ExportDataPage::clearLayout(QLayout *layout)
+void ExportDataPage::clearLayout()
 {
-    QLayoutItem *item;
-    while((item = layout->takeAt(0)))
+//    QLayoutItem *item;
+//    while((item = gridLayout->takeAt(0)))
+//    {
+//        if (item->widget())
+//        {
+//            delete item->widget();
+//            delete item;
+//        }
+
+//    }
+
+    for (uint i=0; i<arrSize; i++)
     {
-        if (item->widget())
-        {
-            delete item->widget();
-        }
+        delete dirsVector[i].label;
+        delete dirsVector[i].checkBox;
     }
+
 }
 void ExportDataPage::selectAll()
 {
     QCheckBox *currCheckBox{nullptr};
-    for (int i=0; i<gridLayout->rowCount(); i++)
+    uint N = gridLayout->rowCount();
+    for (uint i=0; i<N; i++)
     {
         currCheckBox = (QCheckBox*)gridLayout->itemAtPosition(i, 1)->widget();
         currCheckBox->setChecked(true);
@@ -133,7 +143,8 @@ void ExportDataPage::selectAll()
 void ExportDataPage::clearSelection()
 {
     QCheckBox *currCheckBox{nullptr};
-    for (int i=0; i<gridLayout->rowCount(); i++)
+    uint N = gridLayout->rowCount();
+    for (uint i=0; i<N; i++)
     {
         currCheckBox = (QCheckBox*)gridLayout->itemAtPosition(i, 1)->widget();
         currCheckBox->setChecked(false);
@@ -144,7 +155,8 @@ void ExportDataPage::clearSelection()
 void ExportDataPage::exportData()
 {
     QCheckBox *currCheckBox{nullptr};
-    for (int i=0; i<gridLayout->rowCount(); i++)
+    uint N = gridLayout->rowCount();
+    for (uint i=0; i<N; i++)
     {
         currCheckBox = (QCheckBox*)gridLayout->itemAtPosition(i, 1)->widget();
         if (currCheckBox->isChecked())
@@ -159,17 +171,34 @@ void ExportDataPage::deleteDirs()
     QCheckBox *currCheckBox {nullptr};
     QLabel *currDirLabel {nullptr};
     QDir *currDir {nullptr};
-    for (int i=0; i<gridLayout->rowCount(); i++)
+    //int N = ui->gridLayout1->rowCount();
+    uint N = arrSize;
+    //qDebug() << N;
+    for (uint i=0; i<N; i++)
     {
+        //QWidget *t0 = gridLayout->itemAtPosition(i, 0)->widget();
+        //QWidget *t1 = gridLayout->itemAtPosition(i, 1)->widget();
+        //currCheckBox = nullptr;
         currCheckBox = (QCheckBox*)gridLayout->itemAtPosition(i, 1)->widget();
-        QLayoutItem* item;
+//        QWidget * widget1;
+//        QWidget * widget2;
+        //qDebug() << currCheckBox;
         if (currCheckBox->isChecked())
         {
+            //qDebug() << i;
+            currDirLabel = nullptr;
             currDirLabel = (QLabel*)gridLayout->itemAtPosition(i, 0)->widget();
             currDir = new QDir(mntDirectory+"/"+currDirLabel->text());
 
+            //delete dirsVector[i]->label;
+            //delete dirsVector[i]->checkBox;
+            gridLayout->update();
+            //delete widget1;
+            //delete widget2;
             currDir->removeRecursively();
-            //qDebug() << executeAConsoleCommand("rm", QStringList() << "-r" << mntDirectory+"/"+currDir->text());
+            currDir = nullptr;
         }
     }
+    //qDebug() << gridLayout->rowCount() << "end";
+    resetLayout();
 }
