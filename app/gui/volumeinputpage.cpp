@@ -6,10 +6,6 @@
 #include <QDebug>
 
 
-//QLineEdit *inputValueLineEdit;
-//QLineEdit *windowWidthLineEdit;
-//QLineEdit *offsetAverageLineEdit;
-
 uint32_t windowWidth = 100;
 float offsetAverage = 0.5;
 
@@ -43,6 +39,7 @@ void VolumeInputPage::setupVolume()
     ui->leftLayout->addWidget(dVolume);
     ui->leftLayout->addWidget(inputValueLineEdit);
     ui->leftLayout->addSpacerItem(spacer);
+    delete spacer;
 }
 
 void VolumeInputPage::setupParam()
@@ -75,10 +72,23 @@ void VolumeInputPage::setupParam()
     ui->leftLayout->addWidget(offsetAverageLabel);
     ui->leftLayout->addWidget(offsetAverageLineEdit);
     ui->leftLayout->addSpacerItem(spacer);
+    delete spacer;
+}
+
+#define DELITEM(_item) if(_item != nullptr)\
+{\
+    delete _item;\
+    _item = nullptr;\
 }
 
 VolumeInputPage::~VolumeInputPage()
 {
+    //DELITEM(dVolume);
+    //DELITEM(inputValueLineEdit);
+    DELITEM(windowWidthLabel);
+    DELITEM(windowWidthLineEdit);
+    DELITEM(offsetAverageLabel);
+    DELITEM(offsetAverageLineEdit);
     delete ui;
 }
 

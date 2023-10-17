@@ -97,6 +97,8 @@ MainPage::~MainPage()
 {
   mUpdateDateTimeTimer->stop();
   delete mUpdateDateTimeTimer;
+  DESTROY_CLASS(mVolumeInputPage);
+  DESTROY_CLASS(mParamInputPage);
   delete ui;
 }
 #define BUT_SIZE_BIG (100*720/1280)

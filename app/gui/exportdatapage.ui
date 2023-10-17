@@ -110,8 +110,11 @@
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
         <layout class="QGridLayout" name="gridLayout1">
-         <property name="spacing">
+         <property name="horizontalSpacing">
           <number>12</number>
+         </property>
+         <property name="verticalSpacing">
+          <number>6</number>
          </property>
         </layout>
        </item>

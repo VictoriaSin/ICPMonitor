@@ -293,7 +293,8 @@ class ZSC
     void terminate();
     void test(u16 iter, u32 delay_ms);
     u16 data[2];
-    void oneShot();
+    //void oneShot();
+    bool spi_getArray(u16 *data);
     void resetRegsValues();
 protected:
     int mFd {-1};
@@ -320,7 +321,6 @@ protected:
     bool spi_write();
     bool SPI_CMD(u8 CMD);
     u16 spi_getReg(u8 reg, u8 memType);
-    bool spi_getArray(u16 *data);
     u16 signature(u16* eepcont, u16 N);
     void resetZSC();
     void initPins();

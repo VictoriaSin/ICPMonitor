@@ -36,7 +36,6 @@ void SaveSPI_1::run()
   while (isRunning)
   {
     currentTime = getCurrentTimeStamp_ms();
-
     if (currentTime > stopTimeFile)
     {
       stopTimeFile += TIME_INTERVAL_FOR_RECORD_IN_FILE;
@@ -52,7 +51,8 @@ void SaveSPI_1::run()
       temp.timeStamp = (uint32_t)(currentTime - startTime);
       mRawDataFile.write((char*)&temp, sizeof(_mSPIData));
 #ifndef PC_BUILD
-      mZSC.oneShot();
+      //mZSC.oneShot();
+      //mZSC.spi_getArray(&temp.data);
 #endif
     }
     else QThread::usleep(50); //400

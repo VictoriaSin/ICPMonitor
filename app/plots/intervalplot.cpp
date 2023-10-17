@@ -109,6 +109,7 @@ qDebug() << "1=" << points.first << "2=" << points.second;
 
   _mSPIData *tempArr = new _mSPIData[iterTemp];
   qDebug() << "iterTemp" << iterTemp ;
+  qDebug() << "size arr " << sizeof(*tempArr);
   QFile *currFile;
   if (isDownloadGraph)
   {

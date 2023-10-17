@@ -161,9 +161,9 @@ bool ZSC::spi_getArray(u16 *data)
   txBuffer[0] = SLAVE_ADDR_R;
   mMessageTX.len = 1;
   if (ioctl(mFd, SPI_IOC_MESSAGE(1), &mMessageTX) < 1) { CS_H(); return false; }
-  mMessageRX.len = 4;
+  mMessageRX.len = 2;
   if (ioctl(mFd, SPI_IOC_MESSAGE(1), &mMessageRX) < 1) { CS_H(); return false; }
-  data[0] = (u16)(((u16)(rxBuffer[0]<<8) + rxBuffer[1]));
+  data[0] = (u16)(rxBuffer[0]<<8) + rxBuffer[1];
   CS_H();
   return true;
 }
@@ -221,10 +221,10 @@ void ZSC::initPins()
 
   qDebug() << "Pins init";
 }
-void ZSC::oneShot()
-{
-  spi_getArray(data);
-}
+//void ZSC::oneShot()
+//{
+//  spi_getArray(data);
+//}
 void ZSC::test(u16 iter, u32 delay_ms)
 {
   char rBuf[200];

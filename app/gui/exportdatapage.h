@@ -32,14 +32,16 @@ private:
     Ui::ExportDataPage *ui;
     void clearLayout();
     //QVector<dirsItem> dirsVector;
-    dirsItem *dirsVector;
+    dirsItem *dirsVector{nullptr};
     uint arrSize = 0;
+    QLabel* dirLabel {nullptr};
+    QCheckBox *checkBox {nullptr};
 public slots:
     void retranslate() override;
     void done(int exodus) override;
 protected:
     void showEvent(QShowEvent *event) override;
-    QGridLayout *gridLayout;
+    QGridLayout *gridLayout {nullptr};
     void deleteItemDir(uint number);
 protected slots:
     void selectAll();

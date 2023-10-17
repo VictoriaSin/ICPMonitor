@@ -29,6 +29,26 @@ ExportDataPage::ExportDataPage(QWidget *parent) :
 
 ExportDataPage::~ExportDataPage()
 {
+    if (dirsVector != nullptr)
+    {
+        delete[] dirsVector;
+        dirsVector = nullptr;
+    }
+    if (dirLabel != nullptr)
+    {
+        delete dirLabel;
+        dirLabel = nullptr;
+    }
+    if (checkBox != nullptr)
+    {
+        delete checkBox;
+        checkBox = nullptr;
+    }
+    if (gridLayout != nullptr)
+    {
+        delete gridLayout;
+        gridLayout = nullptr;
+    }
     delete ui;
 }
 
@@ -70,7 +90,10 @@ void ExportDataPage::showEvent(QShowEvent */*event*/)
 
 void ExportDataPage::resetLayout()
 {
-    clearLayout();
+    if (dirsVector != nullptr)
+    {
+        clearLayout();
+    }
     QDir dir(mntDirectory);
     dir.setFilter(QDir::Dirs | QDir::NoDot | QDir::NoDotDot);
     //QList <QLabel *> dirsContainer;
@@ -85,10 +108,10 @@ void ExportDataPage::resetLayout()
     for (uint i = 0; i < N; ++i)
     {
         QFileInfo fileInfo = dirList.at(i);
-        QLabel* dirLabel = new QLabel();//ui->scrollArea//widget);
+        dirLabel = new QLabel();//ui->scrollArea//widget);
         dirLabel->setText(fileInfo.fileName());
         dirLabel->setFont(fontLabel);
-        QCheckBox *checkBox = new QCheckBox();
+        checkBox = new QCheckBox();
 
         checkBox->setStyleSheet("QCheckBox::{backgraund-color:white;}");
 #ifdef TEST_BUILD
@@ -103,8 +126,7 @@ void ExportDataPage::resetLayout()
         dirsVector[i] = *tempItem;
         gridLayout->addWidget(dirsVector[i].label, i, 0);
         gridLayout->addWidget(dirsVector[i].checkBox, i, 1);
-        //delete dirLabel;
-        //delete checkBox;
+
     }
     delete tempItem;
 }
@@ -196,6 +218,7 @@ void ExportDataPage::deleteDirs()
             //delete widget1;
             //delete widget2;
             currDir->removeRecursively();
+            delete currDir;
             currDir = nullptr;
         }
     }

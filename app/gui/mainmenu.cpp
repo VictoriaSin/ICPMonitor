@@ -24,7 +24,7 @@ MainMenu::MainMenu(QWidget *parent) :
   , mDateTimePage(new DateTimePage(this))
   , mLanguagePage(new LanguagePage(this))
   , mGeneralSettingsPage(new GeneralSettingsPage(this))
-  , mExportDataPage(new ExportDataPage(this))
+  //, mExportDataPage(new ExportDataPage(this))
 {
     // Скрываем созданные окна
     mSystemInfoPage->hide();
@@ -33,7 +33,7 @@ MainMenu::MainMenu(QWidget *parent) :
     mDateTimePage->hide();
     mLanguagePage->hide();
     mGeneralSettingsPage->hide();
-    mExportDataPage->hide();
+    //mExportDataPage->hide();
 
     // Общий стиль для кнопок
     const QString ToolButtonStyleSheet = readStyleSheetFile(":/styles/ToolButtons.qss");
@@ -53,8 +53,8 @@ MainMenu::MainMenu(QWidget *parent) :
                      QSize(125, 125), ToolButtonStyleSheet, mSystemInfoPage,        1, 1, PageID::SystemInfo);
     addSettingButton("Технический доступ", QIcon(":/icons/tools.svg"),             QIcon(":/icons/tools_pressed.svg"),
                      QSize(125, 125), ToolButtonStyleSheet, mGeneralSettingsPage,   2, 0, PageID::General);
-    addSettingButton("Экспорт данных", QIcon(":/icons/downloadGraph.svg"),                QIcon(":/icons/downloadGraph_pressed.svg"),
-                     QSize(125, 125), ToolButtonStyleSheet, mExportDataPage,        2, 1, PageID::ExportData);
+//    addSettingButton("Экспорт данных", QIcon(":/icons/downloadGraph.svg"),                QIcon(":/icons/downloadGraph_pressed.svg"),
+//                     QSize(125, 125), ToolButtonStyleSheet, mExportDataPage,        2, 1, PageID::ExportData);
     addSettingButton("Выключение", QIcon(":/icons/powerOff.svg"),                         QIcon(":/icons/powerOff_pressed.svg"),
                      QSize(125, 125), ToolButtonStyleSheet, nullptr,                3, 0, PageID::PowerOff);
 
@@ -68,8 +68,8 @@ MainMenu::MainMenu(QWidget *parent) :
     connect(mLanguagePage,   &LanguagePage::changePage, this, &MainMenu::changePage);
     connect(mGeneralSettingsPage, &GeneralSettingsPage::previousPage, this, &MainMenu::previousPage);
     connect(mGeneralSettingsPage, &GeneralSettingsPage::changePage, this, &MainMenu::changePage);
-    connect(mExportDataPage, &ExportDataPage::previousPage, this, &MainMenu::previousPage);
-    connect(mExportDataPage, &ExportDataPage::changePage, this, &MainMenu::changePage);
+//    connect(mExportDataPage, &ExportDataPage::previousPage, this, &MainMenu::previousPage);
+//    connect(mExportDataPage, &ExportDataPage::changePage, this, &MainMenu::changePage);
 
     connect(&mButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(powerOff(int)));
 }
@@ -87,6 +87,7 @@ void MainMenu::powerOff(int id)
     DESTROY_CLASS(mDateTimePage);
     DESTROY_CLASS(mLanguagePage);
     DESTROY_CLASS(mGeneralSettingsPage);
+    //DESTROY_CLASS(mExportDataPage);
     mController->terminate();
   }
 }
@@ -119,7 +120,7 @@ void MainMenu::scaleFont(float scaleFactor)
     mDateTimePage->scaleFont(scaleFactor);
     mLanguagePage->scaleFont(scaleFactor);
     mGeneralSettingsPage->scaleFont(scaleFactor);
-    mExportDataPage->scaleFont(scaleFactor);
+//    mExportDataPage->scaleFont(scaleFactor);
 }
 
 void MainMenu::installController(MonitorController *controller)
@@ -131,7 +132,7 @@ void MainMenu::installController(MonitorController *controller)
     mDateTimePage->installController(controller);
     mLanguagePage->installController(controller);
     mGeneralSettingsPage->installController(controller);
-    mExportDataPage->installController(controller);
+//    mExportDataPage->installController(controller);
 
     connect(mController, &MonitorController::controllerEvent, this , &MainMenu::controllerEventHandler);
 
@@ -149,7 +150,7 @@ void MainMenu::retranslate()
     mButtonGroup.button(Language)  ->setText(tr("Язык"));
     mButtonGroup.button(PageID::PowerOff)  ->setText(tr("Выключение"));
     mButtonGroup.button(PageID::General)  ->setText(tr("Технический доступ"));
-    mButtonGroup.button(PageID::ExportData)  ->setText(tr("Экспорт данных"));
+//    mButtonGroup.button(PageID::ExportData)  ->setText(tr("Экспорт данных"));
 
     mZeroSensorPage->retranslate();
     //mDataExportPage->retranslate();
@@ -157,5 +158,5 @@ void MainMenu::retranslate()
     mDateTimePage->retranslate();
     mLanguagePage->retranslate();
     mGeneralSettingsPage->retranslate();
-    mExportDataPage->retranslate();
+//    mExportDataPage->retranslate();
 }

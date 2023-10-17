@@ -24,12 +24,12 @@ public:
     void setupVolume();
     void setupParam();
 
-    QLabel *dVolume;
-    QLineEdit *inputValueLineEdit;
-    QLabel *windowWidthLabel;
-    QLineEdit *windowWidthLineEdit;
-    QLabel *offsetAverageLabel;
-    QLineEdit *offsetAverageLineEdit;
+    QLabel *dVolume {nullptr};
+    QLineEdit *inputValueLineEdit {nullptr};
+    QLabel *windowWidthLabel {nullptr};
+    QLineEdit *windowWidthLineEdit {nullptr};
+    QLabel *offsetAverageLabel {nullptr};
+    QLineEdit *offsetAverageLineEdit {nullptr};
 
 private:
     Ui::VolumeInputPage *ui;

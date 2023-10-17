@@ -76,7 +76,8 @@ void SaveSPI::run()
     mMainPage->setAverage(calcAverage(temp.data*param));
     mWaveGraph->addDataOnGraphic(temp.timeStamp, temp.data*param);
 #ifndef PC_BUILD
-    mZSC.oneShot();
+    //mZSC.oneShot();
+    mZSC.spi_getArray(&temp.data);
 #endif
   }
 
