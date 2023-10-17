@@ -32,6 +32,12 @@ MessageDialog::~MessageDialog()
     delete ui;
 }
 
+void MessageDialog::addButton(QPushButton *btn)
+{
+    btn->setFont(mButtonFont);
+    AbstractDialogWindow::ui->buttonLayout->addWidget(btn);
+}
+
 void MessageDialog::setTextMessage(const QString &info)
 {
     ui->infoLabel->setText(info);
@@ -41,7 +47,12 @@ void MessageDialog::scaleFont(float scaleFactor)
 {
     WFontScaling(ui->infoLabel, scaleFactor);
     FontScaling(mButtonFont, scaleFactor);
-    mOkeyButton->setFont(mButtonFont);
+    //mOkeyButton->setFont(mButtonFont);
+    QList <QPushButton*> btnList = this->findChildren<QPushButton*>();
+    for (int i=0; i<btnList.size(); i++)
+    {
+        btnList[i]->setFont(mButtonFont);
+    }
 }
 
 void MessageDialog::retranslate()

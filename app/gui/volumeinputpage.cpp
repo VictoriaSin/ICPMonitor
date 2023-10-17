@@ -15,6 +15,7 @@ VolumeInputPage::VolumeInputPage(QWidget *parent) :
     ui(new Ui::VolumeInputPage)
 {
     ui->setupUi(AbstractDialogPage::ui->settingsPage);
+    //spacer = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding);
 
     // проскаалировать все
     retranslate();
@@ -33,13 +34,14 @@ void VolumeInputPage::setupVolume()
     inputValueLineEdit->setStyleSheet("background-color: rgb(255, 255, 255)");
     inputValueLineEdit->setFont(fontLineEdit);
 
-    QSpacerItem *spacer = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding);
-
+    spacer = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding);
     ui->leftLayout->addSpacerItem(spacer);
     ui->leftLayout->addWidget(dVolume);
     ui->leftLayout->addWidget(inputValueLineEdit);
+    spacer = nullptr;
+    spacer = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding);
     ui->leftLayout->addSpacerItem(spacer);
-    delete spacer;
+    spacer = nullptr;
 }
 
 void VolumeInputPage::setupParam()
@@ -64,15 +66,16 @@ void VolumeInputPage::setupParam()
     offsetAverageLineEdit->setFont(fontLineEdit);
     offsetAverageLineEdit->setText("0.5");
 
-    QSpacerItem *spacer = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding);
-
+    spacer = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding);
     ui->leftLayout->addSpacerItem(spacer);
+    spacer = nullptr;
     ui->leftLayout->addWidget(windowWidthLabel);
     ui->leftLayout->addWidget(windowWidthLineEdit);
     ui->leftLayout->addWidget(offsetAverageLabel);
     ui->leftLayout->addWidget(offsetAverageLineEdit);
+    spacer = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding);
     ui->leftLayout->addSpacerItem(spacer);
-    delete spacer;
+    spacer = nullptr;
 }
 
 #define DELITEM(_item) if(_item != nullptr)\
@@ -83,12 +86,13 @@ void VolumeInputPage::setupParam()
 
 VolumeInputPage::~VolumeInputPage()
 {
-    //DELITEM(dVolume);
-    //DELITEM(inputValueLineEdit);
+    DELITEM(dVolume);
+    DELITEM(inputValueLineEdit);
     DELITEM(windowWidthLabel);
     DELITEM(windowWidthLineEdit);
     DELITEM(offsetAverageLabel);
     DELITEM(offsetAverageLineEdit);
+    //DELITEM(spacer);
     delete ui;
 }
 

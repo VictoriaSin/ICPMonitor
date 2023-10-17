@@ -6,6 +6,7 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QCheckBox>
+#include <QPushButton>
 
 struct dirsItem
 {
@@ -16,7 +17,7 @@ struct dirsItem
 namespace Ui {
 class ExportDataPage;
 }
-
+class MessageDialog;
 class ExportDataPage : public AbstractDialogPage
 {
     Q_OBJECT
@@ -26,7 +27,7 @@ public:
     ~ExportDataPage();
 
     void scaleFont(float scaleFactor) override;
-    //void installController(MonitorController *controller) override;
+    void installController(MonitorController *controller) override;
     void resetLayout();
 private:
     Ui::ExportDataPage *ui;
@@ -43,6 +44,9 @@ protected:
     void showEvent(QShowEvent *event) override;
     QGridLayout *gridLayout {nullptr};
     void deleteItemDir(uint number);
+    MessageDialog *mDeleteDirsDialog {nullptr};
+    QPushButton *AcceptButton {nullptr};
+    QPushButton *CancelButton {nullptr};
 protected slots:
     void selectAll();
     void clearSelection();

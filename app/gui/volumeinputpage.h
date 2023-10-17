@@ -4,7 +4,7 @@
 #include "../abstractdialogpage.h"
 #include <QLabel>
 #include <QLineEdit>
-
+#include <QSpacerItem>
 
 
 namespace Ui {
@@ -30,6 +30,7 @@ public:
     QLineEdit *windowWidthLineEdit {nullptr};
     QLabel *offsetAverageLabel {nullptr};
     QLineEdit *offsetAverageLineEdit {nullptr};
+    QSpacerItem *spacer {nullptr};
 
 private:
     Ui::VolumeInputPage *ui;

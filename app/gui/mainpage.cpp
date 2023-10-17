@@ -101,6 +101,8 @@ MainPage::~MainPage()
   DESTROY_CLASS(mParamInputPage);
   delete ui;
 }
+
+
 #define BUT_SIZE_BIG (100*720/1280)
 #define BUT_SIZE_SMALL (100*480/720)
 void MainPage::setupButtons()

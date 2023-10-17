@@ -21,7 +21,7 @@ public:
 private:
     Ui::MessageDialog *ui;
 
-    QPushButton *mOkeyButton {nullptr};
+
     QFont mButtonFont;
 
     // AbstractDialogWindow interface
@@ -29,7 +29,10 @@ public:
     void scaleFont(float scaleFactor) override;
     void retranslate() override;
 
+    QPushButton *mOkeyButton {nullptr};
+
     // QWidget interface
+    void addButton(QPushButton *btn);
 protected:
     void showEvent(QShowEvent *event) override;
 };
