@@ -13,6 +13,8 @@ WaveFormPlot::WaveFormPlot(QWidget *parent) :
     // Добавляем два графика
     mMainGraph = addGraph();
     mHistGraph = addGraph();
+    mTempGraph = addGraph();
+    mHistTempGraph = addGraph();
 
     // Включаем сглаживание
     mMainGraph->setAntialiased(true);
@@ -45,7 +47,20 @@ WaveFormPlot::WaveFormPlot(QWidget *parent) :
 
     // Устанавливаем браш и ручку для отрисовки исторического графика
     mHistGraph->setPen(pen);
-    mMainGraph->setBrush(brush);
+    mHistGraph->setBrush(brush);
+
+    pen.setColor(Qt::GlobalColor::gray);
+    mHistTempGraph->setPen(pen);
+    mHistTempGraph->setBrush(brush);
+
+    pen.setWidthF(mThicknessOfMainGraph);
+    mTempGraph->setPen(pen);
+    mTempGraph->setBrush(brush);
+
+    mAmplitudePoints = addGraph();
+    mAmplitudePoints->setPen(QPen(QColor(0, 255, 0)));
+    mAmplitudePoints->setLineStyle(QCPGraph::lsNone);
+    mAmplitudePoints->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
 
     // Создаём две ограничительные линии
     mLowerAlarmLimit = new QCPItemLine(this);
@@ -78,6 +93,12 @@ WaveFormPlot::~WaveFormPlot()
 
 }
 
+void WaveFormPlot::setType(uint8_t newType)
+{
+    type = newType;
+    retranslate();
+}
+
 void WaveFormPlot::changePenColor(QColor mColor)
 {
     QPen pen;
@@ -92,13 +113,18 @@ void WaveFormPlot::changePenColor(QColor mColor)
 }
 
 
-void WaveFormPlot::addDataOnGraphic(unsigned int  x, unsigned int  y)//const ComplexValue &complexVal)
+void WaveFormPlot::addDataOnGraphic(unsigned int  x, /*unsigned int*/float  y)//const ComplexValue &complexVal)
 {
   if (x > graphCurrentMaxRange)
   {
     {
+        mAmplitudePoints->data()->clear();
         *mHistGraph->data() = *mMainGraph->data();
         mMainGraph->data()->clear();
+        *mHistTempGraph->data() = *mTempGraph->data();
+        mTempGraph->data()->clear();
+
+
     }
     graphCurrentMaxRange += graphRangeSize;
     graphMinus += graphRangeSize;
@@ -106,22 +132,72 @@ void WaveFormPlot::addDataOnGraphic(unsigned int  x, unsigned int  y)//const Com
 
     x-= graphMinus;
     float temp_x = (float) x/1000;
-    float temp_y = (float) y;
+    //float temp_y = (float) y;
 
 
     if(mHistGraph->data()->size())
     {
-        mHistGraph->data()->removeBefore(temp_x + 0.5);
+        mHistGraph->data()->removeBefore(temp_x + 0.5);        
+        mHistTempGraph->data()->removeBefore(temp_x + 0.5);
+        //mAmplitudePoints->data()->removeAfter(temp_x);
+
         //mMainGraph->addData(temp_x, temp_y);
     }
-    mMainGraph->addData(temp_x, temp_y);
+    mMainGraph->addData(temp_x, /*temp_y*/y);
 }
+
+void WaveFormPlot::addAvgDataOnGraphic(unsigned int  x, float  y)
+{
+    if (x > graphCurrentMaxRange)
+    {
+        {
+            //mTempGraph->data()->clear();
+
+            //mTempGraph->data().data()->removeBefore(5);
+            mAmplitudePoints->data()->clear();
+
+
+        }
+        graphCurrentMaxRange += graphRangeSize;
+        graphMinus += graphRangeSize;
+    }
+
+    x-= graphMinus;
+    float temp_x = (float) x/1000;
+    mTempGraph->addData(temp_x, y);
+}
+
+
+void WaveFormPlot::addComplianceDataOnGraphic(unsigned int  x, /*unsigned int*/float  y)//const ComplexValue &complexVal)
+{
+//  if (x > graphCurrentMaxRange)
+//  {
+//    mAmplitudePoints->data()->clear();
+//    graphCurrentMaxRange += graphRangeSize;
+//    graphMinus += graphRangeSize;
+//  }
+//    x-= graphMinus;
+    float temp_x = (float) x/1000;
+
+
+//    if(mHistGraph->data()->size())
+//    {
+//        //mHistGraph->data()->removeBefore(temp_x + 0.5);
+//        //mHistTempGraph->data()->removeBefore(temp_x + 0.5);
+//        mAmplitudePoints->data()->removeAfter(temp_x);
+
+//        //mMainGraph->addData(temp_x, temp_y);
+//    }
+    mAmplitudePoints->addData(temp_x, /*temp_y*/y);
+}
+
 
 void WaveFormPlot::retranslate()
 {
     // Подписываем оси
     xAxis->setLabel(tr("секунды"));
-    mICPSettings->getCurrentPressureIndex() == 0 ? yAxis->setLabel(tr("мм рт ст")) : yAxis->setLabel(tr("мм вод ст"));
+    if (type == 0) { mICPSettings->getCurrentPressureIndex() == 0 ? yAxis->setLabel(tr("мм рт ст")) : yAxis->setLabel(tr("мм вод ст")); }
+    else if (type == 1) { yAxis->setLabel(tr("Compliance")); }
 }
 
 void WaveFormPlot::resetGraph()

@@ -43,8 +43,8 @@ HEADERS += \
     sensor/impl/bmp280temperaturespisensor.h \
     sensor/impl/fileimitsensor.h \
     sensor/isensor.h \
-    sensor/savespi.h \
-    sensor/savespi_1.h \
+    sensor/read_spi.h \
+    sensor/save_spi.h \
     sensor/sensor_enums.h \
     sensor/spi.h \
     sensor/zsc.h \
@@ -76,8 +76,8 @@ SOURCES += \
     global_structs.cpp \
     sensor/impl/bmp280temperaturespisensor.cpp \
     sensor/impl/fileimitsensor.cpp \
-    sensor/savespi.cpp \
-    sensor/savespi_1.cpp \
+    sensor/read_spi.cpp \
+    sensor/save_spi.cpp \
     sensor/spi.cpp \
     sensor/zsc.cpp \
     statistical_functions.cpp \

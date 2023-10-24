@@ -72,7 +72,7 @@ void Settings::readGeneralSettings()
     for (uint8_t i = 0; i < REGS_CNT; i++)
     {
         mRegValues[i] = regList[i].toUInt(nullptr, 16);
-        qDebug() << mRegValues[i];
+        //qDebug() << mRegValues[i];
     }
     mFontScaleFactor = mSettings->value("mFontScaleFactor", mFontScaleFactor).toFloat();
     mSettings->endGroup();

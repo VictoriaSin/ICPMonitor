@@ -4,8 +4,8 @@
 #include "plots/abstractmultiplegraphsareaswidget.h"
 #include "controller/controller_enums.h"
 #include "global_define.h"
-#include "../core/sensor/savespi.h"
-
+#include "../core/sensor/read_spi.h"
+#include "../drawgraphs.h"
 
 
 //! График текущих значений
@@ -113,11 +113,13 @@ class CurrentGraphsArea : public AbstractMultipleGraphsAreasWidget
 #endif
 
 public:
-    SaveSPI *mSaveSPI = nullptr;
+    ReadSPI *mReadSPI = nullptr;
+    DrawGraphs *mDrawGraphs = nullptr;
     //! График записанных значений
     RecordedPlot *mRecordedGraph {nullptr};
     IntervalPlot *mFirstInterval {nullptr};
     IntervalPlot *mSecondInterval {nullptr};
+    //WaveFormPlot *mComplianceGraph {nullptr};
     explicit CurrentGraphsArea(QWidget *parent = nullptr);
     ~CurrentGraphsArea();
 
@@ -255,6 +257,9 @@ public:
     void removeAllGraphs();
     void replotIntervalGraph();
     void setMarksOnInterval();
+    void calcCompliance();
+    void getData();
+    void stopWorkDraw();
 protected:
     bool isNeedCalc;
     //float calcAverage(uint16_t data);

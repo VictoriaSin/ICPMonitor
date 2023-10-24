@@ -11,17 +11,26 @@
 #include "controller/labels/label.h"
 #include "unistd.h"
 #include "ui_mainpage.h"
+
+#include "math.h"
 #include <QTimer>
 
 #include "global_define.h"
 
 WaveFormPlot *mWaveGraph {nullptr};
+WaveFormPlot *mComplianceGraph {nullptr};
 
 QVector<LabelMarkItem *> mLabelItemsContainer {nullptr};
 MarkItem *mIntervalsContainer[4];
 bool isIntervalCreating {false};
 uint8_t mIntervalsCount {0};
 
+extern uint16_t dVolume;
+extern float Po;
+extern float Pk;
+double dVConst;
+
+extern uint32_t windowWidth;
 //_bufferRecord bufferRecord_1, bufferRecord_2;
 //uint8_t currentBufferRecord;
 
@@ -44,6 +53,7 @@ CurrentGraphsArea::CurrentGraphsArea(QWidget *parent) :
     mLabelItemsContainer.clear();
     // Записываем для быстрого доступа
     mWaveGraph = ui->waveGraph;
+    mWaveGraph->setType(0);
     AbstractGraphAreaWidget::ui->xRangeGraphToolButton->hide();
 
     //Записываем для быстрого доступа и скрываем график
@@ -56,11 +66,16 @@ CurrentGraphsArea::CurrentGraphsArea(QWidget *parent) :
     mSecondInterval = ui->secondInterval;
     mSecondInterval->hide();
 
+    mComplianceGraph = ui->complianceGraph;
+    mComplianceGraph->setType(1);
+    mComplianceGraph->hide();
+
     // Добавляем графики в общий контейнер
     mGraphContainer.append(mWaveGraph); // 0
     mGraphContainer.append(mRecordedGraph); // 1
     mGraphContainer.append(mFirstInterval); // 2
     mGraphContainer.append(mSecondInterval); // 3
+    mGraphContainer.append(mComplianceGraph); // 4
 
     // Указываем индекс отображаемого графика
     mCurrentGraphIndex = 0;
@@ -368,6 +383,7 @@ void CurrentGraphsArea::replotDisplayedGraph()
 void CurrentGraphsArea::replotWaveGraph()
 {
     mWaveGraph->replot();
+    mComplianceGraph->replot();
 
     const auto curTime = QDateTime::currentMSecsSinceEpoch();
     mWaveGraph->avgBenchTime += (curTime - mWaveGraph->benchTime);
@@ -409,9 +425,11 @@ void CurrentGraphsArea::updateIntervalsOnGraphs()
     }
 //#define indexPressureH2O 13.595
     mWaveGraph->setXRange(0, settings->getCurrentReadingsGraphIntervalX());
+    mComplianceGraph->setXRange(0, settings->getCurrentReadingsGraphIntervalX());
     if (mICPSettings->getCurrentPressureIndex() == 1)
     {
         mWaveGraph->setYRange(10*indexPressureH2O, settings->getCurrentReadingsGraphIntervalY());
+        mComplianceGraph->setYRange(10*indexPressureH2O, settings->getCurrentReadingsGraphIntervalY());
         mRecordedGraph->setYRange(10*indexPressureH2O, settings->getCurrentReadingsGraphIntervalY());
         mFirstInterval->setYRange(10*indexPressureH2O, settings->getCurrentReadingsGraphIntervalY());
         mSecondInterval->setYRange(10*indexPressureH2O, settings->getCurrentReadingsGraphIntervalY());
@@ -419,6 +437,7 @@ void CurrentGraphsArea::updateIntervalsOnGraphs()
     else
     {
         mWaveGraph->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
+        mComplianceGraph->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
         mWaveGraph->setLowerAlarmLevelLine(settings->getLowLevelAlarm());
         mWaveGraph->setUpperAlarmLevelLine(settings->getHighLevelAlarm());
         mRecordedGraph->setXRange(0, settings->getCurrentReadingsGraphIntervalX());
@@ -429,7 +448,8 @@ void CurrentGraphsArea::updateIntervalsOnGraphs()
         mSecondInterval->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
     }
 
-    mWaveGraph->resetGraph();    
+    mWaveGraph->resetGraph();
+    mComplianceGraph->resetGraph();
     mRecordedGraph->resetGraph();
     mFirstInterval->resetGraph();
     mSecondInterval->resetGraph();
@@ -448,6 +468,9 @@ void CurrentGraphsArea::updateTicksOnGraphs()
 
     mWaveGraph->xAxis->ticker()->setTickCount(settings->getCurrentTickCountX());
     mWaveGraph->yAxis->ticker()->setTickCount(settings->getCurrentTickCountY());
+
+    mComplianceGraph->xAxis->ticker()->setTickCount(settings->getCurrentTickCountX());
+    mComplianceGraph->yAxis->ticker()->setTickCount(settings->getCurrentTickCountY());
 
     mRecordedGraph->xAxis->ticker()->setTickCount(settings->getCurrentTickCountX());
     mRecordedGraph->yAxis->ticker()->setTickCount(settings->getCurrentTickCountY());
@@ -824,11 +847,11 @@ void CurrentGraphsArea::startWork()
   //data              = 0;
 
 
-  if (mSaveSPI == nullptr)
+  if (mReadSPI == nullptr)
   {
-    mSaveSPI = new SaveSPI();
+    mReadSPI = new ReadSPI();
   }
-  mSaveSPI->start();
+  mReadSPI->start();
 
 
 
@@ -852,16 +875,26 @@ void CurrentGraphsArea::startWork()
 }
 void CurrentGraphsArea::stopWork()
 {
-  if (mSaveSPI != nullptr)
+  if (mReadSPI != nullptr)
   {
-    mSaveSPI->isRunning = false;
-    while(mSaveSPI->isStopped == false);
-    mSaveSPI = nullptr;
+    mReadSPI->isRunning = false;
+    while(mReadSPI->isStopped == false);
+    mReadSPI = nullptr;
   }
   isRecord = false;
   //mTimerGetDataGraph->stop();
   //mTimerGetDataFile->stop();
   //stopPlotting();
+}
+
+void CurrentGraphsArea::stopWorkDraw()
+{
+  if (mDrawGraphs != nullptr)
+  {
+    mDrawGraphs->isRunning = false;
+    while(mDrawGraphs->isStopped == false);
+    mDrawGraphs = nullptr;
+  }
 }
 
 //float CurrentGraphsArea::calcAverage(uint16_t data)
@@ -916,6 +949,111 @@ void CurrentGraphsArea::removeAllGraphs()
 
 }
 
+_mSPIData currData;
+//uint16_t inputData[36] = {12979, 13722, 15682, 17898, 20345, 21989, 22926, 22695, 22975, 22865,
+//                       22963, 23072, 23024, 22549, 22452, 22585, 21965, 21758, 21587, 20942,
+//                       20345, 19676, 18896, 18701, 17618, 17082, 16206, 15658, 15231, 14708,
+//                       13965, 13868, 13235, 12869, 13113, 14391};
+#define CNT_AVG_VALUES 20
+void CurrentGraphsArea::getData()
+{
+    uint32_t time = currData.timeStamp;
+    static int currIndexArr = 0;
+    uint64_t avg = 0;
+    for (uint8_t i=0; i<CNT_AVG_VALUES; i++)
+    {
+       // avg += inputData[currIndexArr%36+i];//(uint16_t)(30 + 15 * sin(3.14 * (double)(((time+i*2) % 2000) + 1)/500));
+        currIndexArr++;
+    }
+    currData.data = avg/CNT_AVG_VALUES;
+}
+
+
+void CurrentGraphsArea::calcCompliance()
+{
+    float Acp = (mFirstInterval->averageA + mSecondInterval->averageA)/2;
+    Acp *= 13.545;
+    float Pcp = (Po + Pk)/2;//(mFirstInterval->averageP + mSecondInterval->averageP)/2;//
+    Pcp *= 13.545;
+
+    dVConst = (dVolume * log10((Pcp + Acp)/(Pcp - Acp))) / (log10(Pk/Po));//(mFirstInterval->averageP / mSecondInterval->averageP)
+    qDebug() << "Acp" << Acp << "Pcp" << Pcp << "dVConst" << dVConst;
+    float param = 1.0;
+    mWaveGraph->xAxis->setLabel("");
+    mWaveGraph->mLowerAlarmLimit->setVisible(false);
+    mWaveGraph->mUpperAlarmLimit->setVisible(false);
+    mWaveGraph->mMainGraph->data().data()->clear();
+    mWaveGraph->yAxis->setRange(0, 30);
+
+    mComplianceGraph->xAxis->setLabel("");
+    mComplianceGraph->mLowerAlarmLimit->setVisible(false);
+    mComplianceGraph->mUpperAlarmLimit->setVisible(false);
+    mComplianceGraph->mMainGraph->data().data()->clear();
+    mComplianceGraph->yAxis->setRange(0, 1);
+
+    if (mDrawGraphs == nullptr)
+    {
+      mDrawGraphs = new DrawGraphs();
+    }
+    mDrawGraphs->start();
+    mDrawGraphs->isRunning = true;
+
+//    //qint64 startTime = getCurrentTimeStamp_ms();
+//    //mWaveGraph->replot();
+
+//    QVector<float> pressure;
+//    QVector<float> time;
+//    uint32_t N = mWaveGraph->mMainGraph->data()->size();
+//    float avgBuff[windowWidth];
+//    double avgValue = 0;
+//    for (uint i=0; i<N-windowWidth; i++)
+//    {
+//      avgValue = 0;
+//      for (uint32_t j=0; j<windowWidth; j++)
+//      {
+//        avgValue += mWaveGraph->mMainGraph->data()->at(i+j)->value;
+//      }
+//      avgValue /= windowWidth;
+
+//      pressure.append(avgValue);
+//      time.append(mWaveGraph->mMainGraph->data()->at(i)->key);
+//    }
+
+//    N = pressure.size();
+//    QVector<double> amplitudeVector;
+//    QVector<double> amplitudeVectorX;
+//    float mxValue = 0;
+//    uint32_t mxIndex = 0;
+//    bool isMaxFound = false;
+//    for (uint i=0; i<N; i++)
+//    {
+//      if (mWaveGraph->mMainGraph->data()->at(i)->value >= pressure.at(i))
+//      {
+//        if (mWaveGraph->mMainGraph->data()->at(i)->value > mxValue)
+//        {
+//          mxValue = mWaveGraph->mMainGraph->data()->at(i)->value;
+//          mxIndex = i;
+//        }
+//        isMaxFound = true;
+//      }
+//      else if (isMaxFound)
+//      {
+//        amplitudeVector.append(mxValue - pressure.at(mxIndex));
+//        amplitudeVectorX.append(time.at(mxIndex));
+//        isMaxFound = false;
+//        mxValue = -1;
+//        mxIndex = 0;
+//      }
+//    }
+
+//    N = amplitudeVector.size();
+//    for (uint i=0; i<N; i++)
+//    {
+//        mComplianceGraph->mMainGraph->addData(amplitudeVectorX.at(i), dVConst/(2*amplitudeVector.at(i)));
+//    }
+}
+
+
 //void CurrentGraphsArea::addRawData(_bufferRecord *buffer)
 //{
 //    //qDebug("1"); // Болт забили !!!!!
@@ -939,82 +1077,3 @@ void CurrentGraphsArea::removeAllGraphs()
 ////    buffer->currentPos = 0;
 //}
 
-//void CurrentGraphsArea::addDataOnTrendGraph()
-//{
-//    // Если не установлен контроллер
-//    if (!mController) {
-//        return;
-//    }
-
-//    // Узнаём среднее значение
-//    const auto &value = mController->getLastAverageValue();
-
-//    // Если пришло самое первое показание
-//    if (mDateTimeOfFirstData.isNull()) {
-//        // Сбрасываем информацию о графике
-//        resetTrendGraph();
-
-//        // Сохраняем время первого пришедшего значения и
-//        // приравниваем предыдущее показание первому значению
-//        mPrevTimeOfSensorReadingMs = value.timestamp;
-//        mDateTimeOfFirstData = QDateTime::fromMSecsSinceEpoch(mPrevTimeOfSensorReadingMs);
-
-//        // Устанавливаем диапазон по оси X
-//        nextXRange();
-//    } else {
-//        // Суммируем хранимое время
-//        mTotalTimeOfStoredReadingsMs += value.timestamp - mPrevTimeOfSensorReadingMs;
-//    }
-
-//    // Если переполнился допустимый буфер времени отображения показаний,
-//    // то стираем старые значения в размере mDeleteIntervalMs
-//    if (mTotalTimeOfStoredReadingsMs > mMaxStoredTimeMs) {
-//        mTrendGraph->data()->removeBefore(mTrendGraph->data()->begin()->sortKey() + mDeleteIntervalMs / 1000);
-//        mTotalTimeOfStoredReadingsMs -= mDeleteIntervalMs;
-//    }
-
-//    // Время показания в секундах
-//    const auto timestampInSeconds = value.timestamp / 1000;
-
-//    // Добавляем в контейнер данные
-//    mTrendGraph->data()->add(QCPGraphData(timestampInSeconds, value.value));
-
-//    // Сохраняем время пришедшего значения
-//    mPrevTimeOfSensorReadingMs = value.timestamp;
-
-//    // Если отображение графика переполнилось относительно последнего выставленного диапазона
-//    // и пользователь не касался экрана, то сдвигаем его в центр
-//    const auto &currentXRange = mTrendGraph->xAxis->range();
-//    if (currentXRange.upper < timestampInSeconds && !mUserTouchOrMouseEventOnTrendGraph) {
-//        const auto &shiftSeconds = mXRangesOfSecondsWithIcons[mCurrentXRangeIndex].interval * mXAxisShiftInPercent;
-//        mLastXRange = mTrendGraph->setXRange(currentXRange.lower + shiftSeconds, timestampInSeconds + shiftSeconds);
-//    }
-//}
-//qDebug() << "plot" << plotIndex;
-//qDebug() << "curr" << currIndex * TIME_INTERVAL_FOR_RECORD_IN_FILE;
-//    if (isRecord)
-//    {
-//        temp.timeStamp = (uint32_t)(currIndex * TIME_INTERVAL_FOR_RECORD_IN_FILE);//(currIndex * TIME_INTERVAL_FOR_WRITE_ON_GRAPH);
-//        temp.data = data;
-//        //mRawDataFile.write((char*)&temp, sizeof(_mSPIData));
-//        //qDebug() << "khem" << temp.timeStamp << temp.data;
-//        //mRecordedGraph->saveDataForGraphic(timeSec, data);
-//        //mRecordedGraph->addDataOnGraphic(currX, currY);
-//        //currentBufferRecord == 1 ? addRawData(&bufferRecord_2) : addRawData(&bufferRecord_1);
-//    }
-
-
-//++mCounterSensorReadings;
-//ComplexValue currValue;
-// Если кол-во точек равно кол-ву прореживания
-/*if (mCounterSensorReadings == mThinningSensorReadings)
-{
-    currValue = mController->getLastConvertedSensorValue();
-    mWaveGraph->addDataOnGraphic(currValue);//(mController->getLastConvertedSensorValue());
-    if (isRecord)
-    {
-        currentBufferRecord == 1 ? addRawData(&bufferRecord_1) : addRawData(&bufferRecord_2);
-        mRecordedGraph->saveDataForGraphic(currValue);//mController->getLastConvertedSensorValue());// пока оставляем
-    }
-    mCounterSensorReadings = 0;
-}*/

@@ -92,6 +92,14 @@ void AbstractMultipleGraphsAreasWidget::changeGraph(uint8_t number)
 
     // Устанавливаем тип отображаемого графика
     mDisplayedGraph = graph->type();
+    if (number == 4)
+    {
+        mGraphContainer[0]->show();
+    }
+    else if (number != 0)
+    {
+        mGraphContainer[0]->hide();
+    }
 
 //    switch (mDisplayedGraph)
 //    {

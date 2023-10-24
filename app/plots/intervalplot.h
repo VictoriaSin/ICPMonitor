@@ -16,6 +16,8 @@ public:
     void scaleFont(float scaleFactor) override;
 
     void setup(QPair<int, int> points, QColor color);
+    float averageA;
+    float averageP;
 private:
     uint maxBuffSizeAvg;
     uint16_t firstBuffPointer;

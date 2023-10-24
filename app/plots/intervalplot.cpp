@@ -132,8 +132,8 @@ qDebug() << "1=" << points.first << "2=" << points.second;
   }
   for (uint i=0; i<iterTemp; i++)
   {
-      qDebug() << "x" << (float)tempArr[i].timeStamp/1000 << "y" << tempArr[i].data*param;
-    mMainGraph->addData((float)tempArr[i].timeStamp/1000, tempArr[i].data*param);
+      //qDebug() << "x" << (float)tempArr[i].timeStamp/1000 << "y" << tempArr[i].data*param;
+      mMainGraph->addData((float)tempArr[i].timeStamp/1000, tempArr[i].data*param);
     //averagePlot(tempArr[i]);
   }
   //Compliance();
@@ -195,12 +195,18 @@ void IntervalPlot::averagePlot(/*_mSPIData temp*/)
   N = average->data()->size();
   for (uint i=0; i<N; i++)
   {
+      averageP += mMainGraph->data()->at(i)->value;
+  }
+  averageP /= N;
+  qDebug() << "averageP" << averageP;
+  for (uint i=0; i<N; i++)
+  {
     filter->addData(average->data()->at(i)->key, average->data()->at(i)->value + offsetAverage);
   }
   N = mMainGraph->data()->size();
   QVector<double> amplitudeVector;
   QVector<double> amplitudeVectorX;
-  float mxValue;
+  float mxValue = 0;
   uint32_t mxIndex = 0;
   bool isMaxFound = false;
   for (uint i=0; i<N; i++)
@@ -216,7 +222,7 @@ void IntervalPlot::averagePlot(/*_mSPIData temp*/)
     }
     else if (isMaxFound)
     {
-      amplitudeVector.append(mxValue);// - average->data()->at(mxIndex)->value);
+      amplitudeVector.append(mxValue - average->data()->at(mxIndex)->value);
       amplitudeVectorX.append(filter->data()->at(mxIndex)->key);
       isMaxFound = false;
       mxValue = -1;
@@ -225,6 +231,12 @@ void IntervalPlot::averagePlot(/*_mSPIData temp*/)
   }
   substract->setData(amplitudeVectorX, amplitudeVector);
   this->replot();
+  N = amplitudeVector.size();
+  for (uint i=0; i<N; i++)
+  {
+      averageA += amplitudeVector.at(i); //- average->data()->at(i)->value;
+  }
+  averageA /= N;
 
   //    firstBuffPointer = (++firstBuffPointer) % maxBuffSizeAvg;
   //    sum += temp.data;

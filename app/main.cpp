@@ -256,11 +256,44 @@ bool initFlash(QString currRasdel)
   return 11;
 }
 
+uint16_t inputData[36] = {12979, 13722, 15682, 17898, 20345, 21989, 22926, 22695, 22975, 22865,
+                       22963, 23072, 23024, 22549, 22452, 22585, 21965, 21758, 21587, 20942,
+                       20345, 19676, 18896, 18701, 17618, 17082, 16206, 15658, 15231, 14708,
+                       13965, 13868, 13235, 12869, 13113, 14391};
+
+uint16_t outData[360] ;
+void divArr()
+{
+    u16 start, stop;
+    for (u8 i = 0; i < 35; i++)
+    {
+        start = inputData[i];
+        stop = inputData[i+1];
+        i16 step = (stop - start)/10;
+        outData[i*10] = start;
+        for(u8 k = 1; k < 10; k++)
+        {
+            outData[i*10 + k] = start + step * k;
+        }
+
+    }
+    outData[339] = 14391;
+
+    for (u16 i = 0; i < 340; i++)
+    {
+        qDebug() << outData[i] << ",";
+    }
+}
 
 Settings *mICPSettings {nullptr};
 int main(int argc, char *argv[])
 {
   QApplication a(argc, argv);
+
+  //divArr();
+  //exit(1);
+
+
   // fbset --geometry 720 480 720 480 16 --timings 37037 60 16 30 9 62 6
   QString ttt = executeAConsoleCommand("fbset", QStringList() << "--geometry" << "720" << "480" << "720" << "480" << "16" << "--timings" << "37037" << "60" << "16" << "30" << "9" << "62" << "6");
   qDebug() << ttt;

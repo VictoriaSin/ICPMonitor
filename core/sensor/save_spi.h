@@ -1,5 +1,5 @@
-#ifndef SAVESPI_1_H
-#define SAVESPI_1_H
+#ifndef SAVE_SPI_H
+#define SAVE_SPI_H
 
 #include <QObject>
 #include <QFile>
@@ -8,19 +8,20 @@
 
 class CurrentGraphsArea;
 
-class SaveSPI_1 : public QThread
+class SaveSPI : public QThread
 {
     Q_OBJECT
 
 public:
-    SaveSPI_1();
-    ~SaveSPI_1();
+    SaveSPI();
+    ~SaveSPI();
     volatile bool isStopped;
     volatile bool isRunning;
     _mSPIData temp;
     volatile bool isRecording;
+    volatile qint64 startTime;
 protected:
     void run();
 };
 
-#endif // SAVESPI_1_H
+#endif // SAVE_SPI_H

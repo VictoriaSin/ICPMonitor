@@ -281,6 +281,7 @@ void RecordedPlot::addDataOnGraphic()
     //qDebug() << "rr" <<mAllRecordedDataBuffer[mSizeAllRecordedData-1].timeStamp;
     //float mNewUpperXValue = (float)mAllRecordedDataBuffer[mSizeAllRecordedData-1].timeStamp/1000;
     QFile *currFile;
+    int fileParam = 1;
     if (isDownloadGraph)
     {
         mMainGraph->data()->clear();
@@ -289,6 +290,7 @@ void RecordedPlot::addDataOnGraphic()
     else
     {
         currFile = &mRawDataFile;
+        fileParam = 1000;
     }
     float mNewUpperXValue;
 
@@ -305,6 +307,7 @@ void RecordedPlot::addDataOnGraphic()
         param = indexPressureH2O;
     }
     QVector<float> filterData;
+    float tempData;
     //for (uint i=0; i< mRawDataFile.size()/6; i+=10) // 40/4=10
     for (uint i=0; i < recordDataCount; i+=60)
     {
@@ -313,7 +316,9 @@ void RecordedPlot::addDataOnGraphic()
         currFile->seek(i);        
         currFile->read((char*)&temp, sizeof(_mSPIData));
         tempTimeOffset = (float)temp.timeStamp/1000;
-        mMainGraph->addData(tempTimeOffset, (float)temp.data*param);
+        tempData = (float)temp.data*param/fileParam;
+        mMainGraph->addData(tempTimeOffset, tempData);
+        //qDebug() << "value" << mMainGraph->data()->at(i)->value << mMainGraph->data()->at(i)->key;
 //        currFile->seek(i);
 //        for (int j=0; j< 10; j++)
 //        {

@@ -8,7 +8,7 @@
 #include "gui_funcs.h"
 #include "generalsettingspage.h"
 #include "../core/sensor/zsc.h"
-#include "../core/sensor/savespi.h"
+#include "../core/sensor/read_spi.h"
 
 #include <QString>
 #include <QTimer>
@@ -301,7 +301,7 @@ qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
         QString ttttt = "reg" + QString::number(i);
         QLineEdit *find = ui->regsTableWidget->findChild<QLineEdit*>(ttttt);
         tempRegs[i] = find->text().split("0x")[1].toInt(nullptr, 16);
-        qDebug() << tempRegs[i];
+        //qDebug() << tempRegs[i];
     }
     mICPSettings->setRegsValues(tempRegs);
     #ifndef PC_BUILD

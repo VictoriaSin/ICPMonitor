@@ -7,7 +7,6 @@
 
 #include "../app/global_define.h"
 #include "sensor/sensordatamanager.h"
-//#include "sensor/savespi.h"
 #include "../app/plots/recordedplot.h"
 #include "volumeinputpage.h"
 
@@ -166,6 +165,8 @@ private slots:
     void on_dVInputButton_clicked();
 
     void on_funcFirstButton_clicked();
+
+    void on_markPPointButton_clicked();
 
 private:
     Ui::MainPage *ui;

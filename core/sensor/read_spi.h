@@ -1,20 +1,20 @@
-#ifndef SAVESPI_H
-#define SAVESPI_H
+#ifndef READ_SPI_H
+#define READ_SPI_H
 
 #include <QObject>
 #include <QFile>
 #include <QThread>
-#include "savespi_1.h"
+#include "save_spi.h"
 
 class CurrentGraphsArea;
 
-class SaveSPI : public QThread
+class ReadSPI : public QThread
 {
     Q_OBJECT
 
 public:
-    SaveSPI();
-    ~SaveSPI();
+    ReadSPI();
+    ~ReadSPI();
 
     volatile bool isStopped;
     volatile bool isRunning;
@@ -28,9 +28,9 @@ protected:
     uint16_t cnt;
     uint16_t *CurrDataForAverage{nullptr};
 
-    SaveSPI_1 *mSaveSPI_1 = nullptr;
+    SaveSPI *mSaveSPI = nullptr;
     void run();
     uint16_t calcAverage(uint16_t data);
 };
 
-#endif // SAVESPI_H
+#endif // READ_SPI_H

@@ -9,14 +9,26 @@
 uint32_t windowWidth = 100;
 float offsetAverage = 0.5;
 
+uint16_t dVolume = 5;
+float Po = 19.529;
+float Pk = 33.673;
 
-VolumeInputPage::VolumeInputPage(QWidget *parent) :
+
+VolumeInputPage::VolumeInputPage(QWidget *parent, uint8_t type) :
     AbstractDialogPage(parent),
     ui(new Ui::VolumeInputPage)
 {
     ui->setupUi(AbstractDialogPage::ui->settingsPage);
     //spacer = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding);
-
+    typeOfValues = type;
+    if (typeOfValues == 0)
+    {
+        setupVolume();
+    }
+    else
+    {
+        setupParam();
+    }
     // проскаалировать все
     retranslate();
 }
@@ -34,10 +46,28 @@ void VolumeInputPage::setupVolume()
     inputValueLineEdit->setStyleSheet("background-color: rgb(255, 255, 255)");
     inputValueLineEdit->setFont(fontLineEdit);
 
+    point0Label = new QLabel("Укажите координату x точки P0:", this);
+    point0Label->setFont(fontLabel);
+
+    point0LineEdit = new QLineEdit(this);
+    point0LineEdit->setStyleSheet("background-color: rgb(255, 255, 255)");
+    point0LineEdit->setFont(fontLineEdit);
+
+    point1Label = new QLabel("Укажите координату x точки Pk:", this);
+    point1Label->setFont(fontLabel);
+
+    point1LineEdit = new QLineEdit(this);
+    point1LineEdit->setStyleSheet("background-color: rgb(255, 255, 255)");
+    point1LineEdit->setFont(fontLineEdit);
+
     spacer = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding);
     ui->leftLayout->addSpacerItem(spacer);
     ui->leftLayout->addWidget(dVolume);
     ui->leftLayout->addWidget(inputValueLineEdit);
+    ui->leftLayout->addWidget(point0Label);
+    ui->leftLayout->addWidget(point0LineEdit);
+    ui->leftLayout->addWidget(point1Label);
+    ui->leftLayout->addWidget(point1LineEdit);
     spacer = nullptr;
     spacer = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding);
     ui->leftLayout->addSpacerItem(spacer);
@@ -106,7 +136,7 @@ void VolumeInputPage::done(int exodus)
 {
     if (exodus != QDialog::Accepted) {        
         emit previousPage();
-        if (this->findChildren<QLineEdit*>().size() != 1)
+        if (typeOfValues == 1)
         {
             windowWidthLineEdit->setText(QString::number(startValueWW));
             offsetAverageLineEdit->setText(QString::number(startValueOA));
@@ -143,7 +173,7 @@ void VolumeInputPage::retranslate()
 
 void VolumeInputPage::showEvent(QShowEvent */*event*/)
 {
-    if (this->findChildren<QLineEdit*>().size() != 1)
+    if (typeOfValues == 1)
     {
     startValueWW = windowWidthLineEdit->text().toUInt();
     startValueOA = offsetAverageLineEdit->text().toFloat();

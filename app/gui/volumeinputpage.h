@@ -17,7 +17,7 @@ class VolumeInputPage : public AbstractDialogPage
     Q_OBJECT
 
 public:
-    explicit VolumeInputPage(QWidget *parent = nullptr);
+    explicit VolumeInputPage(QWidget *parent = nullptr, uint8_t type = 0);
     //void scaleFont(float scaleFactor) override;
     ~VolumeInputPage();
 
@@ -26,6 +26,11 @@ public:
 
     QLabel *dVolume {nullptr};
     QLineEdit *inputValueLineEdit {nullptr};
+    QLabel *point0Label {nullptr};
+    QLineEdit *point0LineEdit {nullptr};
+    QLabel *point1Label {nullptr};
+    QLineEdit *point1LineEdit {nullptr};
+
     QLabel *windowWidthLabel {nullptr};
     QLineEdit *windowWidthLineEdit {nullptr};
     QLabel *offsetAverageLabel {nullptr};
@@ -36,6 +41,7 @@ private:
     Ui::VolumeInputPage *ui;
     uint32_t startValueWW;
     float startValueOA;
+    uint8_t typeOfValues; // 0- dV 1-avg
 
 public slots:
     void retranslate() override;
