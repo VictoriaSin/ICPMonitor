@@ -69,6 +69,7 @@ void DrawGraphs::run()
   qDebug() << "DrawGraphs started";
 
 #define DRAW_TIME 2
+#define GRAPH_SIZE_AVG mWaveGraph->xAxis->range().size()*25
   while(isRunning)
   {
 
@@ -99,60 +100,78 @@ void DrawGraphs::run()
           else
           {
               filVal += (((float)currData - filVal) * k);
-              mWaveGraph->addAvgDataOnGraphic(pointTime, filVal);
+              mWaveGraph->mTempGraph->addData((float)pointTime/1000, filVal);
           }
           sum = 0;
           currIndex = 0;
           globalCount++;
-          globalCount %= (u16)(mWaveGraph->xAxis->range().size()*25);// 500/20
-
+          globalCount %= (u16)GRAPH_SIZE_AVG;// 500/20
           if (globalCount == 0)
           {
-              mWaveGraph->mAmplitudePoints->data()->clear();
+              data1 = mWaveGraph->mHistGraph->data()->at(GRAPH_SIZE_AVG -1)->value;
+              data2 = mWaveGraph->mHistTempGraph->data()->at(GRAPH_SIZE_AVG-1)->value;
+              pos_data1 = mWaveGraph->mHistGraph->data()->at(GRAPH_SIZE_AVG-1)->key;
           }
-          else
+          else if (globalCount > 1)
           {
               data1 = mWaveGraph->mMainGraph->data()->at(globalCount-1)->value;
               data2 = mWaveGraph->mTempGraph->data()->at(globalCount-1)->value;
               pos_data1 = mWaveGraph->mMainGraph->data()->at(globalCount-1)->key;
-
-              if (data1 > data2)
-              {
-                  if (data1 > max)
-                  {
-                      max = data1;
-                      max_pos = pos_data1;
-                      needDraw = true;
-                  }
-              }
-              else
-              {
-                  if (needDraw)
-                  {
-                      uint32_t ttt = max_pos*1000;
-                      if (globalCount == mWaveGraph->xAxis->range().size()*25 - 1)//max_pos > mWaveGraph->xAxis->range().size())
-                      {
-                          mWaveGraph->mAmplitudePoints->data()->clear();
-                      }
-                      mWaveGraph->addComplianceDataOnGraphic(ttt, max);
-                      //qDebug() << "globalCount" << globalCount;
-                      //qDebug() << ">0" << max_pos << max;
-                      compliance = dVConst/(2*(max - data2));
-                      //qDebug() << compliance;
-                      mComplianceGraph->mMainGraph->addData(max_pos, compliance);
-
-                      needDraw = false;
-                      max = 0;
-                      max_pos = 0;
-                  }
-              }
-              if (globalCount == mWaveGraph->xAxis->range().size()*25 - 1)
-              {
-                  mWaveGraph->mAmplitudePoints->data()->clear();
-              }
           }
 
+          if (data1 > data2)
+          {
+              if (data1 > max)
+              {
+                  max = data1;
+                  max_pos = pos_data1;
+                  needDraw = true;
+              }
+          }
+          else
+          {
+              if (needDraw)
+              {
+                  uint32_t ttt = max_pos*1000;
+                  if (globalCount == GRAPH_SIZE_AVG -1)//max_pos > mWaveGraph->xAxis->range().size())
+                  {
+                      mWaveGraph->mAmplitudePoints->data()->clear();
+                  }
+                  mWaveGraph->mAmplitudePoints->addData(max_pos, max);
+                  //qDebug() << "globalCount" << globalCount;
+                  //qDebug() << ">0" << max_pos << max;
+                  compliance = dVConst/(2*(max - data2));
+                  //qDebug() << compliance;
 
+                  if (ttt > mComplianceGraph->graphCurrentMaxRange)
+                  {
+                      *mComplianceGraph->mHistGraph->data() = *mComplianceGraph->mMainGraph->data();
+                      mComplianceGraph->mMainGraph->data().data()->clear();
+
+
+                      mComplianceGraph->graphCurrentMaxRange += mComplianceGraph->graphRangeSize;
+                      mComplianceGraph->graphMinus += mComplianceGraph->graphRangeSize;
+                  }
+
+                  ttt-= mComplianceGraph->graphMinus;
+                  float temp_x = (float) ttt/1000;
+                  if(mComplianceGraph->mHistGraph->data()->size())
+                  {
+                      mComplianceGraph->mHistGraph->data()->removeBefore(temp_x + 0.5);
+                  }
+                  mComplianceGraph->mMainGraph->addData(max_pos, compliance);
+                  //mComplianceGraph->addDataOnGraphic(ttt, compliance);
+                  needDraw = false;
+                  max = 0;
+                  max_pos = 0;
+              }
+          }
+          /*
+          if (globalCount == GRAPH_SIZE_AVG -1)
+          {
+              mWaveGraph->mAmplitudePoints->data()->clear();
+          }*/
+          //}
       }
   }
   isStopped = true;

@@ -117,17 +117,17 @@ void WaveFormPlot::addDataOnGraphic(unsigned int  x, /*unsigned int*/float  y)//
 {
   if (x > graphCurrentMaxRange)
   {
-    {
-        mAmplitudePoints->data()->clear();
-        *mHistGraph->data() = *mMainGraph->data();
-        mMainGraph->data()->clear();
-        *mHistTempGraph->data() = *mTempGraph->data();
-        mTempGraph->data()->clear();
+      *mHistGraph->data() = *mMainGraph->data();
+      mMainGraph->data()->clear();
+      if (type == 0)
+      {
+          *mHistTempGraph->data() = *mTempGraph->data();
+          mTempGraph->data()->clear();
+          mAmplitudePoints->data()->clear();
+      }
 
-
-    }
-    graphCurrentMaxRange += graphRangeSize;
-    graphMinus += graphRangeSize;
+      graphCurrentMaxRange += graphRangeSize;
+      graphMinus += graphRangeSize;
   }
 
     x-= graphMinus;
@@ -137,60 +137,17 @@ void WaveFormPlot::addDataOnGraphic(unsigned int  x, /*unsigned int*/float  y)//
 
     if(mHistGraph->data()->size())
     {
-        mHistGraph->data()->removeBefore(temp_x + 0.5);        
-        mHistTempGraph->data()->removeBefore(temp_x + 0.5);
+        mHistGraph->data()->removeBefore(temp_x + 0.5);
+        if (type == 0)
+        {
+            mHistTempGraph->data()->removeBefore(temp_x + 0.5);
+        }
         //mAmplitudePoints->data()->removeAfter(temp_x);
 
         //mMainGraph->addData(temp_x, temp_y);
     }
     mMainGraph->addData(temp_x, /*temp_y*/y);
 }
-
-void WaveFormPlot::addAvgDataOnGraphic(unsigned int  x, float  y)
-{
-    if (x > graphCurrentMaxRange)
-    {
-        {
-            //mTempGraph->data()->clear();
-
-            //mTempGraph->data().data()->removeBefore(5);
-            mAmplitudePoints->data()->clear();
-
-
-        }
-        graphCurrentMaxRange += graphRangeSize;
-        graphMinus += graphRangeSize;
-    }
-
-    x-= graphMinus;
-    float temp_x = (float) x/1000;
-    mTempGraph->addData(temp_x, y);
-}
-
-
-void WaveFormPlot::addComplianceDataOnGraphic(unsigned int  x, /*unsigned int*/float  y)//const ComplexValue &complexVal)
-{
-//  if (x > graphCurrentMaxRange)
-//  {
-//    mAmplitudePoints->data()->clear();
-//    graphCurrentMaxRange += graphRangeSize;
-//    graphMinus += graphRangeSize;
-//  }
-//    x-= graphMinus;
-    float temp_x = (float) x/1000;
-
-
-//    if(mHistGraph->data()->size())
-//    {
-//        //mHistGraph->data()->removeBefore(temp_x + 0.5);
-//        //mHistTempGraph->data()->removeBefore(temp_x + 0.5);
-//        mAmplitudePoints->data()->removeAfter(temp_x);
-
-//        //mMainGraph->addData(temp_x, temp_y);
-//    }
-    mAmplitudePoints->addData(temp_x, /*temp_y*/y);
-}
-
 
 void WaveFormPlot::retranslate()
 {

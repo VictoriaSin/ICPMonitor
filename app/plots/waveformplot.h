@@ -87,8 +87,6 @@ public:
     uint graphMinus;
     void scaleFont(float scaleFactor) override;
     void setType(uint8_t newType);
-    void addAvgDataOnGraphic(unsigned int x, float y);
-    void addComplianceDataOnGraphic(unsigned int x, float y);
 };
 
 #endif // WAVEFORMPLOT_H
