@@ -34,6 +34,7 @@ ZSC::ZSC()
 void ZSC::initZSC()
 {
 #ifndef PC_BUILD
+
   bool result;
   QThread::msleep(100);
   result = spi_open(); if (result == false) { qDebug() << "errror spi_open()"; return; }
@@ -48,10 +49,10 @@ void ZSC::initZSC()
 
   for (uint i=0; i<32; i++)
   {
-      regsValue[i] = mICPSettings->getRegValues()[i];
+      regsValue[i] = initRegs[i];//mICPSettings->getRegValues()[i];
       spi_saveReg(i, regsValue[i], ZSC_RAM);
   }
-
+qDebug() << "1";
   // show registers
   for (u8 reg = 0; reg < 32; reg++)
   {
@@ -70,7 +71,7 @@ void ZSC::resetRegsValues()
     resetZSC();
     SPI_CMD(START_CM);
     for (uint i=0; i<32; i++)
-    {
+    {        
         regsValue[i] = mICPSettings->getRegValues()[i];
         spi_saveReg(i, regsValue[i], ZSC_RAM);
     }
