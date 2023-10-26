@@ -206,6 +206,12 @@ void GeneralSettingsPage::updateParameters()
 qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
     float mCurrentReadingsGraphIntervalX = ui->intervalXLineEdit->text().toFloat();
     float mCurrentReadingsGraphIntervalY = ui->intervalYLineEdit->text().toFloat();
+
+    if (ui->tickCountXLineEdit->text().toFloat() < 1 || ui->tickCountYLineEdit->text().toFloat() < 1)
+    {
+        openSettingsInfoErrorDialog(tr("Введен некорректный шаг\nделений оси (< 1)"));
+        return;
+    }
     float mTickCountX = (float)mCurrentReadingsGraphIntervalX / ui->tickCountXLineEdit->text().toFloat();
     float mTickCountY = (float)(mCurrentReadingsGraphIntervalY - 10) / ui->tickCountYLineEdit->text().toFloat();
     float mHighLevelAlarm = ui->upperAlarmLineEdit->text().toFloat();

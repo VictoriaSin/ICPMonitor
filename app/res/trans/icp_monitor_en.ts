@@ -297,6 +297,10 @@ READING</translation>
         <translation>Entered register values are incorrect</translation>
     </message>
     <message>
+        <source>Введен некорректный шаг\nделений оси (< 1)</source>
+        <translation>Entered axis tick pitch is incorrect</translation>
+    </message>
+    <message>
         <source>Интервал оси X</source>
         <translation>X-axis interval</translation>
     </message>
