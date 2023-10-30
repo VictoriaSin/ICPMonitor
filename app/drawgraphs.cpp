@@ -38,8 +38,7 @@ void DrawGraphs::run()
   //mData_1 = new uint16_t[CNT_DATA];
   mData_2 = 0;//new uint16_t[CNT_DATA];
   float k = 0.05;//ui->mFilterK->text().toFloat();
-  globalCount = -1;
-  bool isFirst = true;
+  globalCount = 0;
   float filVal;
   float data1 = 0;
   float data2 = 0;
@@ -48,7 +47,7 @@ void DrawGraphs::run()
   float param = 1.0;
   if (mICPSettings->getCurrentPressureIndex() == 1)
   {
-      param = indexPressureH2O;
+    param = indexPressureH2O;
   }
   mWaveGraph->graphRangeSize = mWaveGraph->xAxis->range().size()*1000;
   mWaveGraph->graphCurrentMaxRange = mWaveGraph->graphRangeSize;
@@ -62,117 +61,92 @@ void DrawGraphs::run()
   mComplianceGraph->graphCurrentMaxRange= mComplianceGraph->graphRangeSize;
   mComplianceGraph->graphMinus = 0;
   volatile qint64 startTime = getCurrentTimeStamp_ms();
-  volatile qint64 stopTimeGraph = startTime + TIME_INTERVAL_FOR_WRITE_ON_GRAPH;
+  volatile qint64 stopTimeGraph = startTime + 2;//TIME_INTERVAL_FOR_WRITE_ON_GRAPH;
   volatile qint64 currentTime;
-  float currData;
+  qint64 offsetTime = 0;
   float compliance;
   qDebug() << "DrawGraphs started";
 
+  mZSC1.spi_oneShot();
+  filVal = (float)mZSC1.data[0]*param/1000;
+
 #define DRAW_TIME 2
-#define GRAPH_SIZE_AVG mWaveGraph->xAxis->range().size()*25
+#define GRAPH_SIZE_AVG ((uint32_t)(mWaveGraph->xAxis->range().size() * 25))
   while(isRunning)
   {
+    currentTime = getCurrentTimeStamp_ms();
+    if (currentTime < stopTimeGraph) {continue;}
 
-      currentTime = getCurrentTimeStamp_ms();
-      if (currentTime < stopTimeGraph) continue;
-      stopTimeGraph = currentTime + DRAW_TIME;
-      temp.timeStamp = (uint32_t)(currentTime - startTime);
-      mZSC1.spi_oneShot();
+    stopTimeGraph +=2;//= currentTime + 2;//DRAW_TIME;
+    temp.timeStamp = (uint32_t)(currentTime - startTime);
+    if (currIndex == 0) { pointTime = temp.timeStamp; }
+    currIndex++;
+    sum += mZSC1.data[0];
 
-      currData = (float)mZSC1.data[0]*param/1000;
-      if (currIndex == 0) { pointTime = temp.timeStamp; }
-      sum += currData;//mZSC.data[0];
-      currIndex++;
-
-      if (globalCount == 0)
+    if (currIndex == 10)
+    {
+      currIndex = 0;
+      data1 = (float)sum * param / 10000;
+      sum = 0;
+      mWaveGraph->addDataOnGraphic(pointTime, data1);
+      filVal += (((float)mZSC1.data[0] * param / 1000 - filVal) * k);
+      data2 = filVal;
+      pos_data1 = (float)(temp.timeStamp - offsetTime)/1000;
+      //mWaveGraph->mTempGraph->addData(pos_data1, filVal);
+      if (data1 > data2)
       {
-          mWaveGraph->mAmplitudePoints->data()->clear();
+        if (data1 > max)
+        {
+          max       = data1;
+          max_pos   = pos_data1;
+          needDraw  = true;
+        }
       }
-      if (currIndex == 20)
+      else
       {
-          mWaveGraph->addDataOnGraphic(pointTime, sum/20);
-          if (isFirst)
+        if (needDraw)
+        {
+          uint32_t ttt = max_pos * 1000;
+          mWaveGraph->mAmplitudePoints->addData(max_pos, max);
+          qDebug() << "globalCount" << globalCount << max_pos << max;
+          //qDebug() << ">0" << max_pos << max;
+          compliance = dVConst/(2*(max - data2));
+          if (ttt > mComplianceGraph->graphCurrentMaxRange)
           {
-              filVal = (sum/20);
-              //mWaveGraph->addAvgDataOnGraphic(pointTime, sum/20);
-              isFirst = false;
+            *mComplianceGraph->mHistGraph->data() = *mComplianceGraph->mMainGraph->data();
+            //mComplianceGraph->mMainGraph->data().data()->clear();
+            mComplianceGraph->graphCurrentMaxRange += mComplianceGraph->graphRangeSize;
+            mComplianceGraph->graphMinus += mComplianceGraph->graphRangeSize;
           }
-          else
+          ttt-= mComplianceGraph->graphMinus;
+          float temp_x = (float) ttt/1000;
+          if(mComplianceGraph->mHistGraph->data()->size())
           {
-              filVal += (((float)currData - filVal) * k);
-              mWaveGraph->mTempGraph->addData((float)pointTime/1000, filVal);
+            mComplianceGraph->mHistGraph->data()->removeBefore(temp_x + 0.5);
           }
-          sum = 0;
-          currIndex = 0;
-          globalCount++;
-          globalCount %= (u16)GRAPH_SIZE_AVG;// 500/20
-          if (globalCount == 0)
-          {
-              data1 = mWaveGraph->mHistGraph->data()->at(GRAPH_SIZE_AVG -1)->value;
-              data2 = mWaveGraph->mHistTempGraph->data()->at(GRAPH_SIZE_AVG-1)->value;
-              pos_data1 = mWaveGraph->mHistGraph->data()->at(GRAPH_SIZE_AVG-1)->key;
-          }
-          else if (globalCount > 1)
-          {
-              data1 = mWaveGraph->mMainGraph->data()->at(globalCount-1)->value;
-              data2 = mWaveGraph->mTempGraph->data()->at(globalCount-1)->value;
-              pos_data1 = mWaveGraph->mMainGraph->data()->at(globalCount-1)->key;
-          }
+          mComplianceGraph->mMainGraph->addData(max_pos, compliance);
 
-          if (data1 > data2)
-          {
-              if (data1 > max)
-              {
-                  max = data1;
-                  max_pos = pos_data1;
-                  needDraw = true;
-              }
-          }
-          else
-          {
-              if (needDraw)
-              {
-                  uint32_t ttt = max_pos*1000;
-                  if (globalCount == GRAPH_SIZE_AVG -1)//max_pos > mWaveGraph->xAxis->range().size())
-                  {
-                      mWaveGraph->mAmplitudePoints->data()->clear();
-                  }
-                  mWaveGraph->mAmplitudePoints->addData(max_pos, max);
-                  //qDebug() << "globalCount" << globalCount;
-                  //qDebug() << ">0" << max_pos << max;
-                  compliance = dVConst/(2*(max - data2));
-                  //qDebug() << compliance;
-
-                  if (ttt > mComplianceGraph->graphCurrentMaxRange)
-                  {
-                      *mComplianceGraph->mHistGraph->data() = *mComplianceGraph->mMainGraph->data();
-                      mComplianceGraph->mMainGraph->data().data()->clear();
-
-
-                      mComplianceGraph->graphCurrentMaxRange += mComplianceGraph->graphRangeSize;
-                      mComplianceGraph->graphMinus += mComplianceGraph->graphRangeSize;
-                  }
-
-                  ttt-= mComplianceGraph->graphMinus;
-                  float temp_x = (float) ttt/1000;
-                  if(mComplianceGraph->mHistGraph->data()->size())
-                  {
-                      mComplianceGraph->mHistGraph->data()->removeBefore(temp_x + 0.5);
-                  }
-                  mComplianceGraph->mMainGraph->addData(max_pos, compliance);
-                  //mComplianceGraph->addDataOnGraphic(ttt, compliance);
-                  needDraw = false;
-                  max = 0;
-                  max_pos = 0;
-              }
-          }
-          /*
-          if (globalCount == GRAPH_SIZE_AVG -1)
-          {
-              mWaveGraph->mAmplitudePoints->data()->clear();
-          }*/
-          //}
+          needDraw = false;
+          max = 0;
+          max_pos = 0;
+        }
       }
+
+
+      //globalCount++;
+      //globalCount %= GRAPH_SIZE_AVG;
+
+      //if (globalCount == 0)
+      if ((temp.timeStamp - offsetTime) >= 12000)
+      {
+        offsetTime = temp.timeStamp;
+        mWaveGraph->mAmplitudePoints->data()->clear();
+        mComplianceGraph->mMainGraph->data()->clear();
+        //globalCount = 0;
+      }
+    }
+    mZSC1.spi_oneShot();
+    //qDebug() << stopTimeGraph << temp.timeStamp ;
   }
   isStopped = true;
   qDebug() << "DrawGraphs stopped";

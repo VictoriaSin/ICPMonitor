@@ -1,4 +1,4 @@
-QT += core gui widgets svg sql concurrent
+QT += core gui widgets svg concurrent
 
 TEMPLATE = lib
 CONFIG += staticlib c++14

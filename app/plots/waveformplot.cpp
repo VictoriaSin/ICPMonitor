@@ -123,7 +123,7 @@ void WaveFormPlot::addDataOnGraphic(unsigned int  x, /*unsigned int*/float  y)//
       {
           *mHistTempGraph->data() = *mTempGraph->data();
           mTempGraph->data()->clear();
-          mAmplitudePoints->data()->clear();
+          //mAmplitudePoints->data()->clear();
       }
 
       graphCurrentMaxRange += graphRangeSize;

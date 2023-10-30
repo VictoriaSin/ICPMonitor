@@ -19,12 +19,12 @@ protected:
     void run();
     uint8_t buffSizeAvg = 20;
     uint8_t currIndex;
-    double sum;
+    uint32_t sum;
     uint32_t pointTime;
     //uint16_t *mData_1 {nullptr};
     //uint16_t *mData_2 {nullptr};
     float mData_2;
-    uint16_t globalCount;
+    uint32_t globalCount;
 };
 
 
