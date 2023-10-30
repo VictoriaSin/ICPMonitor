@@ -28,7 +28,7 @@ uint8_t mIntervalsCount {0};
 extern uint16_t dVolume;
 extern float Po;
 extern float Pk;
-double dVConst;
+float dVConst;
 
 extern uint32_t windowWidth;
 //_bufferRecord bufferRecord_1, bufferRecord_2;

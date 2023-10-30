@@ -115,6 +115,7 @@ void WaveFormPlot::changePenColor(QColor mColor)
 
 void WaveFormPlot::addDataOnGraphic(unsigned int  x, /*unsigned int*/float  y)//const ComplexValue &complexVal)
 {
+
   if (x > graphCurrentMaxRange)
   {
       *mHistGraph->data() = *mMainGraph->data();
@@ -142,9 +143,6 @@ void WaveFormPlot::addDataOnGraphic(unsigned int  x, /*unsigned int*/float  y)//
         {
             mHistTempGraph->data()->removeBefore(temp_x + 0.5);
         }
-        //mAmplitudePoints->data()->removeAfter(temp_x);
-
-        //mMainGraph->addData(temp_x, temp_y);
     }
     mMainGraph->addData(temp_x, /*temp_y*/y);
 }
