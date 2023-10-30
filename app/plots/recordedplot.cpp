@@ -318,50 +318,10 @@ void RecordedPlot::addDataOnGraphic()
         tempTimeOffset = (float)temp.timeStamp/1000;
         tempData = (float)temp.data*param/fileParam;
         mMainGraph->addData(tempTimeOffset, tempData);
-        //qDebug() << "value" << mMainGraph->data()->at(i)->value << mMainGraph->data()->at(i)->key;
-//        currFile->seek(i);
-//        for (int j=0; j< 10; j++)
-//        {
-//            currFile->seek(i+j);
-//            currFile->read((char*)&temp, sizeof(_mSPIData));
-//            filterData.append((float)temp.data);
-//        }
-        //qDebug() << "temp.timeStamp" <<temp.timeStamp;
     }
     qDebug() << "vector size" << filterData.size();
     currFile->close();
 
-//    TAVGFilter *filterGraph = new TAVGFilter(50, 15);
-//    float filter_y;
-//    uint N = filterData.size();
-//    QVector<float> maxY;
-//    QVector<float> minY;
-//    float lastY = -1;
-//    for (uint i = 0; i < N; i++)
-//    {
-//        filter_y = filterGraph->Filtrate(filterData[i]);
-//        filterData[i] = filter_y;
-//        if (i == 1)
-//        {
-//            if (filterData[0] < filterData[1])
-//            {
-//                minY.push_back(filterData[0]);
-//            }
-//            else
-//            {
-//                maxY.push_back(filterData[0]);
-//            }
-//            lastY = filterData[1];
-//        }
-//        else
-//        {
-//            if (filter_y > lastY)
-//            {
-
-//            }
-//        }
-//    }
-//    delete filterGraph;
     mNewUpperXValue = tempTimeOffset;
     qDebug() <<"x max"<< mNewUpperXValue;
     if (mNewUpperXValue < xAxis->range().upper)
@@ -370,6 +330,10 @@ void RecordedPlot::addDataOnGraphic()
         //setInteraction(QCP::iRangeDrag, false);
     }
     mRecordedMaxXRange = mNewUpperXValue;
+    if (currFile == &mTestData)
+    {
+      mMainGraph->rescaleAxes(true);
+    }
 //    for (uint i=0; i<mSizeAllRecordedData; i++)
 //    {
 //        //mMainGraph->addData(mRecordedData[i].first, mRecordedData[i].second);

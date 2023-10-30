@@ -935,6 +935,18 @@ void CurrentGraphsArea::removeAllGraphs()
     {mFirstInterval->mMainGraph->data().data()->clear();}
     if (mSecondInterval != nullptr)
     {mSecondInterval->mMainGraph->data().data()->clear();}
+    if (mWaveGraph->mHistTempGraph != nullptr)
+    {
+      mWaveGraph->mHistTempGraph->data()->clear();
+    }
+    if (mWaveGraph->mTempGraph != nullptr)
+    {
+      mWaveGraph->mTempGraph->data()->clear();
+    }
+    if (mWaveGraph->mAmplitudePoints != nullptr)
+    {
+      mWaveGraph->mAmplitudePoints->data()->clear();
+    }
     for (int8_t i=0; i<mIntervalsCount; i++)
     {
         mRecordedGraph->removeItem(mIntervalsContainer[i]);
@@ -995,7 +1007,7 @@ void CurrentGraphsArea::calcCompliance()
     {
       mDrawGraphs = new DrawGraphs();
     }
-    mDrawGraphs->start();
+    mDrawGraphs->start(QThread :: HighestPriority);
     mDrawGraphs->isRunning = true;
 
 //    //qint64 startTime = getCurrentTimeStamp_ms();

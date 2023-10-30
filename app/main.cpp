@@ -319,9 +319,11 @@ int main(int argc, char *argv[])
   QCoreApplication::setAttribute(Qt::AA_SynthesizeTouchForUnhandledMouseEvents, true);
 
   //qRegisterMetaType<SensorEvent>();
-  qRegisterMetaType<ControllerEvent>();
   //qRegisterMetaType<FileControllerEvent>();
-  qRegisterMetaType<BlockDeviceManagerEvent>();
+
+
+  qRegisterMetaType<ControllerEvent>();
+  //qRegisterMetaType<BlockDeviceManagerEvent>();
 
   const QString APP_NAME = "ICPMonitor";
   const QString ORG_NAME = "CORESAR";
