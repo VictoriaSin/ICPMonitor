@@ -205,7 +205,8 @@ void Settings::readCurrentSensorReadingsSettings()
     mMaxTimeStorageCurrentSensorReadingsMs = mSettings->value("mMaxTimeStorageCurrentSensorReadingsMs", qlonglong(mMaxTimeStorageCurrentSensorReadingsMs)).toLongLong();
 
     mCurrentReadingsGraphIntervalX = mSettings->value("mCurrentReadingsGraphIntervalX", mCurrentReadingsGraphIntervalX).toFloat();
-    mCurrentReadingsGraphIntervalY = mSettings->value("mCurrentReadingsGraphIntervalY", mCurrentReadingsGraphIntervalY).toFloat();
+    mCurrentReadingsGraphIntervalYLow = mSettings->value("mCurrentReadingsGraphIntervalYLow", mCurrentReadingsGraphIntervalYLow).toFloat();
+    mCurrentReadingsGraphIntervalYHigh = mSettings->value("mCurrentReadingsGraphIntervalYHigh", mCurrentReadingsGraphIntervalYHigh).toFloat();
 
     mTickCountX = mSettings->value("mTickCountX", mTickCountX).toFloat();
     mTickCountY = mSettings->value("mTickCountY", mTickCountY).toFloat();
@@ -221,7 +222,8 @@ void Settings::writeCurrentSensorReadingsSettings()
     mSettings->setValue("mRelativeCurrentSensorReadingsPath", mRelativeCurrentSensorReadingsPath);
     mSettings->setValue("mMaxTimeStorageCurrentSensorReadingsMs", qlonglong(mMaxTimeStorageCurrentSensorReadingsMs));
     mSettings->setValue("mCurrentReadingsGraphIntervalX", QString::number(mCurrentReadingsGraphIntervalX));
-    mSettings->setValue("mCurrentReadingsGraphIntervalY", QString::number(mCurrentReadingsGraphIntervalY));
+    mSettings->setValue("mCurrentReadingsGraphIntervalYLow", QString::number(mCurrentReadingsGraphIntervalYLow));
+    mSettings->setValue("mCurrentReadingsGraphIntervalYHigh", QString::number(mCurrentReadingsGraphIntervalYHigh));
     mSettings->setValue("mTickCountX", QString::number(mTickCountX));
     mSettings->setValue("mTickCountY", QString::number(mTickCountY));
     mSettings->setValue("mPressureUnitsIndex", mPressureUnitsIndex);
@@ -245,9 +247,10 @@ void Settings::setCurrentReadingsGraphIntervalX(float currentReadingsGraphInterv
     mCurrentReadingsGraphIntervalX = currentReadingsGraphIntervalX;
 }
 
-void Settings::setCurrentReadingsGraphIntervalY(float currentReadingsGraphIntervalY)
+void Settings::setCurrentReadingsGraphIntervalY(float currentReadingsGraphIntervalYLow, float currentReadingsGraphIntervalYHigh)
 {
-    mCurrentReadingsGraphIntervalY = currentReadingsGraphIntervalY;
+    mCurrentReadingsGraphIntervalYLow = currentReadingsGraphIntervalYLow;
+    mCurrentReadingsGraphIntervalYHigh = currentReadingsGraphIntervalYHigh;
 }
 
 void Settings::setCurrentTickCountX(float currentTickCountX)
@@ -270,10 +273,10 @@ void Settings::setCurrentAverageIntervalSec(float currentAverageIntervalSec)
     mAverageIntervalSec = currentAverageIntervalSec;
 }
 
-void Settings::setAllPressureParam(float mCurrentReadingsGraphIntervalY, float mTickCountY,
-                         float mHighLevelAlarm, float mLowLevelAlarm)
+void Settings::setAllPressureParam(float mCurrentReadingsGraphIntervalYLow, float mCurrentReadingsGraphIntervalYHigh, float mTickCountY,
+                                   float mHighLevelAlarm, float mLowLevelAlarm)
 {
-    setCurrentReadingsGraphIntervalY(mCurrentReadingsGraphIntervalY);
+    setCurrentReadingsGraphIntervalY(mCurrentReadingsGraphIntervalYLow, mCurrentReadingsGraphIntervalYHigh);
     setCurrentTickCountY(mTickCountY);
     setHighLevelAlarm(mHighLevelAlarm);
     setLowLevelAlarm(mLowLevelAlarm);

@@ -24,7 +24,7 @@ void AbstractMultipleGraphsAreasWidget::updateDisplayedGraphName()
     switch (mDisplayedGraph)
     {
     case AbstractCustomPlot::GraphType::WaveFormGraph: {
-        AbstractGraphAreaWidget::ui->nameGraphLabel->setText(tr("СИГНАЛ ВЧД"));
+        //AbstractGraphAreaWidget::ui->nameGraphLabel->setText(tr("СИГНАЛ ВЧД"));
         break;
     }
 //    case AbstractCustomPlot::GraphType::BoxGraph: {
@@ -35,7 +35,7 @@ void AbstractMultipleGraphsAreasWidget::updateDisplayedGraphName()
     //    AbstractGraphAreaWidget::ui->nameGraphLabel->setText(tr("ГИСТОГРАММА"));
     //}
     case AbstractCustomPlot::GraphType::RecordedGraph: {
-        AbstractGraphAreaWidget::ui->nameGraphLabel->setText(" ");//("ЗАПИСЬ"));
+        //AbstractGraphAreaWidget::ui->nameGraphLabel->setText(" ");//("ЗАПИСЬ"));
     }
     default: break;
     }

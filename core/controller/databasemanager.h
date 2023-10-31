@@ -1,7 +1,7 @@
 #ifndef DATABASEMANAGER_H
 #define DATABASEMANAGER_H
 
-#include <QtSql>
+
 
 /*! Таблица сессий */
 namespace SessionTable {

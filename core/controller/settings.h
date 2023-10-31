@@ -29,7 +29,7 @@ public:
     /*! Запись всех настроек */
     void writeAllSetting();
 
-    void setAllPressureParam(float mCurrentReadingsGraphIntervalY, float mTickCountY,
+    void setAllPressureParam(float mCurrentReadingsGraphIntervalY, float mCurrentReadingsGraphIntervalYHigh, float mTickCountY,
                              float mHighLevelAlarm, float mLowLevelAlarm);
     /*################################################################################
                                       Общие настройки
@@ -64,7 +64,8 @@ public:
     int64_t getMaxTimeStorageCurrentSensorReadingsMs() const { return mMaxTimeStorageCurrentSensorReadingsMs; };
     float getCurrentReadingsGraphIntervalX() const { return mCurrentReadingsGraphIntervalX; };
     //QVector<QPair<float, float>> getCurrentReadingsGraphYRanges() const { return mCurrentReadingsGraphYRanges; };
-    float getCurrentReadingsGraphIntervalY() const { return mCurrentReadingsGraphIntervalY; };
+    float getCurrentReadingsGraphIntervalYLow() const { return mCurrentReadingsGraphIntervalYLow; };
+    float getCurrentReadingsGraphIntervalYHigh() const { return mCurrentReadingsGraphIntervalYHigh; };
     float getCurrentTickCountX() const { return mTickCountX; };
     float getCurrentTickCountY() const { return mTickCountY; };
     uint8_t getCurrentPressureIndex() const { return mPressureUnitsIndex; };
@@ -127,7 +128,7 @@ private:
 
 private slots:
     void setCurrentReadingsGraphIntervalX(float currentReadingsGraphIntervalX);
-    void setCurrentReadingsGraphIntervalY(float currentReadingsGraphIntervalYTo);
+    void setCurrentReadingsGraphIntervalY(float currentReadingsGraphIntervalYFrom, float currentReadingsGraphIntervalYTo);
     void setCurrentTickCountX(float currentTickCountX);
     void setCurrentTickCountY(float currentTickCountY);
     void setCurrentPressureUnits(uint8_t currentPressureUnitsIndex);
@@ -177,7 +178,8 @@ public:
     QString mRelativeCurrentSensorReadingsPath {"./ICPCurrentSensorReadings"};
     int64_t mMaxTimeStorageCurrentSensorReadingsMs {1 * 24 * 60 * 60 * 1000};
     float mCurrentReadingsGraphIntervalX {12};
-    float mCurrentReadingsGraphIntervalY {60};
+    float mCurrentReadingsGraphIntervalYLow {10};
+    float mCurrentReadingsGraphIntervalYHigh {60};
     float mTickCountX {6};
     float mTickCountY {3};
     uint8_t mPressureUnitsIndex {0};

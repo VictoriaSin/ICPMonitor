@@ -41,8 +41,11 @@ NumKeyboard::NumKeyboard(QWidget *parent) :
     connect(ui->nine, &QToolButton::clicked, this, [this](){
         sendNumKeyboardEvent(Qt::Key_9, "9");
     });
-    connect(ui->minus, &QToolButton::clicked, this, [this](){
-        sendNumKeyboardEvent(Qt::Key_Minus, "-");
+//    connect(ui->minus, &QToolButton::clicked, this, [this](){
+//        sendNumKeyboardEvent(Qt::Key_Minus, "-");
+//    });
+    connect(ui->dot, &QToolButton::clicked, this, [this](){
+        sendNumKeyboardEvent(Qt::Key_Period, ".");
     });
     connect(ui->erase, &QToolButton::clicked, this, [this](){
         sendNumKeyboardEvent(Qt::Key_Backspace,  "\b");

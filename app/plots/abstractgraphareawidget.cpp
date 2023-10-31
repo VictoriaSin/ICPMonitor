@@ -20,8 +20,8 @@ AbstractGraphAreaWidget::AbstractGraphAreaWidget(QWidget *parent) :
     mGraphNameFont.setPointSize(18);
 
     // Устанавливаем шрифт имени графика
-    ui->nameGraphLabel->setFont(mGraphNameFont);
-    ui->nameGraphLabel->hide();
+    //ui->nameGraphLabel->setFont(mGraphNameFont);
+    //ui->nameGraphLabel->hide();
 
     // Настройка перерисовки графиков
     mGuiUpdateTimer->setInterval(mGuiUpdate);
@@ -51,7 +51,7 @@ void AbstractGraphAreaWidget::retranslate()
 void AbstractGraphAreaWidget::scaleFont(float scaleFactor)
 {
     // Скейлим имя графика
-    WFontScaling(ui->nameGraphLabel, scaleFactor);
+    //WFontScaling(ui->nameGraphLabel, scaleFactor);
 }
 
 bool AbstractGraphAreaWidget::addWidgetOnLeftVerticalLayout(QWidget *widget)
@@ -62,11 +62,11 @@ bool AbstractGraphAreaWidget::addWidgetOnLeftVerticalLayout(QWidget *widget)
     }
 
     // Добавляем виджет
-    ui->leftVerticalLayout->insertWidget(1, widget);
+    //ui->leftVerticalLayout->insertWidget(1, widget);
 
     // Добавляем разделитель
-    QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    ui->leftVerticalLayout->insertItem(1, spacer);
+    //QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    //ui->leftVerticalLayout->insertItem(1, spacer);
 
     return true;
 }
@@ -79,19 +79,19 @@ bool AbstractGraphAreaWidget::initializeXRangeToolButton()
     }
 
     // Устанавливаем изображение первого диапазона
-    ui->xRangeGraphToolButton->setIcon(mXRangesOfSecondsWithIcons[mCurrentXRangeIndex].defaultButtonIcon, mXRangesOfSecondsWithIcons[mCurrentXRangeIndex].pressedButtonIcon);
-    ui->xRangeGraphToolButton->setIconSize(QSize(90, 90));
-    ui->xRangeGraphToolButton->setStyleSheet(readStyleSheetFile(":/styles/ToolButtons.qss"));
+    //ui->xRangeGraphToolButton->setIcon(mXRangesOfSecondsWithIcons[mCurrentXRangeIndex].defaultButtonIcon, mXRangesOfSecondsWithIcons[mCurrentXRangeIndex].pressedButtonIcon);
+    //ui->xRangeGraphToolButton->setIconSize(QSize(90, 90));
+    //ui->xRangeGraphToolButton->setStyleSheet(readStyleSheetFile(":/styles/ToolButtons.qss"));
     return true;
 }
 
 void AbstractGraphAreaWidget::setupButtons()
 {
     // Настройка анимаций кнопок
-    ui->yRangeGraphToolButton->setIcon(QIcon(":/icons/scaleGraph.svg"), QIcon(":/icons/scaleGraph_pressed.svg"));
-    ui->yRangeGraphToolButton->setIconSize(QSize(90, 90));
-    ui->yRangeGraphToolButton->setStyleSheet(readStyleSheetFile(":/styles/ToolButtons.qss"));
-    ui->yRangeGraphToolButton->hide();
+    //ui->yRangeGraphToolButton->setIcon(QIcon(":/icons/scaleGraph.svg"), QIcon(":/icons/scaleGraph_pressed.svg"));
+    //ui->yRangeGraphToolButton->setIconSize(QSize(90, 90));
+    //ui->yRangeGraphToolButton->setStyleSheet(readStyleSheetFile(":/styles/ToolButtons.qss"));
+    //ui->yRangeGraphToolButton->hide();
 }
 
 bool AbstractGraphAreaWidget::startPlotting()

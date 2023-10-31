@@ -21,6 +21,8 @@ AbstractCustomPlot::AbstractCustomPlot(GraphType type, QWidget *parent)
     // Настройка отрисовки декартовых координат
     settingUpCartesianCoordinates();
 
+
+
 }
 
 #ifdef PC_BUILD
@@ -843,105 +845,3 @@ int AbstractCustomPlot::optimizationLabelItemCount() const
 }
 
 
-//bool AbstractCustomPlot::event(QEvent *event)
-//{
-////    // Узнаём тип события
-////    const auto typeOfEvent = event->type();
-////    //qDebug() << typeOfEvent ;
-////    static bool isLabelDrag = false;
-
-////    if ((mGraphType == RecordedGraph) && ((typeOfEvent  == QEvent::FocusOut)))
-////    {
-////        qDebug() << "QEvent::Leave";
-////    }
-
-////    if ((mGraphType == RecordedGraph) && ((isLabelCreating == true) || (isIntervalCreating == true)))
-////    {
-////        if((typeOfEvent == QEvent::MouseButtonPress) || (typeOfEvent == QEvent::MouseButtonRelease) || (typeOfEvent == QEvent::MouseMove) )
-////        {
-//////            QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
-//////            if (typeOfEvent == QEvent::MouseButtonPress)
-//////            {
-//////                labelMoved = true;
-//////                isLabelDrag = false;
-//////                pointStart = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
-//////                //qDebug() << "QEvent::MouseButtonPress: " << pointStart;
-//////            }
-//////            else if ((typeOfEvent == QEvent::MouseMove) && (labelMoved == true))
-//////            {
-//////                isLabelDrag = true;
-//////                pointStop = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
-//////                int32_t deltaX = pointStop - pointStart;
-//////                if (abs(deltaX) > 2)
-//////                {
-//////                    if (isLabelCreating)
-//////                    {
-//////                        pointStart = pointStop;
-//////                        mCoordLabelX += deltaX;
-//////                        mLabelItemsContainer.back()->replotLine();
-//////                    }
-//////                    else if (isIntervalCreating)
-//////                    {
-//////                        auto ttt = (mIntervalsContainer[mIntervalsCount-1]->mIntervalPos + deltaX);
-//////                        if (mIntervalsCount % 2 == 0)
-//////                        {
-//////                            if (ttt <= (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos))
-//////                            {
-//////                                return true;
-//////                            }
-//////                        }
-//////                        if (mIntervalsCount == 3)
-//////                        {
-
-//////                            if (ttt <= (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos))
-//////                            {
-//////                                return true;
-//////                            }
-//////                        }
-//////                        pointStart = pointStop;
-//////                        //mIntervalPos += deltaX;
-//////                        mIntervalsContainer[mIntervalsCount-1]->mIntervalPos += deltaX;
-//////                        mIntervalsContainer[mIntervalsCount-1]->replotLine();
-//////                    }
-//////                }
-//////            }
-//////            else if (typeOfEvent == QEvent::MouseButtonRelease)
-//////            {
-//////                pointStop = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
-//////                labelMoved = false;
-//////                if ((pointStart == pointStop) && (isLabelDrag == false))
-//////                {
-//////                    if (isLabelCreating)
-//////                    {
-//////                        mCoordLabelX = pointStart;
-//////                        mLabelItemsContainer.back()->replotLine();
-//////                    }
-//////                    else if (isIntervalCreating)
-//////                    {
-//////                        if (mIntervalsCount % 2 == 0)
-//////                        {
-//////                            if (pointStart <= (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos))
-//////                            {
-//////                                return true;
-//////                            }
-//////                        }
-//////                        if (mIntervalsCount == 3)
-//////                        {
-//////                            if (pointStart < (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos))
-//////                            {
-//////                                return true;
-//////                            }
-//////                        }
-//////                        //mIntervalPos = pointStart;
-//////                        mIntervalsContainer[mIntervalsCount-1]->mIntervalPos = pointStart;
-//////                        mIntervalsContainer[mIntervalsCount-1]->replotLine();
-//////                    }
-//////                }
-//////                isLabelDrag = false;
-//////                //qDebug() << "QEvent::MouseButtonRelease: "  << pointStop << " Delta: " << deltaX;
-//////            }
-////        }
-
-////    // Если не распознали или не хотим обрабатывать событие, то отдаём родителю
-//    return QCustomPlot::event(event);
-//}

@@ -124,7 +124,6 @@ void WaveFormPlot::addDataOnGraphic(unsigned int  x, /*unsigned int*/float  y)//
       {
           *mHistTempGraph->data() = *mTempGraph->data();
           mTempGraph->data()->clear();
-          //mAmplitudePoints->data()->clear();
       }
 
       graphCurrentMaxRange += graphRangeSize;
@@ -133,8 +132,6 @@ void WaveFormPlot::addDataOnGraphic(unsigned int  x, /*unsigned int*/float  y)//
 
     x-= graphMinus;
     float temp_x = (float) x/1000;
-    //float temp_y = (float) y;
-
 
     if(mHistGraph->data()->size())
     {
@@ -144,7 +141,7 @@ void WaveFormPlot::addDataOnGraphic(unsigned int  x, /*unsigned int*/float  y)//
             mHistTempGraph->data()->removeBefore(temp_x + 0.5);
         }
     }
-    mMainGraph->addData(temp_x, /*temp_y*/y);
+    mMainGraph->addData(temp_x, y);
 }
 
 void WaveFormPlot::retranslate()

@@ -143,7 +143,7 @@ public:
                                         График
     ################################################################################*/
     bool setInetrvalsOnGraph(float mCurrentReadingsGraphIntervalX, float mCurrentReadingsGraphIntervalY,
-                             float mTickCountX, float mTickCountY);
+                             float mCurrentReadingsGraphIntervalYHigh, float mTickCountX, float mTickCountY);
     bool setPressureUnits(uint8_t mCurrentPressureUnitsIndex);
     bool setAverageInterval(float mAverageIntervalSec);
     /*################################################################################

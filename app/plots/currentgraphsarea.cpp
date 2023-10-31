@@ -54,7 +54,7 @@ CurrentGraphsArea::CurrentGraphsArea(QWidget *parent) :
     // Записываем для быстрого доступа
     mWaveGraph = ui->waveGraph;
     mWaveGraph->setType(0);
-    AbstractGraphAreaWidget::ui->xRangeGraphToolButton->hide();
+    //AbstractGraphAreaWidget::ui->xRangeGraphToolButton->hide();
 
     //Записываем для быстрого доступа и скрываем график
     mRecordedGraph = ui->recordedGraph;
@@ -426,26 +426,26 @@ void CurrentGraphsArea::updateIntervalsOnGraphs()
 //#define indexPressureH2O 13.595
     mWaveGraph->setXRange(0, settings->getCurrentReadingsGraphIntervalX());
     mComplianceGraph->setXRange(0, settings->getCurrentReadingsGraphIntervalX());
-    if (mICPSettings->getCurrentPressureIndex() == 1)
+    //if (mICPSettings->getCurrentPressureIndex() == 1) // не нужен?
     {
-        mWaveGraph->setYRange(10*indexPressureH2O, settings->getCurrentReadingsGraphIntervalY());
-        mComplianceGraph->setYRange(10*indexPressureH2O, settings->getCurrentReadingsGraphIntervalY());
-        mRecordedGraph->setYRange(10*indexPressureH2O, settings->getCurrentReadingsGraphIntervalY());
-        mFirstInterval->setYRange(10*indexPressureH2O, settings->getCurrentReadingsGraphIntervalY());
-        mSecondInterval->setYRange(10*indexPressureH2O, settings->getCurrentReadingsGraphIntervalY());
+        mWaveGraph->setYRange(settings->getCurrentReadingsGraphIntervalYLow(), settings->getCurrentReadingsGraphIntervalYHigh()); // 10
+        mComplianceGraph->setYRange(settings->getCurrentReadingsGraphIntervalYLow(), settings->getCurrentReadingsGraphIntervalYHigh()); // 10
+        mRecordedGraph->setYRange(settings->getCurrentReadingsGraphIntervalYLow(), settings->getCurrentReadingsGraphIntervalYHigh()); // 10
+        mFirstInterval->setYRange(settings->getCurrentReadingsGraphIntervalYLow(), settings->getCurrentReadingsGraphIntervalYHigh()); // 10
+        mSecondInterval->setYRange(settings->getCurrentReadingsGraphIntervalYLow(), settings->getCurrentReadingsGraphIntervalYHigh()); // 10
    }
-    else
+    //else
     {
-        mWaveGraph->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
-        mComplianceGraph->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
+        //mWaveGraph->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
+        //mComplianceGraph->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
         mWaveGraph->setLowerAlarmLevelLine(settings->getLowLevelAlarm());
         mWaveGraph->setUpperAlarmLevelLine(settings->getHighLevelAlarm());
         mRecordedGraph->setXRange(0, settings->getCurrentReadingsGraphIntervalX());
-        mRecordedGraph->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
+        //mRecordedGraph->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
         mFirstInterval->setXRange(0, settings->getCurrentReadingsGraphIntervalX());//
-        mFirstInterval->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
+        //mFirstInterval->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
         mSecondInterval->setXRange(0, settings->getCurrentReadingsGraphIntervalX());//
-        mSecondInterval->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
+        //mSecondInterval->setYRange(10, settings->getCurrentReadingsGraphIntervalY());
     }
 
     mWaveGraph->resetGraph();
@@ -789,7 +789,7 @@ bool CurrentGraphsArea::nextXRange()
     const auto &intervalAndIcon = mXRangesOfSecondsWithIcons[mCurrentXRangeIndex];
 
     // Устанавливаем картинку кнопке
-    AbstractGraphAreaWidget::ui->xRangeGraphToolButton->setIcon(intervalAndIcon.defaultButtonIcon, intervalAndIcon.pressedButtonIcon);
+    //AbstractGraphAreaWidget::ui->xRangeGraphToolButton->setIcon(intervalAndIcon.defaultButtonIcon, intervalAndIcon.pressedButtonIcon);
 
 
 
@@ -980,14 +980,26 @@ void CurrentGraphsArea::getData()
     currData.data = avg/CNT_AVG_VALUES;
 }
 
+//connect(mPlot, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
+
+
+//void MainWindow::mouseWheel()
+//{
+//  if (ui->customPlot->yAxis->selectedParts().testFlag(QCPAxis::spAxis))
+//      ui->customPlot->axisRect()->setRangeZoom(ui->customPlot->yAxis->orientation());
+//}
+
+
 
 void CurrentGraphsArea::calcCompliance()
-{
+{    
     float Acp = (mFirstInterval->averageA + mSecondInterval->averageA)/2;
-    Acp *= 13.545;
     float Pcp = (Po + Pk)/2;//(mFirstInterval->averageP + mSecondInterval->averageP)/2;//
-    Pcp *= 13.545;
-
+    if (mICPSettings->mPressureUnitsIndex == 0)
+    {
+        Acp *= 13.545;
+        Pcp *= 13.545;
+    }
     dVConst = (dVolume * log10((Pcp + Acp)/(Pcp - Acp))) / (log10(Pk/Po));//(mFirstInterval->averageP / mSecondInterval->averageP)
     qDebug() << "Acp" << Acp << "Pcp" << Pcp << "dVConst" << dVConst;
     float param = 1.0;
@@ -995,7 +1007,7 @@ void CurrentGraphsArea::calcCompliance()
     mWaveGraph->mLowerAlarmLimit->setVisible(false);
     mWaveGraph->mUpperAlarmLimit->setVisible(false);
     mWaveGraph->mMainGraph->data().data()->clear();
-    mWaveGraph->yAxis->setRange(0, 30);
+    mWaveGraph->setInteraction(QCP::iRangeZoom);
 
     mComplianceGraph->xAxis->setLabel("");
     mComplianceGraph->mLowerAlarmLimit->setVisible(false);

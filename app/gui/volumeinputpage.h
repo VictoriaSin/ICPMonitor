@@ -24,7 +24,7 @@ public:
     void setupVolume();
     void setupParam();
 
-    QLabel *dVolume {nullptr};
+    QLabel *dVolumeLabel {nullptr};
     QLineEdit *inputValueLineEdit {nullptr};
     QLabel *point0Label {nullptr};
     QLineEdit *point0LineEdit {nullptr};
@@ -35,13 +35,16 @@ public:
     QLineEdit *windowWidthLineEdit {nullptr};
     QLabel *offsetAverageLabel {nullptr};
     QLineEdit *offsetAverageLineEdit {nullptr};
-    QSpacerItem *spacer {nullptr};
 
 private:
     Ui::VolumeInputPage *ui;
     uint32_t startValueWW;
     float startValueOA;
     uint8_t typeOfValues; // 0- dV 1-avg
+
+    uint16_t startdVolume;
+    float startPo;
+    float startPk;
 
 public slots:
     void retranslate() override;

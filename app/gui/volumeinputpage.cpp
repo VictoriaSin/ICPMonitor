@@ -19,7 +19,6 @@ VolumeInputPage::VolumeInputPage(QWidget *parent, uint8_t type) :
     ui(new Ui::VolumeInputPage)
 {
     ui->setupUi(AbstractDialogPage::ui->settingsPage);
-    //spacer = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding);
     typeOfValues = type;
     if (typeOfValues == 0)
     {
@@ -35,16 +34,17 @@ VolumeInputPage::VolumeInputPage(QWidget *parent, uint8_t type) :
 
 void VolumeInputPage::setupVolume()
 {
-    dVolume = new QLabel("Укажите объем введенного болюса:", this);
-    QFont fontLabel = dVolume->font();
+    dVolumeLabel = new QLabel("Укажите объем введенного болюса:", this);
+    QFont fontLabel = dVolumeLabel->font();
     fontLabel.setPixelSize(20);
-    dVolume->setFont(fontLabel);
+    dVolumeLabel->setFont(fontLabel);
 
     inputValueLineEdit = new QLineEdit(this);
     QFont fontLineEdit = inputValueLineEdit->font();
     fontLineEdit.setPixelSize(15);
     inputValueLineEdit->setStyleSheet("background-color: rgb(255, 255, 255)");
     inputValueLineEdit->setFont(fontLineEdit);
+    inputValueLineEdit->setText(QString::number(dVolume));
 
     point0Label = new QLabel("Укажите координату x точки P0:", this);
     point0Label->setFont(fontLabel);
@@ -52,6 +52,7 @@ void VolumeInputPage::setupVolume()
     point0LineEdit = new QLineEdit(this);
     point0LineEdit->setStyleSheet("background-color: rgb(255, 255, 255)");
     point0LineEdit->setFont(fontLineEdit);
+    point0LineEdit->setText(QString::number(Po));
 
     point1Label = new QLabel("Укажите координату x точки Pk:", this);
     point1Label->setFont(fontLabel);
@@ -59,19 +60,14 @@ void VolumeInputPage::setupVolume()
     point1LineEdit = new QLineEdit(this);
     point1LineEdit->setStyleSheet("background-color: rgb(255, 255, 255)");
     point1LineEdit->setFont(fontLineEdit);
+    point1LineEdit->setText(QString::number(Pk));
 
-    spacer = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding);
-    ui->leftLayout->addSpacerItem(spacer);
-    ui->leftLayout->addWidget(dVolume);
-    ui->leftLayout->addWidget(inputValueLineEdit);
-    ui->leftLayout->addWidget(point0Label);
-    ui->leftLayout->addWidget(point0LineEdit);
-    ui->leftLayout->addWidget(point1Label);
-    ui->leftLayout->addWidget(point1LineEdit);
-    spacer = nullptr;
-    spacer = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding);
-    ui->leftLayout->addSpacerItem(spacer);
-    spacer = nullptr;
+    ui->grid->addWidget(dVolumeLabel, 0, 0);
+    ui->grid->addWidget(inputValueLineEdit, 0, 1);
+    ui->grid->addWidget(point0Label, 1, 0);
+    ui->grid->addWidget(point0LineEdit, 1, 1);
+    ui->grid->addWidget(point1Label, 2, 0);
+    ui->grid->addWidget(point1LineEdit, 2, 1);
 }
 
 void VolumeInputPage::setupParam()
@@ -86,7 +82,7 @@ void VolumeInputPage::setupParam()
     fontLineEdit.setPixelSize(15);
     windowWidthLineEdit->setStyleSheet("background-color: rgb(255, 255, 255)");
     windowWidthLineEdit->setFont(fontLineEdit);
-    windowWidthLineEdit->setText("100");
+    windowWidthLineEdit->setText(QString::number(windowWidth));
 
     offsetAverageLabel = new QLabel("Введите смещение относительно графика среднего:", this);
     offsetAverageLabel->setFont(fontLabel);
@@ -94,18 +90,12 @@ void VolumeInputPage::setupParam()
     offsetAverageLineEdit = new QLineEdit(this);
     offsetAverageLineEdit->setStyleSheet("background-color: rgb(255, 255, 255)");
     offsetAverageLineEdit->setFont(fontLineEdit);
-    offsetAverageLineEdit->setText("0.5");
+    offsetAverageLineEdit->setText(QString::number(offsetAverage));
 
-    spacer = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding);
-    ui->leftLayout->addSpacerItem(spacer);
-    spacer = nullptr;
-    ui->leftLayout->addWidget(windowWidthLabel);
-    ui->leftLayout->addWidget(windowWidthLineEdit);
-    ui->leftLayout->addWidget(offsetAverageLabel);
-    ui->leftLayout->addWidget(offsetAverageLineEdit);
-    spacer = new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding);
-    ui->leftLayout->addSpacerItem(spacer);
-    spacer = nullptr;
+    ui->grid->addWidget(windowWidthLabel, 0, 0);
+    ui->grid->addWidget(windowWidthLineEdit, 0, 1);
+    ui->grid->addWidget(offsetAverageLabel, 1, 0);
+    ui->grid->addWidget(offsetAverageLineEdit, 1, 1);
 }
 
 #define DELITEM(_item) if(_item != nullptr)\
@@ -116,13 +106,12 @@ void VolumeInputPage::setupParam()
 
 VolumeInputPage::~VolumeInputPage()
 {
-    DELITEM(dVolume);
+    DELITEM(dVolumeLabel);
     DELITEM(inputValueLineEdit);
     DELITEM(windowWidthLabel);
     DELITEM(windowWidthLineEdit);
     DELITEM(offsetAverageLabel);
     DELITEM(offsetAverageLineEdit);
-    //DELITEM(spacer);
     delete ui;
 }
 
@@ -136,7 +125,13 @@ void VolumeInputPage::done(int exodus)
 {
     if (exodus != QDialog::Accepted) {        
         emit previousPage();
-        if (typeOfValues == 1)
+        if (typeOfValues == 0)
+        {
+            inputValueLineEdit->setText(QString::number(startdVolume));
+            point0LineEdit->setText(QString::number(startPo));
+            point1LineEdit->setText(QString::number(startPk));
+        }
+        else // (typeOfValues == 1)
         {
             windowWidthLineEdit->setText(QString::number(startValueWW));
             offsetAverageLineEdit->setText(QString::number(startValueOA));
@@ -152,7 +147,13 @@ void VolumeInputPage::done(int exodus)
             return;
         }
     }
-    if (list.size() > 1)
+    if (typeOfValues == 0)
+    {
+        dVolume = inputValueLineEdit->text().toUInt();
+        Po = point0LineEdit->text().toFloat();
+        Pk = point1LineEdit->text().toFloat();
+    }
+    else
     {
         windowWidth = windowWidthLineEdit->text().toUInt();
         offsetAverage = offsetAverageLineEdit->text().toFloat();
@@ -173,9 +174,15 @@ void VolumeInputPage::retranslate()
 
 void VolumeInputPage::showEvent(QShowEvent */*event*/)
 {
-    if (typeOfValues == 1)
+    if (typeOfValues == 0)
     {
-    startValueWW = windowWidthLineEdit->text().toUInt();
-    startValueOA = offsetAverageLineEdit->text().toFloat();
+        startdVolume = inputValueLineEdit->text().toUInt();
+        startPo = point0LineEdit->text().toFloat();
+        startPk = point1LineEdit->text().toFloat();
+    }
+    else //(typeOfValues == 1)
+    {
+        startValueWW = windowWidthLineEdit->text().toUInt();
+        startValueOA = offsetAverageLineEdit->text().toFloat();
     }
 }

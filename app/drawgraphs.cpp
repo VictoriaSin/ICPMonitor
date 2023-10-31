@@ -30,7 +30,7 @@ void DrawGraphs::run()
   pointTime         = 0;
   uint16_t axisXRange    = (uint16_t)(mWaveGraph->xAxis->range().size() * 1000);
   float max = 0;
-  float max_pos = 0;
+  u32 max_pos = 0;
   bool needDraw = false;
   bool up = false;
 
@@ -88,15 +88,14 @@ void DrawGraphs::run()
       sum = 0;
       mWaveGraph->addDataOnGraphic(pointTime, data1);
       filVal += (((float)mZSC1.data[0] * param / 1000 - filVal) * k);
+      //mWaveGraph->mTempGraph->addData((float)(pointTime - (uint32_t)offsetTime) / 1000, filVal);
       data2 = filVal;
-      pos_data1 = (float)(temp.timeStamp - offsetTime)/1000;
-      //mWaveGraph->mTempGraph->addData(pos_data1, filVal);
       if (data1 > data2)
       {
         if (data1 > max)
         {
           max       = data1;
-          max_pos   = pointTime;//pos_data1;
+          max_pos   = pointTime;
           needDraw  = true;
         }
       }
@@ -104,14 +103,13 @@ void DrawGraphs::run()
       {
         if (needDraw)
         {
-          mWaveGraph->mAmplitudePoints->addData(float((uint16_t)max_pos % axisXRange) / 1000, max);
-          //qDebug() << "globalCount" << globalCount << max_pos << max;
-          //qDebug() << ">0" << max_pos << max;
-          compliance = dVConst/(2*(max - data2));
-          mComplianceGraph->addDataOnGraphic(max_pos, compliance);
-          needDraw = false;
-          max = 0;
-          max_pos = 0;
+            mWaveGraph->mAmplitudePoints->addData((float)(max_pos - (uint32_t)offsetTime) / 1000, max);
+            //qDebug() << "globalCount" << globalCount << max_pos << max;
+            compliance = dVConst/(2*(max - data2));
+            mComplianceGraph->addDataOnGraphic(max_pos, compliance);
+            needDraw = false;
+            max = 0;
+            max_pos = 0;
         }
       }
 
@@ -119,7 +117,6 @@ void DrawGraphs::run()
       {
         offsetTime = temp.timeStamp;
         mWaveGraph->mAmplitudePoints->data()->clear();
-        //mComplianceGraph->mMainGraph->data()->clear();
       }
     }
     mZSC1.spi_oneShot();
@@ -128,3 +125,5 @@ void DrawGraphs::run()
   isStopped = true;
   qDebug() << "DrawGraphs stopped";
 }
+
+

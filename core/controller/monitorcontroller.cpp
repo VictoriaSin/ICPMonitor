@@ -170,15 +170,16 @@ bool MonitorController::setAverageInterval(float mAverageIntervalSec)
   return true;
 }
 
-bool MonitorController::setInetrvalsOnGraph(float mCurrentReadingsGraphIntervalX, float mCurrentReadingsGraphIntervalY,
-                                            float mTickCountX, float mTickCountY)
+bool MonitorController::setInetrvalsOnGraph(float mCurrentReadingsGraphIntervalX, float mCurrentReadingsGraphIntervalYLow,
+                                            float mCurrentReadingsGraphIntervalYHigh, float mTickCountX, float mTickCountY)
 {
   if (!mICPSettings) {
     return false;
   }
 
   const float CXR = mICPSettings->getCurrentReadingsGraphIntervalX();
-  float CYR = mICPSettings->getCurrentReadingsGraphIntervalY();
+  float CYRL = mICPSettings->getCurrentReadingsGraphIntervalYLow();
+  float CYRH = mICPSettings->getCurrentReadingsGraphIntervalYHigh();
   const float TCX = mICPSettings->getCurrentTickCountX();
   float TCY = mICPSettings->getCurrentTickCountY();
 
@@ -193,10 +194,11 @@ bool MonitorController::setInetrvalsOnGraph(float mCurrentReadingsGraphIntervalX
 
   // Если одно из значений осей изменилось
   if (CXR  != mCurrentReadingsGraphIntervalX ||
-      CYR != mCurrentReadingsGraphIntervalY)
+      CYRL != mCurrentReadingsGraphIntervalYLow ||
+      CYRH != mCurrentReadingsGraphIntervalYHigh)
   {
     mICPSettings->setCurrentReadingsGraphIntervalX(mCurrentReadingsGraphIntervalX);
-    mICPSettings->setCurrentReadingsGraphIntervalY(mCurrentReadingsGraphIntervalY);
+    mICPSettings->setCurrentReadingsGraphIntervalY(mCurrentReadingsGraphIntervalYLow, mCurrentReadingsGraphIntervalYHigh);
     emit controllerEvent(ControllerEvent::UpdateGraphIntervals);
   }
 

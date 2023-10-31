@@ -184,13 +184,20 @@ u16 dataF[340] = {
 };
 void ZSC::spi_oneShot()
 {
-
+  static i16 i = 0;
+  static bool dir = true;
   static u16 posData = 0;
+  static u16 amp = 0;
+
   if (posData == 0)
   {
-     xOffset  = rand() % 3000;
+    amp+= 55;
+    if (amp >= 1000) amp = 0;
+    if (dir) { i+= 1500; if (i == 6000) dir = false; }
+    else { i-=1500; if (i == -6000) dir = true; }
+
   }
-  data[0] = dataF[posData++] + xOffset;
+  data[0] = dataF[posData++] + amp + i;
   posData %= 340;
 }
 #else

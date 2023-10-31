@@ -123,11 +123,12 @@ void GeneralSettingsPage::updateGraphSettingsOnWidgets()
     }
 
     ui->intervalXLineEdit->setText(QString::number(settings->getCurrentReadingsGraphIntervalX()));
-    ui->intervalYLineEdit->setText(QString::number(settings->getCurrentReadingsGraphIntervalY()));
+    ui->lowIntervalYLineEdit->setText(QString::number(settings->getCurrentReadingsGraphIntervalYLow()));
+    ui->highIntervalYLineEdit->setText(QString::number(settings->getCurrentReadingsGraphIntervalYHigh()));
     ui->relativeCurrentPathLineEdit->setText(settings->getRelativeCurrentSensorReadingsPath());
     ui->currentMaxStorageTimeLineEdit->setText(QString::number(settings->getMaxTimeStorageCurrentSensorReadingsMs()));
     float realDivisionXCount = (float)(settings->getCurrentReadingsGraphIntervalX()) / (settings->getCurrentTickCountX());
-    float realDivisionYCount = (float)(settings->getCurrentReadingsGraphIntervalY() - 10) / (settings->getCurrentTickCountY());
+    float realDivisionYCount = (float)(settings->getCurrentReadingsGraphIntervalYHigh() - settings->getCurrentReadingsGraphIntervalYLow()) / (settings->getCurrentTickCountY()); // 10
     ui->tickCountXLineEdit->setText(QString::number(realDivisionXCount));//settings->getCurrentTickCountX()));
     ui->tickCountYLineEdit->setText(QString::number(realDivisionYCount));//settings->getCurrentTickCountY()));
     ui->pressureUnitsComboBox->setCurrentIndex(settings->getCurrentPressureIndex());
@@ -205,7 +206,8 @@ void GeneralSettingsPage::updateParameters()
     }//);
 qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
     float mCurrentReadingsGraphIntervalX = ui->intervalXLineEdit->text().toFloat();
-    float mCurrentReadingsGraphIntervalY = ui->intervalYLineEdit->text().toFloat();
+    float mCurrentReadingsGraphIntervalYLow = ui->lowIntervalYLineEdit->text().toFloat();
+    float mCurrentReadingsGraphIntervalYHigh = ui->highIntervalYLineEdit->text().toFloat();
 
     if (ui->tickCountXLineEdit->text().toFloat() < 1 || ui->tickCountYLineEdit->text().toFloat() < 1)
     {
@@ -213,7 +215,7 @@ qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
         return;
     }
     float mTickCountX = (float)mCurrentReadingsGraphIntervalX / ui->tickCountXLineEdit->text().toFloat();
-    float mTickCountY = (float)(mCurrentReadingsGraphIntervalY - 10) / ui->tickCountYLineEdit->text().toFloat();
+    float mTickCountY = (float)(mCurrentReadingsGraphIntervalYHigh - mCurrentReadingsGraphIntervalYLow) / ui->tickCountYLineEdit->text().toFloat(); // 10
     float mHighLevelAlarm = ui->upperAlarmLineEdit->text().toFloat();
     float mLowLevelAlarm = ui->lowerAlarmLineEdit->text().toFloat();
     float mAverageIntervalSec = ui->averageIntervalSecLineEdit->text().toFloat();
@@ -227,7 +229,8 @@ qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
     {
         if (mPressureUnitsIndex == 0) // 1 -> 0
         {
-            mCurrentReadingsGraphIntervalY = (round)(mCurrentReadingsGraphIntervalY / indexPressureH2O);
+            mCurrentReadingsGraphIntervalYLow = (round)(mCurrentReadingsGraphIntervalYLow / indexPressureH2O);
+            mCurrentReadingsGraphIntervalYHigh = (round)(mCurrentReadingsGraphIntervalYHigh / indexPressureH2O);
             //mTickCountY /= indexPressureH2O;
             mHighLevelAlarm = (round)(mHighLevelAlarm / indexPressureH2O);
             mLowLevelAlarm = (round)(mLowLevelAlarm / indexPressureH2O);
@@ -235,22 +238,23 @@ qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
         }
         else // 0 -> 1
         {
-            mCurrentReadingsGraphIntervalY = (round)(mCurrentReadingsGraphIntervalY * indexPressureH2O);
+            mCurrentReadingsGraphIntervalYLow = (round)(mCurrentReadingsGraphIntervalYLow * indexPressureH2O);
+            mCurrentReadingsGraphIntervalYHigh = (round)(mCurrentReadingsGraphIntervalYHigh * indexPressureH2O);
             //mTickCountY *= indexPressureH2O;
             mHighLevelAlarm = (round)(mHighLevelAlarm * indexPressureH2O);
             mLowLevelAlarm = (round)(mLowLevelAlarm * indexPressureH2O);
             mCurrentMaxYRange *= indexPressureH2O;
         }
-        qDebug() << "mCurrentReadingsGraphIntervalY" <<mCurrentReadingsGraphIntervalY;
+        //qDebug() << "mCurrentReadingsGraphIntervalY" <<mCurrentReadingsGraphIntervalY;
         qDebug() << "mTickCountY" << mTickCountY;
         qDebug() << "mHighLevelAlarm" << mHighLevelAlarm;
         qDebug() << "mLowLevelAlarm" << mLowLevelAlarm;
         qDebug() << "mCurrentMaxYRange" << mCurrentMaxYRange;
 
-        mController->setInetrvalsOnGraph(mCurrentReadingsGraphIntervalX, mCurrentReadingsGraphIntervalY,
+        mController->setInetrvalsOnGraph(mCurrentReadingsGraphIntervalX, mCurrentReadingsGraphIntervalYLow, mCurrentReadingsGraphIntervalYHigh,
                                                      mTickCountX, mTickCountY);
         mController->setLevelsAndStatesAlarm(mLowLevelAlarm, mHighLevelAlarm, mLowLevelStateAlarm, mHighLevelStateAlarm);
-        mICPSettings->setAllPressureParam(mCurrentReadingsGraphIntervalY, mTickCountY,
+        mICPSettings->setAllPressureParam(mCurrentReadingsGraphIntervalYLow, mCurrentReadingsGraphIntervalYHigh, mTickCountY,
                                           mHighLevelAlarm, mLowLevelAlarm);
         updateAlarmSettingsOnWidgets();
         updateGraphSettingsOnWidgets();
@@ -271,9 +275,9 @@ qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
     });
 
     QTimer::singleShot(0, mController, [this, mCurrentReadingsGraphIntervalX,
-                       mCurrentReadingsGraphIntervalY, mTickCountX, mTickCountY]()
+                       mCurrentReadingsGraphIntervalYLow, mCurrentReadingsGraphIntervalYHigh, mTickCountX, mTickCountY]()
     {
-        if (mController->setInetrvalsOnGraph(mCurrentReadingsGraphIntervalX, mCurrentReadingsGraphIntervalY,
+        if (mController->setInetrvalsOnGraph(mCurrentReadingsGraphIntervalX, mCurrentReadingsGraphIntervalYLow, mCurrentReadingsGraphIntervalYHigh,
                                              mTickCountX, mTickCountY))
         {
             emit previousPage();
@@ -332,9 +336,11 @@ void GeneralSettingsPage::scaleFont(float scaleFactor)
 {
     AbstractDialogPage::scaleFont(scaleFactor);
     WFontScaling(ui->intervalXLabel, scaleFactor);
-    WFontScaling(ui->intervalYLabel, scaleFactor);
+    WFontScaling(ui->lowIntervalYLabel, scaleFactor);
+    WFontScaling(ui->highIntervalYLabel, scaleFactor);
     WFontScaling(ui->intervalXLineEdit, scaleFactor);
-    WFontScaling(ui->intervalYLineEdit, scaleFactor);
+    WFontScaling(ui->lowIntervalYLineEdit, scaleFactor);
+    WFontScaling(ui->highIntervalYLineEdit, scaleFactor);
     WFontScaling(ui->tickCountXLabel, scaleFactor);
     WFontScaling(ui->tickCountXLineEdit, scaleFactor);
     WFontScaling(ui->tickCountYLabel, scaleFactor);

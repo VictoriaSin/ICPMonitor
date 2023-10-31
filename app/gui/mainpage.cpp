@@ -231,22 +231,22 @@ void MainPage::setupButtons()
   ui->zoomInterval2Button->hide();
 
   ui->funcFirstButton->setIcon(QIcon(":/icons/func1.svg"),QIcon(":/icons/func1_pressed.svg"));
-  ui->funcFirstButton->setIconSize(QSize(BUT_SIZE_BIG, BUT_SIZE_BIG));
+  ui->funcFirstButton->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
   ui->funcFirstButton->setStyleSheet(ToolButtonStyleSheet);
   ui->funcFirstButton->hide();
 
   ui->funcSecondButton->setIcon(QIcon(":/icons/func2.svg"),QIcon(":/icons/func2_pressed.svg"));
-  ui->funcSecondButton->setIconSize(QSize(BUT_SIZE_BIG, BUT_SIZE_BIG));
+  ui->funcSecondButton->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
   ui->funcSecondButton->setStyleSheet(ToolButtonStyleSheet);
   ui->funcSecondButton->hide();
 
   ui->markPPointButton->setIcon(QIcon(":/icons/func3.svg"),QIcon(":/icons/func3_pressed.svg"));
-  ui->markPPointButton->setIconSize(QSize(BUT_SIZE_BIG, BUT_SIZE_BIG));
+  ui->markPPointButton->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
   ui->markPPointButton->setStyleSheet(ToolButtonStyleSheet);
   ui->markPPointButton->hide();
 
   ui->dVInputButton->setIcon(QIcon(":/icons/inputVolume.svg"),QIcon(":/icons/inputVolume_pressed.svg"));
-  ui->dVInputButton->setIconSize(QSize(BUT_SIZE_BIG, BUT_SIZE_BIG));
+  ui->dVInputButton->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
   ui->dVInputButton->setStyleSheet(ToolButtonStyleSheet);
   ui->dVInputButton->hide();
 }
