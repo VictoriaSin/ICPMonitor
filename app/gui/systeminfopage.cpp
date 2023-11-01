@@ -29,6 +29,17 @@ SystemInfoPage::SystemInfoPage(QWidget *parent) :
     // Таймер обновления кол-ва доступной памяти
     mUpdateMemBarsTimer->setInterval(IntervalUpdateMemBarsMs);
     connect(mUpdateMemBarsTimer, &QTimer::timeout, this, &SystemInfoPage::updateProgressBars);
+#ifdef PC_BUILD
+    float coeff = 0.52;
+    WFontScaling(ui->ramNameLabel, coeff);
+    WFontScaling(ui->ramValueLabel, coeff);
+    WFontScaling(ui->sysMemNameLabel, coeff);
+    WFontScaling(ui->sysMemValueLabel, coeff);
+    WFontScaling(ui->ramPersentFreeSpaceProgressBar, coeff);
+    WFontScaling(ui->sysMemPersentFreeSpaceProgressBar, coeff);
+    WFontScaling(ui->versionLabel, coeff);
+    WFontScaling(ui->versionProgramGroupBox, coeff);
+#endif
 }
 
 SystemInfoPage::~SystemInfoPage()

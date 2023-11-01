@@ -31,6 +31,13 @@ DateTimePage::DateTimePage(QWidget *parent) :
 
     ui->inputDateSpinBox->setSpinBox(dateEditSB);
     ui->inputTimeSpinBox->setSpinBox(timeEditSB);
+#ifdef PC_BUILD
+    float coeff = 0.6;
+    WFontScaling(ui->inputTimeSpinBox, coeff);
+    WFontScaling(ui->inputDateSpinBox, coeff);
+    WFontScaling(ui->timeLabel, coeff);
+    WFontScaling(ui->dateLabel, coeff);
+#endif
 }
 
 DateTimePage::~DateTimePage()

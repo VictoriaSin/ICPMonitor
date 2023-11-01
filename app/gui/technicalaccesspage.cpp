@@ -33,6 +33,7 @@ TechnicalAccessPage::TechnicalAccessPage(QWidget *parent) :
 
     connect(ui->selectSoftwareStorageTButton, &QToolButton::clicked, this, &TechnicalAccessPage::openSoftwareStorageDialog);
     connect(mSetSoftwareStorageDialog, &BlockDevicesSelectionDialog::finished, this, &TechnicalAccessPage::closedSoftwareStorageDialog);
+
 }
 
 TechnicalAccessPage::~TechnicalAccessPage()

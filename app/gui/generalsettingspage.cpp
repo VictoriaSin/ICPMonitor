@@ -28,6 +28,64 @@ GeneralSettingsPage::GeneralSettingsPage(QWidget *parent) :
     // Настройка окна сообщений
     setupMessageBox();
     setupAlarm();
+
+    ui->aCoefficientLineEdit->setObjectName("coefficientA");
+    ui->bCoefficientLineEdit->setObjectName("coefficientB");
+
+#ifdef PC_BUILD
+    float coeff = 0.7;
+
+    WFontScaling(ui->intervalXLabel,                coeff);
+    WFontScaling(ui->lowIntervalYLabel,             coeff);
+    WFontScaling(ui->highIntervalYLabel,            coeff);
+    WFontScaling(ui->intervalXLineEdit,             coeff);
+    WFontScaling(ui->lowIntervalYLineEdit,          coeff);
+    WFontScaling(ui->highIntervalYLineEdit,         coeff);
+    WFontScaling(ui->tickCountXLabel,               coeff);
+    WFontScaling(ui->tickCountXLineEdit,            coeff);
+    WFontScaling(ui->tickCountYLabel,               coeff);
+    WFontScaling(ui->tickCountYLineEdit,            coeff);
+    WFontScaling(ui->upperAlarmLabel,               coeff);
+    WFontScaling(ui->upperAlarmLineEdit,            coeff);
+    WFontScaling(ui->upperAlarmSignalLabel,         coeff);
+    WFontScaling(ui->upperAlarmSignalButton,        coeff);
+    WFontScaling(ui->lowerAlarmLabel,               coeff);
+    WFontScaling(ui->lowerAlarmLineEdit,            coeff);
+    WFontScaling(ui->lowerAlarmSignalLabel,         coeff);
+    WFontScaling(ui->lowerAlarmSignalButton,        coeff);
+    WFontScaling(ui->currentMaxStorageTimeLineEdit, coeff);
+    WFontScaling(ui->currentMaxStorageTimeLabel,    coeff);
+    WFontScaling(ui->relativeCurrentPathLabel,      coeff);
+    WFontScaling(ui->relativeCurrentPathLineEdit,   coeff);
+    WFontScaling(ui->fontScaleFactorLabel,          coeff);
+    WFontScaling(ui->fontScaleFactorLineEdit,       coeff);
+    WFontScaling(ui->softwareStorageUUIDLabel,      coeff);
+    WFontScaling(ui->softwareStorageUUIDLineEdit,   coeff);
+    WFontScaling(ui->pressureUnitsLabel,            coeff);
+    WFontScaling(ui->pressureUnitsComboBox,         coeff);
+    WFontScaling(ui->averageIntervalSecLabel,       coeff);
+    WFontScaling(ui->averageIntervalSecLineEdit,    coeff);
+    WFontScaling(ui->aCoefficientLabel,             coeff);
+    WFontScaling(ui->aCoefficientLineEdit,          coeff);
+    WFontScaling(ui->bCoefficientLabel,             coeff);
+    WFontScaling(ui->bCoefficientLineEdit,          coeff);
+
+    WFontScaling(ui->registersTitle, coeff);
+    WFontScaling(ui->column0,        coeff);
+    WFontScaling(ui->column1,        coeff);
+    WFontScaling(ui->column2,        coeff);
+    WFontScaling(ui->column3,        coeff);
+    WFontScaling(ui->row0,           coeff);
+    WFontScaling(ui->row1,           coeff);
+    WFontScaling(ui->row2,           coeff);
+    WFontScaling(ui->row3,           coeff);
+    WFontScaling(ui->row4,           coeff);
+    WFontScaling(ui->row5,           coeff);
+    WFontScaling(ui->row6,           coeff);
+    WFontScaling(ui->row7,           coeff);
+
+    mMessageDialog->scaleFont(coeff);
+#endif
 }
 
 GeneralSettingsPage::~GeneralSettingsPage()
@@ -45,6 +103,12 @@ bool GeneralSettingsPage::checkInputRegs(QString inputReg)
 {
     QRegExp mRegExp("0x([0-9]|[A-F]){4}");
     return mRegExp.exactMatch(inputReg);
+}
+
+bool GeneralSettingsPage::checkInputCoeff(QString inputCoeff)
+{
+    QRegExp mRegExp("(-)?(0|[1-9][\\d]*)(\\.[\\d]+)?");
+    return mRegExp.exactMatch(inputCoeff);
 }
 
 void GeneralSettingsPage::setupAlarm()
@@ -148,7 +212,8 @@ void GeneralSettingsPage::updateGeneralSettingsOnWidgets()
 
     ui->fontScaleFactorLineEdit->setText(QString::number(settings->getFontScaleFactor()));
     ui->softwareStorageUUIDLineEdit->setText(settings->getSoftwareStorageUUID());
-
+    ui->aCoefficientLineEdit->setText(QString::number(settings->getACoefficient()));
+    ui->bCoefficientLineEdit->setText(QString::number(settings->getBCoefficient()));
 
 #define setRegs(reg, num) reg->setText("0x" + QString::number(settings->mRegValues[num], 16).rightJustified(4, '0').toUpper())
     for (uint8_t i=0; i<32; i++)
@@ -185,14 +250,32 @@ void GeneralSettingsPage::updateParameters()
             }
             continue;
         }
-        if (!checkInputData(mLineEditList[i]->text()))
+        if (mLineEditList[i]->objectName() == "coefficientA" || mLineEditList[i]->objectName() == "coefficientB")
+        {
+            if (!checkInputCoeff(mLineEditList[i]->text()))
+            {
+                openSettingsInfoErrorDialog(tr("Введены некорректные коэффициенты a, b"));
+                return;
+            }
+        }
+        else if (!checkInputData(mLineEditList[i]->text()))
         {
             openSettingsInfoErrorDialog(tr("Введены некорректные параметры"));
             return;
         }
     }
-    uint8_t mPressureUnitsIndex = ui->pressureUnitsComboBox->currentIndex();
 
+// временно
+    if (mICPSettings->getACoefficient() != ui->aCoefficientLineEdit->text().toFloat()
+        || mICPSettings->getBCoefficient() != ui->bCoefficientLineEdit->text().toFloat())
+    {
+        mICPSettings->setACoefficient(ui->aCoefficientLineEdit->text().toFloat());
+        mICPSettings->setBCoefficient(ui->bCoefficientLineEdit->text().toFloat());
+    }
+
+
+
+    uint8_t mPressureUnitsIndex = ui->pressureUnitsComboBox->currentIndex();
     //QTimer::singleShot(0, mController, [this, mPressureUnitsIndex, &isPressureUnitsChanged]()
     {
         if (mController->setPressureUnits(mPressureUnitsIndex))
@@ -245,11 +328,6 @@ qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
             mLowLevelAlarm = (round)(mLowLevelAlarm * indexPressureH2O);
             mCurrentMaxYRange *= indexPressureH2O;
         }
-        //qDebug() << "mCurrentReadingsGraphIntervalY" <<mCurrentReadingsGraphIntervalY;
-        qDebug() << "mTickCountY" << mTickCountY;
-        qDebug() << "mHighLevelAlarm" << mHighLevelAlarm;
-        qDebug() << "mLowLevelAlarm" << mLowLevelAlarm;
-        qDebug() << "mCurrentMaxYRange" << mCurrentMaxYRange;
 
         mController->setInetrvalsOnGraph(mCurrentReadingsGraphIntervalX, mCurrentReadingsGraphIntervalYLow, mCurrentReadingsGraphIntervalYHigh,
                                                      mTickCountX, mTickCountY);
@@ -365,6 +443,10 @@ void GeneralSettingsPage::scaleFont(float scaleFactor)
     WFontScaling(ui->pressureUnitsComboBox, scaleFactor);
     WFontScaling(ui->averageIntervalSecLabel, scaleFactor);
     WFontScaling(ui->averageIntervalSecLineEdit, scaleFactor);
+    WFontScaling(ui->aCoefficientLabel,             scaleFactor);
+    WFontScaling(ui->aCoefficientLineEdit,          scaleFactor);
+    WFontScaling(ui->bCoefficientLabel,             scaleFactor);
+    WFontScaling(ui->bCoefficientLineEdit,          scaleFactor);
 
     WFontScaling(ui->registersTitle, scaleFactor);
     WFontScaling(ui->column0, scaleFactor);

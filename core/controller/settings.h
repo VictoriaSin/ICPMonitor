@@ -41,6 +41,8 @@ public:
     QString getFlashDeviceMountPart() const { return mFlashDeviceMountPart; };
     int64_t getLastSavedDateTimestampSec() const { return mLastSavedDateTimestampSec; }; ///< unix timestamp    
     uint16_t* getRegValues() { return mRegValues; };
+    float getACoefficient() const { return mACoefficient; };
+    float getBCoefficient() const { return mBCoefficient; };
 
     /*################################################################################
                                     Настройки скриншотов
@@ -96,6 +98,8 @@ public:
     void setRegsValues(uint16_t* regs);
     bool setAppLanguage(QLocale::Language language);
     void setSoftwareStorageUUID(const QString &blockDevUUID);
+    void setACoefficient(float currACoefficient);
+    void setBCoefficient(float currBCoefficient);
 private:
     void setLastSavedDateTimestampSec(int64_t timestamp);
     /*################################################################################
@@ -145,7 +149,11 @@ private:
     QString mFlashDeviceMountPart;
     int64_t mLastSavedDateTimestampSec {0};
     float mAverageIntervalSec;
+    float mACoefficient {0};
+    float mBCoefficient {0};
+
 public:
+
     uint16_t mRegValues[32];
 
 #ifdef PC_BUILD

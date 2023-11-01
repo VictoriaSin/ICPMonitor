@@ -71,7 +71,7 @@ MainPage::MainPage(QWidget *parent)
   connect(this, &MainPage::playBtnPressed, [this](){mCurrentGraphsArea->mRecordedGraph->animateGraphic(currSpeed);});//&RecordedPlot::animateGraphic);
   connect(mCurrentGraphsArea->mRecordedGraph, &RecordedPlot::changeBtnIcon,[this]()
   {
-    ui->playRecord            ->setIcon(QIcon(":/icons/playRecord.svg"),QIcon(":/icons/playRecord_pressed.svg"));
+    //ui->playRecord            ->setIcon(QIcon(":/icons/playRecord.svg"),QIcon(":/icons/playRecord_pressed.svg"));
     ui->intervalButton        ->setEnabled(true);
     ui->goToInterval1Button   ->setEnabled(true);
     ui->goToInterval2Button   ->setEnabled(true);
@@ -79,8 +79,8 @@ MainPage::MainPage(QWidget *parent)
     ui->goToPreviousMarkButton->setEnabled(true);
     ui->makeLabelButton       ->setEnabled(true);
     ui->sessionButton         ->setEnabled(true);
-    ui->rewindRecordButton    ->setEnabled(true);
-    ui->speedRecordButton     ->setEnabled(true);
+//    ui->rewindRecordButton    ->setEnabled(true);
+//    ui->speedRecordButton     ->setEnabled(true);
     ui->zoomInterval1Button   ->setEnabled(true);
     ui->zoomInterval2Button   ->setEnabled(true);
     ui->dVInputButton         ->setEnabled(true);
@@ -331,9 +331,9 @@ void MainPage::scaleFont(float scaleFactor)
   WFontScaling(ui->mInfoInterval1,    scaleFactor);
   WFontScaling(ui->mInfoInterval2,    scaleFactor);
   WFontScaling(ui->averageValue,      scaleFactor);
-  WFontScaling(ui->speedRecordButton, scaleFactor);
-  WFontScaling(ui->rewindRecordButton,scaleFactor);
-  WFontScaling(ui->playRecord,        scaleFactor);
+//  WFontScaling(ui->speedRecordButton, scaleFactor);
+//  WFontScaling(ui->rewindRecordButton,scaleFactor);
+  //WFontScaling(ui->playRecord,        scaleFactor);
   WFontScaling(ui->dVInputButton,     scaleFactor);
   WFontScaling(ui->markPPointButton,     scaleFactor);
 
@@ -449,9 +449,9 @@ void MainPage::on_recordButton_clicked()
 #define SET_VISIBLED_ENABLED(_UUII) {ui->_UUII->show();  ui->_UUII->setEnabled(true);}
 
     ui->intervalButton      ->show();
-    ui->playRecord          ->show();
-    ui->rewindRecordButton  ->show();
-    ui->speedRecordButton   ->show();
+    //ui->playRecord          ->show();
+//    ui->rewindRecordButton  ->show();
+//    ui->speedRecordButton   ->show();
     ui->downloadGraphButton ->show();
     ui->dVInputButton       ->show();
     ui->markPPointButton    ->show();
@@ -495,9 +495,9 @@ void MainPage::on_makeLabelButton_clicked()
   ui->goToInterval1Button     ->setEnabled(false);
   ui->goToInterval2Button     ->setEnabled(false);
   ui->intervalButton          ->setEnabled(false);
-  ui->playRecord              ->setEnabled(false);
-  ui->rewindRecordButton      ->setEnabled(false);
-  ui->speedRecordButton       ->setEnabled(false);
+  //ui->playRecord              ->setEnabled(false);
+//  ui->rewindRecordButton      ->setEnabled(false);
+//  ui->speedRecordButton       ->setEnabled(false);
   ui->downloadGraphButton     ->setEnabled(false);
   ui->zoomInterval1Button     ->setEnabled(false);
   ui->zoomInterval2Button     ->setEnabled(false);
@@ -517,9 +517,9 @@ void MainPage::on_acceptMarkButton_clicked()
   ui->sessionButton       ->setEnabled(true);
   ui->goToInterval1Button ->setEnabled(true);
   ui->goToInterval2Button ->setEnabled(true);
-  ui->playRecord          ->setEnabled(true);
-  ui->rewindRecordButton  ->setEnabled(true);
-  ui->speedRecordButton   ->setEnabled(true);
+  //ui->playRecord          ->setEnabled(true);
+//  ui->rewindRecordButton  ->setEnabled(true);
+//  ui->speedRecordButton   ->setEnabled(true);
   ui->downloadGraphButton ->setEnabled(true);
   ui->zoomInterval1Button ->setEnabled(true);
   ui->zoomInterval2Button ->setEnabled(true);
@@ -549,9 +549,9 @@ void MainPage::on_rejectMarkButton_clicked()
   ui->sessionButton       ->setEnabled(true);
   ui->goToInterval1Button ->setEnabled(true);
   ui->goToInterval2Button ->setEnabled(true);
-  ui->playRecord          ->setEnabled(true);
-  ui->rewindRecordButton  ->setEnabled(true);
-  ui->speedRecordButton   ->setEnabled(true);
+  //ui->playRecord          ->setEnabled(true);
+//  ui->rewindRecordButton  ->setEnabled(true);
+//  ui->speedRecordButton   ->setEnabled(true);
   ui->downloadGraphButton ->setEnabled(true);
   ui->zoomInterval1Button ->setEnabled(true);
   ui->zoomInterval2Button ->setEnabled(true);
@@ -610,9 +610,9 @@ void MainPage::stopSession()
   ui->mInfoInterval2        ->hide();
   ui->averageValue          ->hide();
   ui->alarmLevelICPWidget   ->hide(); //или оставить?
-  ui->playRecord            ->hide();
-  ui->rewindRecordButton    ->hide();
-  ui->speedRecordButton     ->hide();
+  //ui->playRecord            ->hide();
+//  ui->rewindRecordButton    ->hide();
+//  ui->speedRecordButton     ->hide();
   ui->downloadGraphButton   ->hide();
   ui->zoomInterval1Button   ->hide();
   ui->zoomInterval2Button   ->hide();
@@ -648,9 +648,9 @@ void MainPage::on_intervalButton_clicked()
   ui->goToNextMarkButton      ->setEnabled(false);
   ui->goToInterval1Button     ->setEnabled(false);
   ui->goToInterval2Button     ->setEnabled(false);
-  ui->playRecord              ->setEnabled(false);
-  ui->rewindRecordButton      ->setEnabled(false);
-  ui->speedRecordButton       ->setEnabled(false);
+  //ui->playRecord              ->setEnabled(false);
+//  ui->rewindRecordButton      ->setEnabled(false);
+//  ui->speedRecordButton       ->setEnabled(false);
   ui->downloadGraphButton     ->setEnabled(false);
   ui->zoomInterval1Button     ->setEnabled(false);
   ui->zoomInterval2Button     ->setEnabled(false);
@@ -693,9 +693,9 @@ void MainPage::on_acceptIntervalButton_clicked()
   ui->goToInterval1Button   ->setEnabled(true);
   ui->goToInterval2Button   ->setEnabled(true);
   ui->intervalButton        ->setEnabled(true);
-  ui->playRecord            ->setEnabled(true);
-  ui->rewindRecordButton    ->setEnabled(true);
-  ui->speedRecordButton     ->setEnabled(true);
+//  ui->playRecord            ->setEnabled(true);
+//  ui->rewindRecordButton    ->setEnabled(true);
+//  ui->speedRecordButton     ->setEnabled(true);
   ui->downloadGraphButton   ->setEnabled(true);
   ui->zoomInterval1Button   ->setEnabled(true);
   ui->zoomInterval2Button   ->setEnabled(true);
@@ -740,9 +740,9 @@ void MainPage::on_rejectIntervalButton_clicked()
   ui->goToInterval1Button   ->setEnabled(true);
   ui->goToInterval2Button   ->setEnabled(true);
   ui->intervalButton        ->setEnabled(true);
-  ui->playRecord            ->setEnabled(true);
-  ui->rewindRecordButton    ->setEnabled(true);
-  ui->speedRecordButton     ->setEnabled(true);
+//  ui->playRecord            ->setEnabled(true);
+//  ui->rewindRecordButton    ->setEnabled(true);
+//  ui->speedRecordButton     ->setEnabled(true);
   ui->downloadGraphButton   ->setEnabled(true);
   ui->zoomInterval1Button   ->setEnabled(true);
   ui->zoomInterval2Button   ->setEnabled(true);
@@ -780,7 +780,7 @@ void MainPage::on_playRecord_clicked()
   if (isPlayRecord)
   {
     isPlayRecord = false;
-    ui->playRecord            ->setIcon(QIcon(":/icons/pauseRecord.svg"),QIcon(":/icons/pauseRecord_pressed.svg"));
+    //ui->playRecord            ->setIcon(QIcon(":/icons/pauseRecord.svg"),QIcon(":/icons/pauseRecord_pressed.svg"));
     ui->intervalButton        ->setEnabled(false);
     ui->goToInterval1Button   ->setEnabled(false);
     ui->goToInterval2Button   ->setEnabled(false);
@@ -788,8 +788,8 @@ void MainPage::on_playRecord_clicked()
     ui->goToPreviousMarkButton->setEnabled(false);
     ui->makeLabelButton       ->setEnabled(false);
     ui->sessionButton         ->setEnabled(false);
-    ui->rewindRecordButton    ->setEnabled(false);
-    ui->speedRecordButton     ->setEnabled(false);
+//    ui->rewindRecordButton    ->setEnabled(false);
+//    ui->speedRecordButton     ->setEnabled(false);
     ui->downloadGraphButton   ->setEnabled(false);
     ui->zoomInterval1Button   ->setEnabled(false);
     ui->zoomInterval2Button   ->setEnabled(false);
@@ -799,7 +799,7 @@ void MainPage::on_playRecord_clicked()
   else
   {
     isPlayRecord = true;
-    ui->playRecord            ->setIcon(QIcon(":/icons/playRecord.svg"),QIcon(":/icons/playRecord_pressed.svg"));
+    //ui->playRecord            ->setIcon(QIcon(":/icons/playRecord.svg"),QIcon(":/icons/playRecord_pressed.svg"));
     ui->intervalButton        ->setEnabled(true);
     ui->goToInterval1Button   ->setEnabled(true);
     ui->goToInterval2Button   ->setEnabled(true);
@@ -807,8 +807,8 @@ void MainPage::on_playRecord_clicked()
     ui->goToPreviousMarkButton->setEnabled(true);
     ui->makeLabelButton       ->setEnabled(true);
     ui->sessionButton         ->setEnabled(true);
-    ui->rewindRecordButton    ->setEnabled(true);
-    ui->speedRecordButton     ->setEnabled(true);
+//    ui->rewindRecordButton    ->setEnabled(true);
+//    ui->speedRecordButton     ->setEnabled(true);
     ui->dVInputButton         ->setEnabled(true);
     ui->markPPointButton      ->setEnabled(true);
     ui->downloadGraphButton   ->setEnabled(true);
@@ -892,10 +892,10 @@ void MainPage::on_zoomInterval1Button_clicked()
   ui->goToPreviousMarkButton->hide();
   ui->makeLabelButton       ->hide();
   ui->sessionButton         ->hide();
-  ui->rewindRecordButton    ->hide();
-  ui->speedRecordButton     ->hide();
+//  ui->rewindRecordButton    ->hide();
+//  ui->speedRecordButton     ->hide();
   ui->zoomInterval1Button   ->hide();
-  ui->playRecord            ->hide();
+  //ui->playRecord            ->hide();
   ui->labelsNavigation      ->hide();
   ui->downloadGraphButton   ->hide();
   ui->dVInputButton         ->hide();
@@ -925,10 +925,10 @@ void MainPage::on_zoomInterval2Button_clicked()
   ui->goToPreviousMarkButton->hide();
   ui->makeLabelButton       ->hide();
   ui->sessionButton         ->hide();
-  ui->rewindRecordButton    ->hide();
-  ui->speedRecordButton     ->hide();
+//  ui->rewindRecordButton    ->hide();
+//  ui->speedRecordButton     ->hide();
   ui->zoomInterval1Button   ->hide();
-  ui->playRecord            ->hide();
+//  ui->playRecord            ->hide();
   ui->labelsNavigation      ->hide();
   ui->goToInterval2Button   ->hide();
   ui->zoomInterval2Button   ->hide();
@@ -949,10 +949,10 @@ void MainPage::on_goBackToGraphButton_clicked()
   ui->goToPreviousMarkButton->show();
   ui->makeLabelButton       ->show();
   ui->sessionButton         ->show();
-  ui->rewindRecordButton    ->show();
-  ui->speedRecordButton     ->show();
+//  ui->rewindRecordButton    ->show();
+//  ui->speedRecordButton     ->show();
   ui->zoomInterval1Button   ->show();
-  ui->playRecord            ->show();
+//  ui->playRecord            ->show();
   ui->labelsNavigation      ->show();
   ui->mInfoInterval1        ->show();
   ui->downloadGraphButton   ->show();

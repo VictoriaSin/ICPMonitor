@@ -48,6 +48,8 @@ void Settings::readGeneralSettings()
     mLanguageSettings->setAppLanguage(QLocale::Language(mSettings->value("mCurrentLanguage", mLanguageSettings->getCurrentLanguage()).toUInt()));
     mSoftwareStorageUUID = mSettings->value("mSoftwareStorageUUID", mSoftwareStorageUUID).toString();
     mFlashDeviceMountPart = mSettings->value("mFlashDeviceMountPart", mFlashDeviceMountPart).toString();
+    mACoefficient = mSettings->value("mACoefficient", mACoefficient).toFloat();
+    mBCoefficient = mSettings->value("mBCoefficient", mBCoefficient).toFloat();
 #define REGS_CNT 32
     const char defRegs[] = "0x0100 0x2000 0x0000 0x0000 0x0000 0x0000 0x0000 0x0000 0x0000 0x07FF 0x1000 0x2000 0x0000 0x1000 0x2000 0x0000 0x0000 0x1F00 0x0000 0x0000 0xFFFF 0x0000 0x0048 0x0015 0x76A9 0x9F0C 0x0124 0x8060 0x15C9 0xE2A2 0x0000 0x0001";
     QString regString;
@@ -88,6 +90,8 @@ qDebug() << "lang" << QString::number(mLanguageSettings->getCurrentLanguage());
     mSettings->setValue("mFlashDeviceMountPart", mFlashDeviceMountPart);
     //mSettings->setValue("mLastSavedDateTimestampSec", qlonglong(mLastSavedDateTimestampSec));
     mSettings->setValue("mFontScaleFactor", QString::number(mFontScaleFactor));
+    mSettings->setValue("mACoefficient", QString::number(mACoefficient));
+    mSettings->setValue("mBCoefficient", QString::number(mBCoefficient));
     QString regString;
     for (uint8_t i=0; i<32; i++)
     {
@@ -114,6 +118,16 @@ void Settings::setRegsValues(uint16_t* regs)
         mRegValues[i] = regs[i];
     }
 }
+
+void Settings::setACoefficient(float currACoefficient)
+{
+    mACoefficient = currACoefficient;
+}
+void Settings::setBCoefficient(float currBCoefficient)
+{
+    mBCoefficient = currBCoefficient;
+}
+
 
 bool Settings::setAppLanguage(QLocale::Language language)
 {

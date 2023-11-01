@@ -69,6 +69,7 @@ public slots:
 protected:
     void showEvent(QShowEvent *event) override;
     bool checkInputRegs(QString inputReg);
+    bool checkInputCoeff(QString inputCoeff);
 };
 
 #endif // GENERALSETTINGSPAGE_H
