@@ -293,8 +293,9 @@ class ZSC
     void terminate();
     void test(u16 iter, u32 delay_ms);
     u16 data[2];
-    //void oneShot();
+#ifndef PC_BUILD
     void spi_oneShot();
+#endif
     void resetRegsValues();
     int mFd {-1};
 protected:

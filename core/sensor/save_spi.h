@@ -17,7 +17,7 @@ public:
     ~SaveSPI();
     volatile bool isStopped;
     volatile bool isRunning;
-    _mSPIData temp;
+    _mSPIData currMesuring;
     volatile bool isRecording;
     volatile qint64 startTime;
 protected:

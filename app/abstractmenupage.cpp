@@ -46,7 +46,11 @@ void AbstractMenuPage::addSettingButton(const QString &nameLabel, const QIcon &d
     toolButton->setIcon(defaultIconPath, pressedIconPath);
     toolButton->setIconSize(btnSize);
     toolButton->setText(nameLabel);
+#ifdef PC_BUILD
+    toolButton->setFont(QFont("Noto Sans", 15, 400));
+#else
     toolButton->setFont(FontForText);
+#endif
     toolButton->setStyleSheet(styleSheet);
     connect(toolButton, &QToolButton::clicked, this, callback);
 

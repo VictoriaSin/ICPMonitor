@@ -2,19 +2,18 @@
 #include <QDebug>
 #include "../app/global_define.h"
 #include "../app/plots/waveformplot.h"
-#include "../core/sensor/zsc.h"
+//#include "../core/sensor/zsc.h"
+#include "../core/sensor/spiThread.h"
 
-class ZSC;
-ZSC mZSC1;
+//class ZSC; ZSC mZSC1;
 
+class spiThread;
+extern spiThread *mSpiThread;
 
 class WaveFormPlot;
-//class MainPage;
 extern  WaveFormPlot *mWaveGraph;
 extern  WaveFormPlot *mComplianceGraph;
 extern float dVConst;
-//extern MainPage *mMainPage;
-
 
 DrawGraphs::DrawGraphs() : QThread() {}
 DrawGraphs::~DrawGraphs(){}
@@ -32,7 +31,6 @@ void DrawGraphs::run()
   float max = 0;
   u32 max_pos = 0;
   bool needDraw = false;
-  bool up = false;
 
 #define DRAW_TIME 2
 #define GRAPH_SIZE_AVG ((uint32_t)(mWaveGraph->xAxis->range().size() * 25))
@@ -43,8 +41,6 @@ void DrawGraphs::run()
   float filVal;
   float data1 = 0;
   float data2 = 0;
-  float pos_data1 = 0;
-
   float param = 1.0;
   if (mICPSettings->getCurrentPressureIndex() == 1)
   {
@@ -67,8 +63,9 @@ void DrawGraphs::run()
   qint64 offsetTime = 0;
   float compliance;
   qDebug() << "DrawGraphs started";
-  mZSC1.spi_oneShot();
-  filVal = (float)mZSC1.data[0]*param/1000;
+
+
+  filVal = (float)mSpiThread->rawData * param/1000;
   while(isRunning)
   {
     currentTime = getCurrentTimeStamp_ms();
@@ -78,16 +75,16 @@ void DrawGraphs::run()
     temp.timeStamp = (uint32_t)(currentTime - startTime);
     if (currIndex == 0) { pointTime = temp.timeStamp; }
     currIndex++;
-    sum += mZSC1.data[0];
+    sum += mSpiThread->rawData;
 
     if (currIndex == 10)
     {
       currIndex = 0;
       //data1 = (float)sum * param / 10000;
-      data1 = (float)mZSC1.data[0] * param / 1000;
+      data1 = (float)mSpiThread->rawData * param / 1000;
       sum = 0;
       mWaveGraph->addDataOnGraphic(pointTime, data1);
-      filVal += (((float)mZSC1.data[0] * param / 1000 - filVal) * k);
+      filVal += ((data1 - filVal) * k);
       //mWaveGraph->mTempGraph->addData((float)(pointTime - (uint32_t)offsetTime) / 1000, filVal);
       data2 = filVal;
       if (data1 > data2)
@@ -119,7 +116,7 @@ void DrawGraphs::run()
         mWaveGraph->mAmplitudePoints->data()->clear();
       }
     }
-    mZSC1.spi_oneShot();
+
     //qDebug() << stopTimeGraph << temp.timeStamp ;
   }
   isStopped = true;

@@ -60,8 +60,6 @@ MainMenu::MainMenu(QWidget *parent) :
 
     connect(mSystemInfoPage, &AbstractDialogPage::previousPage, this, &MainMenu::previousPage);
     connect(mZeroSensorPage, &ZeroSensorPage::previousPage, this, &MainMenu::previousPage);
-    //connect(mDataExportPage, &DataDownloadPage::previousPage, this, &MainMenu::previousPage);
-    //connect(mDataExportPage, &DataDownloadPage::changePage, this, &MainMenu::changePage);
     connect(mDateTimePage,   &DateTimePage::previousPage, this, &MainMenu::previousPage);
     connect(mDateTimePage,   &DateTimePage::changePage, this, &MainMenu::changePage);
     connect(mLanguagePage,   &LanguagePage::previousPage, this, &MainMenu::previousPage);

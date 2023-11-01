@@ -59,7 +59,7 @@ void ReadSPI::run()
     if (currentTime < stopTimeGraph) continue;
     stopTimeGraph = currentTime + TIME_INTERVAL_FOR_WRITE_ON_GRAPH;
     temp.timeStamp = (uint32_t)(currentTime - startTime);
-    currData = (float)mSaveSPI->temp.data*param/1000;   //mZSC.data[0]*param/1000;
+    currData = (float)mSaveSPI->currMesuring.data*param/1000;   //mZSC.data[0]*param/1000;
     mMainPage->setAverage(calcAverage(currData));
     mWaveGraph->addDataOnGraphic(temp.timeStamp, currData);
   }
@@ -83,9 +83,9 @@ void ReadSPI::run()
       if (currentTime > stopTimeGraph)
       {
         stopTimeGraph += TIME_INTERVAL_FOR_WRITE_ON_GRAPH;
-        currData = (float)mSaveSPI->temp.data*param/1000;
+        currData = (float)mSaveSPI->currMesuring.data*param/1000;
         mMainPage->setAverage(calcAverage(currData));
-        mWaveGraph->addDataOnGraphic(mSaveSPI->temp.timeStamp, currData);
+        mWaveGraph->addDataOnGraphic(mSaveSPI->currMesuring.timeStamp, currData);
         QThread::msleep(5);
       }
       else

@@ -6,6 +6,7 @@
 class spiThread;
 class ZSC;
 extern ZSC mZSC;
+spiThread *mSpiThread;
 
 class WaveFormPlot;
 extern  WaveFormPlot *mWaveGraph;
@@ -17,28 +18,32 @@ void SaveSPI::run()
   isStopped   = false;
   isRunning   = true;
   isRecording = false;
-  temp.data = 0;
-  temp.timeStamp = 0;
-
-  spiThread *mSpiThread = new spiThread(mZSC.mFd);
+  currMesuring.data = 0;
+  currMesuring.timeStamp = 0;
+  mSpiThread = new spiThread(mZSC.mFd);
   mSpiThread->start();
+  /////////////////////
+
+
+  /////////////////////
+  volatile qint64 currentTime;
   startTime = getCurrentTimeStamp_ms();
   volatile qint64 stopTimeFile = startTime + TIME_INTERVAL_FOR_RECORD_IN_FILE;
-  volatile qint64 currentTime;
-
   while (isRunning)
   {
     currentTime = getCurrentTimeStamp_ms();
     if (currentTime > stopTimeFile)
     {
       stopTimeFile += TIME_INTERVAL_FOR_RECORD_IN_FILE;
-      temp.data = mSpiThread->rawData; //mZSC.data[0];
-      temp.timeStamp = (uint32_t)(currentTime - startTime);
-      if (isRecording) { mRawDataFile.write((char*)&temp, sizeof(_mSPIData)); }
-      //mZSC.spi_oneShot();
+      currMesuring.data = mSpiThread->rawData; //mZSC.data[0];
+      currMesuring.timeStamp = (uint32_t)(currentTime - startTime);
+      if (isRecording) { mRawDataFile.write((char*)&currMesuring, sizeof(_mSPIData)); }
     }
     else QThread::usleep(50); //400
   }
+  //////////////////////
+
+  //////////////////////
   mSpiThread->isRunning = false;  while(!mSpiThread->isStopped);
   qDebug("SaveSPI Thread Stopped");
   isStopped = true;

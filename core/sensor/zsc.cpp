@@ -29,6 +29,7 @@ ZSC::ZSC()
   initPins();
   spi_open();
   initZSC();
+  qDebug("ZSC class init");
 }
 void ZSC::initZSC()
 {
@@ -161,13 +162,7 @@ bool ZSC::spi_saveReg(u8 reg, u16 data, u8 memType)
   CS_H();
 }
 
-#ifdef PC_BUILD
-
-void ZSC::spi_oneShot()
-{
-
-}
-#else
+#ifndef PC_BUILD
 void ZSC::spi_oneShot()
 {
   CS_L();
