@@ -296,8 +296,8 @@ class ZSC
     //void oneShot();
     void spi_oneShot();
     void resetRegsValues();
-protected:
     int mFd {-1};
+protected:
     bool mIsOpen = false;
     std::string spi_name;
     struct SPISetting

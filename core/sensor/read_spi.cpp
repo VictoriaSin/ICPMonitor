@@ -49,12 +49,8 @@ void ReadSPI::run()
   volatile qint64 stopTimeGraph = startTime + TIME_INTERVAL_FOR_WRITE_ON_GRAPH;
   volatile qint64 currentTime;
   float currData;
-  qDebug() << "SaveSPI started";
 
-  if (mSaveSPI == nullptr)
-  {
-    mSaveSPI = new SaveSPI();
-  }
+  if (mSaveSPI == nullptr)  { mSaveSPI = new SaveSPI();  }
   mSaveSPI->start(QThread :: HighestPriority);
 
   while(isRunning && (!isRecording))
@@ -62,16 +58,15 @@ void ReadSPI::run()
     currentTime = getCurrentTimeStamp_ms();
     if (currentTime < stopTimeGraph) continue;
     stopTimeGraph = currentTime + TIME_INTERVAL_FOR_WRITE_ON_GRAPH;
-    //temp.data = mZSC.data[0];
     temp.timeStamp = (uint32_t)(currentTime - startTime);
-    currData = (float)mZSC.data[0]*param/1000;
+    currData = (float)mSaveSPI->temp.data*param/1000;   //mZSC.data[0]*param/1000;
     mMainPage->setAverage(calcAverage(currData));
     mWaveGraph->addDataOnGraphic(temp.timeStamp, currData);
-    //mZSC.spi_oneShot();
   }
 
   if (isRunning)
   {
+    qDebug("Recording data start");
     mWaveGraph->mMainGraph->data()->clear();
     mWaveGraph->mHistGraph->data()->clear();
     temp.data = 0;
@@ -89,8 +84,8 @@ void ReadSPI::run()
       {
         stopTimeGraph += TIME_INTERVAL_FOR_WRITE_ON_GRAPH;
         currData = (float)mSaveSPI->temp.data*param/1000;
-        mMainPage->setAverage(calcAverage(currData/*mSaveSPI->temp.data*param*/));
-        mWaveGraph->addDataOnGraphic(mSaveSPI->temp.timeStamp, currData/*mSaveSPI->temp.data*param*/);
+        mMainPage->setAverage(calcAverage(currData));
+        mWaveGraph->addDataOnGraphic(mSaveSPI->temp.timeStamp, currData);
         QThread::msleep(5);
       }
       else
@@ -98,15 +93,14 @@ void ReadSPI::run()
         QThread::msleep(1);
       }
     }
-
     if (CurrDataForAverage != nullptr) delete [] CurrDataForAverage;
   }
   mSaveSPI->isRunning = false;
   while(mSaveSPI->isStopped == false);
-
-  qDebug("Stopped");
+  qDebug("ReadSPI Threads Stopped");
   isStopped = true;
 }
+
 uint16_t ReadSPI::calcAverage(uint16_t data)
 {
   firstBuffPointer = (++firstBuffPointer) % maxBuffSizeAvg;

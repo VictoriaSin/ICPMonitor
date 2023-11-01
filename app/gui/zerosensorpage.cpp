@@ -18,6 +18,11 @@ ZeroSensorPage::ZeroSensorPage(QWidget *parent) :
     setIconRejectButton(QIcon(":/icons/home.svg"), QIcon(":/icons/home_pressed.svg"));
     // Убираем кнопку подтвердить
     enableAcceptButton(false);
+#ifdef PC_BUILD
+    ui->firstStepLabel->setFont(QFont("Nano Sans",17));
+    ui->secondStepLabel->setFont(QFont("Nano Sans",17));
+    ui->readyOrNotLabel->setFont(QFont("Nano Sans",17));
+#endif
 }
 
 ZeroSensorPage::~ZeroSensorPage()

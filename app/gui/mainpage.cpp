@@ -54,20 +54,17 @@ MainPage::MainPage(QWidget *parent)
   setupBottomInfoSVG();   // Настройки нижних иконок-уведомлений
   setupGraphsContainer(); // Настройка контейнера с графиками
 
+  mUpdateDateTimeTimer->setInterval(60000); // Настраиваем обновление виджета с текущим временем
+
   mVolumeInputPage = new VolumeInputPage(this, 0);
   mVolumeInputPage->hide();
   connect(mVolumeInputPage, &VolumeInputPage::previousPage, this, &MainPage::previousPage);
   connect(mVolumeInputPage, &VolumeInputPage::changePage, this, &MainPage::changePage);
 
-
   mParamInputPage = new VolumeInputPage(this, 1);
   mParamInputPage->hide();
   connect(mParamInputPage, &VolumeInputPage::previousPage, this, &MainPage::previousPage);
   connect(mParamInputPage, &VolumeInputPage::changePage, this, &MainPage::changePage);
-
-
-  // Настраиваем обновление виджета с текущим временем
-  mUpdateDateTimeTimer->setInterval(60000);
   connect(mParamInputPage, &VolumeInputPage::intervalParamUpdated, [this]() { mCurrentGraphsArea->mFirstInterval->averagePlot();});
 
   connect(mUpdateDateTimeTimer, &QTimer::timeout, this, &MainPage::updateDateTime);
@@ -91,6 +88,11 @@ MainPage::MainPage(QWidget *parent)
     ui->downloadGraphButton   ->setEnabled(true);// временно
   } );
 
+#ifdef PC_BUILD
+  ui->averageValue->setFont(QFont("Noto Sans", 60, 400));
+  ui->mInfoInterval1->setFont(QFont("Noto Sans", 8, 400));
+  ui->mInfoInterval2->setFont(QFont("Noto Sans", 8, 400));
+#endif
   ui->averageValue->hide();
 }
 

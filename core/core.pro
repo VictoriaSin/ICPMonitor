@@ -42,11 +42,10 @@ HEADERS += \
     global_structs.h \
     sensor/impl/bmp280temperaturespisensor.h \
     sensor/impl/fileimitsensor.h \
-    sensor/isensor.h \
     sensor/read_spi.h \
     sensor/save_spi.h \
-    sensor/sensor_enums.h \
     sensor/spi.h \
+    sensor/spiThread.h \
     sensor/zsc.h \
     statistical_functions.h \
     ultrafastconverting/countdecimaldigit.h \
@@ -79,6 +78,7 @@ SOURCES += \
     sensor/read_spi.cpp \
     sensor/save_spi.cpp \
     sensor/spi.cpp \
+    sensor/spiThread.cpp \
     sensor/zsc.cpp \
     statistical_functions.cpp \
     ultrafastconverting/countlut.cpp \
