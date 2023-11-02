@@ -106,6 +106,7 @@ void DrawGraphs::run()
             //qDebug() << "globalCount" << globalCount << max_pos << max;
             compliance = dVConst/(2*(max - data2));
             mComplianceGraph->addDataOnGraphic(max_pos, compliance);
+            qDebug() << "comp" << compliance << "dVConst" << dVConst;
             needDraw = false;
             max = 0;
             max_pos = 0;

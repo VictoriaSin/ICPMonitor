@@ -10,8 +10,8 @@ uint32_t windowWidth = 100;
 float offsetAverage = 0.5;
 
 uint16_t dVolume = 5;
-float Po = 19.529;
-float Pk = 33.673;
+float Po = 19.529; //30.0;
+float Pk = 33.673; //30.02;
 
 
 VolumeInputPage::VolumeInputPage(QWidget *parent, uint8_t type) :

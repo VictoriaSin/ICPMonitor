@@ -295,10 +295,14 @@ READING</translation>
     <message>
         <source>Введены некорректные значения регистров</source>
         <translation>Entered register values are incorrect</translation>
+    </message>    
+    <message>
+        <source>Введены некорректные коэффициенты a, b</source>
+        <translation>Entered coefficients a, b are incorrect</translation>
     </message>
     <message>
         <source>Введен некорректный шаг\nделений оси (< 1)</source>
-        <translation>Entered axis tick pitch is incorrect</translation>
+        <translation>Entered axis tick pitch is incorrect (< 1)</translation>
     </message>
     <message>
         <source>Интервал оси X</source>
@@ -337,8 +341,8 @@ READING</translation>
         <translation>Lower alarm level status</translation>
     </message>
     <message>
-        <source>Максимальное время хранения данных (мс)</source>
-        <translation>Maximum storage time (ms)</translation>
+        <source>Макс время хранения данных (мс)</source>
+        <translation>Max storage time (ms)</translation>
     </message>
     <message>
         <source>Относительный путь</source>
@@ -353,8 +357,12 @@ READING</translation>
         <translation>Interval for average value (s)</translation>
     </message>
     <message>
-        <source>Коэффициент</source>
-        <translation>Coefficient</translation>
+        <source>Коэффициент a</source>
+        <translation>Coefficient a</translation>
+    </message>
+    <message>
+        <source>Коэффициент b</source>
+        <translation>Coefficient b</translation>
     </message>
     <message>
         <source>Регистры</source>
@@ -833,7 +841,8 @@ this may lead to unforeseen consequences!</translation>
         <source>1. Держите наконечник
 датчика влажным в течение
 всего процесса обнуления
-(Смотрите инструкцию к датчику)</source>
+(Смотрите инструкцию
+к датчику)</source>
         <translation>1. Keep the probe tip
 wet during the entire
 zeroing process

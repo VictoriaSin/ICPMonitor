@@ -693,6 +693,8 @@ void AbstractCustomPlot::settingUpYAxis()
 
     // Настройка деления осей
     yAxis->ticker()->setTickCount(3);
+    //yAxis->setNumberFormat("f");
+    //yAxis->setNumberPrecision(2);
 
     // Настройка диапазона значений осей
     yAxis->setRange(10, 35);

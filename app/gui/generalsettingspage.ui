@@ -43,9 +43,9 @@
      <widget class="QWidget" name="scrollAreaWidgetContents">
       <property name="geometry">
        <rect>
-        <x>-93</x>
-        <y>-635</y>
-        <width>754</width>
+        <x>0</x>
+        <y>-558</y>
+        <width>661</width>
         <height>1214</height>
        </rect>
       </property>
@@ -1563,7 +1563,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Максимальное время хранения данных (мс)</string>
+          <string>Макс время хранения данных (мс)</string>
          </property>
         </widget>
        </item>
@@ -1749,7 +1749,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Интервал пересчета среднего давления (с)</string>
+          <string>Интервал среднего давления (с)</string>
          </property>
         </widget>
        </item>

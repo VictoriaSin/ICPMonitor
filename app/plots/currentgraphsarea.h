@@ -21,9 +21,6 @@ class RecordedPlot;
 class IntervalPlot;
 
 
-
-extern QFile mHeadFile;
-extern QFile mIntervalsFile;
 extern QFile mMarksFile;
 extern QFile mRawDataFile;
 

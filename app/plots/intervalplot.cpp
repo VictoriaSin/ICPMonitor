@@ -8,7 +8,6 @@
 
 extern QFile mTestData;
 extern QFile mRawDataFile;
-extern QFile mMarksFile;
 
 QPair<float, float> mFirstIntervalMinMaxXRange = qMakePair(0, 60);
 QPair<float, float> mSecondIntervalMinMaxXRange = qMakePair(0, 60);

@@ -15,7 +15,7 @@ ZeroSensorPage::ZeroSensorPage(QWidget *parent) :
     // Настройка кнопки сброса датчика
     setupResetSensorToolButton();
     // Меняем изображение для кнопки отменить
-    setIconRejectButton(QIcon(":/icons/home.svg"), QIcon(":/icons/home_pressed.svg"));
+    setIconRejectButton(QIcon(":/icons/goBack.svg"), QIcon(":/icons/goBack_pressed.svg"));
     // Убираем кнопку подтвердить
     enableAcceptButton(false);
 #ifdef PC_BUILD

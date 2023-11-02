@@ -17,6 +17,7 @@
 
 #include "global_define.h"
 
+
 WaveFormPlot *mWaveGraph {nullptr};
 WaveFormPlot *mComplianceGraph {nullptr};
 
@@ -787,7 +788,7 @@ bool CurrentGraphsArea::nextXRange()
     // Получаем объект
     ++mCurrentXRangeIndex;
     mCurrentXRangeIndex %= countIntervals;
-    const auto &intervalAndIcon = mXRangesOfSecondsWithIcons[mCurrentXRangeIndex];
+    //const auto &intervalAndIcon = mXRangesOfSecondsWithIcons[mCurrentXRangeIndex];
 
     // Устанавливаем картинку кнопке
     //AbstractGraphAreaWidget::ui->xRangeGraphToolButton->setIcon(intervalAndIcon.defaultButtonIcon, intervalAndIcon.pressedButtonIcon);
@@ -994,13 +995,35 @@ void CurrentGraphsArea::getData()
 
 void CurrentGraphsArea::calcCompliance()
 {    
+    qDebug() << mFirstInterval->averageA << mSecondInterval->averageA;
     float Acp = (mFirstInterval->averageA + mSecondInterval->averageA)/2;
-    float Pcp = (Po + Pk)/2;//(mFirstInterval->averageP + mSecondInterval->averageP)/2;//
+    //float Pcp = (Po + Pk)/2;//(mFirstInterval->averageP + mSecondInterval->averageP)/2;//
+//    int size = mRecordedGraph->mMainGraph->data()->size();
+//    for (int i=0; i< size; i++)
+//    {
+//        if (mRecordedGraph->mMainGraph->data()->at(i)->key >= Po)
+//        {
+//            Po = mRecordedGraph->mMainGraph->data()->at(i)->value;
+//            qDebug() << "Po" << Po << mRecordedGraph->mMainGraph->data()->at(i)->key;
+//            break;
+//        }
+//    }
+//    for (int i=0; i< mRecordedGraph->mMainGraph->data()->size(); i++)
+//    {
+//        if (mRecordedGraph->mMainGraph->data()->at(i)->key >= Pk)
+//        {
+//            Pk = mRecordedGraph->mMainGraph->data()->at(i)->value;
+//            qDebug() << "Pk" << Pk << mRecordedGraph->mMainGraph->data()->at(i)->key;
+//            break;
+//        }
+//    }
+    float Pcp = (Po + Pk)/2;
     if (mICPSettings->mPressureUnitsIndex == 0)
     {
         Acp *= 13.545;
         Pcp *= 13.545;
     }
+    //Pcp *= 13.545;//временно
     dVConst = (dVolume * log10((Pcp + Acp)/(Pcp - Acp))) / (log10(Pk/Po));//(mFirstInterval->averageP / mSecondInterval->averageP)
     qDebug() << "Acp" << Acp << "Pcp" << Pcp << "dVConst" << dVConst;
     float param = 1.0;
