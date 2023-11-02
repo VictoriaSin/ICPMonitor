@@ -16,6 +16,7 @@ class MainPage;
 //class MainWindow;
 extern  WaveFormPlot *mWaveGraph;
 extern MainPage *mMainPage;
+
 ReadSPI::ReadSPI() : QThread() {}
 ReadSPI::~ReadSPI(){}
 void ReadSPI::run()
@@ -49,7 +50,7 @@ void ReadSPI::run()
   volatile qint64 stopTimeGraph = startTime + TIME_INTERVAL_FOR_WRITE_ON_GRAPH;
   volatile qint64 currentTime;
   float currData;
-
+qDebug() << "first file name" << mRawDataFile.fileName();
   if (mSaveSPI == nullptr)  { mSaveSPI = new SaveSPI();  }
   mSaveSPI->start(QThread :: HighestPriority);
 
@@ -59,11 +60,11 @@ void ReadSPI::run()
     if (currentTime < stopTimeGraph) continue;
     stopTimeGraph = currentTime + TIME_INTERVAL_FOR_WRITE_ON_GRAPH;
     temp.timeStamp = (uint32_t)(currentTime - startTime);
-    currData = (float)mSaveSPI->currMesuring.data*param/1000;   //mZSC.data[0]*param/1000;
+    currData = (float)mSaveSPI->currMesuring.data*param/1000;
     mMainPage->setAverage(calcAverage(currData));
     mWaveGraph->addDataOnGraphic(temp.timeStamp, currData);
   }
-
+  mSaveSPI->fileName = mRawDataFile.fileName();
   if (isRunning)
   {
     qDebug("Recording data start");
@@ -73,6 +74,7 @@ void ReadSPI::run()
     temp.timeStamp = 0;
     mWaveGraph->graphCurrentMaxRange = mWaveGraph->graphRangeSize;
     mWaveGraph->graphMinus = 0;
+
     mSaveSPI->isRecording = true;
     startTime = getCurrentTimeStamp_ms();
     mSaveSPI->startTime = startTime;

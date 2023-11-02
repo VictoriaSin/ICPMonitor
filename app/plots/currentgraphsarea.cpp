@@ -250,6 +250,7 @@ void CurrentGraphsArea::scaleFont(float scaleFactor)
     mRecordedGraph->scaleFont(scaleFactor);
     mFirstInterval->scaleFont(scaleFactor);
     mSecondInterval->scaleFont(scaleFactor);
+    mComplianceGraph->scaleFont(scaleFactor);
     // Скейлим шрифт для LabelItems
     mFontForLabelItems = FontScaling(mFontForLabelItems, scaleFactor);
 

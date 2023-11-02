@@ -13,7 +13,7 @@
 float mCurrentMaxYRange;
 float mRecordedMaxXRange {60};
 float mRecordedMaxYRange {60};
-
+extern QString globalFolder;
 RecordedPlot::RecordedPlot(QWidget *parent):
     AbstractCustomPlot(GraphType::RecordedGraph, parent),
     mTextEditDialog(new TextEditDialog(this))
@@ -280,7 +280,7 @@ void RecordedPlot::addDataOnGraphic()
     //qDebug() << mSizeAllRecordedData;
     //qDebug() << "rr" <<mAllRecordedDataBuffer[mSizeAllRecordedData-1].timeStamp;
     //float mNewUpperXValue = (float)mAllRecordedDataBuffer[mSizeAllRecordedData-1].timeStamp/1000;
-    QFile *currFile;
+    QFile* currFile;
     int fileParam = 1;
     if (isDownloadGraph)
     {

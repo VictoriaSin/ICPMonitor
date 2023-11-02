@@ -309,8 +309,12 @@ READING</translation>
         <translation>Division step of X axis</translation>
     </message>
     <message>
-        <source>Интервал оси Y</source>
-        <translation>Y-axis interval</translation>
+        <source>Нижняя граница оси Y</source>
+        <translation>Lower limit of the Y-axis</translation>
+    </message>
+    <message>
+        <source>Верхняя граница оси Y</source>
+        <translation>Upper limit of the Y-axis</translation>
     </message>
     <message>
         <source>Шаг делений оси Y</source>
@@ -345,8 +349,16 @@ READING</translation>
         <translation>Pressure units</translation>
     </message>
     <message>
-        <source>Интервал пересчета среднего давления (с)</source>
-        <translation>Interval for calculating the average value (s)</translation>
+        <source>Интервал среднего давления (с)</source>
+        <translation>Interval for average value (s)</translation>
+    </message>
+    <message>
+        <source>Коэффициент</source>
+        <translation>Coefficient</translation>
+    </message>
+    <message>
+        <source>Регистры</source>
+        <translation>Registers</translation>
     </message>
     <message>
         <source>Масштаб шрифта</source>
@@ -413,8 +425,8 @@ confirm your choice!</translation>
         <translation>Zero Sensor</translation>
     </message>
     <message>
-        <source>Экспорт данных</source>
-        <translation>Data Export</translation>
+        <source>Управление данными</source>
+        <translation>Data Management</translation>
     </message>
     <message>
         <source>Время/Дата</source>

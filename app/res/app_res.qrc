@@ -130,5 +130,6 @@
         <file>icons/func3.svg</file>
         <file>icons/inputVolume_pressed.svg</file>
         <file>icons/inputVolume.svg</file>
+        <file>testData.txt</file>
     </qresource>
 </RCC>

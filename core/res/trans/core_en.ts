@@ -45,30 +45,25 @@ The sensor needs to be reconnected.</translation>
 <context>
     <name>FileController</name>
     <message>
-        <location filename="../../controller/fileProcessing/filecontroller.cpp" line="114"/>
         <source>Текущие показания датчика</source>
-        <translation>Current sensor readings</translation>
+        <translation type="vanished">Current sensor readings</translation>
     </message>
     <message>
-        <location filename="../../controller/fileProcessing/filecontroller.cpp" line="121"/>
         <source>Средние показания датчика</source>
-        <translation>Average sensor readings</translation>
+        <translation type="vanished">Average sensor readings</translation>
     </message>
     <message>
-        <location filename="../../controller/fileProcessing/filecontroller.cpp" line="198"/>
         <source>Не удалось начать запись в файл</source>
-        <translation>Failed to start writing to file</translation>
+        <translation type="vanished">Failed to start writing to file</translation>
     </message>
     <message>
-        <location filename="../../controller/fileProcessing/filecontroller.cpp" line="202"/>
         <source>Ошибка экспорта</source>
-        <translation>Export error</translation>
+        <translation type="vanished">Export error</translation>
     </message>
     <message>
-        <location filename="../../controller/fileProcessing/filecontroller.cpp" line="290"/>
         <source>Ошибка!
 Снимок экрана не сделан!</source>
-        <translation>Error!
+        <translation type="vanished">Error!
 Screenshot not taken!</translation>
     </message>
 </context>
@@ -93,43 +88,38 @@ Screenshot not taken!</translation>
 <context>
     <name>MonitorController</name>
     <message>
-        <location filename="../../controller/monitorcontroller.cpp" line="295"/>
         <source>Программное хранилище
 не указано или не валидно!</source>
-        <translation>Software Storage
+        <translation type="vanished">Software Storage
 not specified or not valid!</translation>
     </message>
     <message>
-        <location filename="../../controller/monitorcontroller.cpp" line="304"/>
         <source>У программного хранилища
 отсутствует UUID!</source>
-        <translation>At the Software Storage
+        <translation type="vanished">At the Software Storage
 missing UUID!</translation>
     </message>
     <message>
-        <location filename="../../controller/monitorcontroller.cpp" line="312"/>
         <source>Программное хранилище
 не было сменено.
 Сессия активна!</source>
-        <translation>Software Storage
+        <translation type="vanished">Software Storage
 has not been changed.
 Session active!</translation>
     </message>
     <message>
-        <location filename="../../controller/monitorcontroller.cpp" line="961"/>
         <source>Переполнена очередь записи
 текущих показаний в память!
 Сессия завершена!</source>
-        <translation>Write queue full
+        <translation type="vanished">Write queue full
 current readings into memory!
 Session completed!</translation>
     </message>
     <message>
-        <location filename="../../controller/monitorcontroller.cpp" line="968"/>
         <source>Переполнена очередь записи
 средних показаний в память!
 Сессия завершена!</source>
-        <translation>Write queue full
+        <translation type="vanished">Write queue full
 average readings in memory!
 Session completed!</translation>
     </message>

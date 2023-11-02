@@ -29,6 +29,7 @@ QFile mMarksFile;
 QFile mRawDataFile;
 QFile mTestData;
 QFile mRawDataSessionRecordFile;
+QString globalFolder;
 
 uint64_t startTimeStampRecord {0};
 uint16_t mCurrentLabelIndex;
@@ -389,14 +390,15 @@ void MainPage::on_recordButton_clicked()
     mCurrentGraphsArea->resetGraphOfCurrentValues();
 
     isStart = false;
-    mCurrentRecordDir.setPath(mntDirectory+ "/" + currentTime);
+    globalFolder =mntDirectory+ "/" + currentTime;
+    mCurrentRecordDir.setPath(globalFolder);
     ui->recordButton->setIcon(QIcon(":/icons/stopRecord.svg"), QIcon(":/icons/stopRecord_pressed.svg"));
 
-    mHeadFile.setFileName(mCurrentRecordDir.path()      + "/" + "HEAD.txt");
-    mIntervalsFile.setFileName(mCurrentRecordDir.path() + "/" + "INTERVALS.txt");
-    mMarksFile.setFileName(mCurrentRecordDir.path()     + "/" + "MARKS.txt");
-    mRawDataFile.setFileName(mCurrentRecordDir.path()   + "/" + "RAW_DATA.txt");
-    mRawDataSessionRecordFile.setFileName(mCurrentRecordDir.path()   + "/" + "SESSION_RECORD_DATA.txt");
+    mHeadFile.setFileName(globalFolder     + "/" + "HEAD.txt");
+    mIntervalsFile.setFileName(globalFolder + "/" + "INTERVALS.txt");
+    mMarksFile.setFileName(globalFolder     + "/" + "MARKS.txt");
+    mRawDataFile.setFileName(globalFolder   + "/" + "RAW_DATA.txt");
+    mRawDataSessionRecordFile.setFileName(globalFolder   + "/" + "SESSION_RECORD_DATA.txt");
 
     qDebug() << mCurrentRecordDir.path();
     if (!mCurrentRecordDir.exists())
@@ -427,7 +429,8 @@ void MainPage::on_recordButton_clicked()
 
     ui->mainWidgets   ->show();
     ui->sessionButton ->setEnabled(false);
-    mRawDataFile.open(QIODevice::WriteOnly | QIODevice::Append);
+    qDebug() << "first file name" << mRawDataFile.fileName();
+    //mRawDataFile.open(QIODevice::WriteOnly | QIODevice::Append);
 
     mCurrentGraphsArea->isRecord = true;
     mCurrentGraphsArea->mReadSPI->isRecording = true;
@@ -474,7 +477,7 @@ void MainPage::on_recordButton_clicked()
     SET_VISIBLED_DISABLED(goToNextMarkButton);
     SET_VISIBLED_ENABLED(makeLabelButton);
 
-    mRawDataFile.close();
+    //mRawDataFile.close();
     mCurrentGraphsArea->stopWork();
     mCurrentGraphsArea->changeGraph(1);
 
@@ -830,7 +833,7 @@ void MainPage::on_downloadGraphButton_clicked()
   //    QStringList t = tempArrTime.split(" ");
   //    QStringList p = tempArrPressure.split(" ");
 
-  mTestData.setFileName("/media/testData.txt");
+  mTestData.setFileName(":/testData.txt"); //"/media/testData.txt");
 
   //    mTestData.open(QIODevice::WriteOnly);
   //    for (int i=0; i < t.size(); i++)

@@ -23,8 +23,7 @@ void LanguagePage::retranslate()
     ui->retranslateUi(this);
 
     setUpperNamePageLabel(tr("Выбор языка"));
-    setBottomInfoLabel(tr("Для смены языка необходимо\n"
-                          "подтвердить ваш выбор!"));
+    setBottomInfoLabel("");
 }
 
 LanguagePage::~LanguagePage()

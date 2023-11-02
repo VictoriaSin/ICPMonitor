@@ -14,7 +14,7 @@ class WaveFormPlot;
 extern  WaveFormPlot *mWaveGraph;
 extern  WaveFormPlot *mComplianceGraph;
 extern float dVConst;
-
+extern QFile mRawDataSessionRecordFile;
 DrawGraphs::DrawGraphs() : QThread() {}
 DrawGraphs::~DrawGraphs(){}
 void DrawGraphs::run()
@@ -64,7 +64,7 @@ void DrawGraphs::run()
   float compliance;
   qDebug() << "DrawGraphs started";
 
-  if (mSaveInFile == nullptr)  { mSaveInFile = new SaveSPI(/*mRawDataSessionRecordFile.fileName()*/);  }
+  if (mSaveInFile == nullptr)  { mSaveInFile = new SaveSPI();}
   mSaveInFile->start(QThread :: HighestPriority);
 
   filVal = (float)mSpiThread->rawData * param/1000;
