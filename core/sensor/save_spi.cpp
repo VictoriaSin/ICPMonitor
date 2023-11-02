@@ -10,7 +10,11 @@ spiThread *mSpiThread;
 
 class WaveFormPlot;
 extern  WaveFormPlot *mWaveGraph;
-SaveSPI::SaveSPI() : QThread(){}
+SaveSPI::SaveSPI(/*QFile file*/) : QThread()
+{
+    /*fileForSave = new QFile(file.fileName());
+    qDebug() << "file name" << fileForSave.fileName();*/
+}
 SaveSPI::~SaveSPI(){}
 void SaveSPI::run()
 {
@@ -24,7 +28,13 @@ void SaveSPI::run()
   mSpiThread->start();
   /////////////////////
 
-
+//  if (fileForSave.open(QIODevice::WriteOnly | QIODevice::Append))
+//  {qDebug() << "opened";}
+//  else
+//  {
+//      qDebug() << "not opened";
+//  }
+//  if (fileForSave.exists()) qDebug() << "exists";
   /////////////////////
   volatile qint64 currentTime;
   startTime = getCurrentTimeStamp_ms();
@@ -37,14 +47,15 @@ void SaveSPI::run()
       stopTimeFile += TIME_INTERVAL_FOR_RECORD_IN_FILE;
       currMesuring.data = mSpiThread->rawData; //mZSC.data[0];
       currMesuring.timeStamp = (uint32_t)(currentTime - startTime);
-      if (isRecording) { mRawDataFile.write((char*)&currMesuring, sizeof(_mSPIData)); }
+      if (isRecording) { /*fileForSave*/mRawDataFile.write((char*)&currMesuring, sizeof(_mSPIData));}//
     }
     else QThread::usleep(50); //400
   }
   //////////////////////
-
+//  fileForSave.close();
   //////////////////////
-  mSpiThread->isRunning = false;  while(!mSpiThread->isStopped);
+  mSpiThread->isRunning = false;
+  while(!mSpiThread->isStopped);
   qDebug("SaveSPI Thread Stopped");
   isStopped = true;
 }

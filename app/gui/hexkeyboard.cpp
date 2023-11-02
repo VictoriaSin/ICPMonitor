@@ -31,6 +31,9 @@ HexKeyboard::HexKeyboard(QWidget *parent) :
     connect(ui->characterX, &QToolButton::clicked, this, [this](){
         sendHexKeyboardEvent(Qt::Key_X, "x");
     });
+    connect(ui->minus, &QToolButton::clicked, this, [this](){
+        sendHexKeyboardEvent(Qt::Key_Minus, "-");
+    });
 
     // Для установки цвета фона виджета клавиатуры
     //setAttribute(Qt::WA_StyledBackground);

@@ -64,6 +64,8 @@ void DrawGraphs::run()
   float compliance;
   qDebug() << "DrawGraphs started";
 
+  if (mSaveInFile == nullptr)  { mSaveInFile = new SaveSPI(/*mRawDataSessionRecordFile.fileName()*/);  }
+  mSaveInFile->start(QThread :: HighestPriority);
 
   filVal = (float)mSpiThread->rawData * param/1000;
   while(isRunning)
@@ -120,6 +122,8 @@ void DrawGraphs::run()
     //qDebug() << stopTimeGraph << temp.timeStamp ;
   }
   isStopped = true;
+  mSaveInFile->isRunning = false;
+  while(mSaveInFile->isStopped == false);
   qDebug() << "DrawGraphs stopped";
 }
 

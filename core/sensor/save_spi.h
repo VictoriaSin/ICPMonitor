@@ -13,7 +13,7 @@ class SaveSPI : public QThread
     Q_OBJECT
 
 public:
-    SaveSPI();
+    SaveSPI(/*QFile file*/);
     ~SaveSPI();
     volatile bool isStopped;
     volatile bool isRunning;
@@ -22,6 +22,7 @@ public:
     volatile qint64 startTime;
 protected:
     void run();
+    QFile* fileForSave {nullptr};
 };
 
 #endif // SAVE_SPI_H

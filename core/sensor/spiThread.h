@@ -31,8 +31,8 @@ class spiThread : public QThread
     //spiThread *mSpiThread {nullptr};
     u16 rawData;
     void run();
-    bool isStopped;
-    bool isRunning;
+    volatile bool isStopped;
+    volatile bool isRunning;
   private:
     int mFd;
     FILE *fpCS = nullptr;

@@ -28,6 +28,7 @@ QFile mIntervalsFile;
 QFile mMarksFile;
 QFile mRawDataFile;
 QFile mTestData;
+QFile mRawDataSessionRecordFile;
 
 uint64_t startTimeStampRecord {0};
 uint16_t mCurrentLabelIndex;
@@ -395,6 +396,7 @@ void MainPage::on_recordButton_clicked()
     mIntervalsFile.setFileName(mCurrentRecordDir.path() + "/" + "INTERVALS.txt");
     mMarksFile.setFileName(mCurrentRecordDir.path()     + "/" + "MARKS.txt");
     mRawDataFile.setFileName(mCurrentRecordDir.path()   + "/" + "RAW_DATA.txt");
+    mRawDataSessionRecordFile.setFileName(mCurrentRecordDir.path()   + "/" + "SESSION_RECORD_DATA.txt");
 
     qDebug() << mCurrentRecordDir.path();
     if (!mCurrentRecordDir.exists())

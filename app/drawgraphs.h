@@ -4,7 +4,10 @@
 #include <QObject>
 #include <QThread>
 
+#include "../core/sensor/save_spi.h"
 //class CurrentGraphsArea;
+
+extern QFile mRawDataSessionRecordFile;
 
 class DrawGraphs : public QThread
 {
@@ -25,6 +28,7 @@ protected:
     //uint16_t *mData_2 {nullptr};
     float mData_2;
     uint32_t globalCount;
+    SaveSPI* mSaveInFile {nullptr};
 };
 
 
