@@ -26,7 +26,7 @@ ExportDataPage::ExportDataPage(QWidget *parent) :
     connect(ui->clearAllSelectionsButton, &QPushButton::clicked, this, &ExportDataPage::clearSelection);
     connect(ui->downloadButton, &QPushButton::clicked, this, &ExportDataPage::exportData);
     connect(ui->deleteButton, &QPushButton::clicked, [this](){
-        mDeleteDirsDialog->setTextMessage("Вы точно хотите удалить\nвыбранные директории?");
+        mDeleteDirsDialog->setTextMessage(tr("Вы уверены, что хотите удалить\nвыбранные директории?"));
         mDeleteDirsDialog->open(); });
 
     enableAcceptButton(false);
@@ -37,14 +37,16 @@ ExportDataPage::ExportDataPage(QWidget *parent) :
     // Настраиваем кнопку
     mDeleteDirsDialog->mOkeyButton->hide();
     AcceptButton = new QPushButton(this);
-    AcceptButton->setText("Accept");
+    AcceptButton->setText(tr("Да"));
     mDeleteDirsDialog->addButton(AcceptButton);
 
     CancelButton = new QPushButton(this);
-    CancelButton->setText("Cancel");
+    CancelButton->setText(tr("Нет"));
     mDeleteDirsDialog->addButton(CancelButton);
     connect(AcceptButton, &QPushButton::clicked, this, &ExportDataPage::deleteDirs);
     connect(CancelButton, &QPushButton::clicked, mDeleteDirsDialog, &QDialog::reject);
+
+
 
 }
 #define CORRECTDELETE(_item)\
@@ -88,6 +90,9 @@ void ExportDataPage::retranslate()
 
     setUpperNamePageLabel(tr("Управление данными"));
     setBottomInfoLabel(tr(""));
+    AcceptButton->setText(tr("Да"));
+    CancelButton->setText(tr("Нет"));
+    mDeleteDirsDialog->retranslate();
 }
 
 void ExportDataPage::done(int exodus)
@@ -258,6 +263,5 @@ void ExportDataPage::deleteDirs()
 
 void ExportDataPage::installController(MonitorController *controller)
 {
-    AbstractDialogPage::installController(controller);
-    retranslate();
+    AbstractDialogPage::installController(controller);    
 }

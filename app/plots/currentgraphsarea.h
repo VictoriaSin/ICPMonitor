@@ -21,8 +21,8 @@ class RecordedPlot;
 class IntervalPlot;
 
 
-extern QFile mMarksFile;
-extern QFile mRawDataFile;
+extern QFile* mMarksFile;
+//extern QFile mRawDataFile;
 
 #define MAX_CNT_RECORD 300
 

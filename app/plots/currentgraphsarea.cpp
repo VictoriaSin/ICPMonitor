@@ -177,16 +177,10 @@ void CurrentGraphsArea::addOrDeleteNewItem(bool state)
 
     if (state == true)
     {
-        //mLabelItemsContainer.back()->replotLine();
         if (isLabelCreating)
         {
             mCoordLabelX = 0;
         }
-//        else if (isIntervalCreating)
-//        {
-//            //mIntervalPos = 0;
-//            //mIntervalsContainer[mIntervalsCount-1]->mIntervalPos = 0;
-//        }
     }
     else
     {
@@ -212,6 +206,7 @@ void CurrentGraphsArea::addOrDeleteNewItem(bool state)
     }
     isLabelCreating = false;
     isIntervalCreating = false;
+    //isFluidIntervalCreating = false;
 
 }
 
@@ -700,12 +695,12 @@ void CurrentGraphsArea::setMarksOnInterval()
 {
     QString fileMarksData;
     QStringList listOfMarks;
-    mMarksFile.open(QIODevice::ReadOnly);
-    if (mMarksFile.isOpen())
+    mMarksFile->open(QIODevice::ReadOnly);
+    if (mMarksFile->isOpen())
     {
-        fileMarksData = mMarksFile.readAll();
-        mMarksFile.seek(0);
-        mMarksFile.close();
+        fileMarksData = mMarksFile->readAll();
+        mMarksFile->seek(0);
+        mMarksFile->close();
     }
     else
     {
@@ -922,21 +917,22 @@ void CurrentGraphsArea::removeAllGraphs()
 //    mWaveGraph->clearGraphs();
 //    mFirstInterval->clearGraphs();
 //    mSecondInterval->clearGraphs();
-    //qDebug() << mRecordedGraph->mIntervalFirst->data().data();
-    if (mRecordedGraph->mIntervalFirst != nullptr)
-//    {mRecordedGraph->removePlottable(mRecordedGraph->mIntervalFirst);}
-    {mRecordedGraph->mIntervalFirst->data().data()->clear();}
-    if (mRecordedGraph->mIntervalSecond != nullptr)
-//    {mRecordedGraph->removePlottable(mRecordedGraph->mIntervalSecond);}
-    {mRecordedGraph->mIntervalSecond->data().data()->clear();}
-    if (mRecordedGraph != nullptr)
-    {mRecordedGraph->mMainGraph->data().clear();}
+    if (mRecordedGraph->mIntervalFirst != nullptr) {mRecordedGraph->mIntervalFirst->data().data()->clear();}
+    if (mRecordedGraph->mIntervalSecond != nullptr) {mRecordedGraph->mIntervalSecond->data().data()->clear();}
+    if (mRecordedGraph->mFluidInjection != nullptr) {mRecordedGraph->mFluidInjection->data().data()->clear();}
+    if (mRecordedGraph != nullptr) {mRecordedGraph->mMainGraph->data().clear();}
     mWaveGraph->mMainGraph->data()->clear();//дописать?
     mWaveGraph->mHistGraph->data().clear();//дописать?
     if (mFirstInterval != nullptr)
-    {mFirstInterval->mMainGraph->data().data()->clear();}
+    {
+        mFirstInterval->mMainGraph->data().data()->clear();
+        mFirstInterval->clearItems();
+    }
     if (mSecondInterval != nullptr)
-    {mSecondInterval->mMainGraph->data().data()->clear();}
+    {
+        mSecondInterval->mMainGraph->data().data()->clear();
+        mSecondInterval->clearItems();
+    }
     if (mWaveGraph->mHistTempGraph != nullptr)
     {
       mWaveGraph->mHistTempGraph->data()->clear();
@@ -1030,13 +1026,15 @@ void CurrentGraphsArea::calcCompliance()
     mWaveGraph->xAxis->setLabel("");
     mWaveGraph->mLowerAlarmLimit->setVisible(false);
     mWaveGraph->mUpperAlarmLimit->setVisible(false);
-    mWaveGraph->mMainGraph->data().data()->clear();
+    mWaveGraph->mMainGraph->data()->clear();
+    mWaveGraph->mHistGraph->data()->clear();
     mWaveGraph->setInteraction(QCP::iRangeZoom);
 
     mComplianceGraph->xAxis->setLabel("");
     mComplianceGraph->mLowerAlarmLimit->setVisible(false);
     mComplianceGraph->mUpperAlarmLimit->setVisible(false);
-    mComplianceGraph->mMainGraph->data().data()->clear();
+    mComplianceGraph->mMainGraph->data()->clear();
+    mComplianceGraph->mHistGraph->data()->clear();
     mComplianceGraph->yAxis->setRange(0, 1);
 
     if (mDrawGraphs == nullptr)

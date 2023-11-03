@@ -65,4 +65,5 @@ void MessageDialog::retranslate()
 void MessageDialog::showEvent(QShowEvent *event)
 {
     AbstractDialogWindow::showEvent(event);
+    retranslate();
 }

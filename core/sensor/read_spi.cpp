@@ -50,7 +50,6 @@ void ReadSPI::run()
   volatile qint64 stopTimeGraph = startTime + TIME_INTERVAL_FOR_WRITE_ON_GRAPH;
   volatile qint64 currentTime;
   float currData;
-qDebug() << "first file name" << mRawDataFile.fileName();
   if (mSaveSPI == nullptr)  { mSaveSPI = new SaveSPI();  }
   mSaveSPI->start(QThread :: HighestPriority);
 

@@ -52,7 +52,7 @@ public:
 public slots:
     void retranslate() override;
 protected slots:
-    void powerOff(int id);
+    void powerOff();//int id);
 };
 
 #endif // MAINMENU_H

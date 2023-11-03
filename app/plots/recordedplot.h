@@ -12,7 +12,8 @@ class MonitorController;
 extern bool isPlayRecord;
 extern bool isDownloadGraph;
 extern QFile mRawDataFile;
-extern QFile mTestData;
+//extern QFile mTestData;
+
 class RecordedPlot : public AbstractCustomPlot
 {
     Q_OBJECT
@@ -70,6 +71,7 @@ public:
     QCPGraph *mMainGraph {nullptr};
     QCPGraph *mIntervalFirst {nullptr};
     QCPGraph *mIntervalSecond {nullptr};
+    QCPGraph *mFluidInjection {nullptr};
 private:
     /*! Толщина линии графика с текущими показаниями */
     float mThicknessOfMainGraph {1.7};

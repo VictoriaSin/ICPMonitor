@@ -14,6 +14,7 @@ float mCurrentMaxYRange;
 float mRecordedMaxXRange {60};
 float mRecordedMaxYRange {60};
 extern QString globalFolder;
+QFile mTestData(":/testData.txt");
 RecordedPlot::RecordedPlot(QWidget *parent):
     AbstractCustomPlot(GraphType::RecordedGraph, parent),
     mTextEditDialog(new TextEditDialog(this))

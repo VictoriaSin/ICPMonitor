@@ -69,16 +69,18 @@ MainMenu::MainMenu(QWidget *parent) :
     connect(mExportDataPage, &ExportDataPage::previousPage, this, &MainMenu::previousPage);
     connect(mExportDataPage, &ExportDataPage::changePage, this, &MainMenu::changePage);
 
-    connect(&mButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(powerOff(int)));
+    //connect(&mButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(powerOff(int)));
+    connect(mButtonGroup.button(PageID::PowerOff), SIGNAL(clicked()), this, SLOT(powerOff()));//int)));
 }
 
 MainMenu::~MainMenu()
 {
 }
 
-void MainMenu::powerOff(int id)
+void MainMenu::powerOff()//int id)
 {
-  if (id == PageID::PowerOff)
+    qDebug() << "Power OFF";
+  //if (id == PageID::PowerOff)
   {
     DESTROY_CLASS(mSystemInfoPage);
     DESTROY_CLASS(mZeroSensorPage);

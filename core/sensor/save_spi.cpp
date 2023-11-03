@@ -11,7 +11,6 @@ spiThread *mSpiThread;
 class WaveFormPlot;
 extern  WaveFormPlot *mWaveGraph;
 extern QString globalFolder;
-extern QFile mRawDataFile;
 
 SaveSPI::SaveSPI() : QThread(){}
 SaveSPI::~SaveSPI(){}

@@ -292,9 +292,9 @@ qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
     float mCurrentReadingsGraphIntervalYLow = ui->lowIntervalYLineEdit->text().toFloat();
     float mCurrentReadingsGraphIntervalYHigh = ui->highIntervalYLineEdit->text().toFloat();
 
-    if (ui->tickCountXLineEdit->text().toFloat() < 1 || ui->tickCountYLineEdit->text().toFloat() < 1)
+    if (ui->tickCountXLineEdit->text().toFloat() < 0.1 || ui->tickCountYLineEdit->text().toFloat() < 0.1)
     {
-        openSettingsInfoErrorDialog(tr("Введен некорректный шаг\nделений оси (< 1)"));
+        openSettingsInfoErrorDialog(tr("Введен некорректный шаг\nделений оси"));
         return;
     }
     float mTickCountX = (float)mCurrentReadingsGraphIntervalX / ui->tickCountXLineEdit->text().toFloat();

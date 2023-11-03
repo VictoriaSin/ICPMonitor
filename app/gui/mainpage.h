@@ -73,6 +73,9 @@ private:
     VolumeInputPage *mVolumeInputPage{nullptr};
     VolumeInputPage *mParamInputPage{nullptr};
 
+    QFile mHeadFile;
+    QFile mIntervalsFile;
+
 
 private slots:
     void controllerEventHandler(ControllerEvent event);//, const QVariantMap &args = {});
@@ -167,6 +170,12 @@ private slots:
     void on_funcFirstButton_clicked();
 
     void on_markPPointButton_clicked();
+
+    void on_fluidInjectionButton_clicked();
+
+    void on_acceptFluidInjectionButton_clicked();
+
+    void on_rejectFluidInjectionButton_clicked();
 
 private:
     Ui::MainPage *ui;

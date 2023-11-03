@@ -16,19 +16,19 @@
     <name>AbstractMultipleGraphsAreasWidget</name>
     <message>
         <source>ТРЕНД</source>
-        <translation>TREND</translation>
+        <translation type="vanished">TREND</translation>
     </message>
     <message>
         <source>СИГНАЛ ВЧД</source>
-        <translation>ICP SIGNAL</translation>
+        <translation type="vanished">ICP SIGNAL</translation>
     </message>
     <message>
         <source>ЯЩИК С УСАМИ</source>
-        <translation>BOX PLOT</translation>
+        <translation type="vanished">BOX PLOT</translation>
     </message>
     <message>
         <source>ГИСТОГРАММА</source>
-        <translation>HISTOGRAM</translation>
+        <translation type="vanished">HISTOGRAM</translation>
     </message>
 </context>
 <context>
@@ -92,11 +92,11 @@ be more than the bottom level!</translation>
     <name>BoxPlot</name>
     <message>
         <source>время</source>
-        <translation>time</translation>
+        <translation type="vanished">time</translation>
     </message>
     <message>
         <source>мм рт ст</source>
-        <translation>mmHg</translation>
+        <translation type="vanished">mmHg</translation>
     </message>
 </context>
 <context>
@@ -109,44 +109,52 @@ be more than the bottom level!</translation>
         <source>СИГНАЛ ВЧД</source>
         <translation type="vanished">ICP SIGNAL</translation>
     </message>
+    <message>
+        <source>мм рт ст</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>мм вод ст</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DataDownloadPage</name>
     <message>
         <source>СКРИНШОТЫ</source>
-        <translation>SCREENSHOTS</translation>
+        <translation type="vanished">SCREENSHOTS</translation>
     </message>
     <message>
         <source>Не скачивать</source>
-        <translation>Do not download</translation>
+        <translation type="vanished">Do not download</translation>
     </message>
     <message>
         <source>Последний</source>
-        <translation>Last</translation>
+        <translation type="vanished">Last</translation>
     </message>
     <message>
         <source>Все</source>
-        <translation>All</translation>
+        <translation type="vanished">All</translation>
     </message>
     <message>
         <source>СРЕДНЕЕ ВЧД</source>
-        <translation>AVERAGE ICP</translation>
+        <translation type="vanished">AVERAGE ICP</translation>
     </message>
     <message>
         <source>За последние
 24 часа</source>
-        <translation>Last 24 hours</translation>
+        <translation type="vanished">Last 24 hours</translation>
     </message>
     <message>
         <source>За последний
 час</source>
-        <translation>For the last hour</translation>
+        <translation type="vanished">For the last hour</translation>
     </message>
     <message>
         <source>Данные текущих показаний хранятся на устройстве 24 часа.
 Данные средних показаний хранятся на устройстве 14 дней.
 Скриншоты хранятся на устройстве в кол-ве 50 штук.</source>
-        <translation>Current readings are stored on the device for 24 hours.
+        <translation type="vanished">Current readings are stored on the device for 24 hours.
 Average reading data is stored on the device for 14 days.
 Screenshots are stored on the device in a quantity of 50 pieces.</translation>
     </message>
@@ -156,27 +164,27 @@ Screenshots are stored on the device in a quantity of 50 pieces.</translation>
     </message>
     <message>
         <source>Выбор формата изображений</source>
-        <translation>Choosing an Image Format</translation>
+        <translation type="vanished">Choosing an Image Format</translation>
     </message>
     <message>
         <source>Экспортирование %1</source>
-        <translation>Export %1</translation>
+        <translation type="vanished">Export %1</translation>
     </message>
     <message>
         <source>Экспортировано %1 из %2</source>
-        <translation>Exported %1 of %2</translation>
+        <translation type="vanished">Exported %1 of %2</translation>
     </message>
     <message>
         <source>
 успешно переданы.</source>
-        <translation>
+        <translation type="vanished">
 transferred successfully.</translation>
     </message>
     <message>
         <source>Экспортируемые данные:
 %1
 Из %2 передано %3</source>
-        <translation>Exported data:
+        <translation type="vanished">Exported data:
 %1
 %3 passed from %2</translation>
     </message>
@@ -187,24 +195,24 @@ transferred successfully.</translation>
     <message>
         <source>Не выбраны данные
 для загрузки на флешку!</source>
-        <translation>No data has been selected for
+        <translation type="vanished">No data has been selected for
 downloading to a USB flash drive!</translation>
     </message>
     <message>
         <source>Попробуйте вставить флеш-накопитель заново.
 Данные не были переданы.</source>
-        <translation>Try inserting the flash drive again.
+        <translation type="vanished">Try inserting the flash drive again.
 The data has not been transferred.</translation>
     </message>
     <message>
         <source>ПОКАЗАНИЯ
 ДАТЧИКА</source>
-        <translation>SENSOR
+        <translation type="vanished">SENSOR
 READING</translation>
     </message>
     <message>
         <source>Экспорт данных</source>
-        <translation>Data Export</translation>
+        <translation type="vanished">Data Export</translation>
     </message>
 </context>
 <context>
@@ -227,6 +235,47 @@ READING</translation>
     <message>
         <source>ТРЕНД</source>
         <translation type="vanished">TREND</translation>
+    </message>
+</context>
+<context>
+    <name>ExportDataPage</name>
+    <message>
+        <source>Управление данными</source>
+        <translation>Data Management</translation>
+    </message>
+    <message>
+        <source>Выбрать все</source>
+        <translation>Select all</translation>
+    </message>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Снять все выделения</source>
+        <translation>Remove all selections</translation>
+    </message>
+    <message>
+        <source>Выгрузить</source>
+        <translation>Export</translation>
+    </message>
+    <message>
+        <source>Удалить</source>
+        <translation>Delete</translation>
+    </message>
+    <message>
+        <source>Вы уверены, что хотите удалить
+выбранные директории?</source>
+        <translation>Are you sure you want to delete
+selected directories?</translation>
+    </message>
+    <message>
+        <source>Да</source>
+        <translation>Yes</translation>
+    </message>
+    <message>
+        <source>Нет</source>
+        <translation>No</translation>
     </message>
 </context>
 <context>
@@ -295,14 +344,14 @@ READING</translation>
     <message>
         <source>Введены некорректные значения регистров</source>
         <translation>Entered register values are incorrect</translation>
-    </message>    
+    </message>
     <message>
         <source>Введены некорректные коэффициенты a, b</source>
         <translation>Entered coefficients a, b are incorrect</translation>
     </message>
     <message>
-        <source>Введен некорректный шаг\nделений оси (< 1)</source>
-        <translation>Entered axis tick pitch is incorrect (< 1)</translation>
+        <source>Введен некорректный шаг\nделений оси</source>
+        <translation type="vanished">Entered axis tick pitch is incorrect</translation>
     </message>
     <message>
         <source>Интервал оси X</source>
@@ -378,11 +427,11 @@ READING</translation>
     </message>
     <message>
         <source>от:</source>
-        <translation>from:</translation>
+        <translation type="vanished">from:</translation>
     </message>
     <message>
         <source>до:</source>
-        <translation>to:</translation>
+        <translation type="vanished">to:</translation>
     </message>
     <message>
         <source>Включить</source>
@@ -399,6 +448,101 @@ READING</translation>
     <message>
         <source>мм вод ст</source>
         <translation>mm H2O</translation>
+    </message>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1</source>
+        <translation type="unfinished">1</translation>
+    </message>
+    <message>
+        <source>2</source>
+        <translation type="unfinished">2</translation>
+    </message>
+    <message>
+        <source>4</source>
+        <translation type="unfinished">4</translation>
+    </message>
+    <message>
+        <source>6</source>
+        <translation type="unfinished">6</translation>
+    </message>
+    <message>
+        <source>3</source>
+        <translation type="unfinished">3</translation>
+    </message>
+    <message>
+        <source>7</source>
+        <translation type="unfinished">7</translation>
+    </message>
+    <message>
+        <source>5</source>
+        <translation type="unfinished">5</translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation type="unfinished">0</translation>
+    </message>
+    <message>
+        <source>Введен некорректный шаг
+делений оси (&lt; 1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>HexKeyboard</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>E</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>x</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished">-</translation>
+    </message>
+</context>
+<context>
+    <name>IntervalPlot</name>
+    <message>
+        <source>секунды</source>
+        <translation>seconds</translation>
+    </message>
+    <message>
+        <source>мм рт ст</source>
+        <translation>mmHg</translation>
+    </message>
+    <message>
+        <source>мм вод ст</source>
+        <translation>mmH2O</translation>
     </message>
 </context>
 <context>
@@ -418,12 +562,12 @@ READING</translation>
     <message>
         <source>Для смены языка необходимо
 подтвердить ваш выбор!</source>
-        <translation>To change the language you need
+        <translation type="vanished">To change the language you need
 confirm your choice!</translation>
     </message>
 </context>
 <context>
-    <name>MainMenu</name>    
+    <name>MainMenu</name>
     <message>
         <source>Системная информация</source>
         <translation>System Information</translation>
@@ -466,11 +610,11 @@ confirm your choice!</translation>
     </message>
     <message>
         <source>Сессия неактивна!</source>
-        <translation>Session is not active!</translation>
+        <translation type="vanished">Session is not active!</translation>
     </message>
     <message>
         <source>ID сессии:</source>
-        <translation>Session ID:</translation>
+        <translation type="vanished">Session ID:</translation>
     </message>
     <message>
         <source>Последняя метка: %1</source>
@@ -486,35 +630,114 @@ confirm your choice!</translation>
     </message>
     <message>
         <source>Нет меток</source>
-        <translation>No labels</translation>
+        <translation type="vanished">No labels</translation>
     </message>
     <message>
         <source>Обнулён</source>
-        <translation>Zeroed</translation>
+        <translation type="vanished">Zeroed</translation>
     </message>
     <message>
         <source>Датчик подключён</source>
-        <translation>Sensor Connected</translation>
+        <translation type="vanished">Sensor Connected</translation>
     </message>
     <message>
         <source>Ошибка соединения с датчиком</source>
-        <translation>Sensor connection error</translation>
+        <translation type="vanished">Sensor connection error</translation>
     </message>
     <message>
         <source>Ошибка сброса датчика</source>
-        <translation>Sensor reset error</translation>
+        <translation type="vanished">Sensor reset error</translation>
     </message>
     <message>
         <source>Датчик отключён</source>
-        <translation>Sensor Disconnected</translation>
+        <translation type="vanished">Sensor Disconnected</translation>
     </message>
     <message>
         <source>Максимум</source>
-        <translation>Maximum</translation>
+        <translation type="vanished">Maximum</translation>
     </message>
     <message>
         <source>Среднее</source>
-        <translation>Average</translation>
+        <translation type="vanished">Average</translation>
+    </message>
+    <message>
+        <source>home</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>--</source>
+        <translation type="unfinished">--</translation>
+    </message>
+    <message>
+        <source>(1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>0/0 </source>
+        <translation type="unfinished">0/0 </translation>
+    </message>
+    <message>
+        <source>&lt;&lt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>|&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1</source>
+        <translation type="unfinished">1</translation>
+    </message>
+    <message>
+        <source>2</source>
+        <translation type="unfinished">2</translation>
+    </message>
+    <message>
+        <source>f1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>f2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>P0/Pk</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>|</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>o</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>x</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>dV_б</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1/%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Максимум
+%1
+Среднее
+%2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -543,6 +766,14 @@ the necessary time and date are required.</translation>
     <message>
         <source>Ок</source>
         <translation>Okey</translation>
+    </message>
+    <message>
+        <source>Да</source>
+        <translation>Yes</translation>
+    </message>
+    <message>
+        <source>Нет</source>
+        <translation>No</translation>
     </message>
 </context>
 <context>
@@ -603,7 +834,7 @@ this may lead to unforeseen consequences!</translation>
     </message>
     <message>
         <source>←</source>
-        <translation>←</translation>
+        <translation type="vanished">←</translation>
     </message>
     <message>
         <source>8</source>
@@ -631,7 +862,58 @@ this may lead to unforeseen consequences!</translation>
     </message>
     <message>
         <source>-</source>
-        <translation>-</translation>
+        <translation type="vanished">-</translation>
+    </message>
+    <message>
+        <source>&lt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>RecordedPlot</name>
+    <message>
+        <source>секунды</source>
+        <translation>seconds</translation>
+    </message>
+    <message>
+        <source>мм рт ст</source>
+        <translation>mmHg</translation>
+    </message>
+    <message>
+        <source>мм вод ст</source>
+        <translation>mmH2O</translation>
+    </message>
+    <message>
+        <source>время</source>
+        <translation type="vanished">time</translation>
+    </message>
+    <message>
+        <source>ID сессии</source>
+        <translation>Session ID</translation>
+    </message>
+    <message>
+        <source>Номер метки</source>
+        <translation>Label Number</translation>
+    </message>
+    <message>
+        <source>Время начала метки</source>
+        <translation>Label start time</translation>
+    </message>
+    <message>
+        <source>Время окончания метки</source>
+        <translation>Label end time</translation>
+    </message>
+    <message>
+        <source>Информация</source>
+        <translation>Information</translation>
+    </message>
+    <message>
+        <source>Информация о метке</source>
+        <translation>Label Information</translation>
     </message>
 </context>
 <context>
@@ -657,7 +939,15 @@ this may lead to unforeseen consequences!</translation>
     <message>
         <source>Технический доступ</source>
         <translation>Technician Access</translation>
-    </message>    
+    </message>
+    <message>
+        <source>Время/Дата</source>
+        <translation type="unfinished">Time/Date</translation>
+    </message>
+    <message>
+        <source>Язык</source>
+        <translation type="unfinished">Language</translation>
+    </message>
 </context>
 <context>
     <name>SystemInfoPage</name>
@@ -756,61 +1046,14 @@ this may lead to unforeseen consequences!</translation>
     </message>
 </context>
 <context>
-    <name>RecordedPlot</name>
+    <name>VolumeInputPage</name>
     <message>
-        <source>секунды</source>
-        <translation>seconds</translation>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>мм рт ст</source>
-        <translation>mmHg</translation>
-    </message>
-    <message>
-        <source>мм вод ст</source>
-        <translation>mmH2O</translation>
-    </message>
-    <message>
-        <source>время</source>
-        <translation>time</translation>
-    </message>
-    <message>
-        <source>ID сессии</source>
-        <translation>Session ID</translation>
-    </message>
-    <message>
-        <source>Номер метки</source>
-        <translation>Label Number</translation>
-    </message>
-    <message>
-        <source>Время начала метки</source>
-        <translation>Label start time</translation>
-    </message>
-    <message>
-        <source>Время окончания метки</source>
-        <translation>Label end time</translation>
-    </message>
-    <message>
-        <source>Информация</source>
-        <translation>Information</translation>
-    </message>
-    <message>
-        <source>Информация о метке</source>
-        <translation>Label Information</translation>
-    </message>
-</context>
-<context>
-    <name>IntervalPlot</name>
-    <message>
-        <source>секунды</source>
-        <translation>seconds</translation>
-    </message>
-    <message>
-        <source>мм рт ст</source>
-        <translation>mmHg</translation>
-    </message>
-    <message>
-        <source>мм вод ст</source>
-        <translation>mmH2O</translation>
+        <source>Ввод параметров</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -826,6 +1069,10 @@ this may lead to unforeseen consequences!</translation>
     <message>
         <source>мм вод ст</source>
         <translation>mmH2O</translation>
+    </message>
+    <message>
+        <source>Compliance</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -110,6 +110,7 @@ qDebug() << "1=" << points.first << "2=" << points.second;
   qDebug() << "iterTemp" << iterTemp ;
   qDebug() << "size arr " << sizeof(*tempArr);
   QFile *currFile;
+  float param = 1.0;
   if (isDownloadGraph)
   {
       qDebug() << "TestDataFile";
@@ -119,12 +120,13 @@ qDebug() << "1=" << points.first << "2=" << points.second;
   {
       qDebug() << "rawDataFile";
       currFile = &mRawDataFile;
+      param *= 0.001;
   }
   currFile->open(QIODevice::ReadOnly);
   currFile->seek(points.first);
   currFile->read((char*)tempArr, iterTemp*6);
   currFile->close();
-  float param = 1.0;
+
   if (mICPSettings->getCurrentPressureIndex() == 1)
   {
     param = indexPressureH2O;
@@ -132,7 +134,8 @@ qDebug() << "1=" << points.first << "2=" << points.second;
   for (uint i=0; i<iterTemp; i++)
   {
       //qDebug() << "x" << (float)tempArr[i].timeStamp/1000 << "y" << tempArr[i].data*param;
-      mMainGraph->addData((float)tempArr[i].timeStamp/1000, tempArr[i].data*param);
+      mMainGraph->addData((float)tempArr[i].timeStamp/1000, (float)tempArr[i].data*param);
+      //qDebug() << tempArr[i].data*param;
     //averagePlot(tempArr[i]);
   }
   //Compliance();
