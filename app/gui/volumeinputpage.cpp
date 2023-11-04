@@ -10,8 +10,8 @@ uint32_t windowWidth = 100;
 float offsetAverage = 0.5;
 
 uint16_t dVolume = 5;
-float Po = 19.529; //30.0;
-float Pk = 33.673; //30.02;
+float Po = 19.529;
+float Pk = 33.673;
 
 
 VolumeInputPage::VolumeInputPage(QWidget *parent, uint8_t type) :
@@ -46,28 +46,28 @@ void VolumeInputPage::setupVolume()
     inputValueLineEdit->setFont(fontLineEdit);
     inputValueLineEdit->setText(QString::number(dVolume));
 
-    point0Label = new QLabel("Укажите координату x точки P0:", this);
-    point0Label->setFont(fontLabel);
+//    point0Label = new QLabel("Укажите координату x точки P0:", this);
+//    point0Label->setFont(fontLabel);
 
-    point0LineEdit = new QLineEdit(this);
-    point0LineEdit->setStyleSheet("background-color: rgb(255, 255, 255)");
-    point0LineEdit->setFont(fontLineEdit);
-    point0LineEdit->setText(QString::number(Po));
+//    point0LineEdit = new QLineEdit(this);
+//    point0LineEdit->setStyleSheet("background-color: rgb(255, 255, 255)");
+//    point0LineEdit->setFont(fontLineEdit);
+//    point0LineEdit->setText(QString::number(Po));
 
-    point1Label = new QLabel("Укажите координату x точки Pk:", this);
-    point1Label->setFont(fontLabel);
+//    point1Label = new QLabel("Укажите координату x точки Pk:", this);
+//    point1Label->setFont(fontLabel);
 
-    point1LineEdit = new QLineEdit(this);
-    point1LineEdit->setStyleSheet("background-color: rgb(255, 255, 255)");
-    point1LineEdit->setFont(fontLineEdit);
-    point1LineEdit->setText(QString::number(Pk));
+//    point1LineEdit = new QLineEdit(this);
+//    point1LineEdit->setStyleSheet("background-color: rgb(255, 255, 255)");
+//    point1LineEdit->setFont(fontLineEdit);
+//    point1LineEdit->setText(QString::number(Pk));
 
     ui->grid->addWidget(dVolumeLabel, 0, 0);
     ui->grid->addWidget(inputValueLineEdit, 0, 1);
-    ui->grid->addWidget(point0Label, 1, 0);
-    ui->grid->addWidget(point0LineEdit, 1, 1);
-    ui->grid->addWidget(point1Label, 2, 0);
-    ui->grid->addWidget(point1LineEdit, 2, 1);
+//    ui->grid->addWidget(point0Label, 1, 0);
+//    ui->grid->addWidget(point0LineEdit, 1, 1);
+//    ui->grid->addWidget(point1Label, 2, 0);
+//    ui->grid->addWidget(point1LineEdit, 2, 1);
 }
 
 void VolumeInputPage::setupParam()
@@ -112,6 +112,11 @@ VolumeInputPage::~VolumeInputPage()
     DELITEM(windowWidthLineEdit);
     DELITEM(offsetAverageLabel);
     DELITEM(offsetAverageLineEdit);
+
+//    DELITEM(point0Label);
+//    DELITEM(point0LineEdit);
+//    DELITEM(point1Label);
+//    DELITEM(point1LineEdit);
     delete ui;
 }
 
@@ -128,8 +133,8 @@ void VolumeInputPage::done(int exodus)
         if (typeOfValues == 0)
         {
             inputValueLineEdit->setText(QString::number(startdVolume));
-            point0LineEdit->setText(QString::number(startPo));
-            point1LineEdit->setText(QString::number(startPk));
+//            point0LineEdit->setText(QString::number(startPo));
+//            point1LineEdit->setText(QString::number(startPk));
         }
         else // (typeOfValues == 1)
         {
@@ -150,8 +155,8 @@ void VolumeInputPage::done(int exodus)
     if (typeOfValues == 0)
     {
         dVolume = inputValueLineEdit->text().toUInt();
-        Po = point0LineEdit->text().toFloat();
-        Pk = point1LineEdit->text().toFloat();
+//        Po = point0LineEdit->text().toFloat();
+//        Pk = point1LineEdit->text().toFloat();
     }
     else
     {
@@ -177,8 +182,8 @@ void VolumeInputPage::showEvent(QShowEvent */*event*/)
     if (typeOfValues == 0)
     {
         startdVolume = inputValueLineEdit->text().toUInt();
-        startPo = point0LineEdit->text().toFloat();
-        startPk = point1LineEdit->text().toFloat();
+//        startPo = point0LineEdit->text().toFloat();
+//        startPk = point1LineEdit->text().toFloat();
     }
     else //(typeOfValues == 1)
     {

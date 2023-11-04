@@ -37,13 +37,21 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, uint8_t num, QColor color, const QFo
     setOrientation(moVerticalBottom);
 
     // Настройка отрисовки элемента текста
-    if (num % 2 == 1)
+    if (isFluidIntervalCreating)
     {
-        mTextItem->setText("<" + QString::number(num/2 + 1)); // Установка текста
+        if (num == 0) {mTextItem->setText("0>");}
+        else {mTextItem->setText("<0");}
     }
     else
     {
-        mTextItem->setText(QString::number(num/2 + 1)+ ">"); // Установка текста
+        if (num % 2 == 1)
+        {
+            mTextItem->setText("<" + QString::number(num/2 + 1)); // Установка текста
+        }
+        else
+        {
+            mTextItem->setText(QString::number(num/2 + 1)+ ">"); // Установка текста
+        }
     }
 
     mTextItem->setPen(QColor(Qt::black)); // Отрисовка прямоугольника
@@ -144,7 +152,7 @@ void MarkItem::replotLine()
         mLineThroughGraph->start->setParentAnchor(mTextItem->position);
         mLineThroughGraph->end->setCoords(float(mCoordLabelX)/1000.0, 0);
     }
-    else if (isIntervalCreating)
+    else if ((isIntervalCreating) || (isFluidIntervalCreating))
     {
         mTextItem->position->setCoords(float(mIntervalPos)/1000.0, 0.9);
         mLineThroughGraph->end->setParentAnchor(mTextItem->position);

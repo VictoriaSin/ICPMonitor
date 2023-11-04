@@ -26,6 +26,10 @@ MarkItem *mIntervalsContainer[4];
 bool isIntervalCreating {false};
 uint8_t mIntervalsCount {0};
 
+bool isFluidIntervalCreating {false};
+extern uint8_t mFluidMarksCounter;
+extern MarkItem* mFluidMarkContainer[2];
+
 extern uint16_t dVolume;
 extern float Po;
 extern float Pk;
@@ -202,11 +206,15 @@ void CurrentGraphsArea::addOrDeleteNewItem(bool state)
             //mIntervalsContainer[mIntervalsCount]->deleteLine();
 
         }
+        else if (isFluidIntervalCreating)
+        {
+            mRecordedGraph->removeItem(mFluidMarkContainer[mFluidMarksCounter]);
+        }
 
     }
     isLabelCreating = false;
     isIntervalCreating = false;
-    //isFluidIntervalCreating = false;
+    isFluidIntervalCreating = false;
 
 }
 
@@ -576,55 +584,83 @@ void CurrentGraphsArea::addIntervalOnRecordedGraph()
     // Если нет графика записанных показания или контроллера
     if (!mRecordedGraph || !mController) {  return; }
 
-    isIntervalCreating = true;
+    //isIntervalCreating = true;
     float newIntervalPos = 0.0;
-
-    if (mIntervalsCount % 2 == 0)
+qDebug() << "interval count" << mIntervalsCount;
+qDebug() << "fluid count" << mFluidMarksCounter;
+    if ((mIntervalsCount % 2 == 0) || (mFluidMarksCounter == 0))
     {
         newIntervalPos = mRecordedGraph->xAxis->range().lower + mRecordedGraph->xAxis->range().size()*0.1;
-
     }
     else
     {
         newIntervalPos = mRecordedGraph->xAxis->range().lower + mRecordedGraph->xAxis->range().size()*0.9;
     }
 
-    if (mIntervalsCount != 0)
+    if (isFluidIntervalCreating)
     {
-        float prevIntervalPos = (float)(mIntervalsContainer[mIntervalsCount-1]->mIntervalPos)/1000;
-
-        if ((newIntervalPos >= mRecordedGraph->xAxis->range().lower) && (newIntervalPos < mRecordedGraph->xAxis->range().upper))
+        if (mFluidMarksCounter == 1)
         {
-            if (newIntervalPos <= prevIntervalPos)
+            float prevIntervalPos = (float)(mFluidMarkContainer[0]->mIntervalPos)/1000;
+            if ((newIntervalPos >= mRecordedGraph->xAxis->range().lower) && (newIntervalPos < mRecordedGraph->xAxis->range().upper))
             {
-                float offset = mRecordedGraph->xAxis->range().size() * 0.01;
-                if ((prevIntervalPos + offset) < mRecordedMaxXRange)//mRecordedGraph->mCurrentMaxXRange)
+                if (newIntervalPos <= prevIntervalPos)
                 {
-                    newIntervalPos = prevIntervalPos + offset;
-                }
-                else
-                {
-                    newIntervalPos = mRecordedGraph->xAxis->range().upper;
+                    float offset = mRecordedGraph->xAxis->range().size() * 0.01;
+                    if ((prevIntervalPos + offset) < mRecordedMaxXRange)
+                    {
+                        newIntervalPos = prevIntervalPos + offset;
+                    }
+                    else
+                    {
+                        newIntervalPos = mRecordedGraph->xAxis->range().upper;
+                    }
                 }
             }
+            else { return; }
+        }
+        mFluidMarkContainer[mFluidMarksCounter] = new MarkItem(mRecordedGraph, mFluidMarksCounter, QColor(Qt::gray), mFontForLabelItems, newIntervalPos);
+        mFluidMarksCounter++;
+    }
+    else if (isIntervalCreating)
+    {
+        if (mIntervalsCount != 0)
+        {
+            float prevIntervalPos = (float)(mIntervalsContainer[mIntervalsCount-1]->mIntervalPos)/1000;
+
+            if ((newIntervalPos >= mRecordedGraph->xAxis->range().lower) && (newIntervalPos < mRecordedGraph->xAxis->range().upper))
+            {
+                if (newIntervalPos <= prevIntervalPos)
+                {
+                    float offset = mRecordedGraph->xAxis->range().size() * 0.01;
+                    if ((prevIntervalPos + offset) < mRecordedMaxXRange)//mRecordedGraph->mCurrentMaxXRange)
+                    {
+                        newIntervalPos = prevIntervalPos + offset;
+                    }
+                    else
+                    {
+                        newIntervalPos = mRecordedGraph->xAxis->range().upper;
+                    }
+                }
+            }
+            else
+            {
+                //isIntervalCreating = false;
+                return; // обработать
+            }
+        }
+        if (mIntervalsCount < 2)
+        {
+            mIntervalsContainer[mIntervalsCount] = new MarkItem(mRecordedGraph, mIntervalsCount, QColor(Qt::magenta), mFontForLabelItems, newIntervalPos);
         }
         else
         {
-            //isIntervalCreating = false;
-            return; // обработать
+            mIntervalsContainer[mIntervalsCount] = new MarkItem(mRecordedGraph, mIntervalsCount, QColor(Qt::cyan), mFontForLabelItems, newIntervalPos);
         }
+        // Добавляем элемент для оптимизации
+        //mRecordedGraph->addOptimizationLabelItem(mIntervalsContainer[mIntervalsCount]);
+        mIntervalsCount++;
     }
-    if (mIntervalsCount < 2)
-    {
-        mIntervalsContainer[mIntervalsCount] = new MarkItem(mRecordedGraph, mIntervalsCount, QColor(Qt::magenta), mFontForLabelItems, newIntervalPos);
-    }
-    else
-    {
-        mIntervalsContainer[mIntervalsCount] = new MarkItem(mRecordedGraph, mIntervalsCount, QColor(Qt::cyan), mFontForLabelItems, newIntervalPos);
-    }
-    // Добавляем элемент для оптимизации
-    //mRecordedGraph->addOptimizationLabelItem(mIntervalsContainer[mIntervalsCount]);
-    mIntervalsCount++;
 }
 
 void CurrentGraphsArea::changeXInterval(bool interval)
@@ -690,6 +726,7 @@ void CurrentGraphsArea::colorInterval()
         setMarksOnInterval();
     }
 }
+
 
 void CurrentGraphsArea::setMarksOnInterval()
 {
@@ -950,6 +987,11 @@ void CurrentGraphsArea::removeAllGraphs()
         mRecordedGraph->removeItem(mIntervalsContainer[i]);
     }
     mIntervalsCount = 0;
+    for (int8_t i=0; i<mFluidMarksCounter; i++)
+    {
+        mRecordedGraph->removeItem(mFluidMarkContainer[i]);
+    }
+    mFluidMarksCounter = 0;
     for (int8_t i=0; i<mLabelItemsContainer.count(); i++)
     {
         mLabelItemsContainer[i]->deleteLine();
@@ -993,26 +1035,7 @@ void CurrentGraphsArea::calcCompliance()
 {    
     qDebug() << mFirstInterval->averageA << mSecondInterval->averageA;
     float Acp = (mFirstInterval->averageA + mSecondInterval->averageA)/2;
-    //float Pcp = (Po + Pk)/2;//(mFirstInterval->averageP + mSecondInterval->averageP)/2;//
-//    int size = mRecordedGraph->mMainGraph->data()->size();
-//    for (int i=0; i< size; i++)
-//    {
-//        if (mRecordedGraph->mMainGraph->data()->at(i)->key >= Po)
-//        {
-//            Po = mRecordedGraph->mMainGraph->data()->at(i)->value;
-//            qDebug() << "Po" << Po << mRecordedGraph->mMainGraph->data()->at(i)->key;
-//            break;
-//        }
-//    }
-//    for (int i=0; i< mRecordedGraph->mMainGraph->data()->size(); i++)
-//    {
-//        if (mRecordedGraph->mMainGraph->data()->at(i)->key >= Pk)
-//        {
-//            Pk = mRecordedGraph->mMainGraph->data()->at(i)->value;
-//            qDebug() << "Pk" << Pk << mRecordedGraph->mMainGraph->data()->at(i)->key;
-//            break;
-//        }
-//    }
+    qDebug() << "Po" << Po << "Pk" << Pk;
     float Pcp = (Po + Pk)/2;
     if (mICPSettings->mPressureUnitsIndex == 0)
     {

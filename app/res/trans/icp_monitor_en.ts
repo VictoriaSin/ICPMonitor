@@ -487,7 +487,7 @@ selected directories?</translation>
     </message>
     <message>
         <source>Введен некорректный шаг
-делений оси (&lt; 1)</source>
+делений оси</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -653,12 +653,14 @@ confirm your choice!</translation>
         <translation type="vanished">Sensor Disconnected</translation>
     </message>
     <message>
-        <source>Максимум</source>
-        <translation type="vanished">Maximum</translation>
-    </message>
-    <message>
-        <source>Среднее</source>
-        <translation type="vanished">Average</translation>
+        <source>Максимум
+%1
+Среднее
+%2</source>
+        <translation>Maximum
+%1
+Average
+%2</translation>
     </message>
     <message>
         <source>home</source>
@@ -732,13 +734,6 @@ confirm your choice!</translation>
         <source>%1/%2</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Максимум
-%1
-Среднее
-%2</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -769,11 +764,11 @@ the necessary time and date are required.</translation>
     </message>
     <message>
         <source>Да</source>
-        <translation>Yes</translation>
+        <translation type="vanished">Yes</translation>
     </message>
     <message>
         <source>Нет</source>
-        <translation>No</translation>
+        <translation type="vanished">No</translation>
     </message>
 </context>
 <context>

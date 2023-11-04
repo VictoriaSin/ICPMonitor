@@ -78,6 +78,7 @@ private:
 public:
     /*! Контейнер для точек графика*/
     QVector<QPair<float, float>> mRecordedData;
+    void addFluidInterval();
 private:
     /*! Время прихода последнего значения датчика */
     int64_t mPreviousSensorDataTime {0};

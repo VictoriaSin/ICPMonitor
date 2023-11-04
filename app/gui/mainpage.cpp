@@ -42,8 +42,9 @@ uint mSizeAllRecordedData = 0, mSizeFirstInterval = 0, mSizeSecondInterval = 0;
 
 uint8_t mCurrentIntervalNum {0};
 
-bool isFluidIntervalCreating {false};
+extern bool isFluidIntervalCreating;
 uint8_t mFluidMarksCounter = 0;
+MarkItem* mFluidMarkContainer[2];
 
 MainPage::MainPage(QWidget *parent)
   : IPageWidget(parent)
@@ -257,7 +258,7 @@ void MainPage::setupButtons()
   ui->dVInputButton->hide();
 
   // Кнопка интвервала ввода жидкости
-  ui->fluidInjectionButton->setIcon(QIcon(":/icons/func1.svg"), QIcon(":/icons/func1_pressed.svg"));
+  ui->fluidInjectionButton->setIcon(QIcon(":/icons/fluidInjection.svg"), QIcon(":/icons/fluidInjection_pressed.svg"));
   ui->fluidInjectionButton->setIconSize(QSize(BUT_SIZE_BIG, BUT_SIZE_BIG));
   ui->fluidInjectionButton->setStyleSheet(ToolButtonStyleSheet);
   ui->fluidInjectionButton->hide();
@@ -658,7 +659,7 @@ void MainPage::stopSession()
 
   mCurrentGraphsArea->removeAllGraphs();
   ui->intervalButton->setIcon(QIcon(":/icons/startInterval1.svg"), QIcon(":/icons/startInterval1_pressed.svg"));
-  ui->fluidInjectionButton->setIcon(QIcon(":/icons/func1.svg"), QIcon(":/icons/func1_pressed.svg"));
+  ui->fluidInjectionButton->setIcon(QIcon(":/icons/fluidInjection.svg"), QIcon(":/icons/fluidInjection_pressed.svg"));
 }
 void MainPage::on_sessionButton_clicked()
 {
@@ -693,7 +694,7 @@ void MainPage::on_intervalButton_clicked()
   ui->markPPointButton        ->setEnabled(false);
   ui->fluidInjectionButton    ->setEnabled(false);
 
-
+  isIntervalCreating = true;
   mCurrentGraphsArea->addIntervalOnRecordedGraph();
   if (isIntervalCreating)
   {
@@ -742,7 +743,7 @@ void MainPage::on_acceptIntervalButton_clicked()
 
     mCurrentGraphsArea->addOrDeleteNewItem(true);
 
-    const QString intervalDataPreset = tr("Максимум\n%1\nСреднее\n%2"); //перевести потом
+    const QString intervalDataPreset = tr("Максимум\n%1\nСреднее\n%2");
 
     if (mIntervalsCount % 2 == 0)
     {
@@ -1051,8 +1052,9 @@ void MainPage::on_fluidInjectionButton_clicked()
 {
     isFluidIntervalCreating = true;
 
-    ui->acceptIntervalButton    ->show();
-    ui->rejectIntervalButton    ->show();
+    ui->acceptFluidInjectionButton    ->show();
+    ui->rejectFluidInjectionButton    ->show();
+
     ui->makeLabelButton         ->setEnabled(false);
     ui->sessionButton           ->setEnabled(false);
     ui->goToPreviousMarkButton  ->setEnabled(false);
@@ -1069,9 +1071,9 @@ void MainPage::on_fluidInjectionButton_clicked()
     ui->markPPointButton        ->setEnabled(false);
     ui->intervalButton          ->setEnabled(false);
 
-
+    isFluidIntervalCreating = true;
     mCurrentGraphsArea->addIntervalOnRecordedGraph();
-    if (isIntervalCreating)///////
+    if (isFluidIntervalCreating)///////
     {
       ui->fluidInjectionButton->setEnabled(false);
     }
@@ -1080,10 +1082,8 @@ void MainPage::on_fluidInjectionButton_clicked()
 
 void MainPage::on_acceptFluidInjectionButton_clicked()
 {
-    mFluidMarksCounter++;
-
-    ui->acceptIntervalButton  ->hide();
-    ui->rejectIntervalButton  ->hide();
+    ui->acceptFluidInjectionButton    ->hide();
+    ui->rejectFluidInjectionButton    ->hide();
     ui->makeLabelButton       ->setEnabled(true);
     ui->sessionButton         ->setEnabled(true);
     ui->goToInterval1Button   ->setEnabled(true);
@@ -1098,15 +1098,16 @@ void MainPage::on_acceptFluidInjectionButton_clicked()
     ui->zoomInterval2Button   ->setEnabled(true);
     ui->dVInputButton         ->setEnabled(true);
     if (mIntervalsCount == 4) {ui->markPPointButton    ->setEnabled(true);}
-
+qDebug() << "mFluidMarksCounter" << mFluidMarksCounter;
     mCurrentGraphsArea->addOrDeleteNewItem(true);
     if (mFluidMarksCounter == 1)
     {
-        ui->fluidInjectionButton->setIcon(QIcon(":/icons/func2.svg"), QIcon(":/icons/func2_pressed.svg"));
+        ui->fluidInjectionButton->setIcon(QIcon(":/icons/fluidInjectionEnd.svg"), QIcon(":/icons/fluidInjectionEnd_pressed.svg"));
     }
-    else
+    else if (mFluidMarksCounter == 2)
     {
-        mCurrentGraphsArea->colorInterval();
+        //mCurrentGraphsArea->colorInterval();
+        mCurrentGraphsArea->mRecordedGraph->addFluidInterval();
         ui->fluidInjectionButton->hide();
     }
     if (ui->labelsNavigation->text() != "0/0")
@@ -1119,8 +1120,8 @@ void MainPage::on_acceptFluidInjectionButton_clicked()
 
 void MainPage::on_rejectFluidInjectionButton_clicked()
 {
-    ui->acceptIntervalButton  ->hide();
-    ui->rejectIntervalButton  ->hide();
+    ui->acceptFluidInjectionButton    ->hide();
+    ui->rejectFluidInjectionButton    ->hide();
     ui->makeLabelButton       ->setEnabled(true);
     ui->sessionButton         ->setEnabled(true);
     ui->goToInterval1Button   ->setEnabled(true);
@@ -1141,7 +1142,7 @@ void MainPage::on_rejectFluidInjectionButton_clicked()
       ui->goToPreviousMarkButton  ->setEnabled(true);
       ui->goToNextMarkButton      ->setEnabled(true);
     }
-    //mIntervalsCount--;
+    mFluidMarksCounter--;
     mCurrentGraphsArea->addOrDeleteNewItem(false);
 }
 

@@ -14,6 +14,8 @@ float mCurrentMaxYRange;
 float mRecordedMaxXRange {60};
 float mRecordedMaxYRange {60};
 extern QString globalFolder;
+extern float Po;
+extern float Pk;
 QFile mTestData(":/testData.txt");
 RecordedPlot::RecordedPlot(QWidget *parent):
     AbstractCustomPlot(GraphType::RecordedGraph, parent),
@@ -104,6 +106,7 @@ QPair<int, int> RecordedPlot::addInterval(uint8_t num, QColor color)
     pen.setWidthF(mThicknessOfMainGraph);
 
     // Устанавливаем браш и ручку для отрисовки основного графика
+
     if (num == 2)
     {
         mIntervalFirst = addGraph();
@@ -124,14 +127,9 @@ QPair<int, int> RecordedPlot::addInterval(uint8_t num, QColor color)
     layer("intervalLayer")->setMode(QCPLayer::lmBuffered);
 
     QVector<float> temp;
-    //for (int i=0; i<mRecordedData.count(); i++)
-//    for (uint i=0; i<mSizeAllRecordedData; i++)
     for (int i=0; i<mMainGraph->data()->size(); i++)
     {
-        //temp.push_back(mRecordedData[i].first);
-        //qDebug() << "mRecordedData[i].first" << mRecordedData[i].first;
-        //temp.push_back((float)mAllRecordedDataBuffer[i].timeStamp/1000);
-        qDebug() << mMainGraph->data()->at(i)->key;
+        //qDebug() << mMainGraph->data()->at(i)->key;
         temp.push_back(mMainGraph->data()->at(i)->key);
     }
 
@@ -191,6 +189,130 @@ qDebug() << "t2" << t2;
     return qMakePair(first*1000, second*1000);
     //return qMakePair(indexStart, indexStop); // индексы записанного гррафика, каждые 40 мс
 }
+
+void RecordedPlot::addFluidInterval()
+{
+    // Подготавливаем кисть
+    QBrush brush;
+    brush.setStyle(Qt::NoBrush);
+
+    // Подготавливаем ручку
+    QPen pen;
+    pen.setColor(Qt::gray);
+    pen.setCapStyle(Qt::SquareCap);
+    pen.setJoinStyle(Qt::MiterJoin);
+    pen.setStyle(Qt::SolidLine);
+    pen.setWidthF(mThicknessOfMainGraph);
+
+    // Устанавливаем браш и ручку для отрисовки основного графика
+
+    mFluidInjection = addGraph();
+    mFluidInjection->setAntialiased(true);
+    mFluidInjection->setAdaptiveSampling(true);
+    mFluidInjection->setPen(pen);
+    mFluidInjection->setBrush(brush);
+
+    layer("intervalLayer")->setMode(QCPLayer::lmBuffered);
+
+    QVector<float> temp;
+    for (int i=0; i<mMainGraph->data()->size(); i++)
+    {
+        temp.push_back(mMainGraph->data()->at(i)->key);
+    }
+
+    float t1 = (float)mFluidMarkContainer[0]->mIntervalPos/1000.0;
+    float t2 = (float)mFluidMarkContainer[1]->mIntervalPos/1000.0;
+qDebug() << "t1" << t1;
+qDebug() << "t2" << t2;
+    float first = 0.0;
+    float second = 0.0;
+
+    for (int i=0; i<=temp.count(); i++) //25 показаний в секунду
+    {
+        if (temp[i] <= t1)
+        {
+            first = temp[i];
+        }
+        else if (temp[i] >= t2)
+        {
+            second = temp[i];
+            break;
+        }
+
+    }
+    qDebug() << "first" << first;
+    qDebug() << "second" << second;
+
+    int indexStart = temp.indexOf(first);
+    int indexStop = temp.indexOf(second);
+    qDebug() << "t1" << t1 << "indexStart" << indexStart;
+    qDebug() << "t2" << t2 << "indexStop" << indexStop;
+
+    for (int i=indexStart; i<=indexStop; i++)
+    {
+        mFluidMarkContainer[0]->averageIntervalValue += mMainGraph->data()->at(i)->value;
+
+        mFluidInjection->addData(mMainGraph->data()->at(i)->key, mMainGraph->data()->at(i)->value);
+    }
+    mFluidMarkContainer[0]->averageIntervalValue /= (indexStop - indexStart + 1);
+
+    int pointFirst = first*1000;
+    int pointSecond = second*1000;
+  qDebug() << "1=" << pointFirst << "2=" << pointSecond;
+    //500 50
+    if (isDownloadGraph)
+    {
+      pointFirst= (pointFirst - (pointFirst % 2)) * 0.3;
+      pointSecond = (pointSecond  - (pointSecond % 2)) * 0.3 ;
+    }
+    else
+    {
+      pointFirst= (pointFirst - (pointFirst % 2)) * 3;
+      pointSecond = (pointSecond  - (pointSecond % 2)) * 3 ;
+    }
+
+    uint iterTemp = ((pointSecond-pointFirst)/6) + 1;
+
+    _mSPIData *tempArr = new _mSPIData[iterTemp];
+    QFile *currFile;
+    float param = 1.0;
+    if (isDownloadGraph)
+    {
+        currFile = &mTestData;
+    }
+    else
+    {
+        currFile = &mRawDataFile;
+        param *= 0.001;
+    }
+    qDebug() << "param" << param;
+    currFile->open(QIODevice::ReadOnly);
+    currFile->seek(pointFirst);
+    currFile->read((char*)tempArr, iterTemp*6);
+    currFile->close();
+
+    if (mICPSettings->getCurrentPressureIndex() == 1)
+    {
+      param = indexPressureH2O;
+    }
+    Po = (float)tempArr[0].data*param;
+    qDebug() << "dopustim Po" << Po;
+    for (uint i=0; i<iterTemp; i++)
+    {
+        qDebug() << (float)tempArr[i].data*param;
+        if (mFluidMarkContainer[0]->maxIntervalValue < (float)tempArr[i].data*param)
+        {
+            mFluidMarkContainer[0]->maxIntervalValue =  (float)tempArr[i].data*param;
+        }
+        else if (Po > (float)tempArr[i].data*param)
+        {
+            Po = (float)tempArr[i].data*param;
+        }
+    }
+    Pk = mFluidMarkContainer[0]->maxIntervalValue;
+    delete[] tempArr;
+}
+
 
 void RecordedPlot::saveDataForGraphic(unsigned int  x, unsigned int  y)//const ComplexValue &complexVal)
 {

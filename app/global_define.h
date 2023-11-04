@@ -25,6 +25,7 @@
 extern uint64_t startTimeStampRecord;
 extern bool isLabelCreating;
 extern bool isIntervalCreating;
+extern bool isFluidIntervalCreating;
 extern uint32_t mCoordLabelX;
 extern uint8_t mIntervalsCount;
 extern uint16_t mCurrentLabelIndex;

@@ -89,6 +89,7 @@ void AbstractMultipleGraphsAreasWidget::changeGraph(uint8_t number)
 
     isLabelCreating = false;
     isIntervalCreating = false;
+    isFluidIntervalCreating = false;
 
     // Устанавливаем тип отображаемого графика
     mDisplayedGraph = graph->type();

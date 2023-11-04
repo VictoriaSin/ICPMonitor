@@ -16,6 +16,10 @@ extern QVector<LabelMarkItem *> mLabelItemsContainer;
 extern MarkItem * mIntervalsContainer[4];
 extern uint8_t mCurrentIntervalNum;
 
+extern bool isFluidIntervalCreating;
+extern uint8_t mFluidMarksCounter;
+extern MarkItem* mFluidMarkContainer[2];
+
 class AbstractCustomPlot : public QCustomPlot
 {
 public:
@@ -140,6 +144,7 @@ protected:
     float mOptimizeLabelsKoeff {0.05};
     bool editLabel(QMouseEvent *mouseEvent);
     bool editInterval(QMouseEvent *mouseEvent);
+    bool editFluidInterval(QMouseEvent *mouseEvent);
     bool editAxisRange(QMouseEvent *mouseEvent, float minX, float maxX, float maxY);
 #else
     /*! Коэффициент для рассчёта шага скрытия элементов */
@@ -148,6 +153,7 @@ protected:
     bool editInterval(QTouchEvent *mouseEvent);
     bool editAxisRange(QTouchEvent *mouseEvent, float minX, float maxX, float maxY);
 #endif
+
 
 };
 
