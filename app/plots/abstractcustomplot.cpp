@@ -368,6 +368,59 @@ bool AbstractCustomPlot::editInterval(QTouchEvent *touchEvent)
     return false;
 }
 
+bool AbstractCustomPlot::editFluidInterval(QTouchEvent *touchEvent) // new func
+{
+    const auto typeOfEvent = touchEvent->type();
+    static bool isLabelDrag = false;
+    if((typeOfEvent == QEvent::TouchBegin) || (typeOfEvent == QEvent::TouchEnd) || (typeOfEvent == QEvent::TouchUpdate) )
+    {
+        if (typeOfEvent == QEvent::TouchBegin)
+        {
+            labelMoved = true;
+            isLabelDrag = false;
+            pointStart = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x())*1000;
+            return true;
+        }
+        if ((typeOfEvent == QEvent::TouchUpdate) && (labelMoved == true))
+        {
+            isLabelDrag = true;
+            pointStop = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x())*1000;
+            int32_t deltaX = pointStop - pointStart;
+            if (abs(deltaX) > 2)
+            {
+                if (mFluidMarksCounter == 2)
+                {
+                    auto ttt = (mFluidMarkContainer[mFluidMarksCounter-1]->mIntervalPos + deltaX);
+                    if (ttt <= (mFluidMarkContainer[mFluidMarksCounter-2]->mIntervalPos)) { return true; }
+                }
+
+                pointStart = pointStop;
+                mFluidMarkContainer[mFluidMarksCounter-1]->mIntervalPos += deltaX;
+                mFluidMarkContainer[mFluidMarksCounter-1]->replotLine();
+            }
+            return true;
+        }
+        if (typeOfEvent == QEvent::TouchEnd)
+        {
+            pointStop = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x())*1000;
+            labelMoved = false;
+            if ((pointStart == pointStop) && (isLabelDrag == false))
+            {
+                if (mFluidMarksCounter == 2)
+                {
+                    if (pointStart <= (mFluidMarkContainer[mFluidMarksCounter-2]->mIntervalPos)) { return true; }
+                }
+                mFluidMarkContainer[mFluidMarksCounter-1]->mIntervalPos = pointStart;
+                mFluidMarkContainer[mFluidMarksCounter-1]->replotLine();
+            }
+            isLabelDrag = false;
+            return true;
+        }
+    }
+    return false;
+}
+
+
 bool AbstractCustomPlot::editAxisRange(QTouchEvent *touchEvent, float minX, float maxX, float maxY)
 {
     const auto typeOfEvent = touchEvent->type();
@@ -498,6 +551,10 @@ bool AbstractCustomPlot::event(QEvent *event)
         else if (isIntervalCreating == true)
         {
             if (editInterval((QTouchEvent*)event)) return true;
+        }
+        else if (isFluidIntervalCreating == true)
+        {
+            if (editFluidInterval((QTouchEvent*)event)) return true; // new func
         }
         else
         {

@@ -588,7 +588,8 @@ void CurrentGraphsArea::addIntervalOnRecordedGraph()
     float newIntervalPos = 0.0;
 qDebug() << "interval count" << mIntervalsCount;
 qDebug() << "fluid count" << mFluidMarksCounter;
-    if ((mIntervalsCount % 2 == 0) || (mFluidMarksCounter == 0))
+
+    if (((mIntervalsCount % 2 == 0)&& isIntervalCreating) || ((mFluidMarksCounter == 0)&&(isFluidIntervalCreating)))
     {
         newIntervalPos = mRecordedGraph->xAxis->range().lower + mRecordedGraph->xAxis->range().size()*0.1;
     }

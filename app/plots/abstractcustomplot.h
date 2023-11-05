@@ -149,9 +149,10 @@ protected:
 #else
     /*! Коэффициент для рассчёта шага скрытия элементов */
     float mOptimizeLabelsKoeff {0.025};
-    bool editLabel(QTouchEvent *mouseEvent);
-    bool editInterval(QTouchEvent *mouseEvent);
-    bool editAxisRange(QTouchEvent *mouseEvent, float minX, float maxX, float maxY);
+    bool editLabel(QTouchEvent *touchEvent);
+    bool editInterval(QTouchEvent *touchEvent);
+    bool editFluidInterval(QTouchEvent *touchEvent);
+    bool editAxisRange(QTouchEvent *touchEvent, float minX, float maxX, float maxY);
 #endif
 
 
