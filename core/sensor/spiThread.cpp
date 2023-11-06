@@ -52,7 +52,7 @@ void spiThread::run()
       else { i-=1500; if (i == -6000) dir = true; }
 
     }
-    rawData = dataF[posData++] + amp + i;
+    rawData = dataF[posData++]  + i;//+ amp;
     posData %= 340;
     QThread::usleep(1600);                                                    // Спим
   }

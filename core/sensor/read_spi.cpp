@@ -60,6 +60,7 @@ void ReadSPI::run()
     stopTimeGraph = currentTime + TIME_INTERVAL_FOR_WRITE_ON_GRAPH;
     temp.timeStamp = (uint32_t)(currentTime - startTime);
     currData = (float)mSaveSPI->currMesuring.data*param/1000;
+    qDebug() << currData;
     mMainPage->setAverage(calcAverage(currData));
     mWaveGraph->addDataOnGraphic(temp.timeStamp, currData);
   }
