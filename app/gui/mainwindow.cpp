@@ -100,7 +100,6 @@ bool MainWindow::changeCurrentPage(IPageWidget *installedPage)
         ui->page->addWidget(mCurrentPage);
         mCurrentPage->show();
     }
-
     return mCurrentPage != nullptr;
 }
 void MainWindow::setZeroSensorPage()
@@ -168,7 +167,9 @@ void MainWindow::setPage(IPageWidget *installedPage)
 {
     // Заменяем текущую страницу на устанавливаемую, если возможно
     if (changeCurrentPage(installedPage)) {
+        qDebug() << installedPage << installedPage->isEnabled() << installedPage->isHidden();
         mStackOfWidgets.push(installedPage); // Добавляем в стек страниц
+        qDebug() << "mStackOfWidgets" << mStackOfWidgets << mStackOfWidgets.size();
     }
 }
 void MainWindow::setPreviousPage()

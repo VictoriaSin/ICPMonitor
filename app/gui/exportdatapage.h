@@ -37,6 +37,7 @@ private:
     uint arrSize = 0;
     QLabel* dirLabel {nullptr};
     QCheckBox *checkBox {nullptr};
+    QString part_ForSave;
 public slots:
     void retranslate() override;
     void done(int exodus) override;
@@ -47,6 +48,7 @@ protected:
     MessageDialog *mDeleteDirsDialog {nullptr};
     QPushButton *AcceptButton {nullptr};
     QPushButton *CancelButton {nullptr};
+    bool findFlash();
 protected slots:
     void selectAll();
     void clearSelection();

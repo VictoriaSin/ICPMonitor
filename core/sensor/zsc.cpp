@@ -234,6 +234,3 @@ void ZSC::initPins()
   qDebug() << "Pins init";
 #endif
 }
-
-
-

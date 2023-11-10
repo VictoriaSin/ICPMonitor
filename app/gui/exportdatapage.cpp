@@ -210,16 +210,58 @@ void ExportDataPage::clearSelection()
 
 void ExportDataPage::exportData()
 {
-    QCheckBox *currCheckBox{nullptr};
-    uint N = gridLayout->rowCount();
-    for (uint i=0; i<N; i++)
+    if (findFlash())
     {
-        currCheckBox = (QCheckBox*)gridLayout->itemAtPosition(i, 1)->widget();
-        if (currCheckBox->isChecked())
+        QCheckBox *currCheckBox{nullptr};
+        uint N = gridLayout->rowCount();
+        for (uint i=0; i<N; i++)
         {
-            //
+            currCheckBox = (QCheckBox*)gridLayout->itemAtPosition(i, 1)->widget();
+            if (currCheckBox->isChecked())
+            {
+                QString ttt = ((QLabel*)gridLayout->itemAtPosition(i, 0)->widget())->text();
+                qDebug() << executeAConsoleCommand("cp", QStringList() << "-R" << mntDirectory+"/"+ttt << "/dev/"+part_ForSave);
+            }
         }
     }
+}
+
+bool ExportDataPage::findFlash()
+{
+    QStringList mDevicesByUUIDList;
+    QStringList cmdAllDevList = executeAConsoleCommand("ls", QStringList() << "-l" << "/dev/disk/by-uuid").split("\n");
+    uint8_t tempIndex = 0;
+    QString rasdel;
+    QString UUID_ForSave;
+
+    for (uint8_t i = 1; i< cmdAllDevList.count()-1; i++)
+    {
+      tempIndex = cmdAllDevList[i].split(" ").indexOf("->");
+      if (!(cmdAllDevList[i].split(" ")[tempIndex-1].contains("-"))) //ntfs
+      {
+          // UUID + " " + rasdel
+        mDevicesByUUIDList.append(cmdAllDevList[i].split(" ")[tempIndex-1] + " " + cmdAllDevList[i].split(" ")[tempIndex+1].split("/")[2]);
+      }
+    }
+    if ((mDevicesByUUIDList.isEmpty()) || (mDevicesByUUIDList.size() == 1))
+    {
+        qDebug() << "NO FLASH";
+        return false;
+    }
+    else
+    {
+        for (uint8_t i = 0; i< mDevicesByUUIDList.count(); i++)
+        {
+            if (mDevicesByUUIDList[i].split(" ")[0] != mICPSettings->getSoftwareStorageUUID())
+            {
+                UUID_ForSave = mDevicesByUUIDList[i].split(" ")[0];
+                part_ForSave = mDevicesByUUIDList[i].split(" ")[1];
+                qDebug() << "UUID" << UUID_ForSave << "part" << part_ForSave;
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 void ExportDataPage::deleteDirs()

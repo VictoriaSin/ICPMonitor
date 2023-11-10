@@ -296,11 +296,12 @@ int main(int argc, char *argv[])
 
   // fbset --geometry 720 480 720 480 16 --timings 37037 60 16 30 9 62 6
   QString ttt = executeAConsoleCommand("fbset", QStringList() << "--geometry" << "720" << "480" << "720" << "480" << "16" << "--timings" << "37037" << "60" << "16" << "30" << "9" << "62" << "6");
-  qDebug() << ttt;
+  //qDebug() << ttt;
 
   // Получение настроек из контроллера
 #ifdef PC_BUILD
-  mICPSettings = new Settings("ICPMonitorSettings.ini");
+  //mICPSettings = new Settings("ICPMonitorSettings.ini");
+  mICPSettings = new Settings("/opt/ICPMonitor/bin/ICPMonitorSettings.ini");
 #else
   mICPSettings = new Settings("/opt/ICPMonitor/bin/ICPMonitorSettings.ini");
 #endif
@@ -314,6 +315,8 @@ int main(int argc, char *argv[])
   QString currRasdel = mICPSettings->getFlashDeviceMountPart();
   //qDebug() << currRasdel;
   mount(&currUUID, &currRasdel);
+  mICPSettings->setSoftwareStorageUUID(currUUID);
+  mICPSettings->writeAllSetting();
   Q_INIT_RESOURCE(core_res);
   // Игнорируемые события тача автоматически переопределять в MouseEvent
   QCoreApplication::setAttribute(Qt::AA_SynthesizeTouchForUnhandledMouseEvents, true);
