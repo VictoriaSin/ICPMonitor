@@ -14,7 +14,7 @@
 #include <QAbstractButton>
 #include <QDebug>
 #include <QPushButton>
-#include <QTimer>
+//#include <QTimer>
 
 MainMenu::MainMenu(QWidget *parent) :
     AbstractMenuPage(parent)

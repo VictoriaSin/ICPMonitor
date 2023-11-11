@@ -87,7 +87,7 @@ RecordedPlot::RecordedPlot(QWidget *parent):
 
 RecordedPlot::~RecordedPlot()
 {
-    qDebug() << "exit";
+    qDebug() << "RecordedPlot::~RecordedPlot";
     mRecordedData.clear();
 }
 

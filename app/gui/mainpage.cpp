@@ -358,8 +358,8 @@ void MainPage::scaleFont(float scaleFactor)
 //  WFontScaling(ui->speedRecordButton, scaleFactor);
 //  WFontScaling(ui->rewindRecordButton,scaleFactor);
   //WFontScaling(ui->playRecord,        scaleFactor);
-  WFontScaling(ui->dVInputButton,     scaleFactor);
-  WFontScaling(ui->markPPointButton,     scaleFactor);
+  WFontScaling(ui->dVInputButton,      scaleFactor);
+  WFontScaling(ui->markPPointButton,   scaleFactor);
 
 }
 void MainPage::updateDateTime()

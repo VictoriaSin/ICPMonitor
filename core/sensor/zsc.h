@@ -294,7 +294,9 @@ class ZSC
     void test(u16 iter, u32 delay_ms);
     u16 data[2];
 #ifndef PC_BUILD
+#ifndef TEST_BUILD
     void spi_oneShot();
+#endif
 #endif
     void resetRegsValues();
     int mFd {-1};

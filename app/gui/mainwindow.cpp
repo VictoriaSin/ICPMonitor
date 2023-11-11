@@ -29,20 +29,22 @@ MainWindow::MainWindow( QWidget *parent) : QWidget(parent) , ui(new Ui::MainWind
     mController->moveToThread(&mControllerThread);
     mControllerThread.start();
 
-#ifndef PC_BUILD
+#ifdef RELEASE_BUILD
     mController->controllerEvent(ControllerEvent::GlobalTimeUpdate);
 #endif
 }
 MainWindow::~MainWindow()
 {
     delete ui;
+    qDebug() << "MainWindow::~MainWindow()";
+
 }
 void MainWindow::destroyMonitorController()
 {
-  //qDebug("Try DESTROY_CLASS(mMainPage)");
-  //DESTROY_CLASS(mMainPage);
-  //qDebug("DESTROY_CLASS(mMainPage)");
-  QTimer::singleShot(100, [this]()
+
+  DESTROY_CLASS(mMainPage);
+
+  QTimer::singleShot(500, [this]()
   {
     DESTROY_CLASS(mController);
     mControllerThread.quit();
@@ -58,14 +60,15 @@ void MainWindow::installController(MonitorController *controller)
     mMainPage->installController(mController);
     // Обработка событий контроллера
     connect(mController, &MonitorController::controllerEvent, this, &MainWindow::controllerEventHandler);
-    retranslate();
+    mMainPage->retranslate();
+    mMessageDialog->retranslate();
     scaleFonts();
     setZeroSensorPage();
 }
 void MainWindow::retranslate()
 {
-    mMainPage->retranslate();
-    mMessageDialog->retranslate();
+    //mMainPage->retranslate();
+    //mMessageDialog->retranslate();
 }
 void MainWindow::scaleFonts()
 {
@@ -167,9 +170,9 @@ void MainWindow::setPage(IPageWidget *installedPage)
 {
     // Заменяем текущую страницу на устанавливаемую, если возможно
     if (changeCurrentPage(installedPage)) {
-        qDebug() << installedPage << installedPage->isEnabled() << installedPage->isHidden();
+        //qDebug() << installedPage << installedPage->isEnabled() << installedPage->isHidden();
         mStackOfWidgets.push(installedPage); // Добавляем в стек страниц
-        qDebug() << "mStackOfWidgets" << mStackOfWidgets << mStackOfWidgets.size();
+        //qDebug() << "mStackOfWidgets" << mStackOfWidgets << mStackOfWidgets.size();
     }
 }
 void MainWindow::setPreviousPage()
@@ -182,9 +185,14 @@ void MainWindow::setPreviousPage()
 }
 void MainWindow::changeEvent(QEvent *event)
 {
-    if (event->type() == QEvent::LanguageChange) {
-        retranslate();
-    } else {
+    if (event->type() == QEvent::LanguageChange)
+    {
+        mMainPage->retranslate();
+        mMessageDialog->retranslate();
+        //retranslate();
+    }
+    else
+    {
         QWidget::changeEvent(event);
     }
 }

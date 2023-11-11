@@ -46,7 +46,9 @@ ExportDataPage::ExportDataPage(QWidget *parent) :
     connect(AcceptButton, &QPushButton::clicked, this, &ExportDataPage::deleteDirs);
     connect(CancelButton, &QPushButton::clicked, mDeleteDirsDialog, &QDialog::reject);
 
-
+    flashTimer.setInterval(2000);
+    connect(&flashTimer, &QTimer::timeout, this, &ExportDataPage::findFlash);
+    ui->downloadButton->setEnabled(false);
 
 }
 #define CORRECTDELETE(_item)\
@@ -97,7 +99,14 @@ void ExportDataPage::retranslate()
 
 void ExportDataPage::done(int exodus)
 {
-    if (exodus != QDialog::Accepted) {
+    if (exodus != QDialog::Accepted)
+    {
+        flashTimer.stop();
+        mFlashStatusLabel->hide();
+        //if (executeAConsoleCommand("umount", QStringList() << "/dev/"+part_ForSave) != "")
+        {
+                qDebug() << executeAConsoleCommand("umount", QStringList() << "/dev/"+part_ForSave);
+        }
         emit previousPage();
         return;
     }
@@ -110,6 +119,8 @@ void ExportDataPage::done(int exodus)
 void ExportDataPage::showEvent(QShowEvent */*event*/)
 {
     resetLayout();
+    flashTimer.start();
+    mFlashStatusLabel->show();
 }
 
 void ExportDataPage::resetLayout()
@@ -210,23 +221,56 @@ void ExportDataPage::clearSelection()
 
 void ExportDataPage::exportData()
 {
-    if (findFlash())
-    {
+    flashTimer.stop();
+    mFlashStatusLabel->setText("Exporting... Don't remove flash device");
+    if (isFlashAvailable)
+    {        
+        QString mntSaveDataDir("/media/ExportData");
+        QDir mSaveOnFlashDir(mntSaveDataDir);
+        if (!mSaveOnFlashDir.exists())
+        {
+            QString outputString = executeAConsoleCommand("mkdir", QStringList() << "-m" << "777" << mntSaveDataDir);
+            if (outputString != "")
+            {
+                qDebug() << "Result" << outputString;
+                return;
+            }
+        }
+        QString result = executeAConsoleCommand("mount", QStringList() << "/dev/"+part_ForSave << mntSaveDataDir);
+        if (result != "")
+        {
+          qDebug() << "Result" << result;
+          return;
+        }
         QCheckBox *currCheckBox{nullptr};
         uint N = gridLayout->rowCount();
+        uint inDirSize = 0;
+        uint outDirSize = 0;
+
+
         for (uint i=0; i<N; i++)
         {
             currCheckBox = (QCheckBox*)gridLayout->itemAtPosition(i, 1)->widget();
-            if (currCheckBox->isChecked())
-            {
-                QString ttt = ((QLabel*)gridLayout->itemAtPosition(i, 0)->widget())->text();
-                qDebug() << executeAConsoleCommand("cp", QStringList() << "-R" << mntDirectory+"/"+ttt << "/dev/"+part_ForSave);
+            QString ttt = ((QLabel*)gridLayout->itemAtPosition(i, 0)->widget())->text();
+            if (currCheckBox->isChecked())            {
+
+                qDebug() << executeAConsoleCommand("cp", QStringList() << "-R" << mntDirectory+"/"+ttt << mntSaveDataDir);
+                inDirSize = executeAConsoleCommand("du", QStringList() << "-s" << mntDirectory+"/"+ttt).split("\t")[0].toUInt();
+                qDebug() << inDirSize;
+                outDirSize = executeAConsoleCommand("du", QStringList() << "-s" << mntSaveDataDir+"/"+ttt).split("\t")[0].toUInt();
+                qDebug() << outDirSize;
+                if (inDirSize != outDirSize)
+                {
+                    currCheckBox->setChecked(false);
+                }
             }
-        }
+        }        
+        deleteDirs();
     }
+    flashTimer.start();
 }
 
-bool ExportDataPage::findFlash()
+void ExportDataPage::findFlash()
 {
     QStringList mDevicesByUUIDList;
     QStringList cmdAllDevList = executeAConsoleCommand("ls", QStringList() << "-l" << "/dev/disk/by-uuid").split("\n");
@@ -246,7 +290,9 @@ bool ExportDataPage::findFlash()
     if ((mDevicesByUUIDList.isEmpty()) || (mDevicesByUUIDList.size() == 1))
     {
         qDebug() << "NO FLASH";
-        return false;
+        mFlashStatusLabel->setText("No flash device");
+        isFlashAvailable = false;
+        ui->downloadButton->setEnabled(false);
     }
     else
     {
@@ -257,11 +303,12 @@ bool ExportDataPage::findFlash()
                 UUID_ForSave = mDevicesByUUIDList[i].split(" ")[0];
                 part_ForSave = mDevicesByUUIDList[i].split(" ")[1];
                 qDebug() << "UUID" << UUID_ForSave << "part" << part_ForSave;
-                return true;
+                mFlashStatusLabel->setText("Flash device: " + UUID_ForSave);
+                isFlashAvailable = true;
+                ui->downloadButton->setEnabled(true);
             }
         }
     }
-    return false;
 }
 
 void ExportDataPage::deleteDirs()
@@ -270,36 +317,21 @@ void ExportDataPage::deleteDirs()
     QCheckBox *currCheckBox {nullptr};
     QLabel *currDirLabel {nullptr};
     QDir *currDir {nullptr};
-    //int N = ui->gridLayout1->rowCount();
     uint N = arrSize;
-    //qDebug() << N;
     for (uint i=0; i<N; i++)
     {
-        //QWidget *t0 = gridLayout->itemAtPosition(i, 0)->widget();
-        //QWidget *t1 = gridLayout->itemAtPosition(i, 1)->widget();
-        //currCheckBox = nullptr;
         currCheckBox = (QCheckBox*)gridLayout->itemAtPosition(i, 1)->widget();
-//        QWidget * widget1;
-//        QWidget * widget2;
-        //qDebug() << currCheckBox;
         if (currCheckBox->isChecked())
         {
-            //qDebug() << i;
             currDirLabel = nullptr;
             currDirLabel = (QLabel*)gridLayout->itemAtPosition(i, 0)->widget();
             currDir = new QDir(mntDirectory+"/"+currDirLabel->text());
-
-            //delete dirsVector[i]->label;
-            //delete dirsVector[i]->checkBox;
             gridLayout->update();
-            //delete widget1;
-            //delete widget2;
             currDir->removeRecursively();
             delete currDir;
             currDir = nullptr;
         }
     }
-    //qDebug() << gridLayout->rowCount() << "end";
     resetLayout();
 }
 

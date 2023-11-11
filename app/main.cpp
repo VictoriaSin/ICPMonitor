@@ -181,11 +181,8 @@ u8 mount(QString *UUID, QString *rasdel)
 
 bool umount(QString *rasdel)
 {
-#ifdef PC_BUILD
-  if (executeAConsoleCommand("sudo", QStringList() << "umount" << "/dev/" + *rasdel) != "")// "/dev/sdc1") != "")
-#else
+#ifndef PC_BUILD
   if (executeAConsoleCommand("umount", QStringList() << "/dev/" + *rasdel) != "")// "/dev/sdc1") != "")
-#endif
   {
     qDebug() << "not umount" << mntDirectory;
     return false;
@@ -193,11 +190,7 @@ bool umount(QString *rasdel)
   else
   {
     qDebug() << "umount" << mntDirectory;
-#ifdef PC_BUILD
-    QString outRes = executeAConsoleCommand("sudo", QStringList() << "rm" << "-R" << mntDirectory);
-#else
     QString outRes = executeAConsoleCommand("rm", QStringList() << "-R" << mntDirectory);
-#endif
     if (outRes == "")
     {
       qDebug() << "Directory" << mntDirectory << "deleted";
@@ -208,6 +201,7 @@ bool umount(QString *rasdel)
       qDebug() << outRes;
     }
   }
+#endif
   return false;
 }
 
@@ -300,8 +294,7 @@ int main(int argc, char *argv[])
 
   // Получение настроек из контроллера
 #ifdef PC_BUILD
-  //mICPSettings = new Settings("ICPMonitorSettings.ini");
-  mICPSettings = new Settings("/opt/ICPMonitor/bin/ICPMonitorSettings.ini");
+  mICPSettings = new Settings("ICPMonitorSettings.ini");
 #else
   mICPSettings = new Settings("/opt/ICPMonitor/bin/ICPMonitorSettings.ini");
 #endif
@@ -334,8 +327,7 @@ int main(int argc, char *argv[])
   QCoreApplication::setOrganizationName(ORG_NAME);
   QCoreApplication::setApplicationVersion(version::VERSION_STRING2);
 
-#ifndef PC_BUILD
-#ifndef FOR_TEST_ONLY
+#ifdef RELEASE_BUILD
   uint8_t clockBuffer[7];
   if (getRTC(clockBuffer) == I2C_RESULT::I2C_OK)
   {
@@ -348,87 +340,13 @@ int main(int argc, char *argv[])
     exit(66);
   }
 #endif
-#endif
 
   MainWindow w;
   w.show();
   const int exitCode = a.exec();
-
-#ifndef PC_BUILD
-  if (executeAConsoleCommand("umount", QStringList() << "/dev/" + currRasdel) != "")
-  {
-    qDebug() << "umount error" << currRasdel;
-    exit (111);
-  }
-#endif
+  w.hide();
+  umount(&currRasdel);
   qDebug() << "Exit" << exitCode;
   return exitCode;
 }
-
-
-
-//QString outString = executeAConsoleCommand("cat", QStringList() << "/sys/kernel/debug/gpio");
-//QStringList parser = outString.split('\n');
-//for (const auto &line : parser)
-//{
-//    QStringList temp = line.split(' ');
-//    u8 cnt = temp.count();
-//    if (cnt > 1)
-//    {
-//    if (temp.at(1) == "gpio-25") {qDebug() << "25 find";  }
-//    if (temp.at(1) == "gpio-26") {qDebug() << "26 find";  }
-//    }
-//}
-
-
-
-
-
-// Формат хранения данных значений [TIME_OFFSET(4bytes)] [RAW_DATA(2bytes)] = 6bytes (LEN_RECORD)
-// currentBuffer = 1 or 2
-// 2 Буфера BUF_1[N * LEN_RECORD] BUF_2[N * LEN_RECORD]
-// Записали запись currentPos++
-// if (currentPos == MAX_CNT_RECORD)
-// {
-//  if (currentBufferRecord == 1)  {currentBufferRecord = 2;}
-//  else {currentBufferRecord = 1; }
-//  sendEvent(needSaveBaseRecords);
-// }
-// Папка по времени и дате записи
-// Отдельно файл записи
-// файл для заметок
-// файл для интервалов
-// сырые данные
-
-
-
-//#define MAX_CNT_RECORD 300
-//typedef struct
-//{
-//  uint32_t timeOffset;
-//  uint16_t rawData;
-//}_recordFields;
-
-//typedef struct
-//{
-//   _recordFields field[MAX_CNT_RECORD];
-//   uint16_t currentPos;
-//}_bufferRecord;
-
-//uint8_t currentBufferRecord = 1;
-//_bufferRecord bufferRecord_1, bufferRecord_2;
-
-
-//int errCode = mount(&currUUID, &currRasdel);
-//qDebug() << errCode;
-
-//exit(0);
-
-//if (errCode != 0) { exit(7); };
-
-//executeAConsoleCommand("chmod", QStringList() << "-R" << "777" << "/media/ICPMonitor");
-
-//mICPSettings->setSoftwareStorageUUID(currUUID);
-//mICPSettings->writeAllSetting();
-//exit(10);
 

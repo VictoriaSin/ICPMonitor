@@ -95,7 +95,10 @@ void DateTimePage::done(int exodus)
         mCurrDateTime[5] = ((ttt[3].toLatin1() - 0x30) << 4) + ttt[4].toLatin1() - 0x30;
         mCurrDateTime[4] = ((ttt[6].toLatin1() - 0x30) << 4) + ttt[7].toLatin1() - 0x30;
         qDebug() << mCurrDateTime[6] << mCurrDateTime[5]  << mCurrDateTime[4] << mCurrDateTime[2] << mCurrDateTime[1];
-#ifdef TEST_BUILD
+
+
+
+#ifdef RELEASE_BUILD
         setRTC(mCurrDateTime);
 #else
         setDateTime(mCurrDateTime);
@@ -103,11 +106,6 @@ void DateTimePage::done(int exodus)
 #endif
         ui->inputTimeSpinBox->setTime(QTime::currentTime());// dateTime.time());
         ui->inputDateSpinBox->setDate(QDate::currentDate());// dateTime.date());
-        //getRTC(mCurrDateTime);
-//        if (okTime && okDate) {
-//            ti.setHMS(ti.hour(), ti.minute(), 0); // Обнуляем секунды
-//            QTimer::singleShot(0, mController, [this, da, ti]() { mController->setDateTime(QDateTime(da, ti).toSecsSinceEpoch()); });
-//        }
         mController->controllerEvent(ControllerEvent::GlobalTimeUpdate);
     }
     emit previousPage();

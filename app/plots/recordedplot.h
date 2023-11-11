@@ -12,7 +12,7 @@ class MonitorController;
 extern bool isPlayRecord;
 extern bool isDownloadGraph;
 extern QFile mRawDataFile;
-//extern QFile mTestData;
+
 
 class RecordedPlot : public AbstractCustomPlot
 {
@@ -32,8 +32,6 @@ public:
     //bool event(QEvent *event) override;
     explicit RecordedPlot(QWidget *parent = nullptr);
     ~RecordedPlot();
-
-    //float mCurrentMaxXRange {60};
 
     /*! Добавление данных для отображения на графике */
     void saveDataForGraphic(unsigned int  x, unsigned int  y);//(const ComplexValue &complexVal);
@@ -56,12 +54,6 @@ public:
     uint64_t avgBenchTime = 0;
     int benchCount = 0;
 //#endif
-
-    /*! Менеджер меток */
-    //LabelManager *mLabelManager {nullptr};
-
-    /*! Установка менеджера меток */
-    //void setLabelManager(LabelManager *labelManager);
 
 private:
     u32 pointStart;

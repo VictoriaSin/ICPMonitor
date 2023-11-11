@@ -6,7 +6,7 @@
 #include "controller/controller_enums.h"
 #include <QThread>
 #include "controller/monitorcontroller.h"
-
+#include "gui/zerosensorpage.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

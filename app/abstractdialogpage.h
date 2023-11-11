@@ -2,6 +2,7 @@
 #define ABSTRACTDIALOGPAGE_H
 
 #include "ipagewidget.h"
+#include <QLabel>
 
 class MonitorController;
 class QSvgWidget;
@@ -36,6 +37,8 @@ public:
 
     /*! Установка изображения для кнопки подтвердить */
     void setIconAcceptButton(const QIcon &defaultIcon, const QIcon &pressedIcon);
+
+    QLabel* mFlashStatusLabel;
 
 private:
     /*! Настройка кнопки подтвердить */

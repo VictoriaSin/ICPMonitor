@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QCheckBox>
 #include <QPushButton>
+#include <QTimer>
 
 struct dirsItem
 {
@@ -38,6 +39,7 @@ private:
     QLabel* dirLabel {nullptr};
     QCheckBox *checkBox {nullptr};
     QString part_ForSave;
+    QTimer flashTimer;
 public slots:
     void retranslate() override;
     void done(int exodus) override;
@@ -48,13 +50,14 @@ protected:
     MessageDialog *mDeleteDirsDialog {nullptr};
     QPushButton *AcceptButton {nullptr};
     QPushButton *CancelButton {nullptr};
-    bool findFlash();
+    bool isFlashAvailable {false};
+
 protected slots:
     void selectAll();
     void clearSelection();
     void exportData();
     void deleteDirs();
-
+    void findFlash();
 };
 
 #endif // EXPORTDATAPAGE_H

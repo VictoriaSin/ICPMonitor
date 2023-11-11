@@ -12,6 +12,9 @@ AbstractDialogPage::AbstractDialogPage(QWidget *parent) :
     mSvgIcon(new QSvgWidget(this))
 {
     ui->setupUi(this);
+    mFlashStatusLabel = ui->flashStatusLabel;
+    mFlashStatusLabel->setObjectName("mFlashStatusLabel");
+    mFlashStatusLabel->hide();
 
     // Настройка кнопок
     setupAcceptButton();
@@ -77,7 +80,8 @@ void AbstractDialogPage::setupRejectButton()
 void AbstractDialogPage::scaleFont(float scaleFactor)
 {
     WFontScaling(ui->namePageLabel, scaleFactor);
-    WFontScaling(ui->infoLabel, scaleFactor);
+    WFontScaling(ui->infoLabel, scaleFactor);    
+    WFontScaling(ui->flashStatusLabel,   scaleFactor);
 }
 
 void AbstractDialogPage::installController(MonitorController *controller)

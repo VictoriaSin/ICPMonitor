@@ -33,8 +33,7 @@ ZSC::ZSC()
 }
 void ZSC::initZSC()
 {
-#ifndef PC_BUILD
-
+#ifdef RELEASE_BUILD
   bool result;
   QThread::msleep(100);
   result = spi_open(); if (result == false) { qDebug() << "errror spi_open()"; return; }
@@ -67,7 +66,7 @@ qDebug() << "1";
 }
 void ZSC::resetRegsValues()
 {
-#ifndef PC_BUILD
+#ifdef RELEASE_BUILD
     resetZSC();
     SPI_CMD(START_CM);
     for (uint i=0; i<32; i++)
@@ -81,7 +80,7 @@ void ZSC::resetRegsValues()
 }
 void ZSC::terminate()
 {
-#ifndef PC_BUILD
+#ifdef RELEASE_BUILD
   spi_close();
 #endif
 }
@@ -162,7 +161,7 @@ bool ZSC::spi_saveReg(u8 reg, u16 data, u8 memType)
   CS_H();
 }
 
-#ifndef PC_BUILD
+#ifdef RELEASE_BUILD
 void ZSC::spi_oneShot()
 {
   CS_L();
@@ -176,6 +175,7 @@ void ZSC::spi_oneShot()
 
 }
 #endif
+
 u16 ZSC::signature(u16* eepcont, u16 N)
 {
   u16 sign, poly, p, x, i, j;
@@ -192,7 +192,7 @@ u16 ZSC::signature(u16* eepcont, u16 N)
 }
 void ZSC::resetZSC()
 {
-#ifndef PC_BUILD
+#ifdef RELEASE_BUILD
   FILE *fpReset_2 = nullptr;
   fpReset_2=fopen(GPIO_PIN_PATH_RESET"/value","w");
   fprintf(fpReset_2,"1");
@@ -207,7 +207,7 @@ void ZSC::resetZSC()
 }
 void ZSC::initPins()
 {
-#ifndef PC_BUILD
+#ifdef RELEASE_BUILD
   FILE *fpReset = nullptr;
   fpReset=fopen(GPIO_PIN_PATH_RESET"/direction","w");
   fprintf(fpReset,"out");

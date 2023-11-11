@@ -15,7 +15,7 @@
 #include <QDebug>
 #include <QCoreApplication>
 
-#ifndef PC_BUILD
+#ifdef RELEASE_BUILD
 class ZSC;
 extern ZSC mZSC;
 #endif
@@ -392,9 +392,9 @@ qDebug() << "ToisPressureUnitsChanged" << isPressureUnitsChanged;
         //qDebug() << tempRegs[i];
     }
     mICPSettings->setRegsValues(tempRegs);
-    #ifndef PC_BUILD
+#ifdef RELEASE_BUILD
     mZSC.resetRegsValues();
-    #endif
+#endif
 
 
 }

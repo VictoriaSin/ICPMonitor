@@ -11,8 +11,47 @@ spiThread::spiThread(int ptrSpiDevice) : QThread{}
   isStopped = true;
   isRunning = false;
 }
-#ifdef PC_BUILD
 
+
+#ifdef RELEASE_BUILD
+void spiThread::run()
+{
+  u8 txBuffer[2];
+  u8 rxBuffer[4];
+  struct spi_ioc_transfer mMessageTX;
+  struct spi_ioc_transfer mMessageRX;
+
+  memset((char*)&mMessageTX, 0, sizeof(mMessageTX));
+  mMessageTX.tx_buf         = (unsigned long)&txBuffer;
+  mMessageTX.speed_hz       = 500000;
+  mMessageTX.bits_per_word  = 8;
+
+  memset((char*)&mMessageRX, 0, sizeof(mMessageRX));
+  mMessageRX.rx_buf         = (unsigned long)&rxBuffer;
+  mMessageRX.speed_hz       = 500000;
+  mMessageRX.bits_per_word  = 8;
+
+
+  qDebug("Thread spiThread is running");
+  isStopped = false;
+  isRunning = true;
+  CS_L();                                                                     // Старт SPI
+  txBuffer[0] = SLAVE_ADDR_R;
+  mMessageTX.len = 1;
+  if (ioctl(mFd, SPI_IOC_MESSAGE(1), &mMessageTX) < 1) { CS_H(); return; }    // Делаем один запрос
+  mMessageRX.len = 4;
+
+  while(isRunning)
+  {
+    if (ioctl(mFd, SPI_IOC_MESSAGE(1), &mMessageRX) < 1) { CS_H(); return; }  // Вычитываем по 4е байта
+    rawData = (u16)(rxBuffer[0]<<8) + rxBuffer[1];                            // Используем только первы два
+    QThread::usleep(1600);                                                    // Спим
+  }
+  CS_H();                                                                     // Стоп SPI
+  qDebug("Thread spiThread is stopped");
+  isStopped = true;
+}
+#else
 u16 dataF[340] = {
 12979, 13053, 13127, 13201, 13275, 13349, 13423, 13497, 13571, 13645, 13722, 13918, 14114, 14310, 14506, 14702, 14898, 15094, 15290, 15486,
 15682, 15903, 16124, 16345, 16566, 16787, 17008, 17229, 17450, 17671, 17898, 18142, 18386, 18630, 18874, 19118, 19362, 19606, 19850, 20094,
@@ -57,45 +96,6 @@ void spiThread::run()
     QThread::usleep(1600);                                                    // Спим
   }
   qDebug("spiThread Thread is stopped");
-  isStopped = true;
-}
-
-#else
-void spiThread::run()
-{
-  u8 txBuffer[2];
-  u8 rxBuffer[4];
-  struct spi_ioc_transfer mMessageTX;
-  struct spi_ioc_transfer mMessageRX;
-
-  memset((char*)&mMessageTX, 0, sizeof(mMessageTX));
-  mMessageTX.tx_buf         = (unsigned long)&txBuffer;
-  mMessageTX.speed_hz       = 500000;
-  mMessageTX.bits_per_word  = 8;
-
-  memset((char*)&mMessageRX, 0, sizeof(mMessageRX));
-  mMessageRX.rx_buf         = (unsigned long)&rxBuffer;
-  mMessageRX.speed_hz       = 500000;
-  mMessageRX.bits_per_word  = 8;
-
-
-  qDebug("Thread spiThread is running");
-  isStopped = false;
-  isRunning = true;
-  CS_L();                                                                     // Старт SPI
-  txBuffer[0] = SLAVE_ADDR_R;
-  mMessageTX.len = 1;
-  if (ioctl(mFd, SPI_IOC_MESSAGE(1), &mMessageTX) < 1) { CS_H(); return; }    // Делаем один запрос
-  mMessageRX.len = 4;
-
-  while(isRunning)
-  {
-    if (ioctl(mFd, SPI_IOC_MESSAGE(1), &mMessageRX) < 1) { CS_H(); return; }  // Вычитываем по 4е байта
-    rawData = (u16)(rxBuffer[0]<<8) + rxBuffer[1];                            // Используем только первы два
-    QThread::usleep(1600);                                                    // Спим
-  }
-  CS_H();                                                                     // Стоп SPI
-  qDebug("Thread spiThread is stopped");
   isStopped = true;
 }
 #endif
