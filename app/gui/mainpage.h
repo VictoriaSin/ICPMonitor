@@ -176,7 +176,6 @@ private slots:
     void on_acceptFluidInjectionButton_clicked();
 
     void on_rejectFluidInjectionButton_clicked();
-
 private:
     Ui::MainPage *ui;
 

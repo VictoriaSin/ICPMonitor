@@ -42,7 +42,7 @@ MainWindow::~MainWindow()
 }
 void MainWindow::destroyMonitorController()
 {
-  QTimer::singleShot(500, [this]()
+  QTimer::singleShot(100, [this]()
   {
     DESTROY_CLASS(mController);
     mControllerThread.quit();

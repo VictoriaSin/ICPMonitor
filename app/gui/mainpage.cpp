@@ -54,9 +54,9 @@ MainPage::MainPage(QWidget *parent)
   ui->setupUi(this);
 
   setupButtons();
-  setupMainMenu();        // Настройка окна главного меню
   setupBottomInfoSVG();   // Настройки нижних иконок-уведомлений
   setupGraphsContainer(); // Настройка контейнера с графиками
+  setupMainMenu();        // Настройка окна главного меню
 
   mUpdateDateTimeTimer->setInterval(60000); // Настраиваем обновление виджета с текущим временем
 
@@ -285,7 +285,6 @@ void MainPage::setupMainMenu()
   if (mMainMenu) { return; }
   mMainMenu = new MainMenu(this);
   mMainMenu->hide();    // Скрываем основное меню
-
   // Смена виджета
   connect(mMainMenu, &IPageWidget::previousPage, this, &IPageWidget::previousPage);
   connect(mMainMenu, &IPageWidget::changePage, this, &IPageWidget::changePage);
@@ -399,7 +398,7 @@ void MainPage::retranslate()
 }
 void MainPage::on_homeButton_clicked()
 {
-  emit changePage(mMainMenu);
+    emit changePage(mMainMenu);
 }
 void MainPage::on_recordButton_clicked()
 {
@@ -1041,7 +1040,6 @@ void MainPage::on_markPPointButton_clicked()
     ui->mInfoInterval1->hide();
     ui->mInfoInterval2->hide();
     mCurrentGraphsArea->calcCompliance();
-
 }
 
 
@@ -1059,8 +1057,8 @@ void MainPage::on_fluidInjectionButton_clicked()
     ui->goToInterval1Button     ->setEnabled(false);
     ui->goToInterval2Button     ->setEnabled(false);
     //ui->playRecord              ->setEnabled(false);
-  //  ui->rewindRecordButton      ->setEnabled(false);
-  //  ui->speedRecordButton       ->setEnabled(false);
+    //ui->rewindRecordButton      ->setEnabled(false);
+    //ui->speedRecordButton       ->setEnabled(false);
     ui->downloadGraphButton     ->setEnabled(false);
     ui->zoomInterval1Button     ->setEnabled(false);
     ui->zoomInterval2Button     ->setEnabled(false);

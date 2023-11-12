@@ -1,7 +1,6 @@
 #include "mainmenu.h"
 #include "gui/systeminfopage.h"
 #include "gui/zerosensorpage.h"
-#include "gui/downloadData/datadownloadpage.h"
 #include "gui/datetimepage.h"
 #include "gui/languagepage.h"
 #include "gui/exportdatapage.h"
@@ -10,35 +9,31 @@
 #include "gui_funcs.h"
 #include "controller/monitorcontroller.h"
 
-
 #include <QAbstractButton>
 #include <QDebug>
 #include <QPushButton>
-//#include <QTimer>
 
 MainMenu::MainMenu(QWidget *parent) :
     AbstractMenuPage(parent)
   , mSystemInfoPage(new SystemInfoPage(this))
   , mZeroSensorPage(new ZeroSensorPage(this))
-  //, mDataExportPage(new DataDownloadPage(this))
   , mDateTimePage(new DateTimePage(this))
   , mLanguagePage(new LanguagePage(this))
   , mGeneralSettingsPage(new GeneralSettingsPage(this))
   , mExportDataPage(new ExportDataPage(this))
 {
     // Скрываем созданные окна
-    mSystemInfoPage->hide();
-    mZeroSensorPage->hide();
-    //mDataExportPage->hide();
-    mDateTimePage->hide();
-    mLanguagePage->hide();
+    mSystemInfoPage     ->hide();
+    mZeroSensorPage     ->hide();
+    mDateTimePage       ->hide();
+    mLanguagePage       ->hide();
     mGeneralSettingsPage->hide();
-    mExportDataPage->hide();
+    mExportDataPage     ->hide();
 
     // Общий стиль для кнопок
     const QString ToolButtonStyleSheet = readStyleSheetFile(":/styles/ToolButtons.qss");
     // Настраиваем кнопку назад
-    setupBackButton(QIcon(":/icons/goBack.svg"), QIcon(":/icons/goBack_pressed.svg"), QSize(70, 83), ToolButtonStyleSheet);//QSize(125, 125), ToolButtonStyleSheet);
+    setupBackButton(QIcon(":/icons/goBack.svg"), QIcon(":/icons/goBack_pressed.svg"), QSize(70, 83), ToolButtonStyleSheet);
 
     // Кнопки для верхнего GridLayout
     addSettingButton("Обнуление датчика", QIcon(":/icons/zeroReset.svg"), QIcon(":/icons/zeroReset_pressed.svg"),
@@ -47,8 +42,6 @@ MainMenu::MainMenu(QWidget *parent) :
                      QSize(125, 125), ToolButtonStyleSheet, mLanguagePage,          0, 1, PageID::Language);
     addSettingButton("Время/Дата", QIcon(":/icons/dateTime.svg"),                         QIcon(":/icons/dateTime_pressed.svg"),
                      QSize(125, 125), ToolButtonStyleSheet, mDateTimePage,          1, 0, PageID::DateTime);
-    //addSettingButton("Экспорт данных", QIcon(":/icons/downloadData.svg"),                 QIcon(":/icons/downloadData_pressed.svg"),
-    //                 QSize(125, 125), ToolButtonStyleSheet, mDataExportPage,        1, 1, PageID::DataExport);
     addSettingButton("Системная информация", QIcon(":/icons/info.svg"),                   QIcon(":/icons/info_pressed.svg"),
                      QSize(125, 125), ToolButtonStyleSheet, mSystemInfoPage,        1, 1, PageID::SystemInfo);
     addSettingButton("Технический доступ", QIcon(":/icons/tools.svg"),             QIcon(":/icons/tools_pressed.svg"),
@@ -68,20 +61,15 @@ MainMenu::MainMenu(QWidget *parent) :
     connect(mGeneralSettingsPage, &GeneralSettingsPage::changePage, this, &MainMenu::changePage);
     connect(mExportDataPage, &ExportDataPage::previousPage, this, &MainMenu::previousPage);
     connect(mExportDataPage, &ExportDataPage::changePage, this, &MainMenu::changePage);
-
-    //connect(&mButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(powerOff(int)));
-    connect(mButtonGroup.button(PageID::PowerOff), SIGNAL(clicked()), this, SLOT(powerOff()));//int)));
+    connect(mButtonGroup.button(PageID::PowerOff), SIGNAL(clicked()), this, SLOT(powerOff()));
 }
 
 MainMenu::~MainMenu()
 {
 }
 
-void MainMenu::powerOff()//int id)
+void MainMenu::powerOff()
 {
-    qDebug() << "Power OFF";
-  //if (id == PageID::PowerOff)
-  {
     DESTROY_CLASS(mSystemInfoPage);
     DESTROY_CLASS(mZeroSensorPage);
     DESTROY_CLASS(mDateTimePage);
@@ -89,24 +77,11 @@ void MainMenu::powerOff()//int id)
     DESTROY_CLASS(mGeneralSettingsPage);
     DESTROY_CLASS(mExportDataPage);
     mController->terminate();
-  }
 }
 
-void MainMenu::controllerEventHandler(ControllerEvent event)//, const QVariantMap &args)
+void MainMenu::controllerEventHandler(ControllerEvent event)
 {
     switch(event) {
-    //case ControllerEvent::SoftwareStorageAvailable: {
-    //    mButtonGroup.button(PageID::DataExport)->setEnabled(true);
-    //    break;
-    //}
-    //case ControllerEvent::SoftwareStorageUnavailable: {
-    //    mButtonGroup.button(PageID::DataExport)->setDisabled(true);
-    //    break;
-    //}
-    //case ControllerEvent::SoftwareStorageNotAssigned: {
-    //    mButtonGroup.button(PageID::DataExport)->setDisabled(true);
-    //    break;
-    //}
         default: break;
     }
 }
@@ -116,7 +91,6 @@ void MainMenu::scaleFont(float scaleFactor)
     AbstractMenuPage::scaleFont(scaleFactor);
     mSystemInfoPage->scaleFont(scaleFactor);
     mZeroSensorPage->scaleFont(scaleFactor);
-    //mDataExportPage->scaleFont(scaleFactor);
     mDateTimePage->scaleFont(scaleFactor);
     mLanguagePage->scaleFont(scaleFactor);
     mGeneralSettingsPage->scaleFont(scaleFactor);
@@ -128,7 +102,6 @@ void MainMenu::installController(MonitorController *controller)
     AbstractMenuPage::installController(controller);
     mSystemInfoPage->installController(controller);
     mZeroSensorPage->installController(controller);
-    //mDataExportPage->installController(controller);
     mDateTimePage->installController(controller);
     mLanguagePage->installController(controller);
     mGeneralSettingsPage->installController(controller);
@@ -144,7 +117,6 @@ void MainMenu::retranslate()
     AbstractMenuPage::retranslate();
 
     mButtonGroup.button(PageID::ZeroSensor)->setText(tr("Обнуление датчика"));
-    //mButtonGroup.button(PageID::DataExport)->setText(tr("Экспорт данных"));
     mButtonGroup.button(PageID::SystemInfo)->setText(tr("Системная информация"));
     mButtonGroup.button(DateTime)  ->setText(tr("Время/Дата"));
     mButtonGroup.button(Language)  ->setText(tr("Язык"));
@@ -152,11 +124,10 @@ void MainMenu::retranslate()
     mButtonGroup.button(PageID::General)  ->setText(tr("Технический доступ"));
     mButtonGroup.button(PageID::ExportData)  ->setText(tr("Управление данными"));
 
-    mZeroSensorPage->retranslate();
-    //mDataExportPage->retranslate();
-    mSystemInfoPage->retranslate();
-    mDateTimePage->retranslate();
-    mLanguagePage->retranslate();
+    mZeroSensorPage     ->retranslate();
+    mSystemInfoPage     ->retranslate();
+    mDateTimePage       ->retranslate();
+    mLanguagePage       ->retranslate();
     mGeneralSettingsPage->retranslate();
-    mExportDataPage->retranslate();
+    mExportDataPage     ->retranslate();
 }

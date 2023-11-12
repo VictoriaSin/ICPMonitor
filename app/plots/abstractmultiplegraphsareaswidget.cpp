@@ -71,17 +71,9 @@ void AbstractMultipleGraphsAreasWidget::changeGraph(uint8_t number)
     const int countGraph = mGraphContainer.size();
 
     // Если графиков меньше двух
-    if (countGraph < 2 || number >= countGraph) {
-        return;
-    }
+    if (countGraph < 2 || number >= countGraph) { return; }
 
-    // Скрываем текущий график
-    //mGraphContainer[mCurrentGraphIndex]->clearGraphs(); //временно убрала, потом оставим, чтоб стерлось все
     mGraphContainer[mCurrentGraphIndex]->hide();
-
-//    // Узнаём индекс следующего графика
-//    ++mCurrentGraphIndex;
-//    mCurrentGraphIndex %= countGraph;
     mCurrentGraphIndex = number;
 
     // Берём график
@@ -102,30 +94,7 @@ void AbstractMultipleGraphsAreasWidget::changeGraph(uint8_t number)
         mGraphContainer[0]->hide();
     }
 
-//    switch (mDisplayedGraph)
-//    {
-//        case AbstractCustomPlot::GraphType::IntervalGraph:
-//        {
-
-//            break;
-//        }
-//    }
-
-//#ifdef QT_DEBUG // Для замера ФПС
-    // Если график текущих значений
-//    if (mDisplayedGraph == AbstractCustomPlot::GraphType::WaveFormGraph) {
-//        // Если удалось скастовать
-//        if (auto WaveGraph = dynamic_cast<WaveFormPlot *>(graph)) {
-//            WaveGraph->benchTime = QDateTime::currentMSecsSinceEpoch();
-//        }
-//    }
-//#endif    
-
-    // Показываем график
     graph->show();
-
-    // Обновляем имя текущего графика
-    //updateDisplayedGraphName();
 }
 
 void AbstractMultipleGraphsAreasWidget::retranslate()

@@ -16,7 +16,7 @@ SaveSPI::SaveSPI() : QThread(){}
 SaveSPI::~SaveSPI(){}
 void SaveSPI::run()
 {
-  qDebug("SaveSPI Thread Started");
+  qDebug("\033[36m>>mSaveSPI Thread Started\033[0m");
   isStopped   = false;
   isRunning   = true;
   isRecording = false;
@@ -72,6 +72,6 @@ void SaveSPI::run()
 
   mSpiThread->isRunning = false;
   while(!mSpiThread->isStopped);
-  qDebug("SaveSPI Thread Stopped");
+  qDebug("\033[36m<<SaveSPI Thread Stopped\033[0m");
   isStopped = true;
 }
