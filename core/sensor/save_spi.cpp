@@ -40,7 +40,7 @@ void SaveSPI::run()
     if (currentTime > stopTimeFile)
     {
       stopTimeFile += TIME_INTERVAL_FOR_RECORD_IN_FILE;
-      currMesuring.data = mSpiThread->rawData; //mZSC.data[0];
+      currMesuring.data = mSpiThread->rawData;
       currMesuring.timeStamp = (uint32_t)(currentTime - startTime);      
     }
     else QThread::usleep(50); //400
@@ -58,7 +58,7 @@ void SaveSPI::run()
           if (currentTime > stopTimeFile)
           {
             stopTimeFile += TIME_INTERVAL_FOR_RECORD_IN_FILE;
-            currMesuring.data = mSpiThread->rawData; //mZSC.data[0];
+            currMesuring.data = mSpiThread->rawData;
             currMesuring.timeStamp = (uint32_t)(currentTime - startTime);
             fileForSave->write((char*)&currMesuring, sizeof(_mSPIData));
           }
@@ -66,6 +66,7 @@ void SaveSPI::run()
       }
       //////////////////////
       fileForSave->close();
+      delete fileForSave;
       //////////////////////
   }
 

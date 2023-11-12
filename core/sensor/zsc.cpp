@@ -26,14 +26,14 @@ ZSC::ZSC()
 
   spi_name = "/dev/spidev0.0";
 
-  initPins();
-  spi_open();
-  initZSC();
-  qDebug("ZSC class init");
+
 }
-void ZSC::initZSC()
+void ZSC::start()
 {
 #ifdef RELEASE_BUILD
+  initPins();
+  spi_open();
+
   bool result;
   QThread::msleep(100);
   result = spi_open(); if (result == false) { qDebug() << "errror spi_open()"; return; }
@@ -48,7 +48,7 @@ void ZSC::initZSC()
 
   for (uint i=0; i<32; i++)
   {
-      regsValue[i] = initRegs[i];//mICPSettings->getRegValues()[i];
+      regsValue[i] = mICPSettings->getRegValues()[i];
       spi_saveReg(i, regsValue[i], ZSC_RAM);
   }
 qDebug() << "1";
@@ -63,6 +63,7 @@ qDebug() << "1";
   SPI_CMD(START_CYC_RAM); QThread::msleep(10); // Start measurement cycle including initialization from RAM
   SPI_CMD(START_NOM);     QThread::msleep(100);
 #endif
+  qDebug("\033[34m>>ZSC class starting\033[0m");
 }
 void ZSC::resetRegsValues()
 {
@@ -78,11 +79,12 @@ void ZSC::resetRegsValues()
     SPI_CMD(START_NOM);     QThread::msleep(100);
 #endif
 }
-void ZSC::terminate()
+void ZSC::stop()
 {
 #ifdef RELEASE_BUILD
   spi_close();
 #endif
+  qDebug("\033[34m<<ZSC class stopped\033[0m");
 }
 bool ZSC::spi_open()
 {

@@ -13,8 +13,10 @@
 #include "global_define.h"
 #include "controller/settings.h"
 #include "clock.h"
+#include "../core/sensor/zsc.h"
 
-//#include "../core/sensor/zsc.h"
+class ZSC;
+ZSC mZSC;
 
 QString mntDirectory("/media/ICPMonitor");
 enum MOUNT_MESSAGE
@@ -274,9 +276,128 @@ Settings *mICPSettings {nullptr};
 #else
   #define INIFILEPOS "/opt/ICPMonitor/bin/ICPMonitorSettings.ini"
 #endif
+
+/*
+[AlarmGroup]
+mHighLevelAlarm=30
+mHighLevelStateAlarm=false
+mLowLevelAlarm=0
+mLowLevelStateAlarm=false
+
+[AverageSensorReadingsGroup]
+mMaxTimeStorageAverageSensorReadingsSec=1209600
+mRelativeAverageSensorReadingsPath=./ICPAverageSensorReadings
+
+[CurrentSensorReadingsGroup]
+mAverageIntervalSec=0
+mCurrentReadingsGraphIntervalX=24
+mCurrentReadingsGraphIntervalY=60
+mCurrentReadingsGraphIntervalYHigh=60
+mCurrentReadingsGraphIntervalYLow=0
+mMaxTimeStorageCurrentSensorReadingsMs=86400000
+mPressureUnitsIndex=0
+mRelativeCurrentSensorReadingsPath=./ICPCurrentSensorReadings
+mTickCountX=12
+mTickCountY=3.59999
+
+[GeneralGroup]
+mACoefficient=0
+mBCoefficient=0
+mCurrentLanguage=96
+mFlashDeviceMountPart=
+mFontScaleFactor=1
+mLastSavedDateTimestampSec=1694506546
+mSoftwareStorageUUID=4328E5AB23A4A7E0
+regString=0x0100 0x2000 0x0000 0x0000 0x0000 0x0000 0x0000 0x0000 0x0000 0x07FF 0x1000 0x2000 0x0000 0x1000 0x2000 0x0000 0x0000 0x1F00 0x0000 0x0000 0xFFFF 0x0000 0x0048 0x0015 0x76A9 0x9F0C 0x0124 0x8060 0x15C9 0xE2A2 0x0000 0x0001
+
+[ScreensGroup]
+mMaxScreens=50
+mRelativeScreensPath=./ICPPicture
+
+*/
+#include "stdio.h"
+
+typedef struct
+{
+ float mHighLevelAlarm;
+ float mLowLevelAlarm;
+ bool mHighLevelStateAlarm;
+ bool mLowLevelStateAlarm;
+ int64_t mMaxTimeStorageAverageSensorReadingsSec;
+ QString mRelativeAverageSensorReadingsPath;
+}_initSettings;
+
+_initSettings initSettings;
+#define INCORRECTPARAM() { qDebug() << "incorrect param" << *name << *param; exit(999); }
+#define CORRECTPARAM() { qDebug() << *name << *param;  }
+void setParams(QString *name, QString *param)
+{
+  if (*name == "mHighLevelAlarm") {bool OK; initSettings.mHighLevelAlarm = (*param).toFloat(&OK); if (!OK) INCORRECTPARAM() else CORRECTPARAM(); return;}
+  if (*name == "mLowLevelAlarm")  {bool OK; initSettings.mLowLevelAlarm =  (*param).toFloat(&OK); if (!OK) INCORRECTPARAM() else CORRECTPARAM(); return;}
+  if (*name == "mMaxTimeStorageAverageSensorReadingsSec")  {bool OK; initSettings.mMaxTimeStorageAverageSensorReadingsSec =  (*param).toLongLong(&OK); if (!OK) INCORRECTPARAM() else CORRECTPARAM(); return;}
+  if (*name == "mRelativeAverageSensorReadingsPath")
+  {
+    if (param->size() == 0) INCORRECTPARAM();
+    initSettings.mRelativeAverageSensorReadingsPath = *param;
+    CORRECTPARAM(); return;
+  }
+  if (*name == "mHighLevelStateAlarm")
+  {
+    if (((*param) != "false") && ((*param) != "true")) INCORRECTPARAM();
+    if ((*param) == "true") { initSettings.mHighLevelStateAlarm = true; }  else  { initSettings.mHighLevelStateAlarm = false; }
+    CORRECTPARAM(); return;
+  }
+  if (*name == "mLowLevelStateAlarm")
+  {
+    if (((*param) != "false") && ((*param) != "true")) INCORRECTPARAM();
+    if ((*param) == "true") { initSettings.mLowLevelStateAlarm = true; }  else  { initSettings.mLowLevelStateAlarm = false; }
+    CORRECTPARAM(); return;
+  }
+
+}
+
+void readInit()
+{
+  QFile file(INIFILEPOS);
+  file.open(QFile::ReadOnly);
+  QByteArray line;
+  u16 cntLines = 0;
+  for (u16 i = 0; i< 10000; i++ )
+  {
+    line = file.readLine();
+    cntLines++;
+    if (line.size() == 0 ) { cntLines--; break; }
+    line = line.simplified();
+    if (line[0] == '[') { cntLines--; continue; }
+    if (line.size() == 0 ) { cntLines--; continue; }
+    QString r1 = line.left(line.indexOf('='));
+    QString r2 = line.right(line.size() - line.indexOf('=') - 1);
+    setParams(&r1, &r2);
+    //qDebug() << r1 << r2;
+  }
+  //qDebug() << "cntLines" << cntLines;
+
+  /*
+  _initStruct *initStruct = new _initStruct[cntLines];
+  file.seek(0);
+
+  for (u16 i = 0; i < cntLines; i++ )
+  {
+    line = file.readLine();
+    line = line.simplified();
+    if (line[0] == '[') {i--; continue; }
+    if (line.size() == 0 ) {i--; continue; }
+    qDebug() << line;
+  }
+  delete [] initStruct;
+  */
+}
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
+//  readInit();
+//  exit(222);
+
   /* fbset --geometry 720 480 720 480 16 --timings 37037 60 16 30 9 62 6 */
   QString ttt = executeAConsoleCommand("fbset", QStringList() << "--geometry" << "720" << "480" << "720" << "480" << "16" << "--timings" << "37037" << "60" << "16" << "30" << "9" << "62" << "6");
   mICPSettings = new Settings(INIFILEPOS); // Получение настроек из контроллера
@@ -311,9 +432,11 @@ int main(int argc, char *argv[])
   }
 #endif
 
+  mZSC.start();
   MainWindow w;
   w.show();
   const int exitCode = app.exec();
+  mZSC.stop();
   umount(&currRasdel);
   qDebug() << "Exit" << exitCode;
   return exitCode;

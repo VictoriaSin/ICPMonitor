@@ -290,7 +290,8 @@ class ZSC
 {
   public:
     ZSC();
-    void terminate();
+    void start();
+    void stop();
     void test(u16 iter, u32 delay_ms);
     u16 data[2];
 #ifndef PC_BUILD
@@ -327,7 +328,6 @@ protected:
     u16 signature(u16* eepcont, u16 N);
     void resetZSC();
     void initPins();
-    void initZSC();
     bool spi_saveReg(u8 reg, u16 data, u8 memType);
     uint16_t xOffset;
 

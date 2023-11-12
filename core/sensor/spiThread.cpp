@@ -93,7 +93,7 @@ void spiThread::run()
     }
     rawData = dataF[posData++]  + i;//+ amp;
     posData %= 340;
-    QThread::usleep(1600);                                                    // Спим
+    QThread::usleep(1950);                                                    // Спим
   }
   qDebug("spiThread Thread is stopped");
   isStopped = true;

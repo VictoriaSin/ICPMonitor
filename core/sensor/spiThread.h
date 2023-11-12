@@ -11,31 +11,17 @@
 #define i16 int16_t
 #define i32 int32_t
 
-#define GPIO_PIN_PATH_CS "/sys/class/gpio/gpio26"   // OWI
-#define SLAVE_ADDR_R 0xF1
-#define CS_L()\
-{ fpCS=fopen(GPIO_PIN_PATH_CS"/value","w");\
-  fprintf(fpCS,"0");\
-  fclose(fpCS); }
-
-#define CS_H()\
-{ fpCS=fopen(GPIO_PIN_PATH_CS"/value","w");\
-  fprintf(fpCS,"1");\
-  fclose(fpCS); }
-
 class spiThread : public QThread
 {
     Q_OBJECT
   public:
     explicit spiThread(int ptrSpiDevice);
-    //spiThread *mSpiThread {nullptr};
-    u16 rawData;
+    volatile u16 rawData;
     void run();
     volatile bool isStopped;
     volatile bool isRunning;
   private:
     int mFd;
-    FILE *fpCS = nullptr;
 };
 
 #endif // SPITHREAD_H

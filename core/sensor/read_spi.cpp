@@ -5,11 +5,10 @@
 
 //#include "../app/gui/mainwindow.h"
 #include "../app/gui/mainpage.h"
-#include "../core/sensor/zsc.h"
+//#include "../core/sensor/zsc.h"
 
-
-class ZSC;
-ZSC mZSC;
+//class ZSC;
+//extern ZSC mZSC;
 
 class WaveFormPlot;
 class MainPage;
@@ -60,10 +59,10 @@ void ReadSPI::run()
     stopTimeGraph = currentTime + TIME_INTERVAL_FOR_WRITE_ON_GRAPH;
     temp.timeStamp = (uint32_t)(currentTime - startTime);
     currData = (float)mSaveSPI->currMesuring.data*param/1000;
-    qDebug() << currData;
     mMainPage->setAverage(calcAverage(currData));
     mWaveGraph->addDataOnGraphic(temp.timeStamp, currData);
   }
+
   mSaveSPI->fileName = mRawDataFile.fileName();
   if (isRunning)
   {
