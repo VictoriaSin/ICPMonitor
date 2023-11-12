@@ -10,7 +10,7 @@
 
 
 class LabelManager;
-class DataBaseManager;
+//class DataBaseManager;
 
 /*! Метки
     К меткам имеют полный доступ
@@ -22,7 +22,6 @@ class Label
 {
     /*! Информация хранящаяся в БД */
     int mLabelID {-1};
-    //int64_t mTimeStampStartMS {-1};
     int64_t mTimeStampEndMS {-1};
     int mNumber {-1};
     QString mInfo;
@@ -30,12 +29,12 @@ class Label
 
 
     /*! Доступ к базе данных */
-    DataBaseManager* mDB {nullptr};
+    //DataBaseManager* mDB {nullptr};
 
 public:
     float mCurrentPos {0};
     int64_t mTimeStampStartMS {-1};
-    explicit Label(DataBaseManager *dataBase);
+    explicit Label();//DataBaseManager *dataBase);
 
     /*! Установка информации о метке */
     bool setLabelInfo(const QString &infoText);

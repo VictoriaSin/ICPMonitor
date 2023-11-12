@@ -3,11 +3,10 @@
 
 #include <memory>
 #include <chrono>
-
 #include <QVector>
 
 class Label;
-class DataBaseManager;
+//class DataBaseManager;
 class LabelProvider;
 class Settings;
 
@@ -21,7 +20,7 @@ class Settings;
 class LabelManager
 {
     /*! База данных */
-    DataBaseManager *mDataBase {nullptr};
+    //DataBaseManager *mDataBase {nullptr};
 
     /*! Настройки приложения */
     Settings *mSettings {nullptr};
@@ -34,9 +33,6 @@ class LabelManager
     /*! Время перезарядки метки в мс */
     const int mRechargeLabelTimer = 1000;
 
-    /*! Текущий ID сессии */
-    //int mCurrentSessionID = -1;
-
     /*! Последняя созданная метка */
     std::shared_ptr<Label> mLastCreatedLabel;
 
@@ -46,9 +42,6 @@ public:
     int mCountLabels = 0;
 
     explicit LabelManager(Settings *settings);//, DataBaseManager *dataBase);
-
-    /*! Устанавливаем id сессии */
-    //void setSessionID(int sessionID);
 
     /*! Создаёт метку и возвращает её
         Если метку не удалось создать,
@@ -62,11 +55,6 @@ public:
     /*! Возвращает кол-во сделанных меток за текущую сессию */
     int getLabelsCountPerCurrentSession() const;
 
-    /*! Создаёт итератор для перемещения по меткам */
-    //std::shared_ptr<LabelProvider> getLabelProvider();
-
-    /*! Возвращает все метки, принаджежащие сессии */
-    //QVector<std::shared_ptr<Label>> getAllLabelsBelongSession(int sessionID);
     void deleteLabel();
 };
 

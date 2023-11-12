@@ -1,12 +1,9 @@
 #include "label.h"
-#include "controller/databasemanager.h"
-
 #include <QDebug>
 
 uint32_t mCoordLabelX {0};
 
-Label::Label(DataBaseManager *dataBase) :
-    mDB(dataBase)
+Label::Label()
 {
 
 }
@@ -14,7 +11,8 @@ Label::Label(DataBaseManager *dataBase) :
 bool Label::setLabelInfo(const QString &infoText)
 {
     // Если БД не существует или ID не положительный или метка не привязана к сессии
-    if (!mDB || mSessionID < 1 || mLabelID < 1) {
+    if (/*!mDB ||*/ mSessionID < 1 || mLabelID < 1)
+    {
         return false;
     }
 

@@ -4,14 +4,8 @@
 #include "controller/alarmcontroller.h"
 #include "controller/labels/labelmanager.h"
 #include "controller/labels/label.h"
-#include "controller/databasemanager.h"
-#include "controller/fileProcessing/filecontroller.h"
-#include "controller/fileProcessing/cyclefilewriter.h"
 #include "blockDevices/blockdevicemanager.h"
 #include "blockDevices/blockdevice.h"
-//#include "controller/screenwriter.h"
-//#include "sensor/impl/fileimitsensor.h"
-//#include "sensor/impl/bmp280temperaturespisensor.h"
 #include "global_functions.h"
 #include "../app/global_define.h"
 #include <QDebug>
@@ -25,8 +19,8 @@ bool isLabelCreating {false};
 MonitorController::MonitorController()
 {
   mAverageICPController = new AverageICPController(mICPSettings, this);
-  mAlarmController = new AlarmController(mICPSettings, mAverageICPController, this);
-  mLabelManagerGlobal = new LabelManager(mICPSettings);//, mDataBaseManager);
+  mAlarmController      = new AlarmController(mICPSettings, mAverageICPController, this);
+  mLabelManagerGlobal   = new LabelManager(mICPSettings);//, mDataBaseManager);
   connect(mAlarmController,  &AlarmController::alarmEvent, this,  &MonitorController::processAlarmEvent);
 }
 void MonitorController::terminate()

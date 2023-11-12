@@ -337,10 +337,7 @@ void MainPage::updateLabelCounter()
   int countLabels = mController->getLabelsCountPerCurrentSession();
   if (countLabels > 0)
   {
-    //ui->labelCounterLabel->setText(counterLabelText.arg(mLabelManagerGlobal->mCountLabels));
     ui->labelsNavigation->setText(currentLabelText.arg(mCurrentLabelIndex+1).arg(mLabelManagerGlobal->mCountLabels));
-  } else {
-    //ui->labelCounterLabel->setText(tr("Меток: "));
   }
 }
 void MainPage::scaleFont(float scaleFactor)
@@ -393,7 +390,7 @@ void MainPage::hideEvent(QHideEvent */*event*/)
 void MainPage::retranslate()
 {
   mCurrentGraphsArea->retranslate();
-  updateLabelCounter();
+  //updateLabelCounter();
   mMainMenu->retranslate();
   //ui->averageICPWidget->retranslate();
   //updateSessionInfo(); !!!!

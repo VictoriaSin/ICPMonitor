@@ -2,19 +2,16 @@
 #include <QDebug>
 #include "../app/global_define.h"
 #include "../app/plots/waveformplot.h"
-//#include "../core/sensor/zsc.h"
 #include "../core/sensor/spiThread.h"
 
-//class ZSC; ZSC mZSC1;
-
 class spiThread;
-extern spiThread *mSpiThread;
-
 class WaveFormPlot;
+extern spiThread *mSpiThread;
 extern  WaveFormPlot *mWaveGraph;
 extern  WaveFormPlot *mComplianceGraph;
 extern float dVConst;
 extern QFile mRawDataSessionRecordFile;
+
 DrawGraphs::DrawGraphs() : QThread() {}
 DrawGraphs::~DrawGraphs(){}
 void DrawGraphs::run()

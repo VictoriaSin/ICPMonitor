@@ -17,8 +17,7 @@ MainWindow::MainWindow( QWidget *parent) : QWidget(parent) , ui(new Ui::MainWind
     ui->setupUi(this);
     mMainPage = new MainPage(this);
     mMessageDialog->hide();
-    // Принимаем события тачскрина
-    setAttribute(Qt::WA_AcceptTouchEvents);
+    setAttribute(Qt::WA_AcceptTouchEvents); // Принимаем события тачскрина
     setPage(mMainPage);
     connect(mMainPage, &IPageWidget::changePage, this, &MainWindow::setPage);
     connect(mMainPage, &IPageWidget::previousPage, this, &MainWindow::setPreviousPage);
@@ -36,14 +35,13 @@ MainWindow::MainWindow( QWidget *parent) : QWidget(parent) , ui(new Ui::MainWind
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete mMessageDialog;
+    DESTROY_CLASS(mMainPage);
     qDebug() << "MainWindow::~MainWindow()";
 
 }
 void MainWindow::destroyMonitorController()
 {
-
-  DESTROY_CLASS(mMainPage);
-
   QTimer::singleShot(500, [this]()
   {
     DESTROY_CLASS(mController);
@@ -153,7 +151,8 @@ void MainWindow::setCurrentDatePage()
 void MainWindow::controllerEventHandler(ControllerEvent event, const QVariantMap &args)
 {
     // Если есть какое-то сообщение от контроллера
-    if (args.contains(GlobalEventsArgs::Message)) {
+    if (args.contains(GlobalEventsArgs::Message))
+    {
         const QString message = args[GlobalEventsArgs::Message].toString();
         if (message.isEmpty()) {
             return;

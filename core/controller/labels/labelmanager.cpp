@@ -1,7 +1,5 @@
 #include "labelmanager.h"
 #include "controller/labels/label.h"
-//#include "controller/sessions/session.h"
-#include "controller/databasemanager.h"
 #include "controller/labels/labelprovider.h"
 #include "controller/settings.h"
 #include "../app/global_define.h"
@@ -26,12 +24,12 @@ std::shared_ptr<Label> LabelManager::createLabel(const QString &/*infoText*/, in
 {
     // Если метка еще не перезарядилась
     auto currentTimePoint = std::chrono::high_resolution_clock::now();
-    if (std::chrono::duration_cast<std::chrono::milliseconds>
-            (currentTimePoint - mLastCreatedLabelTime).count() < mRechargeLabelTimer) {
+    if (std::chrono::duration_cast<std::chrono::milliseconds > (currentTimePoint - mLastCreatedLabelTime).count() < mRechargeLabelTimer)
+    {
         return {};
     }
     // Создаём метку
-    std::shared_ptr<Label> label = std::make_shared<Label>(mDataBase);
+    std::shared_ptr<Label> label = std::make_shared<Label>();//mDataBase);
     // Установка времени начала метки
     label->mTimeStampStartMS = QDateTime::currentMSecsSinceEpoch();
     // Установка номера метки

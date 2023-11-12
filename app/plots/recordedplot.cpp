@@ -140,7 +140,6 @@ qDebug() << "t2" << t2;
     float first = 0.0;
     float second = 0.0;
 
-    //for (int i=floor(t1)*25; i<=ceil(t2)*25; i++) //25 показаний в секунду
     for (int i=0; i<=temp.count(); i++) //25 показаний в секунду
     {
         //qDebug() << "i" << i << "x" << temp[i];//mRecordedData[i].first;
@@ -165,29 +164,18 @@ qDebug() << "t2" << t2;
     //QVector<QPair<float, float>> intervalVec;
     for (int i=indexStart; i<=indexStop; i++)
     {
-//        if (mIntervalsContainer[num-1]->maxIntervalValue < mAllRecordedDataBuffer[i].data)
-//        {
-//            mIntervalsContainer[num-1]->maxIntervalValue =  mAllRecordedDataBuffer[i].data;
-//        }
-//        mIntervalsContainer[num-1]->averageIntervalValue += mAllRecordedDataBuffer[i].data;
-//        intervalVec.append(qMakePair((float)mAllRecordedDataBuffer[i].timeStamp/1000, mAllRecordedDataBuffer[i].data));
-//        num == 2 ? mIntervalFirst->addData(intervalVec.back().first, intervalVec.back().second)
-//                 : mIntervalSecond->addData(intervalVec.back().first, intervalVec.back().second);
-
         if (mIntervalsContainer[num-1]->maxIntervalValue < mMainGraph->data()->at(i)->value)
         {
             mIntervalsContainer[num-1]->maxIntervalValue =  mMainGraph->data()->at(i)->value;
         }
         mIntervalsContainer[num-1]->averageIntervalValue += mMainGraph->data()->at(i)->value;
-        //intervalVec.append(qMakePair(mMainGraph->data()->at(i)->key, mMainGraph->data()->at(i)->value));
+
         num == 2 ? mIntervalFirst->addData(mMainGraph->data()->at(i)->key, mMainGraph->data()->at(i)->value)
                  : mIntervalSecond->addData(mMainGraph->data()->at(i)->key, mMainGraph->data()->at(i)->value);
     }
-//    QVector<QPair<float, float>> tttt = mRecordedData.mid(indexStart, (indexStop-indexStart+1));
     qDebug() << "indexStart" << indexStart << "indexStop" << indexStop;
     mIntervalsContainer[num-1]->averageIntervalValue /= (indexStop - indexStart + 1);
     return qMakePair(first*1000, second*1000);
-    //return qMakePair(indexStart, indexStop); // индексы записанного гррафика, каждые 40 мс
 }
 
 void RecordedPlot::addFluidInterval()
@@ -319,43 +307,13 @@ void RecordedPlot::saveDataForGraphic(unsigned int  x, unsigned int  y)//const C
     float temp_x = (float) x/1000;
     float temp_y = (float) y;
     mRecordedData.push_back(qMakePair(temp_x, temp_y));
-    //qDebug() << "x" << temp_x;
-//    // Суммирование общего времени пришедших данных с датчика
-//    // для ограничения отображения данных в диапазоне допустимых
-//    // значение времени на оси Х графика
-
-//    if (mPreviousSensorDataTime == 0)
-//    {
-//        mPreviousSensorDataTime = complexVal.timestamp;
-//    }
-//    else
-//    {
-//        mSummarySensorDataTimePerXRange += (complexVal.timestamp - mPreviousSensorDataTime) / 1000.0;
-//    }
-
-////    //#ifdef QT_DEBUG
-////    if (avgBenchTime > 1000) {
-////        //qDebug() << "Gui update period, ms" << avgBenchTime / (float)benchCount;
-////        avgBenchTime = 0;
-////        benchCount = 0;
-////    }
-////    //#endif
-//    mRecordedData.push_back(qMakePair(mSummarySensorDataTimePerXRange, complexVal.value));
-//    mPreviousSensorDataTime = complexVal.timestamp;
-//    qDebug() << mRecordedData.size();
 }
 
-void RecordedPlot::downloadData(QByteArray *temp)
-{
-//    mMainGraph->data().clear();
-//    _mSPIData ttt;
-//    for (int i=0; i< temp->size()/6; i++)
-//    {
-//        ttt
-//    }
-}
+//void RecordedPlot::downloadData(QByteArray *temp)
+//{
+//
+//}
 
-//#define timerDelay 5
 #define axisMoveRange 0.03
 
 void RecordedPlot::animateGraphic(int timerDelaySec)
@@ -399,10 +357,6 @@ void RecordedPlot::animateGraphic(int timerDelaySec)
 
 void RecordedPlot::addDataOnGraphic()
 {
-    //float mNewUpperXValue = (float)mRecordedData.count()/25;// показаний в файле в секунду 50, а мы берем каждое второе
-    //qDebug() << mSizeAllRecordedData;
-    //qDebug() << "rr" <<mAllRecordedDataBuffer[mSizeAllRecordedData-1].timeStamp;
-    //float mNewUpperXValue = (float)mAllRecordedDataBuffer[mSizeAllRecordedData-1].timeStamp/1000;
     QFile* currFile;
     int fileParam = 1;
     if (isDownloadGraph)
@@ -417,8 +371,6 @@ void RecordedPlot::addDataOnGraphic()
     }
     float mNewUpperXValue;
 
-    //for (int i = 0; i < mRecordedData.count(); i++)
-
     currFile->open(QIODevice::ReadOnly);
     _mSPIData temp;
 
@@ -432,7 +384,7 @@ void RecordedPlot::addDataOnGraphic()
     QVector<float> filterData;
     float tempData;
     //for (uint i=0; i< mRawDataFile.size()/6; i+=10) // 40/4=10
-    for (uint i=0; i < recordDataCount; i+=60)
+    for (uint i=0; i < recordDataCount; i+=60)  //!!!!!!!!!!!!!!!!!!
     {
 
         //mRawDataFile.seek(i*sizeof(_mSPIData));
@@ -457,20 +409,7 @@ void RecordedPlot::addDataOnGraphic()
     {
       mMainGraph->rescaleAxes(true);
     }
-//    for (uint i=0; i<mSizeAllRecordedData; i++)
-//    {
-//        //mMainGraph->addData(mRecordedData[i].first, mRecordedData[i].second);
-//        mMainGraph->addData((float)mAllRecordedDataBuffer[i].timeStamp/1000, mAllRecordedDataBuffer[i].data);
-//        qDebug() << "data" << mAllRecordedDataBuffer[i].data;
-//    }
 }
-
-
-//void RecordedPlot::setLabelManager(LabelManager *labelManager)
-//{
-//    //mLabelManager = labelManager;
-//    //mLabelManagerRecorded = labelManager;
-//}
 
 void RecordedPlot::itemClicked(QCPAbstractItem *item, QMouseEvent *event)
 {

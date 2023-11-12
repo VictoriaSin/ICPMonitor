@@ -25,10 +25,7 @@ HEADERS += \
     controller/alarmcontroller.h \
     controller/averageicpcontroller.h \
     controller/controller_enums.h \
-    controller/databasemanager.h \
-    controller/fileProcessing/export_enums.h \
     controller/fileProcessing/filecontroller_events.h \
-    controller/fileProcessing/serialization/abstracticpdataserializer.h \
     controller/fileProcessing/serialization/idataserializer.h \
     controller/labels/label.h \
     controller/labels/labelmanager.h \
@@ -40,8 +37,6 @@ HEADERS += \
     global_enums.h \
     global_functions.h \
     global_structs.h \
-    sensor/impl/bmp280temperaturespisensor.h \
-    sensor/impl/fileimitsensor.h \
     sensor/read_spi.h \
     sensor/save_spi.h \
     sensor/spi.h \
@@ -62,9 +57,6 @@ SOURCES += \
     blockDevices/blockdevicemanager.cpp \
     controller/alarmcontroller.cpp \
     controller/averageicpcontroller.cpp \
-    controller/databasemanager.cpp \
-    controller/fileProcessing/export_enums.cpp \
-    controller/fileProcessing/serialization/abstracticpdataserializer.cpp \
     controller/labels/label.cpp \
     controller/labels/labelmanager.cpp \
     controller/labels/labelprovider.cpp \
@@ -73,8 +65,6 @@ SOURCES += \
     controller/settings.cpp \
     global_functions.cpp \
     global_structs.cpp \
-    sensor/impl/bmp280temperaturespisensor.cpp \
-    sensor/impl/fileimitsensor.cpp \
     sensor/read_spi.cpp \
     sensor/save_spi.cpp \
     sensor/spi.cpp \

@@ -46,7 +46,7 @@ public:
     void resetGraph() override;
 
     QPair<int, int> addInterval(uint8_t num, QColor color);
-    void downloadData(QByteArray *temp);
+    //void downloadData(QByteArray *temp);
 
 
 //#ifdef QT_DEBUG

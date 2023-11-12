@@ -6,18 +6,15 @@
 #include "version.h"
 #include "controller/monitorcontroller.h"
 #include "controller/settings.h"
-
 #include "sensor/sensor_enums.h"
 #include "controller/controller_enums.h"
-
 #include "global_functions.h"
-
 #include "unistd.h"
 #include "global_define.h"
 #include "controller/settings.h"
 #include "clock.h"
 
-#include "../core/sensor/zsc.h"
+//#include "../core/sensor/zsc.h"
 
 QString mntDirectory("/media/ICPMonitor");
 enum MOUNT_MESSAGE
@@ -120,7 +117,6 @@ __inline bool tryCreateMountPoint(QString *rasdel)
   }
   return false;
 }
-
 u8 mount(QString *UUID, QString *rasdel)
 {
   QStringList Devices;
@@ -178,7 +174,6 @@ u8 mount(QString *UUID, QString *rasdel)
   }
   return MOUNT_MESSAGE::ERROR_CREATED_MNT_POINT;
 }
-
 bool umount(QString *rasdel)
 {
 #ifndef PC_BUILD
@@ -204,7 +199,6 @@ bool umount(QString *rasdel)
 #endif
   return false;
 }
-
 QString convertDateTimeToString(u8 *data)
 {
   char strOut[150];
@@ -217,7 +211,6 @@ QString convertDateTimeToString(u8 *data)
       data[0]);
   return QString(strOut);
 }
-
 bool initFlash(QString currRasdel)
 {
   QStringList temp = executeAConsoleCommand("cat", QStringList() << "/proc/mounts").split("\n");
@@ -249,12 +242,8 @@ bool initFlash(QString currRasdel)
   }
   return 11;
 }
-
-uint16_t inputData[36] = {12979, 13722, 15682, 17898, 20345, 21989, 22926, 22695, 22975, 22865,
-                       22963, 23072, 23024, 22549, 22452, 22585, 21965, 21758, 21587, 20942,
-                       20345, 19676, 18896, 18701, 17618, 17082, 16206, 15658, 15231, 14708,
-                       13965, 13868, 13235, 12869, 13113, 14391};
-
+/*
+uint16_t inputData[36] = {12979, 13722, 15682, 17898, 20345, 21989, 22926, 22695, 22975, 22865, 22963, 23072, 23024, 22549, 22452, 22585, 21965, 21758, 21587, 20942, 20345, 19676, 18896, 18701, 17618, 17082, 16206, 15658, 15231, 14708,                       13965, 13868, 13235, 12869, 13113, 14391};
 uint16_t outData[360] ;
 void divArr()
 {
@@ -278,49 +267,30 @@ void divArr()
         qDebug() << outData[i] << ",";
     }
 }
-
+*/
 Settings *mICPSettings {nullptr};
+#ifdef PC_BUILD
+  #define INIFILEPOS "ICPMonitorSettings.ini"
+#else
+  #define INIFILEPOS "/opt/ICPMonitor/bin/ICPMonitorSettings.ini"
+#endif
 int main(int argc, char *argv[])
 {
-  QApplication a(argc, argv);
-
-  //divArr();
-  //exit(1);
-
-
-  // fbset --geometry 720 480 720 480 16 --timings 37037 60 16 30 9 62 6
+  QApplication app(argc, argv);
+  /* fbset --geometry 720 480 720 480 16 --timings 37037 60 16 30 9 62 6 */
   QString ttt = executeAConsoleCommand("fbset", QStringList() << "--geometry" << "720" << "480" << "720" << "480" << "16" << "--timings" << "37037" << "60" << "16" << "30" << "9" << "62" << "6");
-  //qDebug() << ttt;
-
-  // Получение настроек из контроллера
-#ifdef PC_BUILD
-  mICPSettings = new Settings("ICPMonitorSettings.ini");
-#else
-  mICPSettings = new Settings("/opt/ICPMonitor/bin/ICPMonitorSettings.ini");
-#endif
+  mICPSettings = new Settings(INIFILEPOS); // Получение настроек из контроллера
   mICPSettings->registrateLangFile(QLocale::Language::English, ":/trans/core_en.qm");
   mICPSettings->registrateLangFile(QLocale::Language::English, ":/trans/icp_monitor_en.qm");
-  // Чтение настроек
-  mICPSettings->readAllSetting();
-
-  QString currUUID = mICPSettings->getSoftwareStorageUUID();
-  //qDebug() << currUUID;
-  QString currRasdel = mICPSettings->getFlashDeviceMountPart();
-  //qDebug() << currRasdel;
+  mICPSettings->readAllSetting(); // Чтение настроек
+  QString currUUID    = mICPSettings->getSoftwareStorageUUID();
+  QString currRasdel  = mICPSettings->getFlashDeviceMountPart();
   mount(&currUUID, &currRasdel);
   mICPSettings->setSoftwareStorageUUID(currUUID);
-  mICPSettings->writeAllSetting();
+  mICPSettings->writeAllSetting();  //!!!! Вот здесь валиться могут данные
   Q_INIT_RESOURCE(core_res);
-  // Игнорируемые события тача автоматически переопределять в MouseEvent
-  QCoreApplication::setAttribute(Qt::AA_SynthesizeTouchForUnhandledMouseEvents, true);
-
-  //qRegisterMetaType<SensorEvent>();
-  //qRegisterMetaType<FileControllerEvent>();
-
-
-  qRegisterMetaType<ControllerEvent>();
-  //qRegisterMetaType<BlockDeviceManagerEvent>();
-
+  QCoreApplication::setAttribute(Qt::AA_SynthesizeTouchForUnhandledMouseEvents, true); // Игнорируемые события тача автоматически переопределять в MouseEvent
+  qRegisterMetaType<ControllerEvent>();   //qRegisterMetaType<SensorEvent>();  //qRegisterMetaType<FileControllerEvent>();  //qRegisterMetaType<BlockDeviceManagerEvent>();
   const QString APP_NAME = "ICPMonitor";
   const QString ORG_NAME = "CORESAR";
   QCoreApplication::setApplicationName(APP_NAME);
@@ -343,8 +313,7 @@ int main(int argc, char *argv[])
 
   MainWindow w;
   w.show();
-  const int exitCode = a.exec();
-  w.hide();
+  const int exitCode = app.exec();
   umount(&currRasdel);
   qDebug() << "Exit" << exitCode;
   return exitCode;

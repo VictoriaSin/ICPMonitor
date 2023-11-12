@@ -26,25 +26,19 @@ class MainWindow : public QWidget
     IPageWidget *mCurrentPage {nullptr};
     QStack<IPageWidget*> mStackOfWidgets;
 
-
     /*! Диалоговое окно для уведомлений пользователя */
     MessageDialog *mMessageDialog {nullptr};
 
 public:
-    //MonitorController monitorController;
     QThread mControllerThread {nullptr};
     MonitorController *mController {nullptr};
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
     void installController(MonitorController *controller);
-
     /*! Перевод приложения */
     void retranslate();
-
     /*! Скейлинг шрифтов */
     void scaleFonts();
-
     void setZeroSensorPage();
   public slots:
     void destroyMonitorController();
@@ -67,8 +61,6 @@ private slots:
     void setPage(IPageWidget *installedPage);
     //! Установка предыдущей страницы
     void setPreviousPage();
-
-    // QWidget interface
 protected:
     void changeEvent(QEvent *) override;
 };
