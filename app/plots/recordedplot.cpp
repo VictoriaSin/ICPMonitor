@@ -78,7 +78,7 @@ RecordedPlot::RecordedPlot(QWidget *parent):
     });
 
     // Обработка клика по элементам
-    connect(this, &RecordedPlot::itemClick, this, &RecordedPlot::itemClicked);
+    //connect(this, &RecordedPlot::itemClick, this, &RecordedPlot::itemClicked);
 
     retranslate();
     addLayer("intervalLayer", nullptr, limAbove);
@@ -411,50 +411,50 @@ void RecordedPlot::addDataOnGraphic()
     }
 }
 
-void RecordedPlot::itemClicked(QCPAbstractItem *item, QMouseEvent *event)
-{
-    qDebug() << item;
-    const LabelMarkItem *labelItem = dynamic_cast<LabelMarkItem*>(item);
-
-    // Если преобразование прошло успешно и событие отпускания левой мышки
-    if (labelItem && event->type() == QEvent::Type::MouseButtonRelease && event->button() == Qt::MouseButton::LeftButton)
-    {
-        // Метка, связанная с отображение на графике
-        Label *label = labelItem->getLabel();
-
-        // Если метки нет
-        if (!label) { return; }
-
-        // Время начала и окончания метки
-        const int64_t &timeStartLabelMs = label->getTimeStartLabelMS();
-        const int64_t &timeEndLabelMs = label->getTimeEndLabelMS();
-
-        // Устанавливаем id сессии, к которой относится метка,
-        // номер метки, время начала метки и окончание
-        mTextEditDialog->setInfoLabelText(TemplateInfoAboutLabel.arg(tr("ID сессии")).arg(label->getBelongIdSession()).
-                                          arg(tr("Номер метки")).arg(label->getNumberLabel()).
-                                          arg(tr("Время начала метки")).arg(QDateTime::fromMSecsSinceEpoch(timeStartLabelMs).toString("dd.MM.yyyy hh:mm:ss.zzz")).
-                                          arg(tr("Время окончания метки")).arg(timeEndLabelMs > timeStartLabelMs ? QDateTime::fromMSecsSinceEpoch(timeEndLabelMs).toString("dd.MM.yyyy hh:mm:ss.zzz") : "-").
-                                          arg(tr("Информация")));
-
-        // Информация о метке
-        const QString &labelInfo = label->getInfoLabel();
-
-        // Устанавливаем информацию о метке
-        mTextEditDialog->setText(labelInfo);
-
-        // Если пользователь подтвердил изменения
-        if (mTextEditDialog->exec() == QDialog::Accepted) {
-            // Запоминаем текст из поля ввода
-            const QString newText = mTextEditDialog->getText();
-
-            // Если изменения были, обновляем информацию о метке
-            if (labelInfo != newText) {
-                label->setLabelInfo(newText);
-            }
-        }
-    }
-}
+//void RecordedPlot::itemClicked(QCPAbstractItem *item, QMouseEvent *event)
+//{
+//    qDebug() << item;
+//    const LabelMarkItem *labelItem = dynamic_cast<LabelMarkItem*>(item);
+//
+//    // Если преобразование прошло успешно и событие отпускания левой мышки
+//    if (labelItem && event->type() == QEvent::Type::MouseButtonRelease && event->button() == Qt::MouseButton::LeftButton)
+//    {
+//        // Метка, связанная с отображение на графике
+//        Label *label = labelItem->getLabel();
+//
+//        // Если метки нет
+//        if (!label) { return; }
+//
+//        // Время начала и окончания метки
+//        const int64_t &timeStartLabelMs = label->getTimeStartLabelMS();
+//        const int64_t &timeEndLabelMs = label->getTimeEndLabelMS();
+//
+//        // Устанавливаем id сессии, к которой относится метка,
+//        // номер метки, время начала метки и окончание
+//        mTextEditDialog->setInfoLabelText(TemplateInfoAboutLabel.arg(tr("ID сессии")).arg(label->getBelongIdSession()).
+//                                          arg(tr("Номер метки")).arg(label->getNumberLabel()).
+//                                          arg(tr("Время начала метки")).arg(QDateTime::fromMSecsSinceEpoch(timeStartLabelMs).toString("dd.MM.yyyy hh:mm:ss.zzz")).
+//                                          arg(tr("Время окончания метки")).arg(timeEndLabelMs > timeStartLabelMs ? QDateTime::fromMSecsSinceEpoch(timeEndLabelMs).toString("dd.MM.yyyy hh:mm:ss.zzz") : "-").
+//                                          arg(tr("Информация")));
+//
+//        // Информация о метке
+//        const QString &labelInfo = label->getInfoLabel();
+//
+//        // Устанавливаем информацию о метке
+//        mTextEditDialog->setText(labelInfo);
+//
+//        // Если пользователь подтвердил изменения
+//        if (mTextEditDialog->exec() == QDialog::Accepted) {
+//            // Запоминаем текст из поля ввода
+//            const QString newText = mTextEditDialog->getText();
+//
+//            // Если изменения были, обновляем информацию о метке
+//            if (labelInfo != newText) {
+//                label->setLabelInfo(newText);
+//            }
+//        }
+//    }
+//}
 
 void RecordedPlot::retranslate()
 {

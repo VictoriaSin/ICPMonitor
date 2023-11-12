@@ -92,7 +92,7 @@ public slots:
 
 protected slots:
     /*! Обработка нажатий по элементам графика */
-    void itemClicked(QCPAbstractItem *item, QMouseEvent *event);
+    //void itemClicked(QCPAbstractItem *item, QMouseEvent *event);
 signals:
     void changeBtnIcon();
 
