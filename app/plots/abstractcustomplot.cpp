@@ -769,6 +769,10 @@ void AbstractCustomPlot::settingUpYAxis()
     font.setFamily("Sans Serif");
     font.setPointSize(10);
 
+    // Формат подписей делений оси
+    yAxis->setNumberFormat("f");
+    yAxis->setNumberPrecision(1);
+
     // Ручка рисования для оси
     yAxis->setBasePen(pen);
 

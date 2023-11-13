@@ -132,6 +132,11 @@
      </property>
      <item>
       <widget class="QLabel" name="flashStatusLabel">
+       <property name="font">
+        <font>
+         <pointsize>15</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string/>
        </property>
