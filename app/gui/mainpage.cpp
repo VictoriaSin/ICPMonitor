@@ -200,7 +200,7 @@ void MainPage::setupButtons()
   ui->mInfoInterval2->hide();
 
   ui->alarmLevelICPWidget->hide();
-  ui->sensorStateLabel->hide();
+  //ui->sensorStateLabel->hide();
 
   ui->playRecord->setIcon(QIcon(":/icons/playRecord.svg"),QIcon(":/icons/playRecord_pressed.svg"));
   ui->playRecord->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
@@ -278,7 +278,7 @@ void MainPage::setupButtons()
 }
 void MainPage::setupBottomInfoSVG()
 {
-  ui->softwareStorageIconSVG->setMaximumSize(48, 60);
+  //ui->softwareStorageIconSVG->setMaximumSize(48, 60);
 }
 void MainPage::setupMainMenu()
 {
@@ -347,7 +347,7 @@ void MainPage::scaleFont(float scaleFactor)
   mMainMenu               ->scaleFont(scaleFactor);
 
   WFontScaling(ui->dateTimeLabel,     scaleFactor);
-  WFontScaling(ui->sensorStateLabel,  scaleFactor);
+  //WFontScaling(ui->sensorStateLabel,  scaleFactor);
   WFontScaling(ui->labelsNavigation,  scaleFactor);
   WFontScaling(ui->mInfoInterval1,    scaleFactor);
   WFontScaling(ui->mInfoInterval2,    scaleFactor);
@@ -1037,45 +1037,57 @@ void MainPage::on_markPPointButton_clicked()
 
     //int N = btnList.count();
 
-    u16 cnt_bottom = ui->bottonLayout->count();
-    qDebug() << "cnt bottom" << cnt_bottom;
-    for (u16 i = 0; i < cnt_bottom; i++)
-    {
-      if (!(ui->bottonLayout->itemAt(i)->isEmpty()))
-      {
-        ui->bottonLayout->itemAt(i)->widget()->hide();
-      }
-    }
-    ui->dateTimeLabel ->show();
-
-//    u16 cnt_top= ui->mainWidgets->children().count();
-//    qDebug() << "cnt top" << cnt_top;
-//
-//    QList<QObject*> list = ui->mainWidgets->children();
-//    for (u16 i = 0; i < cnt_top; i++)
+//    u16 cnt_bottom = ui->bottonLayout->count();
+//    qDebug() << "cnt bottom" << cnt_bottom;
+//    for (u16 i = 0; i < cnt_bottom; i++)
 //    {
-//      //if (!(ui->mainWidgets->children().at(i)->isEmpty()))
+//      if (!(ui->bottonLayout->itemAt(i)->isEmpty()))
 //      {
-//        list[i]->
+//        ui->bottonLayout->itemAt(i)->widget()->hide();
 //      }
 //    }
 
+    ui->mainWidgets->hide();
+
+    QList <QWidget*> btnList_top = ui->mainWidgets->findChildren<QWidget*>();
+    int cnt_top = btnList_top.count();
+    for (int i = 0; i < cnt_top; i++) { btnList_top[i]->hide(); }
+    ui->sessionButton ->show();
+
+    QList <QWidget*> btnList_bottom = ui->bottomArea->findChildren<QWidget*>();
+    int cnt_bottom = btnList_bottom.count();
+    for (int i = 0; i < cnt_bottom; i++) { btnList_bottom[i]->hide(); }
+    ui->dateTimeLabel ->show();
+
+
+    //u16 cnt_top= ui->mainWidgets->children().count();
+    //qDebug() << "cnt top" << cnt_top;
+
+    //QList<QObject*> list = ui->mainWidgets->children();
+    //for (u16 i = 0; i < cnt_top; i++)
+    //{
+    //  //if (!(ui->mainWidgets->children().at(i)->isEmpty()))
+    //  {
+    //    list[i]->
+    //  }
+    //}
+
 
     // Top elements
-    ui->sessionButton         ->show();
-    ui->intervalButton        ->hide();
-    ui->goBackToGraphButton   ->hide();
-    ui->goToInterval1Button   ->hide();
-    ui->goToInterval2Button   ->hide();
-    ui->goToNextMarkButton    ->hide();
-    ui->goToPreviousMarkButton->hide();
-    ui->intervalButton        ->hide();
-    ui->labelsNavigation      ->hide();
-    ui->mInfoInterval1        ->hide();
-    ui->mInfoInterval2        ->hide();
-    ui->makeLabelButton       ->hide();
-    ui->recordButton          ->hide();
-    ui->alarmLevelICPWidget   ->hide();
+//    ui->sessionButton         ->show();
+//    ui->intervalButton        ->hide();
+//    ui->goBackToGraphButton   ->hide();
+//    ui->goToInterval1Button   ->hide();
+//    ui->goToInterval2Button   ->hide();
+//    ui->goToNextMarkButton    ->hide();
+//    ui->goToPreviousMarkButton->hide();
+//    ui->intervalButton        ->hide();
+//    ui->labelsNavigation      ->hide();
+//    ui->mInfoInterval1        ->hide();
+//    ui->mInfoInterval2        ->hide();
+//    ui->makeLabelButton       ->hide();
+//    ui->recordButton          ->hide();
+//    ui->alarmLevelICPWidget   ->hide();
 
     //// Botton elements
     //ui->acceptFluidInjectionButton->hide();
