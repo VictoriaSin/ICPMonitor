@@ -200,7 +200,7 @@ void MainPage::setupButtons()
   ui->mInfoInterval2->hide();
 
   ui->alarmLevelICPWidget->hide();
-  ui->sensorStateLabel->hide();
+  //ui->sensorStateLabel->hide();
 
   ui->playRecord->setIcon(QIcon(":/icons/playRecord.svg"),QIcon(":/icons/playRecord_pressed.svg"));
   ui->playRecord->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
@@ -278,7 +278,7 @@ void MainPage::setupButtons()
 }
 void MainPage::setupBottomInfoSVG()
 {
-  ui->softwareStorageIconSVG->setMaximumSize(48, 60);
+  //ui->softwareStorageIconSVG->setMaximumSize(48, 60);
 }
 void MainPage::setupMainMenu()
 {
@@ -346,7 +346,7 @@ void MainPage::scaleFont(float scaleFactor)
   mMainMenu               ->scaleFont(scaleFactor);
 
   WFontScaling(ui->dateTimeLabel,     scaleFactor);
-  WFontScaling(ui->sensorStateLabel,  scaleFactor);
+  //WFontScaling(ui->sensorStateLabel,  scaleFactor);
   WFontScaling(ui->labelsNavigation,  scaleFactor);
   WFontScaling(ui->mInfoInterval1,    scaleFactor);
   WFontScaling(ui->mInfoInterval2,    scaleFactor);
@@ -1029,16 +1029,85 @@ void MainPage::on_funcFirstButton_clicked()
 void MainPage::on_markPPointButton_clicked()
 {
     mCurrentGraphsArea->changeGraph(4);
-    QList <QAbstractButton*> btnList = this->findChildren<QAbstractButton*>();
-    int N = btnList.count();
-    for (int i=0; i<N; i++)
-    {
-        btnList[i]->hide();
-    }
-    ui->sessionButton->show();
-    ui->labelsNavigation->hide();
-    ui->mInfoInterval1->hide();
-    ui->mInfoInterval2->hide();
+    //QList <QAbstractButton*> btnList = this->findChildren<QAbstractButton*>();
+    //int N = btnList.count();
+    //for (int i=0; i<N; i++) { btnList[i]->hide(); }
+    //QList <QObject*> btnList = ui->bottonLayout->findChildren<QObject*>();
+
+    //int N = btnList.count();
+
+//    u16 cnt_bottom = ui->bottonLayout->count();
+//    qDebug() << "cnt bottom" << cnt_bottom;
+//    for (u16 i = 0; i < cnt_bottom; i++)
+//    {
+//      if (!(ui->bottonLayout->itemAt(i)->isEmpty()))
+//      {
+//        ui->bottonLayout->itemAt(i)->widget()->hide();
+//      }
+//    }
+
+    ui->mainWidgets->hide();
+
+    QList <QWidget*> btnList_top = ui->mainWidgets->findChildren<QWidget*>();
+    int cnt_top = btnList_top.count();
+    for (int i = 0; i < cnt_top; i++) { btnList_top[i]->hide(); }
+    ui->sessionButton ->show();
+
+    QList <QWidget*> btnList_bottom = ui->bottomArea->findChildren<QWidget*>();
+    int cnt_bottom = btnList_bottom.count();
+    for (int i = 0; i < cnt_bottom; i++) { btnList_bottom[i]->hide(); }
+    ui->dateTimeLabel ->show();
+
+
+    //u16 cnt_top= ui->mainWidgets->children().count();
+    //qDebug() << "cnt top" << cnt_top;
+
+    //QList<QObject*> list = ui->mainWidgets->children();
+    //for (u16 i = 0; i < cnt_top; i++)
+    //{
+    //  //if (!(ui->mainWidgets->children().at(i)->isEmpty()))
+    //  {
+    //    list[i]->
+    //  }
+    //}
+
+
+    // Top elements
+//    ui->sessionButton         ->show();
+//    ui->intervalButton        ->hide();
+//    ui->goBackToGraphButton   ->hide();
+//    ui->goToInterval1Button   ->hide();
+//    ui->goToInterval2Button   ->hide();
+//    ui->goToNextMarkButton    ->hide();
+//    ui->goToPreviousMarkButton->hide();
+//    ui->intervalButton        ->hide();
+//    ui->labelsNavigation      ->hide();
+//    ui->mInfoInterval1        ->hide();
+//    ui->mInfoInterval2        ->hide();
+//    ui->makeLabelButton       ->hide();
+//    ui->recordButton          ->hide();
+//    ui->alarmLevelICPWidget   ->hide();
+
+    //// Botton elements
+    //ui->acceptFluidInjectionButton->hide();
+    //ui->acceptIntervalButton      ->hide();
+    //ui->acceptMarkButton          ->hide();
+    //ui->dVInputButton             ->hide();
+    //ui->dateTimeLabel             ->hide();
+    //ui->downloadGraphButton       ->hide();
+    //ui->funcFirstButton           ->hide();
+    //ui->funcSecondButton          ->hide();
+    //ui->markPPointButton          ->hide();
+    //ui->playRecord                ->hide();
+    //ui->rejectFluidInjectionButton->hide();
+    //ui->rejectIntervalButton      ->hide();
+    //ui->rejectMarkButton          ->hide();
+    //ui->rewindRecordButton        ->hide();
+    //ui->speedRecordButton         ->hide();
+    //ui->softwareStorageIconSVG    ->hide();
+    //ui->zoomInterval1Button       ->hide();
+    //ui->zoomInterval2Button       ->hide();
+
     mCurrentGraphsArea->calcCompliance();
 }
 
@@ -1047,24 +1116,24 @@ void MainPage::on_fluidInjectionButton_clicked()
 {
     isFluidIntervalCreating = true;
 
-    ui->acceptFluidInjectionButton    ->show();
-    ui->rejectFluidInjectionButton    ->show();
+    ui->acceptFluidInjectionButton ->show();
+    ui->rejectFluidInjectionButton ->show();
 
-    ui->makeLabelButton         ->setEnabled(false);
-    ui->sessionButton           ->setEnabled(false);
-    ui->goToPreviousMarkButton  ->setEnabled(false);
-    ui->goToNextMarkButton      ->setEnabled(false);
-    ui->goToInterval1Button     ->setEnabled(false);
-    ui->goToInterval2Button     ->setEnabled(false);
-    //ui->playRecord              ->setEnabled(false);
-    //ui->rewindRecordButton      ->setEnabled(false);
-    //ui->speedRecordButton       ->setEnabled(false);
-    ui->downloadGraphButton     ->setEnabled(false);
-    ui->zoomInterval1Button     ->setEnabled(false);
-    ui->zoomInterval2Button     ->setEnabled(false);
-    ui->dVInputButton           ->setEnabled(false);
-    ui->markPPointButton        ->setEnabled(false);
-    ui->intervalButton          ->setEnabled(false);
+    ui->makeLabelButton        ->setEnabled(false);
+    ui->sessionButton          ->setEnabled(false);
+    ui->goToPreviousMarkButton ->setEnabled(false);
+    ui->goToNextMarkButton     ->setEnabled(false);
+    ui->goToInterval1Button    ->setEnabled(false);
+    ui->goToInterval2Button    ->setEnabled(false);
+    ui->downloadGraphButton    ->setEnabled(false);
+    ui->zoomInterval1Button    ->setEnabled(false);
+    ui->zoomInterval2Button    ->setEnabled(false);
+    ui->dVInputButton          ->setEnabled(false);
+    ui->markPPointButton       ->setEnabled(false);
+    ui->intervalButton         ->setEnabled(false);
+    //ui->playRecord             ->setEnabled(false);
+    //ui->rewindRecordButton     ->setEnabled(false);
+    //ui->speedRecordButton      ->setEnabled(false);
 
     isFluidIntervalCreating = true;
     mCurrentGraphsArea->addIntervalOnRecordedGraph();
@@ -1077,21 +1146,21 @@ void MainPage::on_fluidInjectionButton_clicked()
 
 void MainPage::on_acceptFluidInjectionButton_clicked()
 {
-    ui->acceptFluidInjectionButton    ->hide();
-    ui->rejectFluidInjectionButton    ->hide();
-    ui->makeLabelButton       ->setEnabled(true);
-    ui->sessionButton         ->setEnabled(true);
-    ui->goToInterval1Button   ->setEnabled(true);
-    ui->goToInterval2Button   ->setEnabled(true);
-    ui->intervalButton        ->setEnabled(true);
-    ui->fluidInjectionButton  ->setEnabled(true);
-    //  ui->playRecord            ->setEnabled(true);
-    //  ui->rewindRecordButton    ->setEnabled(true);
-    //  ui->speedRecordButton     ->setEnabled(true);
-    ui->downloadGraphButton   ->setEnabled(true);
-    ui->zoomInterval1Button   ->setEnabled(true);
-    ui->zoomInterval2Button   ->setEnabled(true);
-    ui->dVInputButton         ->setEnabled(true);
+    ui->acceptFluidInjectionButton->hide();
+    ui->rejectFluidInjectionButton->hide();
+    ui->makeLabelButton           ->setEnabled(true);
+    ui->sessionButton             ->setEnabled(true);
+    ui->goToInterval1Button       ->setEnabled(true);
+    ui->goToInterval2Button       ->setEnabled(true);
+    ui->intervalButton            ->setEnabled(true);
+    ui->fluidInjectionButton      ->setEnabled(true);
+    ui->downloadGraphButton       ->setEnabled(true);
+    ui->zoomInterval1Button       ->setEnabled(true);
+    ui->zoomInterval2Button       ->setEnabled(true);
+    ui->dVInputButton             ->setEnabled(true);
+    //ui->playRecord              ->setEnabled(true);
+    //ui->rewindRecordButton      ->setEnabled(true);
+    //ui->speedRecordButton       ->setEnabled(true);
     if (mIntervalsCount == 4) {ui->markPPointButton    ->setEnabled(true);}
 qDebug() << "mFluidMarksCounter" << mFluidMarksCounter;
     mCurrentGraphsArea->addOrDeleteNewItem(true);
