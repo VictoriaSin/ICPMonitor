@@ -74,7 +74,7 @@ u16 dataF[340] = {
 
 void spiThread::run()
 {
-  qDebug("spiThread Thread is running");
+  qDebug("\033[32m>>mspiThread Thread is running\033[0m");
   isStopped = false;
   isRunning = true;
   i16 i = 0;
@@ -95,7 +95,7 @@ void spiThread::run()
     posData %= 340;
     QThread::usleep(1950);                                                    // Спим
   }
-  qDebug("spiThread Thread is stopped");
+  qDebug("\033[32m<<spiThread Thread is stopped\033[0m");
   isStopped = true;
 }
 #endif

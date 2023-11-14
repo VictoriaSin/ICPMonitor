@@ -287,7 +287,6 @@ qDebug() << "t2" << t2;
     qDebug() << "dopustim Po" << Po;
     for (uint i=0; i<iterTemp; i++)
     {
-        qDebug() << (float)tempArr[i].data*param;
         if (mFluidMarkContainer[0]->maxIntervalValue < (float)tempArr[i].data*param)
         {
             mFluidMarkContainer[0]->maxIntervalValue =  (float)tempArr[i].data*param;

@@ -961,6 +961,15 @@ void CurrentGraphsArea::removeAllGraphs()
     if (mRecordedGraph != nullptr) {mRecordedGraph->mMainGraph->data().clear();}
     mWaveGraph->mMainGraph->data()->clear();//дописать?
     mWaveGraph->mHistGraph->data().clear();//дописать?
+
+    //QSharedPointer<QCPAxisTicker> myTicker(new QCPAxisTicker);
+    //timeTicker->setTimeFormat("%m:%s:%z");
+    //timeTicker->fieldWidth(QCPAxisTickerTime::TimeUnit::tuMilliseconds);
+    //timeTicker->setTickCount(1);
+    //mPlot->xAxis->setTicker(timeTicker);
+
+
+    //mWaveGraph->yAxis->setNumberPrecision(1);
     if (mFirstInterval != nullptr)
     {
         mFirstInterval->mMainGraph->data().data()->clear();
@@ -1052,6 +1061,7 @@ void CurrentGraphsArea::calcCompliance()
     mWaveGraph->mUpperAlarmLimit->setVisible(false);
     mWaveGraph->mMainGraph->data()->clear();
     mWaveGraph->mHistGraph->data()->clear();
+    mWaveGraph->mAmplitudePoints->data()->clear();
     mWaveGraph->setInteraction(QCP::iRangeZoom);
 
     mComplianceGraph->xAxis->setLabel("");
@@ -1060,6 +1070,11 @@ void CurrentGraphsArea::calcCompliance()
     mComplianceGraph->mMainGraph->data()->clear();
     mComplianceGraph->mHistGraph->data()->clear();
     mComplianceGraph->yAxis->setRange(0, 1);
+
+    //mWaveGraph->yAxis->setNumberFormat("f");
+    //mComplianceGraph->yAxis->setNumberFormat("f");
+    if (mICPSettings->getCurrentPressureIndex() == 0) {mComplianceGraph->yAxis->setNumberPrecision(2);}
+    else { mComplianceGraph->yAxis->setNumberPrecision(3); }
 
     if (mDrawGraphs == nullptr)
     {

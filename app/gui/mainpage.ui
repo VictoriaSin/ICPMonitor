@@ -78,21 +78,6 @@
         </font>
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout">
-        <property name="spacing">
-         <number>0</number>
-        </property>
-        <property name="leftMargin">
-         <number>6</number>
-        </property>
-        <property name="topMargin">
-         <number>6</number>
-        </property>
-        <property name="rightMargin">
-         <number>6</number>
-        </property>
-        <property name="bottomMargin">
-         <number>0</number>
-        </property>
         <item>
          <widget class="AnimatedToolButton" name="homeButton">
           <property name="sizePolicy">
@@ -898,6 +883,34 @@
           </property>
           <property name="text">
            <string>dV_б</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="AnimatedToolButton" name="goBackButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+            <kerning>false</kerning>
+           </font>
+          </property>
+          <property name="text">
+           <string>&lt;-</string>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>16</width>
+            <height>16</height>
+           </size>
+          </property>
+          <property name="toolButtonStyle">
+           <enum>Qt::ToolButtonIconOnly</enum>
           </property>
          </widget>
         </item>
