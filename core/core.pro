@@ -39,7 +39,6 @@ HEADERS += \
     global_structs.h \
     sensor/read_spi.h \
     sensor/save_spi.h \
-    sensor/spi.h \
     sensor/spiThread.h \
     sensor/zsc.h \
     statistical_functions.h \
@@ -67,7 +66,6 @@ SOURCES += \
     global_structs.cpp \
     sensor/read_spi.cpp \
     sensor/save_spi.cpp \
-    sensor/spi.cpp \
     sensor/spiThread.cpp \
     sensor/zsc.cpp \
     statistical_functions.cpp \

@@ -11,54 +11,53 @@
 #include <QTimer>
 
 DateTimePage::DateTimePage(QWidget *parent) :
-    AbstractDialogPage(parent),
-    ui(new Ui::DateTimePage)
+  AbstractDialogPage(parent),
+  ui(new Ui::DateTimePage)
 {
-    ui->setupUi(AbstractDialogPage::ui->settingsPage);
+  ui->setupUi(AbstractDialogPage::ui->settingsPage);
 
-    // Установка картинки окна
-    //setUpperSvgIcon(":/icons/alarm.svg");
+  QDateTimeEdit *dateEditSB = new QDateTimeEdit(ui->inputDateSpinBox);
+  dateEditSB->setMaximumDate(QDate(2038, 1, 18));
+  dateEditSB->setMinimumDate(QDate(2000, 1, 1));
+  dateEditSB->setMinimumWidth(300);
+  dateEditSB->setDisplayFormat("dd.MM.yyyy");
 
-    QDateTimeEdit *dateEditSB = new QDateTimeEdit(ui->inputDateSpinBox);
-    dateEditSB->setMaximumDate(QDate(2038, 1, 18));
-    dateEditSB->setMinimumDate(QDate(2000, 1, 1));
-    dateEditSB->setMinimumWidth(300);
-    dateEditSB->setDisplayFormat("dd.MM.yyyy");
+  QDateTimeEdit *timeEditSB = new QDateTimeEdit(ui->inputTimeSpinBox);
+  timeEditSB->setMinimumWidth(300);
+  timeEditSB->setDisplayFormat("hh:mm");
 
-    QDateTimeEdit *timeEditSB = new QDateTimeEdit(ui->inputTimeSpinBox);
-    timeEditSB->setMinimumWidth(300);
-    timeEditSB->setDisplayFormat("hh:mm");
-
-    ui->inputDateSpinBox->setSpinBox(dateEditSB);
-    ui->inputTimeSpinBox->setSpinBox(timeEditSB);
+  ui->inputDateSpinBox->setSpinBox(dateEditSB);
+  ui->inputTimeSpinBox->setSpinBox(timeEditSB);
 #ifdef PC_BUILD
-    float coeff = 0.6;
-    WFontScaling(ui->inputTimeSpinBox, coeff);
-    WFontScaling(ui->inputDateSpinBox, coeff);
-    WFontScaling(ui->timeLabel, coeff);
-    WFontScaling(ui->dateLabel, coeff);
+  float coeff = 0.6;
+  WFontScaling(ui->inputTimeSpinBox, coeff);
+  WFontScaling(ui->inputDateSpinBox, coeff);
+  WFontScaling(ui->timeLabel, coeff);
+  WFontScaling(ui->dateLabel, coeff);
 #endif
+  qDebug("\033[34m>>DateTimePage::DateTimePage\033[0m");
 }
 
 DateTimePage::~DateTimePage()
 {
-    delete ui;
+  qDebug("\033[34m<<DateTimePage::~DateTimePage\033[0m");
+  delete ui;
 }
 
 void DateTimePage::retranslate()
 {
-    AbstractDialogPage::retranslate();
-    ui->retranslateUi(this);
+  AbstractDialogPage::retranslate();
+  ui->retranslateUi(this);
 
-    setUpperNamePageLabel(tr("Настройка даты и времени"));
-    setBottomInfoLabel("");
+  setUpperNamePageLabel(tr("Настройка даты и времени"));
+  setBottomInfoLabel("");
 }
 
 void DateTimePage::showEvent(QShowEvent *)
 {
-    auto dateTime = QDateTime::currentDateTime();
-    ui->inputTimeSpinBox->setTime(dateTime.time());
-    ui->inputDateSpinBox->setDate(dateTime.date());
+  auto dateTime = QDateTime::currentDateTime();
+  ui->inputTimeSpinBox->setTime(dateTime.time());
+  ui->inputDateSpinBox->setDate(dateTime.date());
 }
 
 typedef struct
@@ -75,53 +74,53 @@ typedef struct
 
 void DateTimePage::done(int exodus)
 {
-    uint8_t mCurrDateTime[7];
-    if (exodus == QDialog::Accepted && mController) {
-        bool okTime = false;
-        bool okDate = false;
-        auto ti = ui->inputTimeSpinBox->time(&okTime);
-        auto da = ui->inputDateSpinBox->date(&okDate);
+  uint8_t mCurrDateTime[7];
+  if (exodus == QDialog::Accepted && mController) {
+    bool okTime = false;
+    bool okDate = false;
+    auto ti = ui->inputTimeSpinBox->time(&okTime);
+    auto da = ui->inputDateSpinBox->date(&okDate);
 
-        QString ttt = ti.toString();
-        qDebug() << ttt;
-        mCurrDateTime[3] = 1;
-        mCurrDateTime[2] = ((ttt[0].toLatin1() - 0x30) << 4) + ttt[1].toLatin1() - 0x30;
-        mCurrDateTime[1] = ((ttt[3].toLatin1() - 0x30) << 4) + ttt[4].toLatin1() - 0x30;
-        mCurrDateTime[0] = 0;
+    QString ttt = ti.toString();
+    qDebug() << ttt;
+    mCurrDateTime[3] = 1;
+    mCurrDateTime[2] = ((ttt[0].toLatin1() - 0x30) << 4) + ttt[1].toLatin1() - 0x30;
+    mCurrDateTime[1] = ((ttt[3].toLatin1() - 0x30) << 4) + ttt[4].toLatin1() - 0x30;
+    mCurrDateTime[0] = 0;
 
-        ttt = da.toString("yy.MM.dd");
-        qDebug() << ttt;
-        mCurrDateTime[6] = ((ttt[0].toLatin1() - 0x30) << 4) + ttt[1].toLatin1() - 0x30;
-        mCurrDateTime[5] = ((ttt[3].toLatin1() - 0x30) << 4) + ttt[4].toLatin1() - 0x30;
-        mCurrDateTime[4] = ((ttt[6].toLatin1() - 0x30) << 4) + ttt[7].toLatin1() - 0x30;
-        qDebug() << mCurrDateTime[6] << mCurrDateTime[5]  << mCurrDateTime[4] << mCurrDateTime[2] << mCurrDateTime[1];
+    ttt = da.toString("yy.MM.dd");
+    qDebug() << ttt;
+    mCurrDateTime[6] = ((ttt[0].toLatin1() - 0x30) << 4) + ttt[1].toLatin1() - 0x30;
+    mCurrDateTime[5] = ((ttt[3].toLatin1() - 0x30) << 4) + ttt[4].toLatin1() - 0x30;
+    mCurrDateTime[4] = ((ttt[6].toLatin1() - 0x30) << 4) + ttt[7].toLatin1() - 0x30;
+    qDebug() << mCurrDateTime[6] << mCurrDateTime[5]  << mCurrDateTime[4] << mCurrDateTime[2] << mCurrDateTime[1];
 
 
 
 #ifdef RELEASE_BUILD
-        setRTC(mCurrDateTime);
+    setRTC(mCurrDateTime);
 #else
-        setDateTime(mCurrDateTime);
-        qDebug() << QDateTime::currentDateTime();
+    setDateTime(mCurrDateTime);
+    qDebug() << QDateTime::currentDateTime();
 #endif
-        ui->inputTimeSpinBox->setTime(QTime::currentTime());// dateTime.time());
-        ui->inputDateSpinBox->setDate(QDate::currentDate());// dateTime.date());
-        mController->controllerEvent(ControllerEvent::GlobalTimeUpdate);
-    }
-    emit previousPage();
+    ui->inputTimeSpinBox->setTime(QTime::currentTime());// dateTime.time());
+    ui->inputDateSpinBox->setDate(QDate::currentDate());// dateTime.date());
+    mController->controllerEvent(ControllerEvent::GlobalTimeUpdate);
+  }
+  emit previousPage();
 }
 
 void DateTimePage::installController(MonitorController *controller)
 {
-    AbstractDialogPage::installController(controller);
-    retranslate();
+  AbstractDialogPage::installController(controller);
+  retranslate();
 }
 
 void DateTimePage::scaleFont(float scaleFactor)
 {
-    AbstractDialogPage::scaleFont(scaleFactor);
-    WFontScaling(ui->inputTimeSpinBox, scaleFactor);
-    WFontScaling(ui->inputDateSpinBox, scaleFactor);
-    WFontScaling(ui->timeLabel, scaleFactor);
-    WFontScaling(ui->dateLabel, scaleFactor);
+  AbstractDialogPage::scaleFont(scaleFactor);
+  WFontScaling(ui->inputTimeSpinBox, scaleFactor);
+  WFontScaling(ui->inputDateSpinBox, scaleFactor);
+  WFontScaling(ui->timeLabel, scaleFactor);
+  WFontScaling(ui->dateLabel, scaleFactor);
 }

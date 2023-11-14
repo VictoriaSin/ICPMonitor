@@ -30,7 +30,6 @@ void MonitorController::terminate()
   DESTROY_CLASS(mLabelManagerGlobal);
   DESTROY_CLASS(mICPSettings);
   emit destroyThread();
-  qDebug("MonitorController::terminate()");
 }
 ControllerEvent MonitorController::getSoftwareStorageState() const
 {
@@ -225,15 +224,7 @@ bool MonitorController::setGeneralParam(float mFontScaleFactor)
 
   return true;
 }
-void MonitorController::setMaxScreens(uint maxScreens)
-{
-  if (!mICPSettings) { return; }
-  const uint CurrentMaxScreens = mICPSettings->getMaxScreens();
-  if (CurrentMaxScreens == maxScreens) { return; }
-  mICPSettings->setMaxScreens(maxScreens);
-  mICPSettings->writeScreensSettings();
-  emit controllerEvent(ControllerEvent::UpdatedMaxScreens);
-}
+
 
 void MonitorController::processAlarmEvent(AlarmEvent event, const QVariantMap &args)
 {

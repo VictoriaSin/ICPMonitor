@@ -31,13 +31,14 @@ MainWindow::MainWindow( QWidget *parent) : QWidget(parent) , ui(new Ui::MainWind
 #ifdef RELEASE_BUILD
     mController->controllerEvent(ControllerEvent::GlobalTimeUpdate);
 #endif
+    qDebug("\033[34m>>MainWindow::MainWindow\033[0m");
 }
 MainWindow::~MainWindow()
 {
     delete ui;
     delete mMessageDialog;
     DESTROY_CLASS(mMainPage);
-    qDebug() << "MainWindow::~MainWindow()";
+    qDebug("\033[34m<<MainWindow::~MainWindow\033[0m");
 
 }
 void MainWindow::destroyMonitorController()
@@ -47,7 +48,6 @@ void MainWindow::destroyMonitorController()
     DESTROY_CLASS(mController);
     mControllerThread.quit();
     mControllerThread.wait(100000);
-    qDebug("Close MainWindow");
     qApp->exit(0);
   });
 }

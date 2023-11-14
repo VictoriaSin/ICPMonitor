@@ -30,7 +30,6 @@ void Settings::readAllSetting()
     readAlarmSettings();
     readCurrentSensorReadingsSettings();
     readAverageSensorReadingsSettings();
-    readScreensSettings();
 }
 
 void Settings::writeAllSetting()
@@ -39,7 +38,6 @@ void Settings::writeAllSetting()
     writeAlarmSettings();
     writeCurrentSensorReadingsSettings();
     writeAverageSensorReadingsSettings();
-    writeScreensSettings();
 }
 
 void Settings::readGeneralSettings()
@@ -142,33 +140,6 @@ void Settings::setSoftwareStorageUUID(const QString &blockDevUUID)
 void Settings::setLastSavedDateTimestampSec(int64_t /*timestamp*/)
 {
     //mLastSavedDateTimestampSec = timestamp;
-}
-
-void Settings::readScreensSettings()
-{
-    mSettings->beginGroup(mScreensGroup);
-    mMaxScreens = mSettings->value("mMaxScreens", mMaxScreens).toUInt();
-    mRelativeScreensPath = mSettings->value("mRelativeScreensPath", mRelativeScreensPath).toString();
-    mSettings->endGroup();
-}
-
-void Settings::writeScreensSettings()
-{
-    mSettings->beginGroup(mScreensGroup);
-    mSettings->setValue("mMaxScreens", mMaxScreens);
-    mSettings->setValue("mRelativeScreensPath", mRelativeScreensPath);
-    mSettings->endGroup();
-    mSettings->sync();
-}
-
-void Settings::setMaxScreens(uint maxScreens)
-{
-    mMaxScreens = maxScreens;
-}
-
-void Settings::setRelativeScreensPath(const QString &relativeScreensPath)
-{
-    mRelativeScreensPath = relativeScreensPath;
 }
 
 void Settings::readAlarmSettings()

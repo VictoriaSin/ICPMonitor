@@ -45,12 +45,6 @@ public:
     float getBCoefficient() const { return mBCoefficient; };
 
     /*################################################################################
-                                    Настройки скриншотов
-    ################################################################################*/
-    void readScreensSettings();
-    uint getMaxScreens() const { return mMaxScreens; };
-    QString getRelativeScreensPath() const { return mRelativeScreensPath; };
-    /*################################################################################
                                 Настройки уровней тревоги
     ################################################################################*/
     void readAlarmSettings();
@@ -102,12 +96,6 @@ public:
     void setBCoefficient(float currBCoefficient);
 private:
     void setLastSavedDateTimestampSec(int64_t timestamp);
-    /*################################################################################
-                                    Настройки скриншотов
-    ################################################################################*/
-    void writeScreensSettings();
-    void setMaxScreens(uint maxScreens);
-    void setRelativeScreensPath(const QString &relativeScreensPath);
     /*################################################################################
                                 Настройки уровней тревоги
     ################################################################################*/
@@ -169,8 +157,6 @@ public:
                                     Настройки скриншотов
     ################################################################################*/
     const QString mScreensGroup {"ScreensGroup"};
-    QString mRelativeScreensPath {"./ICPPicture"};
-    uint mMaxScreens {50};
     /*################################################################################
                                 Настройки уровней тревоги
     ################################################################################*/

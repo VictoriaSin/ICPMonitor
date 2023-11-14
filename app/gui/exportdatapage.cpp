@@ -49,7 +49,7 @@ ExportDataPage::ExportDataPage(QWidget *parent) :
     flashTimer.setInterval(2000);
     connect(&flashTimer, &QTimer::timeout, this, &ExportDataPage::findFlash);
     ui->downloadButton->setEnabled(false);
-
+    qDebug("\033[34m>>ExportDataPage::ExportDataPage\033[0m");
 }
 #define CORRECTDELETE(_item)\
 if (_item != nullptr)\
@@ -71,6 +71,7 @@ ExportDataPage::~ExportDataPage()
         dirsVector = nullptr;
     }
     DESTROY_CLASS(mDeleteDirsDialog);
+    qDebug("\033[34m<<ExportDataPage::~ExportDataPage\033[0m");
     delete ui;
 }
 

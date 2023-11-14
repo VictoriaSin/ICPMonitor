@@ -113,22 +113,19 @@ void TechnicalAccessPage::updateMaxScreensLabel()
         return;
     }
 
-    ui->maxScreensSpinBox->setValue(mController->settings()->getMaxScreens());
+    //ui->maxScreensSpinBox->setValue(mController->settings()->getMaxScreens());
 }
 
 void TechnicalAccessPage::updateMaxScreens()
 {
-    if (!mController) {
-        return;
-    }
+//    if (!mController) {
+//        return;
+//    }
 
-    bool isGood {false};
-    const int maxScreens = ui->maxScreensSpinBox->value(&isGood);
-    if (isGood) {
-        QTimer::singleShot(0, mController, [this, maxScreens](){
-            mController->setMaxScreens(maxScreens);
-        });
-    }
+//    bool isGood {false};
+//    const int maxScreens = ui->maxScreensSpinBox->value(&isGood);
+//    if (isGood) {QTimer::singleShot(0, mController, [this, maxScreens](){mController->setMaxScreens(maxScreens);});
+//    }
 }
 
 void TechnicalAccessPage::controllerEventHandler(ControllerEvent event)//, const QVariantMap &args)
