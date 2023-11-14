@@ -135,5 +135,7 @@
         <file>icons/fluidInjection.svg</file>
         <file>icons/fluidInjectionEnd_pressed.svg</file>
         <file>icons/fluidInjectionEnd.svg</file>
+        <file>icons/trash_pressed.svg</file>
+        <file>icons/trash.svg</file>
     </qresource>
 </RCC>

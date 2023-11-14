@@ -1,6 +1,6 @@
 #include "markitem.h"
 
-
+// не используется?
 MarkItem::MarkItem(QCustomPlot *parentPlot, const QString &text, const QFont &font, float level, LabelOrientation orientation) :
     QCPAbstractItem(parentPlot),
     mTextItem(new QCPItemText(parentPlot)),
@@ -26,6 +26,7 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, const QString &text, const QFont &fo
     mTextItem->setSelectable(false); // Устанавливаем запрет на выбор элемента кликом
 }
 
+// границы интервалов
 MarkItem::MarkItem(QCustomPlot *parentPlot, uint8_t num, QColor color, const QFont &font, const float position) :
     QCPAbstractItem(parentPlot),
     mTextItem(new QCPItemText(parentPlot))
@@ -90,6 +91,7 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, uint8_t num, QColor color, const QFo
     mLineThroughGraph->setVisible(true);
 }
 
+// метки
 MarkItem::MarkItem(QCustomPlot *parentPlot, const QString &text, const float position, const QFont &font) :
     QCPAbstractItem(parentPlot),
     mTextItem(new QCPItemText(parentPlot))
@@ -108,7 +110,7 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, const QString &text, const float pos
 
     mTextItem->setPadding(QMargins(3, 0, 3, 0)); // Отступы от рамки прямоугольника к тексту
     mTextItem->setFont(font); // Устанавливаем базовый шрифт
-    mTextItem->setSelectable(false); // Устанавливаем запрет на выбор элемента кликом
+    mTextItem->setSelectable(true); // Устанавливаем запрет на выбор элемента кликом
 
     // Создаём линию
     mLineThroughGraph = new QCPItemLine(mParentPlot);
@@ -126,7 +128,7 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, const QString &text, const float pos
     dotPen.setStyle(Qt::DotLine);
     dotPen.setWidth(3);
     mLineThroughGraph->setPen(dotPen);
-    mLineThroughGraph->setSelectable(false);
+    mLineThroughGraph->setSelectable(true);
     mLineThroughGraph->setVisible(true);
 }
 

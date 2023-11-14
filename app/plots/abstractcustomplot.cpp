@@ -537,10 +537,10 @@ bool AbstractCustomPlot::event(QEvent *event)
             {
                 if (editFluidInterval((QMouseEvent*)event)) return true; // new func
             }
-            else
-            {
-                if (editAxisRange((QMouseEvent*)event, 0, mRecordedMaxXRange, mCurrentMaxYRange)) return true;
-            }
+//            else
+//            {
+//                if (editAxisRange((QMouseEvent*)event, 0, mRecordedMaxXRange, mCurrentMaxYRange)) return true;
+//            }
         }
 #else
 

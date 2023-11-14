@@ -242,10 +242,10 @@ void MainPage::setupButtons()
   ui->funcFirstButton->setStyleSheet(ToolButtonStyleSheet);
   ui->funcFirstButton->hide();
 
-  ui->funcSecondButton->setIcon(QIcon(":/icons/func2.svg"),QIcon(":/icons/func2_pressed.svg"));
-  ui->funcSecondButton->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
-  ui->funcSecondButton->setStyleSheet(ToolButtonStyleSheet);
-  ui->funcSecondButton->hide();
+  ui->deleteItemButton->setIcon(QIcon(":/icons/trash.svg"),QIcon(":/icons/trash_pressed.svg"));
+  ui->deleteItemButton->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
+  ui->deleteItemButton->setStyleSheet(ToolButtonStyleSheet);
+  ui->deleteItemButton->hide();
 
   ui->markPPointButton->setIcon(QIcon(":/icons/func3.svg"),QIcon(":/icons/func3_pressed.svg"));
   ui->markPPointButton->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
@@ -478,6 +478,7 @@ void MainPage::on_recordButton_clicked()
 
     ui->intervalButton      ->show();
     ui->fluidInjectionButton->show();
+    ui->deleteItemButton    ->show();
     //ui->playRecord          ->show();
 //    ui->rewindRecordButton  ->show();
 //    ui->speedRecordButton   ->show();
@@ -534,6 +535,7 @@ void MainPage::on_makeLabelButton_clicked()
   ui->zoomInterval2Button     ->setEnabled(false);
   ui->dVInputButton           ->setEnabled(false);
   ui->markPPointButton        ->setEnabled(false);
+  ui->deleteItemButton        ->setEnabled(false);
 
   QTimer::singleShot(0, mController, [this](){ mController->makeLabel(); });
   //emit (changeLabelButtonStatus);
@@ -557,6 +559,7 @@ void MainPage::on_acceptMarkButton_clicked()
   ui->zoomInterval2Button ->setEnabled(true);
   ui->dVInputButton       ->setEnabled(true);
   ui->fluidInjectionButton->setEnabled(true);
+  ui->deleteItemButton    ->setEnabled(true);
 
   mMarksFile->open(QIODevice::WriteOnly | QIODevice::Append);
   mMarksFile->write((QString::number(mLabelManagerGlobal->mCountLabels) + ": " + QString::number(mCoordLabelX) + "\n").toLatin1());
@@ -591,6 +594,7 @@ void MainPage::on_rejectMarkButton_clicked()
   ui->zoomInterval2Button ->setEnabled(true);
   ui->dVInputButton       ->setEnabled(true);
   ui->fluidInjectionButton->setEnabled(true);
+  ui->deleteItemButton    ->setEnabled(true);
 
   if (mIntervalsCount < 4) { ui->intervalButton->show(); }
   else if (mFluidMarksCounter == 2){ ui->markPPointButton->setEnabled(true); }
@@ -654,6 +658,7 @@ void MainPage::stopSession()
   ui->zoomInterval2Button   ->hide();
   ui->dVInputButton         ->hide();
   ui->markPPointButton      ->hide();
+  ui->deleteItemButton      ->hide();
 
   mCurrentGraphsArea->stopWork();
   mCurrentGraphsArea->stopWorkDraw();
@@ -694,6 +699,7 @@ void MainPage::on_intervalButton_clicked()
   ui->dVInputButton           ->setEnabled(false);
   ui->markPPointButton        ->setEnabled(false);
   ui->fluidInjectionButton    ->setEnabled(false);
+  ui->deleteItemButton        ->setEnabled(false);
 
   isIntervalCreating = true;
   mCurrentGraphsArea->addIntervalOnRecordedGraph();
@@ -740,6 +746,7 @@ void MainPage::on_acceptIntervalButton_clicked()
     ui->zoomInterval1Button   ->setEnabled(true);
     ui->zoomInterval2Button   ->setEnabled(true);
     ui->dVInputButton         ->setEnabled(true);
+    ui->deleteItemButton      ->setEnabled(true);
     if ((mIntervalsCount == 4) && (mFluidMarksCounter == 2)) {ui->markPPointButton->setEnabled(true);}
 
     mCurrentGraphsArea->addOrDeleteNewItem(true);
@@ -788,6 +795,7 @@ void MainPage::on_rejectIntervalButton_clicked()
   ui->zoomInterval1Button   ->setEnabled(true);
   ui->zoomInterval2Button   ->setEnabled(true);
   ui->dVInputButton         ->setEnabled(true);
+  ui->deleteItemButton      ->setEnabled(true);
   if ((mCurrentIntervalNum == 4) && (mFluidMarksCounter == 2)) {ui->markPPointButton->setEnabled(true);}
 
   if (ui->labelsNavigation->text() != "0/0")
@@ -837,6 +845,7 @@ void MainPage::on_playRecord_clicked()
     ui->zoomInterval2Button   ->setEnabled(false);
     ui->dVInputButton         ->setEnabled(false);
     ui->markPPointButton      ->setEnabled(false);
+    ui->deleteItemButton      ->setEnabled(false);
   }
   else
   {
@@ -855,6 +864,7 @@ void MainPage::on_playRecord_clicked()
     ui->dVInputButton         ->setEnabled(true);
     if ((mCurrentIntervalNum == 4) && (mFluidMarksCounter == 2)) {ui->markPPointButton->setEnabled(true);}
     ui->downloadGraphButton   ->setEnabled(true);
+    ui->deleteItemButton      ->setEnabled(true);
   }
   emit(playBtnPressed());
 }
@@ -926,7 +936,7 @@ void MainPage::on_zoomInterval1Button_clicked()
   mCurrentGraphsArea->changeGraph(2); // 1 интервал
 
   ui->funcFirstButton       ->show();
-  ui->funcSecondButton      ->show();
+
   //ui->funcThirdButton       ->show();
   ui->goBackToGraphButton   ->show();
   ui->intervalButton        ->hide();
@@ -936,6 +946,7 @@ void MainPage::on_zoomInterval1Button_clicked()
   ui->goToPreviousMarkButton->hide();
   ui->makeLabelButton       ->hide();
   ui->sessionButton         ->hide();
+  ui->deleteItemButton      ->hide();
 //  ui->rewindRecordButton    ->hide();
 //  ui->speedRecordButton     ->hide();
   ui->zoomInterval1Button   ->hide();
@@ -957,8 +968,7 @@ void MainPage::on_zoomInterval2Button_clicked()
   mCurrentGraphsArea->setMarksOnInterval();
   mCurrentGraphsArea->changeGraph(3); // 2 интервал
 
-  ui->funcFirstButton       ->show();
-  ui->funcSecondButton      ->show();
+  ui->funcFirstButton       ->show();  
   //ui->funcThirdButton       ->show();
   ui->mInfoInterval2        ->show();
   ui->goBackToGraphButton   ->show();
@@ -970,6 +980,7 @@ void MainPage::on_zoomInterval2Button_clicked()
   ui->goToPreviousMarkButton->hide();
   ui->makeLabelButton       ->hide();
   ui->sessionButton         ->hide();
+  ui->deleteItemButton      ->hide();
 //  ui->rewindRecordButton    ->hide();
 //  ui->speedRecordButton     ->hide();
   ui->zoomInterval1Button   ->hide();
@@ -987,7 +998,7 @@ void MainPage::on_goBackToGraphButton_clicked()
   mCurrentGraphsArea        ->changeGraph(1);
   ui->goBackToGraphButton   ->hide();
   ui->funcFirstButton       ->hide();
-  ui->funcSecondButton      ->hide();
+  ui->deleteItemButton      ->show();
   //ui->funcThirdButton       ->hide();
   ui->goToInterval1Button   ->show();
   ui->goToNextMarkButton    ->show();
@@ -1004,6 +1015,7 @@ void MainPage::on_goBackToGraphButton_clicked()
   ui->dVInputButton         ->show();
   ui->markPPointButton      ->show();
   ui->fluidInjectionButton  ->show();
+
   if (mIntervalsCount == 4)
   {
     ui->goToInterval2Button ->show();
@@ -1103,7 +1115,7 @@ void MainPage::on_markPPointButton_clicked()
     //ui->dateTimeLabel             ->hide();
     //ui->downloadGraphButton       ->hide();
     //ui->funcFirstButton           ->hide();
-    //ui->funcSecondButton          ->hide();
+    //ui->deleteItemButton          ->hide();
     //ui->markPPointButton          ->hide();
     //ui->playRecord                ->hide();
     //ui->rejectFluidInjectionButton->hide();
@@ -1138,6 +1150,7 @@ void MainPage::on_fluidInjectionButton_clicked()
     ui->dVInputButton          ->setEnabled(false);
     ui->markPPointButton       ->setEnabled(false);
     ui->intervalButton         ->setEnabled(false);
+    ui->deleteItemButton       ->setEnabled(false);
     //ui->playRecord             ->setEnabled(false);
     //ui->rewindRecordButton     ->setEnabled(false);
     //ui->speedRecordButton      ->setEnabled(false);
@@ -1165,6 +1178,7 @@ void MainPage::on_acceptFluidInjectionButton_clicked()
     ui->zoomInterval1Button       ->setEnabled(true);
     ui->zoomInterval2Button       ->setEnabled(true);
     ui->dVInputButton             ->setEnabled(true);
+    ui->deleteItemButton          ->setEnabled(true);
     //ui->playRecord              ->setEnabled(true);
     //ui->rewindRecordButton      ->setEnabled(true);
     //ui->speedRecordButton       ->setEnabled(true);
@@ -1209,6 +1223,7 @@ void MainPage::on_rejectFluidInjectionButton_clicked()
     ui->zoomInterval1Button   ->setEnabled(true);
     ui->zoomInterval2Button   ->setEnabled(true);
     ui->dVInputButton         ->setEnabled(true);
+    ui->deleteItemButton      ->setEnabled(true);
     //if (mCurrentIntervalNum == 4) {ui->markPPointButton    ->setEnabled(true);}
 
     if (ui->labelsNavigation->text() != "0/0")
@@ -1248,7 +1263,7 @@ void MainPage::on_goBackButton_clicked()
     ui->markPPointButton          ->show();
     ui->zoomInterval1Button       ->show();
     ui->zoomInterval2Button       ->show();
-
+    ui->deleteItemButton          ->show();
     ui->goBackButton->hide();
 }
 
