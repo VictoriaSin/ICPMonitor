@@ -12,11 +12,6 @@ extern QFile mRawDataFile;
 QPair<float, float> mFirstIntervalMinMaxXRange = qMakePair(0, 60);
 QPair<float, float> mSecondIntervalMinMaxXRange = qMakePair(0, 60);
 
-
-//extern QLineEdit *inputValueLineEdit;
-//extern QLineEdit *windowWidthLineEdit;
-//extern QLineEdit *offsetAverageLineEdit;
-
 extern uint32_t windowWidth;
 extern float offsetAverage;
 
@@ -52,9 +47,6 @@ IntervalPlot::~IntervalPlot()
       delete[] CurrDataForAverage;
   }
 }
-
-
-
 void IntervalPlot::setup(QPair<int, int> points, QColor color)
 {
   //настройка ручки
@@ -73,9 +65,6 @@ void IntervalPlot::setup(QPair<int, int> points, QColor color)
   mMainGraph->setPen(pen);
   mMainGraph->setBrush(brush);
   pen.setColor(Qt::GlobalColor::gray);
-  //mAvgGraph->setPen(pen);
-  //mAvgGraph->setBrush(brush);
-
   average->setPen(pen);
   average->setBrush(brush);
   pen.setColor(Qt::GlobalColor::green);
@@ -133,12 +122,9 @@ qDebug() << "1=" << points.first << "2=" << points.second;
   }
   for (uint i=0; i<iterTemp; i++)
   {
-      //qDebug() << "x" << (float)tempArr[i].timeStamp/1000 << "y" << tempArr[i].data*param;
       mMainGraph->addData((float)tempArr[i].timeStamp/1000, (float)tempArr[i].data*param);
-      //qDebug() << tempArr[i].data*param;
-    //averagePlot(tempArr[i]);
   }
-  //Compliance();
+
   averagePlot();
   qDebug() << "mCurrentIntervalNum" << mCurrentIntervalNum;
   qDebug() << "tempArr[iterTemp-1]" << tempArr[iterTemp-1].data << tempArr[iterTemp-1].timeStamp;
@@ -180,9 +166,7 @@ void IntervalPlot::averagePlot(/*_mSPIData temp*/)
   average->data()->clear();
   filter->data()->clear();
   substract->data()->clear();
-  //this->replot();
   uint32_t N = mMainGraph->data()->size();
-  float avgBuff[windowWidth];
   double avgValue = 0;
   for (uint i=0; i<N-windowWidth; i++)
   {
@@ -265,7 +249,8 @@ void IntervalPlot::Compliance()
   //xf=xData;
   TAVGFilter fl(50,15);
   double yi, yfi;
-  for (uint i = 0; i < N; i++){
+  for (uint i = 0; i < N; i++)
+  {
     //yi=yData[i];
     xf[i] = mMainGraph->data()->at(i)->key;
     yi=mMainGraph->data()->at(i)->value;
@@ -274,41 +259,30 @@ void IntervalPlot::Compliance()
   }
 
   //Говорим, что отрисовать нужно график по нашим двум массивам x и y
-  //ui->customPlot->graph(1)->setData(xf, yf);
   filter->setData(xf, yf);
 
   // скользящее среднее
   if(N-widthWin>0)
   {
     double mid=0.0;
-    //    QVector<double> win(widthWin);
     QVector<double> xf(N - widthWin), yf(N-widthWin);
-    for (int i = widthWin; i < N; i++)
+    for (uint32_t i = widthWin; i < N; i++)
     {
       mid=0.0;
       for(int j=0;j<widthWin;j++)
       {
-        //        win[j]=yData[i-widthWin+j];
-        //mid += yData[i - widthWin+j];
         mid += mMainGraph->data()->at(i - widthWin+j)->value;//filter->data()->at(i - widthWin+j)->value
       }
       yf[i-widthWin]=mid/widthWin;
-      //xf[i-widthWin]=xData[i];
       xf[i-widthWin]=mMainGraph->data()->at(i)->key;//filter->data()->at(i)->key;
     }
-    //ui->customPlot->addGraph();
     average->setData(xf, yf);
-
-
     QVector<double> yd(N-widthWin); // вычитание графиков
 
     for (uint16_t i = widthWin; i < N; i++)
     {
-      //yd[i-widthWin]=yData[i] - yf[i-widthWin];
       yd[i-widthWin]=mMainGraph->data()->at(i)->value - yf[i-widthWin]; //filter->data()->at(i)->value - yf[i-widthWin];
     }
-    //ui->customPlot->addGraph();
-    //ui->customPlot->graph(2)->setData(xf, yd);
     substract->setData(xf, yd);
 
     QVector<double> xa,ya; // амплитудный график
@@ -334,7 +308,6 @@ void IntervalPlot::Compliance()
         bp=false;
       }
     }
-    //    xaData=xa;yaData=ya;
     // убираю неправильные амплитуды
     double ya_mid=0.0;
     QVector<double> xaData,yaData; // амплитудный график
@@ -356,14 +329,12 @@ void IntervalPlot::Compliance()
       }
     }
 fin:
-    //ui->customPlot->addGraph();
-    //ui->customPlot->graph(3)->setData(xaData, yaData);
     amplitude->setData(xaData, yaData);
   }
 
   double avg = 0;
   double amin=amplitude->data()->at(0)->value, amax=amplitude->data()->at(0)->value;
-  int k=0;
+  //int k=0;
   int n = amplitude->data()->size();
   for (int i=0; i<amplitude->data()->size(); i++)
   {

@@ -55,7 +55,7 @@
      <item>
       <widget class="QWidget" name="mainWidgets" native="true">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -78,10 +78,13 @@
         </font>
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
         <item>
          <widget class="AnimatedToolButton" name="homeButton">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>

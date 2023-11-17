@@ -21,6 +21,11 @@ AveragePointerWidget::AveragePointerWidget(QWidget *parent) :
     mTrianglePoly.append({0,0});
 
     connect(mBlinkAlarmTimer, &QTimer::timeout, this, &AveragePointerWidget::switchColor);
+    qDebug("\033[34m>>AveragePointerWidget::AveragePointerWidget\033[0m");
+}
+AveragePointerWidget::~AveragePointerWidget()
+{
+  qDebug("\033[34m<<AveragePointerWidget::~AveragePointerWidget\033[0m");
 }
 
 void AveragePointerWidget::setRange(float lower, float upper)

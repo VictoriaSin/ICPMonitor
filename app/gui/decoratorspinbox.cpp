@@ -20,10 +20,12 @@ DecoratorSpinBox::DecoratorSpinBox(QWidget *parent) :
     mHBoxLayout->setSpacing(0);
     mHBoxLayout->addWidget(mMinusButton);
     mHBoxLayout->addWidget(mPlusButton);
+    qDebug("\033[34m>>DecoratorSpinBox::DecoratorSpinBox\033[0m");
 }
 
 DecoratorSpinBox::~DecoratorSpinBox()
 {
+  qDebug("\033[34m<<DecoratorSpinBox::~DecoratorSpinBox\033[0m");
 }
 
 QAbstractSpinBox* DecoratorSpinBox::currentSpinBox() const

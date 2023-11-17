@@ -4,10 +4,8 @@
 #include "abstractmenupage.h"
 #include "controller/controller_enums.h"
 
-class AlarmSetupPage;
 class SystemInfoPage;
 class ZeroSensorPage;
-//class DataDownloadPage;
 class DateTimePage;
 class LanguagePage;
 class GeneralSettingsPage;

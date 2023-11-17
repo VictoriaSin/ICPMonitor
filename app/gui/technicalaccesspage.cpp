@@ -22,9 +22,6 @@ TechnicalAccessPage::TechnicalAccessPage(QWidget *parent) :
     // Убираем кнопку подтвердить
     enableAcceptButton(false);
 
-    // Инициализация спинбокса для максимального кол-ва скринов
-    setupMaxScreensSpinBox();
-
     // Установка отображаемых данных о блочных устройствах
     mSetSoftwareStorageDialog->setInfoFlags(BlockDevicesSelectionDialog::UUID |
                                             BlockDevicesSelectionDialog::DevName |
@@ -41,121 +38,64 @@ TechnicalAccessPage::~TechnicalAccessPage()
     delete ui;
 }
 
-void TechnicalAccessPage::setupMaxScreensSpinBox()
-{
-    if (ui->maxScreensSpinBox->currentSpinBox()) {
-        return;
-    }
-
-    auto maxScreensSpinBox = new QSpinBox(ui->maxScreensSpinBox);
-    maxScreensSpinBox->setMinimumWidth(100);
-    ui->maxScreensSpinBox->setSpinBox(maxScreensSpinBox);
-    ui->maxScreensSpinBox->setRange(0, 1000);
-}
-
-void TechnicalAccessPage::updateSelectSoftwareStorageDialog()
-{
-    if (!mController || !mSetSoftwareStorageDialog) {
-        return;
-    }
-
-    mSetSoftwareStorageDialog->setBlockDevices(mController->getAvailableBlockDevices());
-}
-
 void TechnicalAccessPage::updateCurrentSoftwareStorageLabel()
 {
-    if (!mController) {
-        return;
-    }
-
-    // Получаем настройки приложения
+    if (!mController) { return; }
     const Settings * const settings = mController->settings();
-    if (!settings) {
-        return;
-    }
+    if (!settings) { return; }
 
     // Устанавливаем состояние программного хранилища
     QString softwareStorageState;
-    switch (mController->getSoftwareStorageState()) {
-    case ControllerEvent::SoftwareStorageAvailable: {
+    switch (mController->getSoftwareStorageState())
+    {
+      case ControllerEvent::SoftwareStorageAvailable:
+      {
         softwareStorageState = tr("Доступно");
         break;
-    }
-    case ControllerEvent::SoftwareStorageUnavailable: {
+      }
+      case ControllerEvent::SoftwareStorageUnavailable:
+      {
         softwareStorageState = tr("Недоступно");
         break;
-    }
-    case ControllerEvent::SoftwareStorageNotAssigned: {
+      }
+      case ControllerEvent::SoftwareStorageNotAssigned:
+      {
         softwareStorageState = tr("Не назначено");
         break;
-    }
-    default: break;
+      }
+      default: break;
     }
 
     // Устанавливаем состояние и текущий UUID программного хранилища
     const QString UUIDSoftwareStorage = settings->getSoftwareStorageUUID();
-    if (UUIDSoftwareStorage.isEmpty()) {
+    if (UUIDSoftwareStorage.isEmpty())
+    {
         ui->UUIDSoftwareStorageLabel->setText(softwareStorageState);
     } else {
         ui->UUIDSoftwareStorageLabel->setText('(' + softwareStorageState + ") " + UUIDSoftwareStorage);
     }
 }
 
-void TechnicalAccessPage::updateMaxScreensLabel()
-{
-    if (!mController) {
-        return;
-    }
-
-    // Получаем настройки приложения
-    const Settings * const settings = mController->settings();
-    if (!settings) {
-        return;
-    }
-
-    ui->maxScreensSpinBox->setValue(mController->settings()->getMaxScreens());
-}
-
-void TechnicalAccessPage::updateMaxScreens()
-{
-    if (!mController) {
-        return;
-    }
-
-    bool isGood {false};
-    const int maxScreens = ui->maxScreensSpinBox->value(&isGood);
-    if (isGood) {
-        QTimer::singleShot(0, mController, [this, maxScreens](){
-            mController->setMaxScreens(maxScreens);
-        });
-    }
-}
 
 void TechnicalAccessPage::controllerEventHandler(ControllerEvent event)//, const QVariantMap &args)
 {
-    switch (event) {
-    case ControllerEvent::BlockDeviceConnected: {
-        if (!mSetSoftwareStorageDialog->isHidden()) {
-            updateSelectSoftwareStorageDialog();
-            mSetSoftwareStorageDialog->setCenter();
-        }
+    switch (event)
+    {
+    case ControllerEvent::BlockDeviceConnected:
+    {
+        if (!mSetSoftwareStorageDialog->isHidden()) { mSetSoftwareStorageDialog->setCenter(); }
         break;
     }
-    case ControllerEvent::BlockDeviceDisconnected: {
-        if (!mSetSoftwareStorageDialog->isHidden()) {
-            updateSelectSoftwareStorageDialog();
-            mSetSoftwareStorageDialog->setCenter();
-        }
+    case ControllerEvent::BlockDeviceDisconnected:
+    {
+        if (!mSetSoftwareStorageDialog->isHidden()) { mSetSoftwareStorageDialog->setCenter(); }
         break;
     }
     case ControllerEvent::SoftwareStorageAvailable:
     case ControllerEvent::SoftwareStorageUnavailable:
-    case ControllerEvent::SoftwareStorageNotAssigned: {
+    case ControllerEvent::SoftwareStorageNotAssigned:
+    {
         updateCurrentSoftwareStorageLabel();
-        break;
-    }
-    case ControllerEvent::UpdatedMaxScreens: {
-        updateMaxScreensLabel();
         break;
     }
         default: break;
@@ -164,23 +104,18 @@ void TechnicalAccessPage::controllerEventHandler(ControllerEvent event)//, const
 
 void TechnicalAccessPage::openSoftwareStorageDialog()
 {
-    updateSelectSoftwareStorageDialog();
     mSetSoftwareStorageDialog->setCenter();
     mSetSoftwareStorageDialog->open();
 }
 
 void TechnicalAccessPage::closedSoftwareStorageDialog(int result)
 {
-    if (!mController || !mSetSoftwareStorageDialog) {
-        return;
-    }
-
-    if (result != QDialog::Accepted) {
-        return;
-    }
+    if (!mController || !mSetSoftwareStorageDialog) { return; }
+    if (result != QDialog::Accepted) { return; }
 
     // Установка нового программного хранилища
-    QTimer::singleShot(0, mController, [this](){
+    QTimer::singleShot(0, mController, [this]()
+    {
         mController->setSoftwareStorage(mSetSoftwareStorageDialog->getSelectedBlockDevice());
     });
 }
@@ -220,12 +155,10 @@ void TechnicalAccessPage::retranslate()
 void TechnicalAccessPage::showEvent(QShowEvent *event)
 {
     updateCurrentSoftwareStorageLabel();
-    updateMaxScreensLabel();
     AbstractDialogPage::showEvent(event);
 }
 
 void TechnicalAccessPage::done(int /*exodus*/)
 {
-    updateMaxScreens();
     emit previousPage();
 }

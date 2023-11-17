@@ -82,12 +82,12 @@ RecordedPlot::RecordedPlot(QWidget *parent):
 
     retranslate();
     addLayer("intervalLayer", nullptr, limAbove);
-
+qDebug("\033[34m>>RecordedPlot::RecordedPlot\033[0m");
 }
 
 RecordedPlot::~RecordedPlot()
 {
-    qDebug() << "RecordedPlot::~RecordedPlot";
+    qDebug("\033[34m<<RecordedPlot::~RecordedPlot\033[0m");
     mRecordedData.clear();
 }
 

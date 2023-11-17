@@ -34,7 +34,7 @@ class AveragePointerWidget : public QWidget
 
 public:
     explicit AveragePointerWidget(QWidget *parent = nullptr);
-
+    ~AveragePointerWidget();
     void setRange(float lower, float upper);
     void setLowerValue(float lower);
     void setUpperValue(float upper);
@@ -55,7 +55,6 @@ public:
 
     void setPointerVisible(bool visible);
 
-    // QWidget interface
 protected:
     void paintEvent(QPaintEvent *event) override;
 

@@ -20,7 +20,7 @@ MonitorController::MonitorController()
 {
   mAverageICPController = new AverageICPController(mICPSettings, this);
   mAlarmController      = new AlarmController(mICPSettings, mAverageICPController, this);
-  mLabelManagerGlobal   = new LabelManager(mICPSettings);//, mDataBaseManager);
+  mLabelManagerGlobal   = new LabelManager(mICPSettings);
   connect(mAlarmController,  &AlarmController::alarmEvent, this,  &MonitorController::processAlarmEvent);
 }
 void MonitorController::terminate()
@@ -30,7 +30,6 @@ void MonitorController::terminate()
   DESTROY_CLASS(mLabelManagerGlobal);
   DESTROY_CLASS(mICPSettings);
   emit destroyThread();
-  qDebug("MonitorController::terminate()");
 }
 ControllerEvent MonitorController::getSoftwareStorageState() const
 {
@@ -47,22 +46,14 @@ std::shared_ptr<BlockDevice> MonitorController::getSoftwareStorage() const
 {
   return mSoftwareStorage;
 }
-QList<std::shared_ptr<BlockDevice> > MonitorController::getAvailableBlockDevices() const
-{
-  return {};
-}
+//QList<std::shared_ptr<BlockDevice> > MonitorController::getAvailableBlockDevices() const
+//{
+//  return {};
+//}
 
 Settings *MonitorController::settings() const
 {
   return mICPSettings;
-}
-const ComplexValue &MonitorController::getLastConvertedSensorValue() const
-{
-  return mLastConvertedSensorValue;
-}
-ComplexValue MonitorController::getLastAverageValue() const
-{
-  return mAverageICPController->lastAverageValue();
 }
 bool MonitorController::setAppLanguage(QLocale::Language language)
 {
@@ -105,14 +96,11 @@ void MonitorController::softwareStorageUnavailable()
   qDebug() << "Software Storage Unavailable";
   mSoftwareStorageState = ControllerEvent::SoftwareStorageUnavailable;
   emit controllerEvent(mSoftwareStorageState);
-  //mCurrentNumMountSoftwareStorage = 0;
 }
 
 bool MonitorController::setLevelsAndStatesAlarm(int lowLevelAlarm, int highLevelAlarm, bool lowEnabel, bool highEnable)
 {
-  if (!mICPSettings || lowLevelAlarm >= highLevelAlarm) {
-    return false;
-  }
+  if ((!mICPSettings) || (lowLevelAlarm >= highLevelAlarm)) { return false; }
 
   const int LLA = mICPSettings->getLowLevelAlarm();
   const int HLA = mICPSettings->getHighLevelAlarm();
@@ -120,92 +108,67 @@ bool MonitorController::setLevelsAndStatesAlarm(int lowLevelAlarm, int highLevel
   const bool HLSA = mICPSettings->getHighLevelStateAlarm();
 
   // Если одно из значений уровня тревоги изменилось
-  if (LLA != lowLevelAlarm || HLA != highLevelAlarm){
+  if ((LLA != lowLevelAlarm) || (HLA != highLevelAlarm))
+  {
     mICPSettings->setLowLevelAlarm(lowLevelAlarm);
     mICPSettings->setHighLevelAlarm(highLevelAlarm);
-    emit controllerEvent(ControllerEvent::UpdatedAlarmLevels);
   }
 
-  // Если одно из состояний изменилось
-  if (LLSA != lowEnabel || HLSA != highEnable) {
+  if ((LLSA != lowEnabel) || (HLSA != highEnable))
+  {
     mICPSettings->setLowLevelStateAlarm(lowEnabel);
     mICPSettings->setHighLevelStateAlarm(highEnable);
-    emit controllerEvent(ControllerEvent::UpdatedAlarmStates);
   }
-  // Сохраняем настройки
   mICPSettings->writeAlarmSettings();
-
   return true;
 }
 bool MonitorController::setPressureUnits(uint8_t mCurrentPressureUnitsIndex)
 {
-  if (!mICPSettings) {
-    return false;
-  }
-  const uint8_t PUI = mICPSettings->getCurrentPressureIndex();
-  if (PUI != mCurrentPressureUnitsIndex)
+  if (!mICPSettings) { return false; }
+  if (mICPSettings->getCurrentPressureIndex() != mCurrentPressureUnitsIndex)
   {
     mICPSettings->setCurrentPressureUnits(mCurrentPressureUnitsIndex);
-    emit controllerEvent(ControllerEvent::ChangePressureUnits);
     mICPSettings->writeCurrentSensorReadingsSettings();
-    return true;
   }
-  return false;
+  return true;
 }
 bool MonitorController::setAverageInterval(float mAverageIntervalSec)
 {
   if (!mICPSettings) { return false; }
-  const float AIS = mICPSettings->getCurrentAverageIntervalSec();
-  if (AIS != mAverageIntervalSec)
+  if (mICPSettings->getCurrentAverageIntervalSec() != mAverageIntervalSec)
   {
     mICPSettings->setCurrentAverageIntervalSec(mAverageIntervalSec);
+    mICPSettings->writeCurrentSensorReadingsSettings();
   }
-  mICPSettings->writeCurrentSensorReadingsSettings();
   return true;
 }
 
 bool MonitorController::setInetrvalsOnGraph(float mCurrentReadingsGraphIntervalX, float mCurrentReadingsGraphIntervalYLow,
                                             float mCurrentReadingsGraphIntervalYHigh, float mTickCountX, float mTickCountY)
 {
-  if (!mICPSettings) {
-    return false;
-  }
-
+  if (!mICPSettings) { return false; }
   const float CXR = mICPSettings->getCurrentReadingsGraphIntervalX();
   float CYRL = mICPSettings->getCurrentReadingsGraphIntervalYLow();
   float CYRH = mICPSettings->getCurrentReadingsGraphIntervalYHigh();
   const float TCX = mICPSettings->getCurrentTickCountX();
   float TCY = mICPSettings->getCurrentTickCountY();
 
-  //#define indexPressureH2O 13.595
-  //    if (mCurrentPressureUnitsIndex == 1)
-  //    {
-  //        CYR *= indexPressureH2O;
-  //        //TCY /= indexPressureH2O;
-  //        mCurrentReadingsGraphIntervalY *= indexPressureH2O;
-  //        //mTickCountY /= indexPressureH2O;
-  //    }
-
   // Если одно из значений осей изменилось
-  if (CXR  != mCurrentReadingsGraphIntervalX ||
-      CYRL != mCurrentReadingsGraphIntervalYLow ||
-      CYRH != mCurrentReadingsGraphIntervalYHigh)
+  if ((CXR  != mCurrentReadingsGraphIntervalX) || (CYRL != mCurrentReadingsGraphIntervalYLow) || (CYRH != mCurrentReadingsGraphIntervalYHigh))
   {
     mICPSettings->setCurrentReadingsGraphIntervalX(mCurrentReadingsGraphIntervalX);
     mICPSettings->setCurrentReadingsGraphIntervalY(mCurrentReadingsGraphIntervalYLow, mCurrentReadingsGraphIntervalYHigh);
-    emit controllerEvent(ControllerEvent::UpdateGraphIntervals);
   }
-
-  if (TCX != mTickCountX || TCY != mTickCountY)
+  if ((TCX != mTickCountX) || (TCY != mTickCountY))
   {
     mICPSettings->setCurrentTickCountX(mTickCountX);
     mICPSettings->setCurrentTickCountY(mTickCountY);
-    emit controllerEvent(ControllerEvent::UpdateGraphTicks);
   }
-
-  // Сохраняем настройки
-  mICPSettings->writeCurrentSensorReadingsSettings();
-
+  if ((CXR  != mCurrentReadingsGraphIntervalX) || (CYRL != mCurrentReadingsGraphIntervalYLow)
+      || (CYRH != mCurrentReadingsGraphIntervalYHigh) || (TCX != mTickCountX) || (TCY != mTickCountY))
+  {
+    mICPSettings->writeCurrentSensorReadingsSettings();
+  }
   return true;
 }
 bool MonitorController::setGeneralParam(float mFontScaleFactor)
@@ -225,15 +188,7 @@ bool MonitorController::setGeneralParam(float mFontScaleFactor)
 
   return true;
 }
-void MonitorController::setMaxScreens(uint maxScreens)
-{
-  if (!mICPSettings) { return; }
-  const uint CurrentMaxScreens = mICPSettings->getMaxScreens();
-  if (CurrentMaxScreens == maxScreens) { return; }
-  mICPSettings->setMaxScreens(maxScreens);
-  mICPSettings->writeScreensSettings();
-  emit controllerEvent(ControllerEvent::UpdatedMaxScreens);
-}
+
 
 void MonitorController::processAlarmEvent(AlarmEvent event, const QVariantMap &args)
 {

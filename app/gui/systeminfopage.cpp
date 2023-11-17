@@ -15,8 +15,8 @@
 
 SystemInfoPage::SystemInfoPage(QWidget *parent) :
     AbstractDialogPage(parent),
-    ui(new Ui::SystemInfoPage),
-    mUpdateMemBarsTimer(new QTimer(this))
+    ui(new Ui::SystemInfoPage)
+    //, mUpdateMemBarsTimer(new QTimer(this))
 {
     ui->setupUi(AbstractDialogPage::ui->settingsPage);
 
@@ -27,8 +27,8 @@ SystemInfoPage::SystemInfoPage(QWidget *parent) :
     enableAcceptButton(false);
 
     // Таймер обновления кол-ва доступной памяти
-    mUpdateMemBarsTimer->setInterval(IntervalUpdateMemBarsMs);
-    connect(mUpdateMemBarsTimer, &QTimer::timeout, this, &SystemInfoPage::updateProgressBars);
+    //mUpdateMemBarsTimer->setInterval(IntervalUpdateMemBarsMs);
+    //connect(mUpdateMemBarsTimer, &QTimer::timeout, this, &SystemInfoPage::updateProgressBars);
 #ifdef PC_BUILD
     float coeff = 0.52;
     WFontScaling(ui->ramNameLabel, coeff);
@@ -59,8 +59,8 @@ void SystemInfoPage::retranslate()
 
 void SystemInfoPage::softwareStorageUnavailable()
 {
-    ui->sysMemValueLabel->setText(tr("Не доступно"));
-    ui->sysMemPersentFreeSpaceProgressBar->setValue(0);
+    //ui->sysMemValueLabel->setText(tr("Не доступно"));
+    //ui->sysMemPersentFreeSpaceProgressBar->setValue(0);
 }
 
 void SystemInfoPage::controllerEventHandler(ControllerEvent event)//, const QVariantMap &args)
@@ -89,10 +89,13 @@ void SystemInfoPage::updateRAMProgressBar()
     const int64_t TotalRAMMB = totalRAMBytesLinux() / 1024;
 
     // Отображение доступного кол-ва оперативной памяти пользователю
-    if (FreeRAMMB > 0 && TotalRAMMB > 0) {
+    if (FreeRAMMB > 0 && TotalRAMMB > 0)
+    {
         ui->ramValueLabel->setText(TemplateMemoryInfo.arg(FreeRAMMB).arg(tr("свободно")).arg(TotalRAMMB));
         ui->ramPersentFreeSpaceProgressBar->setValue(100 - (FreeRAMMB / (float)TotalRAMMB) * 100);
-    } else {
+    }
+    else
+    {
         ui->ramValueLabel->setText(tr("Ошибка вычисления"));
         ui->ramPersentFreeSpaceProgressBar->setValue(0);
     }
@@ -159,10 +162,10 @@ void SystemInfoPage::scaleFont(float scaleFactor)
 void SystemInfoPage::showEvent(QShowEvent */*event*/)
 {
     updateProgressBars();
-    mUpdateMemBarsTimer->start();
+    //mUpdateMemBarsTimer->start();
 }
 
 void SystemInfoPage::hideEvent(QHideEvent */*event*/)
 {
-    mUpdateMemBarsTimer->stop();
+    //mUpdateMemBarsTimer->stop();
 }

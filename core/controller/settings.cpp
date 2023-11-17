@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QDateTime>
 
-const QDateTime Settings::MinDateTime = QDateTime(QDate(2000, 1, 1), QTime(0, 0));
+//const QDateTime Settings::MinDateTime = QDateTime(QDate(2000, 1, 1), QTime(0, 0));
 const QString Settings::BasePathForMount = "/mnt";
 
 Settings::Settings(const QString &path)
@@ -29,8 +29,6 @@ void Settings::readAllSetting()
     readGeneralSettings();
     readAlarmSettings();
     readCurrentSensorReadingsSettings();
-    readAverageSensorReadingsSettings();
-    readScreensSettings();
 }
 
 void Settings::writeAllSetting()
@@ -38,8 +36,6 @@ void Settings::writeAllSetting()
     writeGeneralSettings();
     writeAlarmSettings();
     writeCurrentSensorReadingsSettings();
-    writeAverageSensorReadingsSettings();
-    writeScreensSettings();
 }
 
 void Settings::readGeneralSettings()
@@ -84,11 +80,9 @@ void Settings::readGeneralSettings()
 void Settings::writeGeneralSettings()
 {
     mSettings->beginGroup(mGeneralGroup);
-    mSettings->setValue("mCurrentLanguage", QString::number(mLanguageSettings->getCurrentLanguage()));//mLanguageSettings->getCurrentLanguage());
-//qDebug() << "lang" << QString::number(mLanguageSettings->getCurrentLanguage());
+    mSettings->setValue("mCurrentLanguage", QString::number(mLanguageSettings->getCurrentLanguage()));
     mSettings->setValue("mSoftwareStorageUUID", mSoftwareStorageUUID);
     mSettings->setValue("mFlashDeviceMountPart", mFlashDeviceMountPart);
-    //mSettings->setValue("mLastSavedDateTimestampSec", qlonglong(mLastSavedDateTimestampSec));
     mSettings->setValue("mFontScaleFactor", QString::number(mFontScaleFactor));
     mSettings->setValue("mACoefficient", QString::number(mACoefficient));
     mSettings->setValue("mBCoefficient", QString::number(mBCoefficient));
@@ -138,39 +132,6 @@ void Settings::setSoftwareStorageUUID(const QString &blockDevUUID)
 {
     mSoftwareStorageUUID = blockDevUUID;
 }
-
-void Settings::setLastSavedDateTimestampSec(int64_t /*timestamp*/)
-{
-    //mLastSavedDateTimestampSec = timestamp;
-}
-
-void Settings::readScreensSettings()
-{
-    mSettings->beginGroup(mScreensGroup);
-    mMaxScreens = mSettings->value("mMaxScreens", mMaxScreens).toUInt();
-    mRelativeScreensPath = mSettings->value("mRelativeScreensPath", mRelativeScreensPath).toString();
-    mSettings->endGroup();
-}
-
-void Settings::writeScreensSettings()
-{
-    mSettings->beginGroup(mScreensGroup);
-    mSettings->setValue("mMaxScreens", mMaxScreens);
-    mSettings->setValue("mRelativeScreensPath", mRelativeScreensPath);
-    mSettings->endGroup();
-    mSettings->sync();
-}
-
-void Settings::setMaxScreens(uint maxScreens)
-{
-    mMaxScreens = maxScreens;
-}
-
-void Settings::setRelativeScreensPath(const QString &relativeScreensPath)
-{
-    mRelativeScreensPath = relativeScreensPath;
-}
-
 void Settings::readAlarmSettings()
 {
     mSettings->beginGroup(mAlarmGroup);
@@ -216,8 +177,6 @@ void Settings::readCurrentSensorReadingsSettings()
 {
     mSettings->beginGroup(mCurrentSensorReadingsGroup);
     mRelativeCurrentSensorReadingsPath = mSettings->value("mRelativeCurrentSensorReadingsPath", mRelativeCurrentSensorReadingsPath).toString();
-    mMaxTimeStorageCurrentSensorReadingsMs = mSettings->value("mMaxTimeStorageCurrentSensorReadingsMs", qlonglong(mMaxTimeStorageCurrentSensorReadingsMs)).toLongLong();
-
     mCurrentReadingsGraphIntervalX = mSettings->value("mCurrentReadingsGraphIntervalX", mCurrentReadingsGraphIntervalX).toFloat();
     mCurrentReadingsGraphIntervalYLow = mSettings->value("mCurrentReadingsGraphIntervalYLow", mCurrentReadingsGraphIntervalYLow).toFloat();
     mCurrentReadingsGraphIntervalYHigh = mSettings->value("mCurrentReadingsGraphIntervalYHigh", mCurrentReadingsGraphIntervalYHigh).toFloat();
@@ -234,7 +193,6 @@ void Settings::writeCurrentSensorReadingsSettings()
 {
     mSettings->beginGroup(mCurrentSensorReadingsGroup);
     mSettings->setValue("mRelativeCurrentSensorReadingsPath", mRelativeCurrentSensorReadingsPath);
-    mSettings->setValue("mMaxTimeStorageCurrentSensorReadingsMs", qlonglong(mMaxTimeStorageCurrentSensorReadingsMs));
     mSettings->setValue("mCurrentReadingsGraphIntervalX", QString::number(mCurrentReadingsGraphIntervalX));
     mSettings->setValue("mCurrentReadingsGraphIntervalYLow", QString::number(mCurrentReadingsGraphIntervalYLow));
     mSettings->setValue("mCurrentReadingsGraphIntervalYHigh", QString::number(mCurrentReadingsGraphIntervalYHigh));
@@ -244,16 +202,6 @@ void Settings::writeCurrentSensorReadingsSettings()
     mSettings->setValue("mAverageIntervalSec", QString::number(mAverageIntervalSec));
     mSettings->endGroup();
     mSettings->sync();
-}
-
-void Settings::setRelativeCurrentSensorReadingsPath(const QString &relativeCurrentSensorReadingsPath)
-{
-    mRelativeCurrentSensorReadingsPath = relativeCurrentSensorReadingsPath;
-}
-
-void Settings::setMaxTimeStorageCurrentSensorReadingsMs(int64_t maxMs)
-{
-    mMaxTimeStorageCurrentSensorReadingsMs = maxMs;
 }
 
 void Settings::setCurrentReadingsGraphIntervalX(float currentReadingsGraphIntervalX)
@@ -296,32 +244,4 @@ void Settings::setAllPressureParam(float mCurrentReadingsGraphIntervalYLow, floa
     setLowLevelAlarm(mLowLevelAlarm);
     writeAlarmSettings();
     writeCurrentSensorReadingsSettings();
-}
-
-
-void Settings::readAverageSensorReadingsSettings()
-{
-    mSettings->beginGroup(mAverageSensorReadingsGroup);
-    mRelativeAverageSensorReadingsPath = mSettings->value("mRelativeAverageSensorReadingsPath", mRelativeAverageSensorReadingsPath).toString();
-    mMaxTimeStorageAverageSensorReadingsSec = mSettings->value("mMaxTimeStorageAverageSensorReadingsSec", qlonglong(mMaxTimeStorageAverageSensorReadingsSec)).toLongLong();
-    mSettings->endGroup();
-}
-
-void Settings::writeAverageSensorReadingsSettings()
-{
-    mSettings->beginGroup(mAverageSensorReadingsGroup);
-    mSettings->setValue("mRelativeAverageSensorReadingsPath", mRelativeAverageSensorReadingsPath);
-    mSettings->setValue("mMaxTimeStorageAverageSensorReadingsSec", qlonglong(mMaxTimeStorageAverageSensorReadingsSec));
-    mSettings->endGroup();
-    mSettings->sync();
-}
-
-void Settings::setRelativeAverageSensorReadingsPath(const QString &relativeAverageSensorReadingsPath)
-{
-    mRelativeAverageSensorReadingsPath = relativeAverageSensorReadingsPath;
-}
-
-void Settings::setMaxTimeStorageAverageSensorReadingsSec(int64_t maxSec)
-{
-    mMaxTimeStorageAverageSensorReadingsSec = maxSec;
 }

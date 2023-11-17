@@ -13,33 +13,22 @@ AlarmLevelICPWidget::AlarmLevelICPWidget(QWidget *parent) :
     ui(new Ui::AlarmLevelICPWidget)
 {
     ui->setupUi(this);
-
-    // Настройка SVG виджетов
     setupSVGWidgets();
     ui->averagePointerWidget->setPointerVisible(true);
+    qDebug("\033[34m>>AlarmLevelICPWidget::AlarmLevelICPWidget\033[0m");
 }
 
 AlarmLevelICPWidget::~AlarmLevelICPWidget()
 {
+  qDebug("\033[34m<<AlarmLevelICPWidget::~AlarmLevelICPWidget\033[0m");
     delete ui;
 }
 
 void AlarmLevelICPWidget::installController(MonitorController *controller)
 {
-    if (!controller) {
-        return;
-    }
-
+    if (!controller) { return; }
     mController = controller;
-
-    connect(mController, &MonitorController::controllerEvent,
-            this, &AlarmLevelICPWidget::controllerEventHandler);
-
-
-//    connect(mController, &MonitorController::dataReadyFromAverageICPController,
-//            this, &AlarmLevelICPWidget::updateAverageValueOnWidgets);
-
-    // Обновление информации о тревоге
+    connect(mController, &MonitorController::controllerEvent, this, &AlarmLevelICPWidget::controllerEventHandler);
     updateAlarmInfo();
 }
 
@@ -50,35 +39,22 @@ void AlarmLevelICPWidget::scaleFont(float scaleFactor)
 
 void AlarmLevelICPWidget::setupSVGWidgets()
 {
-    if (mLowLevelPressureSVG && mHighLevelPressureSVG) {
-        return;
-    }
-
+    if (mLowLevelPressureSVG && mHighLevelPressureSVG) { return; }
     // Выделяем память
     mLowLevelPressureSVG = new QSvgWidget(this);
     mHighLevelPressureSVG = new QSvgWidget(this);
-
     // Настраиваем максимальный размер SVG
     mLowLevelPressureSVG->setMaximumSize(MaxAlarmStateSVGSize);
     mHighLevelPressureSVG->setMaximumSize(MaxAlarmStateSVGSize);
-
     // Располагаем SVG в VLayout
     ui->svgVerticalLayout->addWidget(mHighLevelPressureSVG);
     ui->svgVerticalLayout->addStretch();
     ui->svgVerticalLayout->addWidget(mLowLevelPressureSVG);
 }
 
-//void AlarmLevelICPWidget::updateAverageValueOnWidgets(float currAverage)//()
-void AlarmLevelICPWidget::updateAverageValueOnWidgets(float currAverage)//()
-{
-//    if (!mController) {
-//        return;
-//    }
 
-//    const ComplexValue val = mController->getLastAverageValue();
-//    if(val.valid){
-//        ui->averagePointerWidget->setValue(val.value);
-//    }
+void AlarmLevelICPWidget::updateAverageValueOnWidgets(float currAverage)
+{
     ui->averagePointerWidget->setValue(currAverage);
 }
 
@@ -127,9 +103,7 @@ void AlarmLevelICPWidget::controllerEventHandler(ControllerEvent event)//,const 
 
 void AlarmLevelICPWidget::updateAlarmLevelsOnWidgets()
 {
-    if (!mController) {
-        return;
-    }
+    if (!mController) { return; }
 
     const Settings * const settings = mController->settings();
     if (!settings) {
@@ -141,14 +115,10 @@ void AlarmLevelICPWidget::updateAlarmLevelsOnWidgets()
 
 void AlarmLevelICPWidget::updateAlarmStatesOnWidgets()
 {
-    if (!mController) {
-        return;
-    }
+    if (!mController) { return; }
 
     const Settings * const settings = mController->settings();
-    if (!settings) {
-        return;
-    }
+    if (!settings) { return; }
 
     mLowLevelPressureSVG->load(settings->getLowLevelStateAlarm() ? AlarmEnabledSvg : AlarmDisabledSvg);
     mHighLevelPressureSVG->load(settings->getHighLevelStateAlarm() ? AlarmEnabledSvg : AlarmDisabledSvg);

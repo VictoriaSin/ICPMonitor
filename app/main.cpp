@@ -321,39 +321,67 @@ typedef struct
 {
  float mHighLevelAlarm;
  float mLowLevelAlarm;
- bool mHighLevelStateAlarm;
- bool mLowLevelStateAlarm;
- int64_t mMaxTimeStorageAverageSensorReadingsSec;
- QString mRelativeAverageSensorReadingsPath;
+ bool  mHighLevelStateAlarm;
+ bool  mLowLevelStateAlarm;
+ float mAverageIntervalSec;
+ float mCurrentReadingsGraphIntervalX;
+ float mCurrentReadingsGraphIntervalY;
+ float mCurrentReadingsGraphIntervalYHigh;
+ float mCurrentReadingsGraphIntervalYLow;
+ uint8_t mPressureUnitsIndex;
+ QString mRelativeCurrentSensorReadingsPath;
+ float mTickCountX;
+ float mTickCountY;
+ float mACoefficient;
+ float mBCoefficient;
+ uint32_t mCurrentLanguage;
+ QString mFlashDeviceMountPart;
+ float mFontScaleFactor;
+ int64_t mLastSavedDateTimestampSec;
+ QString mSoftwareStorageUUID;
+ QString regString;
 }_initSettings;
 
 _initSettings initSettings;
 #define INCORRECTPARAM() { qDebug() << "incorrect param" << *name << *param; exit(999); }
-#define CORRECTPARAM() { qDebug() << *name << *param;  }
+//#define CORRECTPARAM() { qDebug() << *name << *param;  }
+
+#define CHECK_BOOL(NAME)\
+if (*name == #NAME)\
+{\
+  if (((*param) != "false") && ((*param) != "true")) INCORRECTPARAM();\
+  if ((*param) == "true") { initSettings.NAME = true; }  else  { initSettings.NAME = false; } return;\
+}
+
+#define CHECK_FLOAT(NAME) if (*name == #NAME) {bool OK; float tempFloat = (*param).toFloat(&OK);  if (!OK) INCORRECTPARAM(); initSettings.NAME = tempFloat; return;}
+#define CHECK_LONG_LONG(NAME) if (*name == #NAME)  {bool OK; qlonglong templl =  (*param).toLongLong(&OK); if (!OK) INCORRECTPARAM(); initSettings.NAME = templl; return;}
+#define CHECK_STRING(NAME)   if (*name == #NAME) {  initSettings.NAME = *param; return; }
+#define CHECK_U32(NAME) if (*name == #NAME) {bool OK; int tempInt = (*param).toInt(&OK);  if (!OK) INCORRECTPARAM(); initSettings.NAME = (uint32_t)tempInt; return;}
+#define CHECK_BYTE(NAME) if (*name == #NAME) {bool OK; int tempInt = (*param).toInt(&OK);  if ((!OK) && tempInt < 256) INCORRECTPARAM(); initSettings.NAME = (uint8_t)tempInt; return;}
+
 void setParams(QString *name, QString *param)
 {
-  if (*name == "mHighLevelAlarm") {bool OK; initSettings.mHighLevelAlarm = (*param).toFloat(&OK); if (!OK) INCORRECTPARAM() else CORRECTPARAM(); return;}
-  if (*name == "mLowLevelAlarm")  {bool OK; initSettings.mLowLevelAlarm =  (*param).toFloat(&OK); if (!OK) INCORRECTPARAM() else CORRECTPARAM(); return;}
-  if (*name == "mMaxTimeStorageAverageSensorReadingsSec")  {bool OK; initSettings.mMaxTimeStorageAverageSensorReadingsSec =  (*param).toLongLong(&OK); if (!OK) INCORRECTPARAM() else CORRECTPARAM(); return;}
-  if (*name == "mRelativeAverageSensorReadingsPath")
-  {
-    if (param->size() == 0) INCORRECTPARAM();
-    initSettings.mRelativeAverageSensorReadingsPath = *param;
-    CORRECTPARAM(); return;
-  }
-  if (*name == "mHighLevelStateAlarm")
-  {
-    if (((*param) != "false") && ((*param) != "true")) INCORRECTPARAM();
-    if ((*param) == "true") { initSettings.mHighLevelStateAlarm = true; }  else  { initSettings.mHighLevelStateAlarm = false; }
-    CORRECTPARAM(); return;
-  }
-  if (*name == "mLowLevelStateAlarm")
-  {
-    if (((*param) != "false") && ((*param) != "true")) INCORRECTPARAM();
-    if ((*param) == "true") { initSettings.mLowLevelStateAlarm = true; }  else  { initSettings.mLowLevelStateAlarm = false; }
-    CORRECTPARAM(); return;
-  }
-
+  CHECK_FLOAT(mHighLevelAlarm);
+  CHECK_BOOL(mHighLevelStateAlarm);
+  CHECK_FLOAT(mLowLevelAlarm);
+  CHECK_BOOL(mLowLevelStateAlarm);
+  CHECK_FLOAT(mAverageIntervalSec);
+  CHECK_FLOAT(mCurrentReadingsGraphIntervalX);
+  CHECK_FLOAT(mCurrentReadingsGraphIntervalY);
+  CHECK_FLOAT(mCurrentReadingsGraphIntervalYHigh);
+  CHECK_FLOAT(mCurrentReadingsGraphIntervalYLow);
+  CHECK_BYTE(mPressureUnitsIndex);
+  CHECK_STRING(mRelativeCurrentSensorReadingsPath);
+  CHECK_FLOAT(mTickCountX);
+  CHECK_FLOAT(mTickCountY);
+  CHECK_FLOAT(mACoefficient);
+  CHECK_FLOAT(mBCoefficient);
+  CHECK_U32(mCurrentLanguage);
+  CHECK_STRING(mFlashDeviceMountPart);
+  CHECK_FLOAT(mFontScaleFactor);
+  CHECK_LONG_LONG(mLastSavedDateTimestampSec);
+  CHECK_STRING(mSoftwareStorageUUID);
+  CHECK_STRING(regString);
 }
 
 void readInit()
@@ -373,30 +401,12 @@ void readInit()
     QString r1 = line.left(line.indexOf('='));
     QString r2 = line.right(line.size() - line.indexOf('=') - 1);
     setParams(&r1, &r2);
-    //qDebug() << r1 << r2;
   }
-  //qDebug() << "cntLines" << cntLines;
-
-  /*
-  _initStruct *initStruct = new _initStruct[cntLines];
-  file.seek(0);
-
-  for (u16 i = 0; i < cntLines; i++ )
-  {
-    line = file.readLine();
-    line = line.simplified();
-    if (line[0] == '[') {i--; continue; }
-    if (line.size() == 0 ) {i--; continue; }
-    qDebug() << line;
-  }
-  delete [] initStruct;
-  */
 }
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
-//  readInit();
-//  exit(222);
+  //readInit(); exit(222);
 
   /* fbset --geometry 720 480 720 480 16 --timings 37037 60 16 30 9 62 6 */
   QString ttt = executeAConsoleCommand("fbset", QStringList() << "--geometry" << "720" << "480" << "720" << "480" << "16" << "--timings" << "37037" << "60" << "16" << "30" << "9" << "62" << "6");

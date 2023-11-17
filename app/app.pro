@@ -16,8 +16,6 @@ SOURCES += \
     clock.cpp \
     drawgraphs.cpp \
     gui/alarmlevelicpwidget.cpp \
-    gui/alarmsetuppage.cpp \
-    gui/averageicpwidget.cpp \
     gui/averagepointerwidget.cpp \
     gui/dialogWindows/abstractdialogwindow.cpp \
     gui/dialogWindows/blockdevicesselectiondialog.cpp \
@@ -63,8 +61,6 @@ HEADERS += \
     drawgraphs.h \
     global_define.h \
     gui/alarmlevelicpwidget.h \
-    gui/alarmsetuppage.h \
-    gui/averageicpwidget.h \
     gui/averagepointerwidget.h \
     gui/dialogWindows/abstractdialogwindow.h \
     gui/dialogWindows/blockdevicesselectiondialog.h \
@@ -105,8 +101,6 @@ FORMS += \
     abstractdialogpage.ui \
     gui/abstractmenupage.ui \
     gui/alarmlevelicpwidget.ui \
-    gui/alarmsetuppage.ui \
-    gui/averageicpwidget.ui \
     gui/datetimepage.ui \
     gui/dialogWindows/abstractdialogwindow.ui \
     gui/dialogWindows/messagedialog.ui \
@@ -121,7 +115,6 @@ FORMS += \
     gui/mainpage.ui \
     gui/numkeyboard.ui \
     gui/systeminfopage.ui \
-    gui/technicalaccesspage.ui \
     gui/volumeinputpage.ui \
     gui/zerosensorpage.ui \
     plots/abstractgraphareawidget.ui \

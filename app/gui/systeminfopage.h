@@ -20,7 +20,7 @@ class SystemInfoPage : public AbstractDialogPage
     Ui::SystemInfoPage *ui;
 
     /*! Таймер обновления шкал памяти */
-    QTimer *mUpdateMemBarsTimer {nullptr};
+    //QTimer *mUpdateMemBarsTimer {nullptr};
 
     /*! Интервал обновления шкал памяти */
     const int IntervalUpdateMemBarsMs {1000};
