@@ -191,7 +191,6 @@ void GeneralSettingsPage::updateGraphSettingsOnWidgets()
   ui->lowIntervalYLineEdit->setText(QString::number(settings->getCurrentReadingsGraphIntervalYLow()));
   ui->highIntervalYLineEdit->setText(QString::number(settings->getCurrentReadingsGraphIntervalYHigh()));
   ui->relativeCurrentPathLineEdit->setText(settings->getRelativeCurrentSensorReadingsPath());
-  ui->currentMaxStorageTimeLineEdit->setText(QString::number(settings->getMaxTimeStorageCurrentSensorReadingsMs()));
   float realDivisionXCount = (float)(settings->getCurrentReadingsGraphIntervalX()) / (settings->getCurrentTickCountX());
   float realDivisionYCount = (float)(settings->getCurrentReadingsGraphIntervalYHigh() - settings->getCurrentReadingsGraphIntervalYLow()) / (settings->getCurrentTickCountY()); // 10
   ui->tickCountXLineEdit->setText(QString::number(realDivisionXCount));//settings->getCurrentTickCountX()));

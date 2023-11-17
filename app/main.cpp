@@ -321,16 +321,13 @@ typedef struct
 {
  float mHighLevelAlarm;
  float mLowLevelAlarm;
- bool mHighLevelStateAlarm;
- bool mLowLevelStateAlarm;
- int64_t mMaxTimeStorageAverageSensorReadingsSec;
- QString mRelativeAverageSensorReadingsPath;
+ bool  mHighLevelStateAlarm;
+ bool  mLowLevelStateAlarm;
  float mAverageIntervalSec;
  float mCurrentReadingsGraphIntervalX;
  float mCurrentReadingsGraphIntervalY;
  float mCurrentReadingsGraphIntervalYHigh;
  float mCurrentReadingsGraphIntervalYLow;
- int64_t mMaxTimeStorageCurrentSensorReadingsMs;
  uint8_t mPressureUnitsIndex;
  QString mRelativeCurrentSensorReadingsPath;
  float mTickCountX;
@@ -368,14 +365,11 @@ void setParams(QString *name, QString *param)
   CHECK_BOOL(mHighLevelStateAlarm);
   CHECK_FLOAT(mLowLevelAlarm);
   CHECK_BOOL(mLowLevelStateAlarm);
-  CHECK_LONG_LONG(mMaxTimeStorageAverageSensorReadingsSec);
-  CHECK_STRING(mRelativeAverageSensorReadingsPath);
   CHECK_FLOAT(mAverageIntervalSec);
   CHECK_FLOAT(mCurrentReadingsGraphIntervalX);
   CHECK_FLOAT(mCurrentReadingsGraphIntervalY);
   CHECK_FLOAT(mCurrentReadingsGraphIntervalYHigh);
   CHECK_FLOAT(mCurrentReadingsGraphIntervalYLow);
-  CHECK_LONG_LONG(mMaxTimeStorageCurrentSensorReadingsMs);
   CHECK_BYTE(mPressureUnitsIndex);
   CHECK_STRING(mRelativeCurrentSensorReadingsPath);
   CHECK_FLOAT(mTickCountX);

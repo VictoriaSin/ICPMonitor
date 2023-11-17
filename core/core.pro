@@ -26,7 +26,6 @@ HEADERS += \
     controller/averageicpcontroller.h \
     controller/controller_enums.h \
     controller/fileProcessing/filecontroller_events.h \
-    controller/fileProcessing/serialization/idataserializer.h \
     controller/labels/label.h \
     controller/labels/labelmanager.h \
     controller/labels/labelprovider.h \

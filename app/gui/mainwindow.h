@@ -27,7 +27,7 @@ class MainWindow : public QWidget
     QStack<IPageWidget*> mStackOfWidgets;
 
     /*! Диалоговое окно для уведомлений пользователя */
-    MessageDialog *mMessageDialog {nullptr};
+    //MessageDialog *mMessageDialog {nullptr};
 
 public:
     QThread mControllerThread {nullptr};
@@ -35,8 +35,6 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void installController(MonitorController *controller);
-    /*! Перевод приложения */
-    void retranslate();
     /*! Скейлинг шрифтов */
     void scaleFonts();
     void setZeroSensorPage();
@@ -50,9 +48,6 @@ public:
         false - страница не была установлена
      */
     bool changeCurrentPage(IPageWidget *installedPage);
-
-    /*! Отображение экрана с установкой даты и времени */
-    void setCurrentDatePage();
 
 private slots:
     /*! Обработка событий контроллера */

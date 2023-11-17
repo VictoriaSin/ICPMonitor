@@ -1017,18 +1017,18 @@ _mSPIData currData;
 //                       20345, 19676, 18896, 18701, 17618, 17082, 16206, 15658, 15231, 14708,
 //                       13965, 13868, 13235, 12869, 13113, 14391};
 #define CNT_AVG_VALUES 20
-void CurrentGraphsArea::getData()
-{
-    uint32_t time = currData.timeStamp;
-    static int currIndexArr = 0;
-    uint64_t avg = 0;
-    for (uint8_t i=0; i<CNT_AVG_VALUES; i++)
-    {
-       // avg += inputData[currIndexArr%36+i];//(uint16_t)(30 + 15 * sin(3.14 * (double)(((time+i*2) % 2000) + 1)/500));
-        currIndexArr++;
-    }
-    currData.data = avg/CNT_AVG_VALUES;
-}
+//void CurrentGraphsArea::getData()
+//{
+//    uint32_t time = currData.timeStamp;
+//    static int currIndexArr = 0;
+//    uint64_t avg = 0;
+//    for (uint8_t i=0; i<CNT_AVG_VALUES; i++)
+//    {
+//       // avg += inputData[currIndexArr%36+i];//(uint16_t)(30 + 15 * sin(3.14 * (double)(((time+i*2) % 2000) + 1)/500));
+//        currIndexArr++;
+//    }
+//    currData.data = avg/CNT_AVG_VALUES;
+//}
 
 //connect(mPlot, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
 
@@ -1055,7 +1055,7 @@ void CurrentGraphsArea::calcCompliance()
     //Pcp *= 13.545;//временно
     dVConst = (dVolume * log10((Pcp + Acp)/(Pcp - Acp))) / (log10(Pk/Po));//(mFirstInterval->averageP / mSecondInterval->averageP)
     qDebug() << "Acp" << Acp << "Pcp" << Pcp << "dVConst" << dVConst;
-    float param = 1.0;
+    //float param = 1.0;
     mWaveGraph->xAxis->setLabel("");
     mWaveGraph->mLowerAlarmLimit->setVisible(false);
     mWaveGraph->mUpperAlarmLimit->setVisible(false);

@@ -30,24 +30,11 @@ public:
     ~TechnicalAccessPage();
 
 private:
-    /*! Настройка спинбокса с вводом макс. кол-ва скриншотов */
-    void setupMaxScreensSpinBox();
-
-    /*! Обновление информации диалогового
-        окна выбора программного хранилища
-    */
-    void updateSelectSoftwareStorageDialog();
 
     /*! Обновление строки текущего программного
         хранилища
     */
     void updateCurrentSoftwareStorageLabel();
-
-    /*! Обновление строки с максимальным кол-вом скриншотов */
-    void updateMaxScreensLabel();
-
-    /*! Обновление максимального кол-ва скриншотов */
-    void updateMaxScreens();
 
 private slots:
     /*! Обработка событий контроллера */

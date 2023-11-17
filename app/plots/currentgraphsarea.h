@@ -255,7 +255,7 @@ public:
     void replotIntervalGraph();
     void setMarksOnInterval();
     void calcCompliance();
-    void getData();
+    //void getData();
     void stopWorkDraw();
 protected:
     bool isNeedCalc;

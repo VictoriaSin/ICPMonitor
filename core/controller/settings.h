@@ -57,7 +57,7 @@ public:
     ################################################################################*/
     void readCurrentSensorReadingsSettings();
     QString getRelativeCurrentSensorReadingsPath() const { return mRelativeCurrentSensorReadingsPath; };
-    int64_t getMaxTimeStorageCurrentSensorReadingsMs() const { return mMaxTimeStorageCurrentSensorReadingsMs; };
+    //int64_t getMaxTimeStorageCurrentSensorReadingsMs() const { return mMaxTimeStorageCurrentSensorReadingsMs; };
     float getCurrentReadingsGraphIntervalX() const { return mCurrentReadingsGraphIntervalX; };
     //QVector<QPair<float, float>> getCurrentReadingsGraphYRanges() const { return mCurrentReadingsGraphYRanges; };
     float getCurrentReadingsGraphIntervalYLow() const { return mCurrentReadingsGraphIntervalYLow; };
@@ -69,13 +69,11 @@ public:
     /*################################################################################
                             Настройки средних показаний датчика
     ################################################################################*/
-    void readAverageSensorReadingsSettings();
-    const QString &getRelativeAverageSensorReadingsPath() const { return mRelativeAverageSensorReadingsPath; };
     int64_t getMaxTimeStorageAverageSensorReadingsSec() const { return mMaxTimeStorageAverageSensorReadingsSec; };
     int getConstIntervalBetweenAverageSensorReadingsMs() const { return mConstIntervalBetweenAverageSensorReadingsMs; };
 
     /*! Минимальное корректное время */
-    static const QDateTime MinDateTime;
+    //static const QDateTime MinDateTime;
 
     /*! Базовый путь монтирования USB */
     static const QString BasePathForMount;
@@ -86,8 +84,6 @@ private:
     ################################################################################*/
     void writeGeneralSettings();
     void setFontScaleFactor(float fontScaleFactor);
-
-
 public:
     void setRegsValues(uint16_t* regs);
     bool setAppLanguage(QLocale::Language language);
@@ -95,7 +91,6 @@ public:
     void setACoefficient(float currACoefficient);
     void setBCoefficient(float currBCoefficient);
 private:
-    void setLastSavedDateTimestampSec(int64_t timestamp);
     /*################################################################################
                                 Настройки уровней тревоги
     ################################################################################*/
@@ -108,16 +103,6 @@ private:
                             Настройки текущих показаний датчика
     ################################################################################*/
     void writeCurrentSensorReadingsSettings();
-    void setRelativeCurrentSensorReadingsPath(const QString &relativeCurrentSensorReadingsPath);
-    void setMaxTimeStorageCurrentSensorReadingsMs(int64_t maxMs);
-//    void setCurrentReadingsGraphInterval(float currentReadingsGraphInterval);
-    /*################################################################################
-                            Настройки средних показаний датчика
-    ################################################################################*/
-    void writeAverageSensorReadingsSettings();
-    void setRelativeAverageSensorReadingsPath(const QString &relativeAverageSensorReadingsPath);
-    void setMaxTimeStorageAverageSensorReadingsSec(int64_t maxSec);
-
 private slots:
     void setCurrentReadingsGraphIntervalX(float currentReadingsGraphIntervalX);
     void setCurrentReadingsGraphIntervalY(float currentReadingsGraphIntervalYFrom, float currentReadingsGraphIntervalYTo);
@@ -141,7 +126,6 @@ private:
     float mBCoefficient {0};
 
 public:
-
     uint16_t mRegValues[32];
 
 #ifdef PC_BUILD
@@ -170,7 +154,7 @@ public:
     ################################################################################*/
     const QString mCurrentSensorReadingsGroup {"CurrentSensorReadingsGroup"};
     QString mRelativeCurrentSensorReadingsPath {"./ICPCurrentSensorReadings"};
-    int64_t mMaxTimeStorageCurrentSensorReadingsMs {1 * 24 * 60 * 60 * 1000};
+    //int64_t mMaxTimeStorageCurrentSensorReadingsMs {1 * 24 * 60 * 60 * 1000};
     float mCurrentReadingsGraphIntervalX {12};
     float mCurrentReadingsGraphIntervalYLow {10};
     float mCurrentReadingsGraphIntervalYHigh {60};
@@ -187,7 +171,7 @@ public:
                             Настройки средних показаний датчика
     ################################################################################*/
     const QString mAverageSensorReadingsGroup {"AverageSensorReadingsGroup"};
-    QString mRelativeAverageSensorReadingsPath {"./ICPAverageSensorReadings"};
+    //QString mRelativeAverageSensorReadingsPath {"./ICPAverageSensorReadings"};
     int64_t mMaxTimeStorageAverageSensorReadingsSec {14 * 24 * 60 * 60};
     const int mConstIntervalBetweenAverageSensorReadingsMs {1000};
 
