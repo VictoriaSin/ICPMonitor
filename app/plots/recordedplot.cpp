@@ -77,12 +77,57 @@ RecordedPlot::RecordedPlot(QWidget *parent):
         }
     });
 
-    // Обработка клика по элементам
-    connect(this, &RecordedPlot::itemClick, this, &RecordedPlot::itemClicked);
-
     retranslate();
     addLayer("intervalLayer", nullptr, limAbove);
 qDebug("\033[34m>>RecordedPlot::RecordedPlot\033[0m");
+
+
+//    QCPItemRect *rect = new QCPItemRect(this);
+//    rect->setPen(QPen(QBrush(Qt::lightGray), 3, Qt::DashLine));
+//    rect->setBrush(QColor(0, 0, 0, 8));
+//    rect->topLeft->setCoords(10, 59);
+//    rect->bottomRight->setCoords(11, 1);
+//    rect->setLayer("legend");
+
+
+//    QCPItemText* mTextItem = new QCPItemText(this);
+//    // Установка слоя отрисовки
+//    //setLayer("overlay");
+
+//    // Установка ориентации
+//    //setOrientation(moVerticalBottom);
+//    mTextItem->setPositionAlignment(Qt::AlignBottom|Qt::AlignHCenter);
+//    mTextItem->position->setTypeX(QCPItemPosition::ptPlotCoords);
+//    mTextItem->position->setTypeY(QCPItemPosition::ptAxisRectRatio);
+
+//    // Настройка отрисовки элемента текста
+//    mTextItem->setText("0"); // Установка текста
+//    mTextItem->setPen(QColor(Qt::red)); // Отрисовка прямоугольника
+//    mTextItem->setBrush(QColor(255, 0, 0, 0)); // Отрисовка заднего фона прямоугольника
+//    mTextItem->setColor(QColor(255, 0, 0, 0));//("#0c2731")); // Цвет текста
+
+//    mTextItem->setPadding(QMargins(3, 0, 3, 0)); // Отступы от рамки прямоугольника к тексту
+//    mTextItem->setFont(QFont {"Sans Serif", 16}); // Устанавливаем базовый шрифт
+//    mTextItem->setSelectable(true); // Устанавливаем запрет на выбор элемента кликом
+
+//    // Создаём линию
+//    QCPItemLine* mLineThroughGraph = new QCPItemLine(this);
+//    // Вяжем начальную точку к якорю текста
+//    //mIntervalPos = 10 * 1000;
+//    mTextItem->position->setCoords(10, 0.1); // abs, rel
+//    mLineThroughGraph->end->setParentAnchor(mTextItem->position);
+//    mLineThroughGraph->start->setCoords(10, 0); // abs
+//    mLineThroughGraph->setLayer("legend");
+//    //mTextItem->setLayer("legend"); // На один слой ниже чем this
+
+
+//    QPen dotPen;
+//    dotPen.setColor(QColor(Qt::red));
+//    dotPen.setStyle(Qt::DotLine);
+//    dotPen.setWidth(3);
+//    mLineThroughGraph->setPen(dotPen);
+//    mLineThroughGraph->setSelectable(true);
+//    mLineThroughGraph->setVisible(true);
 }
 
 RecordedPlot::~RecordedPlot()
@@ -409,55 +454,6 @@ void RecordedPlot::addDataOnGraphic()
       mMainGraph->rescaleAxes(true);
     }
 }
-#ifdef PC_BUILD
-void RecordedPlot::itemClicked(QCPAbstractItem *item, QMouseEvent *event)
-{
-    qDebug() << item;
-    const MarkItem *markItem = dynamic_cast<MarkItem*>(item);
-
-    // Если преобразование прошло успешно и событие отпускания левой мышки
-    if (markItem && event->type() == QEvent::Type::MouseButtonRelease && event->button() == Qt::MouseButton::LeftButton)
-    {
-        qDebug() << "clicked" << markItem;
-        // Метка, связанная с отображение на графике
-        //Label *label = markItem->getLabel();
-
-        // Если метки нет
-        //if (!label) { return; }
-
-        // Время начала и окончания метки
-        //const int64_t &timeStartLabelMs = label->getTimeStartLabelMS();
-        //const int64_t &timeEndLabelMs = label->getTimeEndLabelMS();
-
-        // Устанавливаем id сессии, к которой относится метка,
-        // номер метки, время начала метки и окончание
-//        mTextEditDialog->setInfoLabelText(TemplateInfoAboutLabel.arg(tr("ID сессии")).arg(label->getBelongIdSession()).
-//                                          arg(tr("Номер метки")).arg(label->getNumberLabel()).
-//                                          arg(tr("Время начала метки")).arg(QDateTime::fromMSecsSinceEpoch(timeStartLabelMs).toString("dd.MM.yyyy hh:mm:ss.zzz")).
-//                                          arg(tr("Время окончания метки")).arg(timeEndLabelMs > timeStartLabelMs ? QDateTime::fromMSecsSinceEpoch(timeEndLabelMs).toString("dd.MM.yyyy hh:mm:ss.zzz") : "-").
-//                                          arg(tr("Информация")));
-
-        // Информация о метке
-        //const QString &labelInfo = label->getInfoLabel();
-
-        // Устанавливаем информацию о метке
-        //mTextEditDialog->setText(labelInfo);
-
-        // Если пользователь подтвердил изменения
-//        if (mTextEditDialog->exec() == QDialog::Accepted) {
-//            // Запоминаем текст из поля ввода
-//            const QString newText = mTextEditDialog->getText();
-
-//            // Если изменения были, обновляем информацию о метке
-//            if (labelInfo != newText) {
-//                label->setLabelInfo(newText);
-//            }
-//        }
-    }
-}
-#else
-// для тач ивента
-#endif
 
 void RecordedPlot::retranslate()
 {
@@ -490,396 +486,396 @@ void RecordedPlot::resetGraph()
 }
 #ifdef PC_BUILD
 
-bool RecordedPlot::editLabel(QMouseEvent *mouseEvent)
-{
-    const auto typeOfEvent = mouseEvent->type();
-    static bool isLabelDrag = false;
-    if((typeOfEvent == QEvent::MouseButtonPress) || (typeOfEvent == QEvent::MouseButtonRelease) || (typeOfEvent == QEvent::MouseMove) )
-    {
-        if (typeOfEvent == QEvent::MouseButtonPress)
-        {
-            labelMoved = true;
-            isLabelDrag = false;
-            pointStart = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
-            return true;
-        }
-        if ((typeOfEvent == QEvent::MouseMove) && (labelMoved == true))
-        {
-            isLabelDrag = true;
-            pointStop = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
-            int32_t deltaX = pointStop - pointStart;
-            if (abs(deltaX) > 2)
-            {
-                pointStart = pointStop;
-                mCoordLabelX += deltaX;
-                mLabelItemsContainer.back()->replotLine();
-            }
-            return true;
-        }
-        if (typeOfEvent == QEvent::MouseButtonRelease)
-        {
-            pointStop = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
-            labelMoved = false;
-            if ((pointStart == pointStop) && (isLabelDrag == false))
-            {
-                mCoordLabelX = pointStart;
-                mLabelItemsContainer.back()->replotLine();
-            }
-            isLabelDrag = false;
-            return true;
-        }
-    }
-    return false;
-}
-bool RecordedPlot::editInterval(QMouseEvent *mouseEvent)
-{
-    const auto typeOfEvent = mouseEvent->type();
-    static bool isLabelDrag = false;
-    if((typeOfEvent == QEvent::MouseButtonPress) || (typeOfEvent == QEvent::MouseButtonRelease) || (typeOfEvent == QEvent::MouseMove) )
-    {
-        if (typeOfEvent == QEvent::MouseButtonPress)
-        {
-            labelMoved = true;
-            isLabelDrag = false;
-            pointStart = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
-            return true;
-        }
-        if ((typeOfEvent == QEvent::MouseMove) && (labelMoved == true))
-        {
-            isLabelDrag = true;
-            pointStop = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
-            int32_t deltaX = pointStop - pointStart;
-            if (abs(deltaX) > 2)
-            {
-                auto ttt = (mIntervalsContainer[mIntervalsCount-1]->mIntervalPos + deltaX);
-                if (mIntervalsCount % 2 == 0)
-                {
-                    if (ttt <= (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos)) { return true; }
-                }
-                else
-                    if (mIntervalsCount == 3)
-                    {
-                        if (ttt <= (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos)) { return true; }
-                    }
-                pointStart = pointStop;
-                mIntervalsContainer[mIntervalsCount-1]->mIntervalPos += deltaX;
-                mIntervalsContainer[mIntervalsCount-1]->replotLine();
-            }
-            return true;
-        }
-        if (typeOfEvent == QEvent::MouseButtonRelease)
-        {
-            pointStop = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
-            labelMoved = false;
-            if ((pointStart == pointStop) && (isLabelDrag == false))
-            {
-                if (mIntervalsCount % 2 == 0)
-                {
-                    if (pointStart <= (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos)) { return true; }
-                }
-                else
-                if (mIntervalsCount == 3)
-                {
-                    if (pointStart < (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos)) { return true; }
-                }
-                mIntervalsContainer[mIntervalsCount-1]->mIntervalPos = pointStart;
-                mIntervalsContainer[mIntervalsCount-1]->replotLine();
-            }
-            isLabelDrag = false;
-            return true;
-        }
-    }
-    return false;
-}
-bool RecordedPlot::editAxisRange(QMouseEvent *mouseEvent)
-{
-    const auto typeOfEvent = mouseEvent->type();
-    static bool isAxisMoving = false;
-    static float pointStartX, pointStartY;
-    static float pointStopX, pointStopY;
+//bool RecordedPlot::editLabel(QMouseEvent *mouseEvent)
+//{
+//    const auto typeOfEvent = mouseEvent->type();
+//    static bool isLabelDrag = false;
+//    if((typeOfEvent == QEvent::MouseButtonPress) || (typeOfEvent == QEvent::MouseButtonRelease) || (typeOfEvent == QEvent::MouseMove) )
+//    {
+//        if (typeOfEvent == QEvent::MouseButtonPress)
+//        {
+//            labelMoved = true;
+//            isLabelDrag = false;
+//            pointStart = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
+//            return true;
+//        }
+//        if ((typeOfEvent == QEvent::MouseMove) && (labelMoved == true))
+//        {
+//            isLabelDrag = true;
+//            pointStop = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
+//            int32_t deltaX = pointStop - pointStart;
+//            if (abs(deltaX) > 2)
+//            {
+//                pointStart = pointStop;
+//                mCoordLabelX += deltaX;
+//                mLabelItemsContainer.back()->replotLine();
+//            }
+//            return true;
+//        }
+//        if (typeOfEvent == QEvent::MouseButtonRelease)
+//        {
+//            pointStop = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
+//            labelMoved = false;
+//            if ((pointStart == pointStop) && (isLabelDrag == false))
+//            {
+//                mCoordLabelX = pointStart;
+//                mLabelItemsContainer.back()->replotLine();
+//            }
+//            isLabelDrag = false;
+//            return true;
+//        }
+//    }
+//    return false;
+//}
+//bool RecordedPlot::editInterval(QMouseEvent *mouseEvent)
+//{
+//    const auto typeOfEvent = mouseEvent->type();
+//    static bool isLabelDrag = false;
+//    if((typeOfEvent == QEvent::MouseButtonPress) || (typeOfEvent == QEvent::MouseButtonRelease) || (typeOfEvent == QEvent::MouseMove) )
+//    {
+//        if (typeOfEvent == QEvent::MouseButtonPress)
+//        {
+//            labelMoved = true;
+//            isLabelDrag = false;
+//            pointStart = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
+//            return true;
+//        }
+//        if ((typeOfEvent == QEvent::MouseMove) && (labelMoved == true))
+//        {
+//            isLabelDrag = true;
+//            pointStop = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
+//            int32_t deltaX = pointStop - pointStart;
+//            if (abs(deltaX) > 2)
+//            {
+//                auto ttt = (mIntervalsContainer[mIntervalsCount-1]->mIntervalPos + deltaX);
+//                if (mIntervalsCount % 2 == 0)
+//                {
+//                    if (ttt <= (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos)) { return true; }
+//                }
+//                else
+//                    if (mIntervalsCount == 3)
+//                    {
+//                        if (ttt <= (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos)) { return true; }
+//                    }
+//                pointStart = pointStop;
+//                mIntervalsContainer[mIntervalsCount-1]->mIntervalPos += deltaX;
+//                mIntervalsContainer[mIntervalsCount-1]->replotLine();
+//            }
+//            return true;
+//        }
+//        if (typeOfEvent == QEvent::MouseButtonRelease)
+//        {
+//            pointStop = xAxis->pixelToCoord(mouseEvent->pos().x())*1000;
+//            labelMoved = false;
+//            if ((pointStart == pointStop) && (isLabelDrag == false))
+//            {
+//                if (mIntervalsCount % 2 == 0)
+//                {
+//                    if (pointStart <= (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos)) { return true; }
+//                }
+//                else
+//                if (mIntervalsCount == 3)
+//                {
+//                    if (pointStart < (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos)) { return true; }
+//                }
+//                mIntervalsContainer[mIntervalsCount-1]->mIntervalPos = pointStart;
+//                mIntervalsContainer[mIntervalsCount-1]->replotLine();
+//            }
+//            isLabelDrag = false;
+//            return true;
+//        }
+//    }
+//    return false;
+//}
+//bool RecordedPlot::editAxisRange(QMouseEvent *mouseEvent)
+//{
+//    const auto typeOfEvent = mouseEvent->type();
+//    static bool isAxisMoving = false;
+//    static float pointStartX, pointStartY;
+//    static float pointStopX, pointStopY;
 
-    if((typeOfEvent == QEvent::MouseButtonPress) || (typeOfEvent == QEvent::MouseButtonRelease) || (typeOfEvent == QEvent::MouseMove) || (typeOfEvent == QEvent::Wheel))
-    {
-        if (typeOfEvent == QEvent::MouseButtonPress)
-        {
-            isAxisMoving = true;
-            pointStartX = xAxis->pixelToCoord(mouseEvent->pos().x());
-            pointStartY = yAxis->pixelToCoord(mouseEvent->pos().y());
-            return true;
-        }
-        if ((typeOfEvent == QEvent::MouseMove) && (isAxisMoving))
-        {
-            pointStopX = xAxis->pixelToCoord(mouseEvent->pos().x());
-            pointStopY = yAxis->pixelToCoord(mouseEvent->pos().y());
-            float deltaX = pointStopX - pointStartX;
-            float deltaY = pointStopY - pointStartY;
+//    if((typeOfEvent == QEvent::MouseButtonPress) || (typeOfEvent == QEvent::MouseButtonRelease) || (typeOfEvent == QEvent::MouseMove) || (typeOfEvent == QEvent::Wheel))
+//    {
+//        if (typeOfEvent == QEvent::MouseButtonPress)
+//        {
+//            isAxisMoving = true;
+//            pointStartX = xAxis->pixelToCoord(mouseEvent->pos().x());
+//            pointStartY = yAxis->pixelToCoord(mouseEvent->pos().y());
+//            return true;
+//        }
+//        if ((typeOfEvent == QEvent::MouseMove) && (isAxisMoving))
+//        {
+//            pointStopX = xAxis->pixelToCoord(mouseEvent->pos().x());
+//            pointStopY = yAxis->pixelToCoord(mouseEvent->pos().y());
+//            float deltaX = pointStopX - pointStartX;
+//            float deltaY = pointStopY - pointStartY;
 
-            if (!((xAxis->range().lower - deltaX < 0) || (xAxis->range().upper - deltaX > mRecordedMaxXRange)))
-            {
-                xAxis->setRange(xAxis->range().lower - deltaX, xAxis->range().upper - deltaX);
-            }
-            if (!((yAxis->range().lower - deltaY < 0) || (yAxis->range().upper - deltaY > mCurrentMaxYRange)))
-            {
-                yAxis->setRange(yAxis->range().lower - deltaY, yAxis->range().upper - deltaY);
-            }
+//            if (!((xAxis->range().lower - deltaX < 0) || (xAxis->range().upper - deltaX > mRecordedMaxXRange)))
+//            {
+//                xAxis->setRange(xAxis->range().lower - deltaX, xAxis->range().upper - deltaX);
+//            }
+//            if (!((yAxis->range().lower - deltaY < 0) || (yAxis->range().upper - deltaY > mCurrentMaxYRange)))
+//            {
+//                yAxis->setRange(yAxis->range().lower - deltaY, yAxis->range().upper - deltaY);
+//            }
 
-            pointStartX = pointStopX = xAxis->pixelToCoord(mouseEvent->pos().x());
-            pointStartY = pointStopY = yAxis->pixelToCoord(mouseEvent->pos().y());
-            return true;
-        }
-        if (typeOfEvent == QEvent::MouseButtonRelease)
-        {
-            isAxisMoving = false;
-            return true;
-        }
+//            pointStartX = pointStopX = xAxis->pixelToCoord(mouseEvent->pos().x());
+//            pointStartY = pointStopY = yAxis->pixelToCoord(mouseEvent->pos().y());
+//            return true;
+//        }
+//        if (typeOfEvent == QEvent::MouseButtonRelease)
+//        {
+//            isAxisMoving = false;
+//            return true;
+//        }
 
-        if (typeOfEvent == QEvent::Wheel)
-        {
-            #define DEF_ZOOM_IN_X  (float)0.8
-            #define DEF_ZOOM_OUT_X (float)(1.0/DEF_ZOOM_IN_X)
-            QWheelEvent *eventWheel = (QWheelEvent*)mouseEvent;
-            pointStartX = xAxis->pixelToCoord(mouseEvent->pos().x());
+//        if (typeOfEvent == QEvent::Wheel)
+//        {
+//            #define DEF_ZOOM_IN_X  (float)0.8
+//            #define DEF_ZOOM_OUT_X (float)(1.0/DEF_ZOOM_IN_X)
+//            QWheelEvent *eventWheel = (QWheelEvent*)mouseEvent;
+//            pointStartX = xAxis->pixelToCoord(mouseEvent->pos().x());
 
-            if (eventWheel->delta() < 0)
-            {
-              //qDebug("Zoom-");
-              //qDebug() << "pointStartX:" << pointStartX << " (pointStartX *  DEF_ZOOM_IN_X)" << (pointStartX *  DEF_ZOOM_IN_X) << " xAxis->range().lower" << xAxis->range().lower;
-              float startPlot;
-              float endPlot;
-              bool customPlot = false;
-              if ((pointStartX - (pointStartX * DEF_ZOOM_IN_X)) > xAxis->range().lower) // < 0
-              {
-                customPlot = true;
-                startPlot = 0;
-              }
+//            if (eventWheel->delta() < 0)
+//            {
+//              //qDebug("Zoom-");
+//              //qDebug() << "pointStartX:" << pointStartX << " (pointStartX *  DEF_ZOOM_IN_X)" << (pointStartX *  DEF_ZOOM_IN_X) << " xAxis->range().lower" << xAxis->range().lower;
+//              float startPlot;
+//              float endPlot;
+//              bool customPlot = false;
+//              if ((pointStartX - (pointStartX * DEF_ZOOM_IN_X)) > xAxis->range().lower) // < 0
+//              {
+//                customPlot = true;
+//                startPlot = 0;
+//              }
 
-              if ((xAxis->range().upper + (xAxis->range().upper *  DEF_ZOOM_IN_X)) > mRecordedMaxXRange) // > MAX
-              {
-                customPlot = true;
-                startPlot = xAxis->range().lower * DEF_ZOOM_IN_X;
-                endPlot = mRecordedMaxXRange;
-              }
-              else
-              {
-                endPlot = xAxis->range().size() / DEF_ZOOM_IN_X;
-              }
+//              if ((xAxis->range().upper + (xAxis->range().upper *  DEF_ZOOM_IN_X)) > mRecordedMaxXRange) // > MAX
+//              {
+//                customPlot = true;
+//                startPlot = xAxis->range().lower * DEF_ZOOM_IN_X;
+//                endPlot = mRecordedMaxXRange;
+//              }
+//              else
+//              {
+//                endPlot = xAxis->range().size() / DEF_ZOOM_IN_X;
+//              }
 
-              if (customPlot)
-              {
-                xAxis->setRange(startPlot, endPlot);
-                return true;
-              }
-              xAxis->scaleRange(DEF_ZOOM_OUT_X, pointStartX);
-              return true;
-            }
-            else
-            {
-              //qDebug("Zoom+");
-              xAxis->scaleRange(DEF_ZOOM_IN_X, pointStartX);
-            }
-            return true;
-        }
-    }
-    return false;
-}
+//              if (customPlot)
+//              {
+//                xAxis->setRange(startPlot, endPlot);
+//                return true;
+//              }
+//              xAxis->scaleRange(DEF_ZOOM_OUT_X, pointStartX);
+//              return true;
+//            }
+//            else
+//            {
+//              //qDebug("Zoom+");
+//              xAxis->scaleRange(DEF_ZOOM_IN_X, pointStartX);
+//            }
+//            return true;
+//        }
+//    }
+//    return false;
+//}
 
 
 #else
-// Для тача
-bool RecordedPlot::editLabel(QTouchEvent *touchEvent)
-{
-    const auto typeOfEvent = touchEvent->type();
-    static bool isLabelDrag = false;
-    if((typeOfEvent == QEvent::TouchBegin) || (typeOfEvent == QEvent::TouchEnd) || (typeOfEvent == QEvent::TouchUpdate) )
-    {
-        if (typeOfEvent == QEvent::TouchBegin)
-        {
-            labelMoved = true;
-            isLabelDrag = false;
-            pointStart = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x())*1000;
-            return true;
-        }
-        if ((typeOfEvent == QEvent::TouchUpdate) && (labelMoved == true))
-        {
-            isLabelDrag = true;
-            pointStop = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x())*1000;
-            int32_t deltaX = pointStop - pointStart;
-            if (abs(deltaX) > 2)
-            {
-                pointStart = pointStop;
-                mCoordLabelX += deltaX;
-                mLabelItemsContainer.back()->replotLine();
-            }
-            return true;
-        }
-        if (typeOfEvent == QEvent::TouchEnd)
-        {
-            pointStop = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x())*1000;
-            labelMoved = false;
-            if ((pointStart == pointStop) && (isLabelDrag == false))
-            {
-                mCoordLabelX = pointStart;
-                mLabelItemsContainer.back()->replotLine();
-            }
-            isLabelDrag = false;
-            return true;
-        }
-    }
-    return false;
-}
+//// Для тача
+//bool RecordedPlot::editLabel(QTouchEvent *touchEvent)
+//{
+//    const auto typeOfEvent = touchEvent->type();
+//    static bool isLabelDrag = false;
+//    if((typeOfEvent == QEvent::TouchBegin) || (typeOfEvent == QEvent::TouchEnd) || (typeOfEvent == QEvent::TouchUpdate) )
+//    {
+//        if (typeOfEvent == QEvent::TouchBegin)
+//        {
+//            labelMoved = true;
+//            isLabelDrag = false;
+//            pointStart = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x())*1000;
+//            return true;
+//        }
+//        if ((typeOfEvent == QEvent::TouchUpdate) && (labelMoved == true))
+//        {
+//            isLabelDrag = true;
+//            pointStop = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x())*1000;
+//            int32_t deltaX = pointStop - pointStart;
+//            if (abs(deltaX) > 2)
+//            {
+//                pointStart = pointStop;
+//                mCoordLabelX += deltaX;
+//                mLabelItemsContainer.back()->replotLine();
+//            }
+//            return true;
+//        }
+//        if (typeOfEvent == QEvent::TouchEnd)
+//        {
+//            pointStop = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x())*1000;
+//            labelMoved = false;
+//            if ((pointStart == pointStop) && (isLabelDrag == false))
+//            {
+//                mCoordLabelX = pointStart;
+//                mLabelItemsContainer.back()->replotLine();
+//            }
+//            isLabelDrag = false;
+//            return true;
+//        }
+//    }
+//    return false;
+//}
 
-bool RecordedPlot::editInterval(QTouchEvent *touchEvent)
-{
-    const auto typeOfEvent = touchEvent->type();
-    static bool isLabelDrag = false;
-    if((typeOfEvent == QEvent::TouchBegin) || (typeOfEvent == QEvent::TouchEnd) || (typeOfEvent == QEvent::TouchUpdate) )
-    {
-        if (typeOfEvent == QEvent::TouchBegin)
-        {
-            labelMoved = true;
-            isLabelDrag = false;
-            pointStart = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x())*1000;
-            return true;
-        }
-        if ((typeOfEvent == QEvent::TouchUpdate) && (labelMoved == true))
-        {
-            isLabelDrag = true;
-            pointStop = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x())*1000;
-            int32_t deltaX = pointStop - pointStart;
-            if (abs(deltaX) > 2)
-            {
-                auto ttt = (mIntervalsContainer[mIntervalsCount-1]->mIntervalPos + deltaX);
-                if (mIntervalsCount % 2 == 0)
-                {
-                    if (ttt <= (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos)) { return true; }
-                }
-                else
-                    if (mIntervalsCount == 3)
-                    {
-                        if (ttt <= (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos)) { return true; }
-                    }
-                pointStart = pointStop;
-                mIntervalsContainer[mIntervalsCount-1]->mIntervalPos += deltaX;
-                mIntervalsContainer[mIntervalsCount-1]->replotLine();
-            }
-            return true;
-        }
-        if (typeOfEvent == QEvent::TouchEnd)
-        {
-            pointStop = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x())*1000;
-            labelMoved = false;
-            if ((pointStart == pointStop) && (isLabelDrag == false))
-            {
-                if (mIntervalsCount % 2 == 0)
-                {
-                    if (pointStart <= (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos)) { return true; }
-                }
-                else
-                if (mIntervalsCount == 3)
-                {
-                    if (pointStart < (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos)) { return true; }
-                }
-                mIntervalsContainer[mIntervalsCount-1]->mIntervalPos = pointStart;
-                mIntervalsContainer[mIntervalsCount-1]->replotLine();
-            }
-            isLabelDrag = false;
-            return true;
-        }
-    }
-    return false;
-}
+//bool RecordedPlot::editInterval(QTouchEvent *touchEvent)
+//{
+//    const auto typeOfEvent = touchEvent->type();
+//    static bool isLabelDrag = false;
+//    if((typeOfEvent == QEvent::TouchBegin) || (typeOfEvent == QEvent::TouchEnd) || (typeOfEvent == QEvent::TouchUpdate) )
+//    {
+//        if (typeOfEvent == QEvent::TouchBegin)
+//        {
+//            labelMoved = true;
+//            isLabelDrag = false;
+//            pointStart = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x())*1000;
+//            return true;
+//        }
+//        if ((typeOfEvent == QEvent::TouchUpdate) && (labelMoved == true))
+//        {
+//            isLabelDrag = true;
+//            pointStop = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x())*1000;
+//            int32_t deltaX = pointStop - pointStart;
+//            if (abs(deltaX) > 2)
+//            {
+//                auto ttt = (mIntervalsContainer[mIntervalsCount-1]->mIntervalPos + deltaX);
+//                if (mIntervalsCount % 2 == 0)
+//                {
+//                    if (ttt <= (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos)) { return true; }
+//                }
+//                else
+//                    if (mIntervalsCount == 3)
+//                    {
+//                        if (ttt <= (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos)) { return true; }
+//                    }
+//                pointStart = pointStop;
+//                mIntervalsContainer[mIntervalsCount-1]->mIntervalPos += deltaX;
+//                mIntervalsContainer[mIntervalsCount-1]->replotLine();
+//            }
+//            return true;
+//        }
+//        if (typeOfEvent == QEvent::TouchEnd)
+//        {
+//            pointStop = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x())*1000;
+//            labelMoved = false;
+//            if ((pointStart == pointStop) && (isLabelDrag == false))
+//            {
+//                if (mIntervalsCount % 2 == 0)
+//                {
+//                    if (pointStart <= (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos)) { return true; }
+//                }
+//                else
+//                if (mIntervalsCount == 3)
+//                {
+//                    if (pointStart < (mIntervalsContainer[mIntervalsCount-2]->mIntervalPos)) { return true; }
+//                }
+//                mIntervalsContainer[mIntervalsCount-1]->mIntervalPos = pointStart;
+//                mIntervalsContainer[mIntervalsCount-1]->replotLine();
+//            }
+//            isLabelDrag = false;
+//            return true;
+//        }
+//    }
+//    return false;
+//}
 
-bool RecordedPlot::editAxisRange(QTouchEvent *touchEvent)
-{
-    const auto typeOfEvent = touchEvent->type();
-    static bool isAxisMoving = false;
-    static float pointStartX, pointStartY;
-    static float pointStopX, pointStopY;
+//bool RecordedPlot::editAxisRange(QTouchEvent *touchEvent)
+//{
+//    const auto typeOfEvent = touchEvent->type();
+//    static bool isAxisMoving = false;
+//    static float pointStartX, pointStartY;
+//    static float pointStopX, pointStopY;
 
-    if((typeOfEvent == QEvent::TouchBegin) || (typeOfEvent == QEvent::TouchEnd) || (typeOfEvent == QEvent::TouchUpdate))// || (typeOfEvent == QEvent::Wheel))
-    {
-        if (typeOfEvent == QEvent::TouchBegin)
-        {
-            isAxisMoving = true;
-            pointStartX = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x());
-            pointStartY = yAxis->pixelToCoord(touchEvent->touchPoints().last().pos().y());
-            return true;
-        }
-        if ((typeOfEvent == QEvent::TouchUpdate) && (isAxisMoving))
-        {
-            pointStopX = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x());
-            pointStopY = yAxis->pixelToCoord(touchEvent->touchPoints().last().pos().y());
-            float deltaX = pointStopX - pointStartX;
-            float deltaY = pointStopY - pointStartY;
+//    if((typeOfEvent == QEvent::TouchBegin) || (typeOfEvent == QEvent::TouchEnd) || (typeOfEvent == QEvent::TouchUpdate))// || (typeOfEvent == QEvent::Wheel))
+//    {
+//        if (typeOfEvent == QEvent::TouchBegin)
+//        {
+//            isAxisMoving = true;
+//            pointStartX = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x());
+//            pointStartY = yAxis->pixelToCoord(touchEvent->touchPoints().last().pos().y());
+//            return true;
+//        }
+//        if ((typeOfEvent == QEvent::TouchUpdate) && (isAxisMoving))
+//        {
+//            pointStopX = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x());
+//            pointStopY = yAxis->pixelToCoord(touchEvent->touchPoints().last().pos().y());
+//            float deltaX = pointStopX - pointStartX;
+//            float deltaY = pointStopY - pointStartY;
 
-            if (!((xAxis->range().lower - deltaX < 0) || (xAxis->range().upper - deltaX > mRecordedMaxXRange)))//mCurrentMaxXRange)))
-            {
-                xAxis->setRange(xAxis->range().lower - deltaX, xAxis->range().upper - deltaX);
-            }
-            if (!((yAxis->range().lower - deltaY < 0) || (yAxis->range().upper - deltaY > mCurrentMaxYRange)))
-            {
-                yAxis->setRange(yAxis->range().lower - deltaY, yAxis->range().upper - deltaY);
-            }
+//            if (!((xAxis->range().lower - deltaX < 0) || (xAxis->range().upper - deltaX > mRecordedMaxXRange)))//mCurrentMaxXRange)))
+//            {
+//                xAxis->setRange(xAxis->range().lower - deltaX, xAxis->range().upper - deltaX);
+//            }
+//            if (!((yAxis->range().lower - deltaY < 0) || (yAxis->range().upper - deltaY > mCurrentMaxYRange)))
+//            {
+//                yAxis->setRange(yAxis->range().lower - deltaY, yAxis->range().upper - deltaY);
+//            }
 
-            pointStartX = pointStopX = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x());
-            pointStartY = pointStopY = yAxis->pixelToCoord(touchEvent->touchPoints().last().pos().y());
-            return true;
-        }
-        if (typeOfEvent == QEvent::TouchEnd)
-        {
-            isAxisMoving = false;
-            return true;
-        }
+//            pointStartX = pointStopX = xAxis->pixelToCoord(touchEvent->touchPoints().last().pos().x());
+//            pointStartY = pointStopY = yAxis->pixelToCoord(touchEvent->touchPoints().last().pos().y());
+//            return true;
+//        }
+//        if (typeOfEvent == QEvent::TouchEnd)
+//        {
+//            isAxisMoving = false;
+//            return true;
+//        }
 
-        /*if (typeOfEvent == QEvent::Wheel)
-        {
-            #define DEF_ZOOM_IN_X  (float)0.8
-            #define DEF_ZOOM_OUT_X (float)(1.0/DEF_ZOOM_IN_X)
-            QWheelEvent *eventWheel = (QWheelEvent*)mouseEvent;
-            pointStartX = xAxis->pixelToCoord(mouseEvent->pos().x());
+//        /*if (typeOfEvent == QEvent::Wheel)
+//        {
+//            #define DEF_ZOOM_IN_X  (float)0.8
+//            #define DEF_ZOOM_OUT_X (float)(1.0/DEF_ZOOM_IN_X)
+//            QWheelEvent *eventWheel = (QWheelEvent*)mouseEvent;
+//            pointStartX = xAxis->pixelToCoord(mouseEvent->pos().x());
 
-            if (eventWheel->delta() < 0)
-            {
-              //qDebug("Zoom-");
-              //qDebug() << "pointStartX:" << pointStartX << " (pointStartX *  DEF_ZOOM_IN_X)" << (pointStartX *  DEF_ZOOM_IN_X) << " xAxis->range().lower" << xAxis->range().lower;
-              float startPlot;
-              float endPlot;
-              bool customPlot = false;
-              if ((pointStartX - (pointStartX * DEF_ZOOM_IN_X)) > xAxis->range().lower) // < 0
-              {
-                customPlot = true;
-                startPlot = 0;
-              }
+//            if (eventWheel->delta() < 0)
+//            {
+//              //qDebug("Zoom-");
+//              //qDebug() << "pointStartX:" << pointStartX << " (pointStartX *  DEF_ZOOM_IN_X)" << (pointStartX *  DEF_ZOOM_IN_X) << " xAxis->range().lower" << xAxis->range().lower;
+//              float startPlot;
+//              float endPlot;
+//              bool customPlot = false;
+//              if ((pointStartX - (pointStartX * DEF_ZOOM_IN_X)) > xAxis->range().lower) // < 0
+//              {
+//                customPlot = true;
+//                startPlot = 0;
+//              }
 
-              if ((xAxis->range().upper + (xAxis->range().upper *  DEF_ZOOM_IN_X)) > mRecordedMaxXRange) //mCurrentMaxXRange) // > MAX
-              {
-                customPlot = true;
-                startPlot = xAxis->range().lower * DEF_ZOOM_IN_X;
-                endPlot = mRecordedMaxXRange;//mCurrentMaxXRange;
-              }
-              else
-              {
-                endPlot = xAxis->range().size() / DEF_ZOOM_IN_X;
-              }
+//              if ((xAxis->range().upper + (xAxis->range().upper *  DEF_ZOOM_IN_X)) > mRecordedMaxXRange) //mCurrentMaxXRange) // > MAX
+//              {
+//                customPlot = true;
+//                startPlot = xAxis->range().lower * DEF_ZOOM_IN_X;
+//                endPlot = mRecordedMaxXRange;//mCurrentMaxXRange;
+//              }
+//              else
+//              {
+//                endPlot = xAxis->range().size() / DEF_ZOOM_IN_X;
+//              }
 
-              if (customPlot)
-              {
-                xAxis->setRange(startPlot, endPlot);
-                return true;
-              }
-              xAxis->scaleRange(DEF_ZOOM_OUT_X, pointStartX);
-              return true;
-            }
-            else
-            {
-              //qDebug("Zoom+");
-              xAxis->scaleRange(DEF_ZOOM_IN_X, pointStartX);
-            }
-            return true;
-        }*/
-    }
-    return false;
-}
+//              if (customPlot)
+//              {
+//                xAxis->setRange(startPlot, endPlot);
+//                return true;
+//              }
+//              xAxis->scaleRange(DEF_ZOOM_OUT_X, pointStartX);
+//              return true;
+//            }
+//            else
+//            {
+//              //qDebug("Zoom+");
+//              xAxis->scaleRange(DEF_ZOOM_IN_X, pointStartX);
+//            }
+//            return true;
+//        }*/
+//    }
+//    return false;
+//}
 
 #endif
 //bool RecordedPlot::event(QEvent *event)

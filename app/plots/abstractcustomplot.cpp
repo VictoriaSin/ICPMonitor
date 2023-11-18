@@ -47,7 +47,8 @@ bool AbstractCustomPlot::editLabel(QMouseEvent *mouseEvent)
             if (abs(deltaX) > 2)
             {
                 pointStart = pointStop;
-                mCoordLabelX += deltaX;
+                mLabelItemsContainer.back()->mIntervalPos += deltaX;
+                //mCoordLabelX += deltaX;
                 mLabelItemsContainer.back()->replotLine();
             }
             return true;
@@ -58,7 +59,8 @@ bool AbstractCustomPlot::editLabel(QMouseEvent *mouseEvent)
             labelMoved = false;
             if ((pointStart == pointStop) && (isLabelDrag == false))
             {
-                mCoordLabelX = pointStart;
+                //mCoordLabelX = pointStart;
+                mLabelItemsContainer.back()->mIntervalPos = pointStart;
                 mLabelItemsContainer.back()->replotLine();
             }
             isLabelDrag = false;
@@ -286,7 +288,8 @@ bool AbstractCustomPlot::editLabel(QTouchEvent *touchEvent)
             if (abs(deltaX) > 2)
             {
                 pointStart = pointStop;
-                mCoordLabelX += deltaX;
+                //mCoordLabelX += deltaX;
+                mLabelItemsContainer.back()->mIntervalPos += deltaX;
                 mLabelItemsContainer.back()->replotLine();
             }
             return true;
@@ -297,7 +300,8 @@ bool AbstractCustomPlot::editLabel(QTouchEvent *touchEvent)
             labelMoved = false;
             if ((pointStart == pointStop) && (isLabelDrag == false))
             {
-                mCoordLabelX = pointStart;
+                //mCoordLabelX = pointStart;
+                mLabelItemsContainer.back()->mIntervalPos = pointStart;
                 mLabelItemsContainer.back()->replotLine();
             }
             isLabelDrag = false;

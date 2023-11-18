@@ -69,6 +69,8 @@ public:
     void replotLine();
     void deleteLine();
 
+public slots:
+    void itemClicked(QCPAbstractItem *item, QMouseEvent *event);
 protected:
     /*! Составной элемент из других, отрисовывать нечего */
     void draw(QCPPainter *painter) override;

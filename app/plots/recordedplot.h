@@ -89,8 +89,6 @@ protected:
 
 public slots:
     void animateGraphic(int timerDelaySec);
-
-    void itemClicked(QCPAbstractItem *item, QMouseEvent *event);
 protected slots:
     /*! Обработка нажатий по элементам графика */
     //void itemClicked(QCPAbstractItem *item, QMouseEvent *event);

@@ -11,7 +11,7 @@ class MonitorController;
 class MarkItem;
 class LabelMarkItem;
 
-extern QVector<LabelMarkItem *> mLabelItemsContainer;
+extern QVector<MarkItem *> mLabelItemsContainer;
 
 extern MarkItem * mIntervalsContainer[4];
 extern uint8_t mCurrentIntervalNum;

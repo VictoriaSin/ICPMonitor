@@ -21,7 +21,7 @@
 WaveFormPlot *mWaveGraph {nullptr};
 WaveFormPlot *mComplianceGraph {nullptr};
 
-QVector<LabelMarkItem *> mLabelItemsContainer {nullptr};
+QVector<MarkItem *> mLabelItemsContainer;
 MarkItem *mIntervalsContainer[4];
 bool isIntervalCreating {false};
 uint8_t mIntervalsCount {0};
@@ -55,7 +55,7 @@ CurrentGraphsArea::CurrentGraphsArea(QWidget *parent) :
     //bufferRecord_2.currentPos = 0;
     //currentBufferRecord = 1;
     isRecord = false;
-    mLabelItemsContainer.clear();
+    //mLabelItemsContainer.clear();
     // Записываем для быстрого доступа
     mWaveGraph = ui->waveGraph;
     mWaveGraph->setType(0);
@@ -154,7 +154,7 @@ void CurrentGraphsArea::goToLabel(bool direction)
     direction == previous ? mCurrentLabelIndex = (mCurrentLabelIndex + labelCount - 1) % labelCount //назад
             : mCurrentLabelIndex = (mCurrentLabelIndex + 1) % labelCount; //вперед
 qDebug() << "currind" << mCurrentLabelIndex;
-    float curLabelPosX =mLabelItemsContainer[mCurrentLabelIndex]->getLabel()->mCurrentPos;
+    float curLabelPosX =(float)mLabelItemsContainer[mCurrentLabelIndex]->mIntervalPos / 1000;//getLabel()->mCurrentPos;
 
     float tempRangeDiv2 = (mRecordedGraph->xAxis->range().size())/2;
     if (curLabelPosX + tempRangeDiv2 > mRecordedMaxXRange)//mRecordedGraph->mCurrentMaxXRange)
@@ -179,25 +179,24 @@ void CurrentGraphsArea::addOrDeleteNewItem(bool state)
 {
     mRecordedGraph->setInteraction(QCP::iRangeDrag, true);
 
-    if (state == true)
-    {
-        if (isLabelCreating)
-        {
-            mCoordLabelX = 0;
-        }
-    }
-    else
+//    if (state == true)
+//    {
+//        if (isLabelCreating)
+//        {
+//            mCoordLabelX = 0;
+//        }
+//    }
+//    else
+    if (state == false)
     {
         if (isLabelCreating)
         {
             qDebug() << "vec count=" << mLabelItemsContainer.count();
-//            mRecordedGraph->removeItem(mLabelItemsContainer.back());
-            mLabelItemsContainer.back()->deleteLine();
+//            mLabelItemsContainer.back()->deleteLine();
+//            mLabelItemsContainer.pop_back();
+            mRecordedGraph->removeItem(mLabelItemsContainer.back());//[mLabelCounter]);
             mLabelItemsContainer.pop_back();
-            //mLabelManagerGlobal->mCountLabels --;
 
-            mController->deleteLabel(); // бесполезная убрать
-            //mLabelItemsContainer.back()->deleteLater();
             qDebug() << "vec count=" << mLabelItemsContainer.count();
         }
         else if (isIntervalCreating)
@@ -555,28 +554,32 @@ void CurrentGraphsArea::addLabelOnRecordedGraph()
 
     // Менеджер меток
 
-    const LabelManager* const labelManager = mController->getLabelManager();
+    //const LabelManager* const labelManager = mController->getLabelManager();
 
     // Если нет менеджера меток
-    if (!labelManager) {    return;    }
+    //if (!labelManager) {    return;    }
     // Последняя созданная метка
-    const std::shared_ptr<Label> label = labelManager->getLastCreatedLabel();
+    //const std::shared_ptr<Label> label = labelManager->getLastCreatedLabel();
 
     // Если нет последней созданной метки
-    if (!label) {   return;    }
+    //if (!label) {   return;    }
 
     // Создаём метку
-    LabelMarkItem *labelItem = new LabelMarkItem(mRecordedGraph, label, mFontForLabelItems, TopMarginForLabel, LabelOrientation::moVerticalTop);
-    labelItem->setPositionMark((float)label->getTimeStartLabelMS() / 1000); // Установка позиции метки
+qDebug() << mLabelCounter;
+    //LabelMarkItem *labelItem = new LabelMarkItem(mRecordedGraph, label, mFontForLabelItems, TopMarginForLabel, LabelOrientation::moVerticalTop);
+    mLabelItemsContainer.append(new MarkItem(mRecordedGraph, QString::number(mLabelCounter+1), mRecordedGraph->xAxis->range().lower + mRecordedGraph->xAxis->range().size()*0.1, mFontForLabelItems));
+    //labelItem->setPositionMark((float)label->getTimeStartLabelMS() / 1000); // Установка позиции метки
 
-    labelItem->addLine(); // Добавление вертикальной пунктирной линии
+    //labelItem->addLine(); // Добавление вертикальной пунктирной линии
 
     // Добавляем элемент для оптимизации
-    mRecordedGraph->addOptimizationLabelItem(labelItem);
+    //mRecordedGraph->addOptimizationLabelItem(labelItem);
 
     // Добавляем в контейнер меток
-    mLabelItemsContainer.append(labelItem);
-    qDebug() << mLabelItemsContainer.count();
+    //mLabelItemsContainer.append(markItem);//labelItem);
+    qDebug() << "mLabelItemsContainer.count()" << mLabelItemsContainer.count();
+    mLabelCounter++;
+
 }
 
 void CurrentGraphsArea::addIntervalOnRecordedGraph()
@@ -1002,12 +1005,14 @@ void CurrentGraphsArea::removeAllGraphs()
         mRecordedGraph->removeItem(mFluidMarkContainer[i]);
     }
     mFluidMarksCounter = 0;
-    for (int8_t i=0; i<mLabelItemsContainer.count(); i++)
+    for (int8_t i=0; i<mLabelCounter; i++)
     {
-        mLabelItemsContainer[i]->deleteLine();
+        mRecordedGraph->removeItem(mLabelItemsContainer.back());
+        mLabelItemsContainer.pop_back();
     }
-    mLabelManagerGlobal->mCountLabels = 0;
-    mLabelItemsContainer.clear();
+    mLabelCounter = 0;
+    //mLabelManagerGlobal->mCountLabels = 0;
+    //mLabelItemsContainer.clear();
 
 }
 

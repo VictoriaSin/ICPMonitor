@@ -62,18 +62,18 @@ bool MonitorController::setAppLanguage(QLocale::Language language)
 }
 void MonitorController::makeLabel()
 {
-  isLabelCreating = true;
-  // Если метка создалась, то рассылаем уведомление о создании с номером метки и временем создания
-  if (std::shared_ptr<Label> label = mLabelManagerGlobal->createLabel())
-  {
-    emit controllerEvent(ControllerEvent::LabelCreated, QVariantMap({
-                                                                      {ControllerEventsArgs::LabelNumber,           label->getNumberLabel()},
-                                                                      {ControllerEventsArgs::LabelCreationTimeMs,   (qlonglong)label->getTimeStartLabelMS()}  }));
-  }
-  else
-  {
-    qDebug() << "none";
-  }
+//  isLabelCreating = true;
+//  // Если метка создалась, то рассылаем уведомление о создании с номером метки и временем создания
+//  if (std::shared_ptr<Label> label = mLabelManagerGlobal->createLabel())
+//  {
+//    emit controllerEvent(ControllerEvent::LabelCreated, QVariantMap({
+//                                                                      {ControllerEventsArgs::LabelNumber,           label->getNumberLabel()},
+//                                                                      {ControllerEventsArgs::LabelCreationTimeMs,   (qlonglong)label->getTimeStartLabelMS()}  }));
+//  }
+//  else
+//  {
+//    qDebug() << "none";
+//  }
 }
 
 void MonitorController::deleteLabel()//доделать

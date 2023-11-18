@@ -1,7 +1,7 @@
 #include "label.h"
 #include <QDebug>
 
-uint32_t mCoordLabelX {0};
+//uint32_t mCoordLabelX {0};
 
 Label::Label()
 {

@@ -46,6 +46,8 @@ extern bool isFluidIntervalCreating;
 uint8_t mFluidMarksCounter = 0;
 MarkItem* mFluidMarkContainer[2];
 
+uint16_t mLabelCounter = 0;
+
 MainPage::MainPage(QWidget *parent)
   : IPageWidget(parent)
   , mUpdateDateTimeTimer(new QTimer(this))
@@ -339,10 +341,10 @@ void MainPage::updateLabelCounter()
   const QString counterLabelText = tr("Меток: %1");
   const QString currentLabelText = tr("%1/%2");
   // Запрос у контроллера кол-ва меток за текущую сессию
-  int countLabels = mController->getLabelsCountPerCurrentSession();
-  if (countLabels > 0)
+  //int countLabels = mController->getLabelsCountPerCurrentSession();
+  if (mLabelCounter > 0)
   {
-    ui->labelsNavigation->setText(currentLabelText.arg(mCurrentLabelIndex+1).arg(mLabelManagerGlobal->mCountLabels));
+    ui->labelsNavigation->setText(currentLabelText.arg(mCurrentLabelIndex+1).arg(mLabelCounter));//mLabelManagerGlobal->mCountLabels));
   }
 }
 void MainPage::scaleFont(float scaleFactor)
@@ -538,7 +540,10 @@ void MainPage::on_makeLabelButton_clicked()
   ui->markPPointButton        ->setEnabled(false);
   ui->deleteItemButton        ->setEnabled(false);
 
-  QTimer::singleShot(0, mController, [this](){ mController->makeLabel(); });
+  //QTimer::singleShot(0, mController, [this](){ mController->makeLabel(); });
+  isLabelCreating = true;
+
+  mCurrentGraphsArea->addLabelOnRecordedGraph();
   //emit (changeLabelButtonStatus);
 }
 void MainPage::on_acceptMarkButton_clicked()
@@ -563,9 +568,9 @@ void MainPage::on_acceptMarkButton_clicked()
   ui->deleteItemButton    ->setEnabled(true);
 
   mMarksFile->open(QIODevice::WriteOnly | QIODevice::Append);
-  mMarksFile->write((QString::number(mLabelManagerGlobal->mCountLabels) + ": " + QString::number(mCoordLabelX) + "\n").toLatin1());
+  mMarksFile->write((QString::number(mLabelCounter/*mLabelManagerGlobal->mCountLabels*/) + ": " + QString::number(mLabelItemsContainer.back()->mIntervalPos/*mCoordLabelX*/) + "\n").toLatin1());
   mMarksFile->close();
-  mLabelItemsContainer.back()->getLabel()->mCurrentPos = (float)mCoordLabelX/1000;
+  //mLabelItemsContainer.back()->mIntervalPos/*getLabel()->mCurrentPos*/ = mCoordLabelX;//(float)mCoordLabelX/1000;
 
   if (mIntervalsCount < 4) { ui->intervalButton->show(); }
   else if (mFluidMarksCounter == 2){ ui->markPPointButton->setEnabled(true); }
@@ -599,12 +604,14 @@ void MainPage::on_rejectMarkButton_clicked()
 
   if (mIntervalsCount < 4) { ui->intervalButton->show(); }
   else if (mFluidMarksCounter == 2){ ui->markPPointButton->setEnabled(true); }
+  mLabelCounter--;
   mCurrentGraphsArea->addOrDeleteNewItem(false);
   if (ui->labelsNavigation->text() != "0/0")
   {
     ui->goToPreviousMarkButton ->setEnabled(true);
     ui->goToNextMarkButton     ->setEnabled(true);
   }
+
 }
 void MainPage::startSession()
 {

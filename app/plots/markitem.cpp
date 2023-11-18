@@ -33,7 +33,8 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, uint8_t num, QColor color, const QFo
 {
     // Установка слоя отрисовки
     setLayer("overlay");
-
+    // Обработка клика по элементам
+    connect(parentPlot, &QCustomPlot::itemClick, this, &MarkItem::itemClicked);
     // Установка ориентации
     setOrientation(moVerticalBottom);
 
@@ -98,7 +99,8 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, const QString &text, const float pos
 {
     // Установка слоя отрисовки
     setLayer("overlay");
-
+    // Обработка клика по элементам
+    connect(parentPlot, &QCustomPlot::itemClick, this, &MarkItem::itemClicked);
     // Установка ориентации
     setOrientation(moVerticalBottom);
 
@@ -110,7 +112,7 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, const QString &text, const float pos
 
     mTextItem->setPadding(QMargins(3, 0, 3, 0)); // Отступы от рамки прямоугольника к тексту
     mTextItem->setFont(font); // Устанавливаем базовый шрифт
-    mTextItem->setSelectable(true); // Устанавливаем запрет на выбор элемента кликом
+    mTextItem->setSelectable(false); // Устанавливаем запрет на выбор элемента кликом
 
     // Создаём линию
     mLineThroughGraph = new QCPItemLine(mParentPlot);
@@ -128,7 +130,7 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, const QString &text, const float pos
     dotPen.setStyle(Qt::DotLine);
     dotPen.setWidth(3);
     mLineThroughGraph->setPen(dotPen);
-    mLineThroughGraph->setSelectable(true);
+    mLineThroughGraph->setSelectable(false);
     mLineThroughGraph->setVisible(true);
 }
 
@@ -150,9 +152,9 @@ void MarkItem::replotLine()
 {
     if (isLabelCreating)
     {
-        mTextItem->position->setCoords(float(mCoordLabelX)/1000.0, 0.1);
-        mLineThroughGraph->start->setParentAnchor(mTextItem->position);
-        mLineThroughGraph->end->setCoords(float(mCoordLabelX)/1000.0, 0);
+        mTextItem->position->setCoords(float(mIntervalPos)/1000.0, 0.1);
+        mLineThroughGraph->end->setParentAnchor(mTextItem->position);
+        mLineThroughGraph->start->setCoords(float(mIntervalPos)/1000.0, 0);
     }
     else if ((isIntervalCreating) || (isFluidIntervalCreating))
     {
@@ -181,36 +183,36 @@ void MarkItem::deleteLine()
 
 void MarkItem::addLine()
 {
-    // Если метки нет или линия уже есть
-    if ((!mTextItem) || mLineThroughGraph) { return; }
+//    // Если метки нет или линия уже есть
+//    if ((!mTextItem) || mLineThroughGraph) { return; }
 
-    // Создаём линию
-    mLineThroughGraph = new QCPItemLine(mParentPlot);
-    float mTempPointUpper = mParentPlot->xAxis->range().upper;
-    float mTempPointLower = mParentPlot->xAxis->range().lower;
+//    // Создаём линию
+//    mLineThroughGraph = new QCPItemLine(mParentPlot);
+//    float mTempPointUpper = mParentPlot->xAxis->range().upper;
+//    float mTempPointLower = mParentPlot->xAxis->range().lower;
 
 
-    // Вяжем начальную точку к якорю текста
-    mCoordLabelX = (mTempPointLower+(mTempPointUpper-mTempPointLower)*0.1)*1000;
-    mTextItem->position->setCoords(mTempPointLower+(mTempPointUpper-mTempPointLower)*0.1, 0.1); // abs, rel
-    mLineThroughGraph->start->setParentAnchor(mTextItem->position);
+//    // Вяжем начальную точку к якорю текста
+//    mCoordLabelX = (mTempPointLower+(mTempPointUpper-mTempPointLower)*0.1)*1000;
+//    mTextItem->position->setCoords(mTempPointLower+(mTempPointUpper-mTempPointLower)*0.1, 0.1); // abs, rel
+//    mLineThroughGraph->start->setParentAnchor(mTextItem->position);
 
-    mLineThroughGraph->end->setCoords(mTempPointLower+(mTempPointUpper-mTempPointLower)*0.1, 0);    // abs
-    mParentPlot->setInteraction(QCP::iRangeDrag, false);
-    // Добавляем на верхний слой
-    mLineThroughGraph->setLayer("legend"); // На один слой ниже чем this
-    // Ручка для отрисовки уровней тревоги
-    QPen dotPen;
-    dotPen.setColor(QColor(Qt::yellow));
-    dotPen.setStyle(Qt::DotLine);
-    dotPen.setWidth(3);
+//    mLineThroughGraph->end->setCoords(mTempPointLower+(mTempPointUpper-mTempPointLower)*0.1, 0);    // abs
+//    mParentPlot->setInteraction(QCP::iRangeDrag, false);
+//    // Добавляем на верхний слой
+//    mLineThroughGraph->setLayer("legend"); // На один слой ниже чем this
+//    // Ручка для отрисовки уровней тревоги
+//    QPen dotPen;
+//    dotPen.setColor(QColor(Qt::yellow));
+//    dotPen.setStyle(Qt::DotLine);
+//    dotPen.setWidth(3);
 
-    // Устанавливаем ручку
-    mLineThroughGraph->setPen(dotPen);
+//    // Устанавливаем ручку
+//    mLineThroughGraph->setPen(dotPen);
 
-    // Устанавливаем запрет на выбор элемента кликом
-    mLineThroughGraph->setSelectable(false);
-    mLineThroughGraph->setVisible(true);
+//    // Устанавливаем запрет на выбор элемента кликом
+//    mLineThroughGraph->setSelectable(false);
+//    mLineThroughGraph->setVisible(true);
 }
 
 void MarkItem::setVisible(bool enable)
@@ -329,3 +331,18 @@ void MarkItem::draw(QCPPainter *painter)
 {
     Q_UNUSED(painter);
 }
+
+#ifdef PC_BUILD
+void MarkItem::itemClicked(QCPAbstractItem *item, QMouseEvent *event)
+{
+    qDebug() << item;
+    const MarkItem *markItem = dynamic_cast<MarkItem*>(item);
+    // Если преобразование прошло успешно и событие отпускания левой мышки
+    if (markItem && event->type() == QEvent::Type::MouseButtonRelease && event->button() == Qt::MouseButton::LeftButton)
+    {
+        qDebug() << "clicked" << markItem;
+    }
+}
+#else
+// для тач ивента
+#endif

@@ -11,6 +11,7 @@
 //! График текущих значений
 
 extern uint8_t mCurrentIntervalNum;
+extern uint16_t mLabelCounter;
 namespace Ui {
 class CurrentGraphsArea;
 }
@@ -125,6 +126,8 @@ public:
 
     /*! Устанавливает интервал на график записанных показаний */
     void addIntervalOnRecordedGraph();
+    /*! Устанавливает метку на график записанных показаний */
+    void addLabelOnRecordedGraph();
 private:
 
     /*################################################################################
@@ -138,8 +141,7 @@ private:
     /*! Сброс графика с записанными значениями */
     void resetRecordedGraph();
 
-    /*! Устанавливает метку на график записанных показаний */
-    void addLabelOnRecordedGraph();
+
 
 
 
