@@ -871,7 +871,7 @@
          </widget>
         </item>
         <item>
-         <widget class="AnimatedToolButton" name="deleteItemButton">
+         <widget class="AnimatedToolButton" name="patientInfoButton">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
             <horstretch>0</horstretch>

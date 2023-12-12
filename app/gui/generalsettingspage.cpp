@@ -32,6 +32,61 @@ GeneralSettingsPage::GeneralSettingsPage(QWidget *parent) :
   ui->aCoefficientLineEdit->setObjectName("coefficientA");
   ui->bCoefficientLineEdit->setObjectName("coefficientB");
 
+  ui->keyboard->showExitBtn();
+  ui->keyboard->hide();
+  currLineEdit = nullptr;
+
+  connect(ui->keyboard, &myKBoard::sendChar, this, &GeneralSettingsPage::editLine);
+
+  ui->intervalXLineEdit         ->installEventFilter(this);
+  ui->lowIntervalYLineEdit      ->installEventFilter(this);
+  ui->highIntervalYLineEdit     ->installEventFilter(this);
+  ui->tickCountXLineEdit        ->installEventFilter(this);
+  ui->tickCountYLineEdit        ->installEventFilter(this);
+  ui->upperAlarmLineEdit        ->installEventFilter(this);
+  ui->lowerAlarmLineEdit        ->installEventFilter(this);
+  ui->fontScaleFactorLineEdit   ->installEventFilter(this);
+  ui->averageIntervalSecLineEdit->installEventFilter(this);
+  ui->aCoefficientLineEdit      ->installEventFilter(this);
+  ui->bCoefficientLineEdit      ->installEventFilter(this);
+  ui->reg0                      ->installEventFilter(this);
+  ui->reg1                      ->installEventFilter(this);
+  ui->reg2                      ->installEventFilter(this);
+  ui->reg3                      ->installEventFilter(this);
+  ui->reg4                      ->installEventFilter(this);
+  ui->reg5                      ->installEventFilter(this);
+  ui->reg6                      ->installEventFilter(this);
+  ui->reg7                      ->installEventFilter(this);
+  ui->reg8                      ->installEventFilter(this);
+  ui->reg9                      ->installEventFilter(this);
+  ui->reg10                     ->installEventFilter(this);
+  ui->reg11                     ->installEventFilter(this);
+  ui->reg12                     ->installEventFilter(this);
+  ui->reg13                     ->installEventFilter(this);
+  ui->reg14                     ->installEventFilter(this);
+  ui->reg15                     ->installEventFilter(this);
+  ui->reg16                     ->installEventFilter(this);
+  ui->reg17                     ->installEventFilter(this);
+  ui->reg18                     ->installEventFilter(this);
+  ui->reg19                     ->installEventFilter(this);
+  ui->reg20                     ->installEventFilter(this);
+  ui->reg21                     ->installEventFilter(this);
+  ui->reg22                     ->installEventFilter(this);
+  ui->reg23                     ->installEventFilter(this);
+  ui->reg24                     ->installEventFilter(this);
+  ui->reg25                     ->installEventFilter(this);
+  ui->reg26                     ->installEventFilter(this);
+  ui->reg27                     ->installEventFilter(this);
+  ui->reg28                     ->installEventFilter(this);
+  ui->reg29                     ->installEventFilter(this);
+
+
+
+
+
+//#define FOCUS_CONNECT(NAME) connect(ui->##NAME, &QLineEdit::, this, &GeneralSettingsPage::butClick);
+//connect(ui->aCoefficientLineEdit, &QLineEdit::cursorPositionChanged, ui->keyboard, &myKBoard::show);
+
 #ifdef PC_BUILD
   float coeff = 0.7;
   WFontScaling(ui->intervalXLabel,                coeff);
@@ -52,8 +107,8 @@ GeneralSettingsPage::GeneralSettingsPage(QWidget *parent) :
   WFontScaling(ui->lowerAlarmLineEdit,            coeff);
   WFontScaling(ui->lowerAlarmSignalLabel,         coeff);
   WFontScaling(ui->lowerAlarmSignalButton,        coeff);
-  WFontScaling(ui->currentMaxStorageTimeLineEdit, coeff);
-  WFontScaling(ui->currentMaxStorageTimeLabel,    coeff);
+  //WFontScaling(ui->currentMaxStorageTimeLineEdit, coeff);
+  //WFontScaling(ui->currentMaxStorageTimeLabel,    coeff);
   WFontScaling(ui->relativeCurrentPathLabel,      coeff);
   WFontScaling(ui->relativeCurrentPathLineEdit,   coeff);
   WFontScaling(ui->fontScaleFactorLabel,          coeff);
@@ -250,16 +305,17 @@ void GeneralSettingsPage::updateParameters()
       }
       continue;
     }
-    if (mLineEditList[i]->objectName() == "coefficientA" || mLineEditList[i]->objectName() == "coefficientB")
-    {
-      if (!checkInputCoeff(mLineEditList[i]->text()))
-      {
-        openSettingsInfoErrorDialog(tr("Введены некорректные коэффициенты a, b"));
-        return;
-      }
-    }
+//    if (mLineEditList[i]->objectName() == "coefficientA" || mLineEditList[i]->objectName() == "coefficientB")
+//    {
+//      if (!checkInputCoeff(mLineEditList[i]->text()))
+//      {
+//        openSettingsInfoErrorDialog(tr("Введены некорректные коэффициенты a, b"));
+//        return;
+//      }
+//    }
     else if (!checkInputData(mLineEditList[i]->text()))
     {
+        qDebug() << mLineEditList[i]->text() << i;
       openSettingsInfoErrorDialog(tr("Введены некорректные параметры"));
       return;
     }
@@ -337,7 +393,7 @@ void GeneralSettingsPage::updateParameters()
     updateAlarmSettingsOnWidgets();
     updateGraphSettingsOnWidgets();
   }
-
+qDebug() << "mCurrentReadingsGraphIntervalYLow" << mCurrentReadingsGraphIntervalYLow << "mCurrentReadingsGraphIntervalYHigh" << mCurrentReadingsGraphIntervalYHigh;
 
   float mFontScaleFactor = ui->fontScaleFactorLineEdit->text().toFloat();
   QString mSoftwareStorageUUID = ui->softwareStorageUUIDLineEdit->text();
@@ -431,8 +487,8 @@ void GeneralSettingsPage::scaleFont(float scaleFactor)
   WFontScaling(ui->lowerAlarmLineEdit, scaleFactor);
   WFontScaling(ui->lowerAlarmSignalLabel, scaleFactor);
   WFontScaling(ui->lowerAlarmSignalButton, scaleFactor);
-  WFontScaling(ui->currentMaxStorageTimeLineEdit, scaleFactor);
-  WFontScaling(ui->currentMaxStorageTimeLabel, scaleFactor);
+  //WFontScaling(ui->currentMaxStorageTimeLineEdit, scaleFactor);
+  //WFontScaling(ui->currentMaxStorageTimeLabel, scaleFactor);
   WFontScaling(ui->relativeCurrentPathLabel, scaleFactor);
   WFontScaling(ui->relativeCurrentPathLineEdit, scaleFactor);
   WFontScaling(ui->fontScaleFactorLabel, scaleFactor);
@@ -522,3 +578,37 @@ void GeneralSettingsPage::showEvent(QShowEvent */*event*/)
   updateGeneralSettingsOnWidgets();
 }
 
+bool GeneralSettingsPage::eventFilter(QObject *o, QEvent *e)
+{
+    if (e->type() == QEvent::FocusIn)
+    {
+        if (o->metaObject()->className() == QLatin1String("QLineEdit"))
+        {
+            currLineEdit = (QLineEdit*) o;
+            {
+                ui->keyboard->show();
+                currLineEdit->setFocus();
+                //return true;
+            }
+        }
+    }
+    return false;
+}
+
+void GeneralSettingsPage::editLine(QString inputStr)
+{
+
+    if (inputStr == "backspace")
+    {
+        currLineEdit->backspace();//textCursor().deletePreviousChar();
+    }
+    else if (inputStr == "enter")
+    {
+        ui->keyboard->animateWidget();
+    }
+    else
+    {
+        currLineEdit->insert(inputStr);//insertPlainText(inputStr);
+    }
+    currLineEdit->setFocus();
+}

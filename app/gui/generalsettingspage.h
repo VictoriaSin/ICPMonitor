@@ -28,6 +28,7 @@ public:
     void scaleFont(float scaleFactor) override;
     void installController(MonitorController *controller) override;
 
+    bool eventFilter(QObject *o, QEvent *e) override;
 private:
     Ui::GeneralSettingsPage *ui;
 
@@ -58,8 +59,11 @@ private:
         обновлении настроек */
     void openSettingsInfoErrorDialog(const QString &info);
 
+    QLineEdit* currLineEdit;
+
 private slots:
     void changeAlarmStatus();
+    void editLine(QString);
 
 public slots:
     void retranslate() override;

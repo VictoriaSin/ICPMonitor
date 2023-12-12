@@ -34,7 +34,10 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, uint8_t num, QColor color, const QFo
     // Установка слоя отрисовки
     setLayer("overlay");
     // Обработка клика по элементам
+#ifdef PC_BUILD
     connect(parentPlot, &QCustomPlot::itemClick, this, &MarkItem::itemClicked);
+#else
+#endif
     // Установка ориентации
     setOrientation(moVerticalBottom);
 
@@ -100,7 +103,10 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, const QString &text, const float pos
     // Установка слоя отрисовки
     setLayer("overlay");
     // Обработка клика по элементам
+#ifdef PC_BUILD
     connect(parentPlot, &QCustomPlot::itemClick, this, &MarkItem::itemClicked);
+#else
+#endif
     // Установка ориентации
     setOrientation(moVerticalBottom);
 
@@ -335,12 +341,13 @@ void MarkItem::draw(QCPPainter *painter)
 #ifdef PC_BUILD
 void MarkItem::itemClicked(QCPAbstractItem *item, QMouseEvent *event)
 {
-    qDebug() << item;
+    //qDebug() << item;
     const MarkItem *markItem = dynamic_cast<MarkItem*>(item);
+    //const QCPItemText *textItem = dynamic_cast<QCPItemText*>(item);
     // Если преобразование прошло успешно и событие отпускания левой мышки
-    if (markItem && event->type() == QEvent::Type::MouseButtonRelease && event->button() == Qt::MouseButton::LeftButton)
+    if (markItem && /*event->type() == QEvent::Type::MouseButtonRelease) &&*/ event->button() == Qt::MouseButton::LeftButton)
     {
-        qDebug() << "clicked" << markItem;
+        qDebug() << "clicked" << markItem->mTextItem;
     }
 }
 #else

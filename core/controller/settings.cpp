@@ -180,7 +180,7 @@ void Settings::readCurrentSensorReadingsSettings()
     mCurrentReadingsGraphIntervalX = mSettings->value("mCurrentReadingsGraphIntervalX", mCurrentReadingsGraphIntervalX).toFloat();
     mCurrentReadingsGraphIntervalYLow = mSettings->value("mCurrentReadingsGraphIntervalYLow", mCurrentReadingsGraphIntervalYLow).toFloat();
     mCurrentReadingsGraphIntervalYHigh = mSettings->value("mCurrentReadingsGraphIntervalYHigh", mCurrentReadingsGraphIntervalYHigh).toFloat();
-
+qDebug() << mCurrentReadingsGraphIntervalYHigh;
     mTickCountX = mSettings->value("mTickCountX", mTickCountX).toFloat();
     mTickCountY = mSettings->value("mTickCountY", mTickCountY).toFloat();
 

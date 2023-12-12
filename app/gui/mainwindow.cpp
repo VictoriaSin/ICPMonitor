@@ -15,7 +15,8 @@ MainPage *mMainPage = nullptr;
 MainWindow::MainWindow( QWidget *parent) : QWidget(parent) , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    mMainPage = new MainPage(this);
+    setWindowFlags(Qt::FramelessWindowHint);
+    mMainPage = new MainPage(this);    
     setAttribute(Qt::WA_AcceptTouchEvents); // Принимаем события тачскрина
     setPage(mMainPage);
     connect(mMainPage, &IPageWidget::changePage, this, &MainWindow::setPage);

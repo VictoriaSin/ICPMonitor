@@ -142,7 +142,7 @@ void ExportDataPage::resetLayout()
     qDebug() << "dirs" << N;
     dirsVector = new dirsItem[arrSize];
     int notCorrectDirCount = 0;
-    QRegExp mRegExp("[0-9]{4}(_[0-9]{2}){2}@[0-9]{2}(_[0-9]{2}){2}");
+    QRegExp mRegExp("([A-Z][a-z]*)|([А-Я][а-я]*){2}_[0-9]{4}(_[0-9]{2}){2}@[0-9]{2}(_[0-9]{2}){2}");
     for (uint i = 0; i < N; ++i)
     {
         QFileInfo fileInfo = dirList.at(i);

@@ -9,6 +9,7 @@
 #include "sensor/sensordatamanager.h"
 #include "../app/plots/recordedplot.h"
 #include "volumeinputpage.h"
+#include "../gui/dialogWindows/patientinfodialog.h"
 
 namespace Ui {
 class MainPage;
@@ -75,6 +76,9 @@ private:
 
     QFile mHeadFile;
     QFile mIntervalsFile;
+
+    PatientInfoDialog* patientInfo;
+    PatientInfoDialog* sessionDirName;
 
 
 private slots:
@@ -178,6 +182,8 @@ private slots:
     void on_rejectFluidInjectionButton_clicked();
     void on_goBackButton_clicked();
 
+    void on_patientInfoButton_clicked();
+
 private:
     Ui::MainPage *ui;
 
@@ -207,9 +213,10 @@ private:
 protected:
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;
-
-    void startSession();
     void stopSession();
+protected slots:
+    void startSession();
+
   signals:
     void resetWaveGraph();
     void dataReadyForRecordGraph();

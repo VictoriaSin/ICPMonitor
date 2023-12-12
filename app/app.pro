@@ -1,4 +1,4 @@
-QT += core gui svg widgets concurrent
+QT += core gui svg widgets concurrent multimedia
 DEFINES += QT_NO_PRINTER
 
 TARGET = ICPMonitor                         # Название приложения
@@ -21,6 +21,7 @@ SOURCES += \
     gui/dialogWindows/blockdevicesselectiondialog.cpp \
     gui/dialogWindows/messagedialog.cpp \
     gui/dialogWindows/movedatadialog.cpp \
+    gui/dialogWindows/patientinfodialog.cpp \
     gui/dialogWindows/selectiondialog.cpp \
     gui/dialogWindows/texteditdialog.cpp \
     gui/datetimepage.cpp \
@@ -31,6 +32,7 @@ SOURCES += \
     gui/hexkeyboard.cpp \
     gui/languagepage.cpp \
     gui/mainmenu.cpp \
+    gui/mykboard.cpp \
     gui/numkeyboard.cpp \
     gui/settingsmenu.cpp \
     gui/systeminfopage.cpp \
@@ -66,6 +68,7 @@ HEADERS += \
     gui/dialogWindows/blockdevicesselectiondialog.h \
     gui/dialogWindows/messagedialog.h \
     gui/dialogWindows/movedatadialog.h \
+    gui/dialogWindows/patientinfodialog.h \
     gui/dialogWindows/selectiondialog.h \
     gui/dialogWindows/texteditdialog.h \
     gui/datetimepage.h \
@@ -78,6 +81,7 @@ HEADERS += \
     gui/mainmenu.h \
     gui/mainwindow.h \
     gui/mainpage.h \
+    gui/mykboard.h \
     gui/numkeyboard.h \
     gui/settingsmenu.h \
     gui/systeminfopage.h \
@@ -105,6 +109,7 @@ FORMS += \
     gui/dialogWindows/abstractdialogwindow.ui \
     gui/dialogWindows/messagedialog.ui \
     gui/dialogWindows/movedatadialog.ui \
+    gui/dialogWindows/patientinfodialog.ui \
     gui/dialogWindows/selectiondialog.ui \
     gui/dialogWindows/texteditdialog.ui \
     gui/exportdatapage.ui \
@@ -113,6 +118,7 @@ FORMS += \
     gui/languagepage.ui \
     gui/mainwindow.ui \
     gui/mainpage.ui \
+    gui/mykboard.ui \
     gui/numkeyboard.ui \
     gui/systeminfopage.ui \
     gui/volumeinputpage.ui \

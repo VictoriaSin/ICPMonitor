@@ -137,5 +137,12 @@
         <file>icons/fluidInjectionEnd.svg</file>
         <file>icons/trash_pressed.svg</file>
         <file>icons/trash.svg</file>
+        <file>icons/enter.svg</file>
+        <file>icons/close.svg</file>
+        <file>icons/backSpace.svg</file>
+        <file>icons/shift_1.svg</file>
+        <file>icons/shift_2.svg</file>
+        <file>icons/patient.svg</file>
+        <file>icons/patient_pressed.svg</file>
     </qresource>
 </RCC>

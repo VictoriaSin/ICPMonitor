@@ -112,12 +112,14 @@ bool MonitorController::setLevelsAndStatesAlarm(int lowLevelAlarm, int highLevel
   {
     mICPSettings->setLowLevelAlarm(lowLevelAlarm);
     mICPSettings->setHighLevelAlarm(highLevelAlarm);
+    emit controllerEvent(ControllerEvent::UpdatedAlarmLevels);
   }
 
   if ((LLSA != lowEnabel) || (HLSA != highEnable))
   {
     mICPSettings->setLowLevelStateAlarm(lowEnabel);
     mICPSettings->setHighLevelStateAlarm(highEnable);
+    emit controllerEvent(ControllerEvent::UpdatedAlarmStates);
   }
   mICPSettings->writeAlarmSettings();
   return true;
@@ -128,9 +130,11 @@ bool MonitorController::setPressureUnits(uint8_t mCurrentPressureUnitsIndex)
   if (mICPSettings->getCurrentPressureIndex() != mCurrentPressureUnitsIndex)
   {
     mICPSettings->setCurrentPressureUnits(mCurrentPressureUnitsIndex);
+    emit controllerEvent(ControllerEvent::ChangePressureUnits);
     mICPSettings->writeCurrentSensorReadingsSettings();
+    return true;
   }
-  return true;
+  return false;
 }
 bool MonitorController::setAverageInterval(float mAverageIntervalSec)
 {
@@ -158,11 +162,13 @@ bool MonitorController::setInetrvalsOnGraph(float mCurrentReadingsGraphIntervalX
   {
     mICPSettings->setCurrentReadingsGraphIntervalX(mCurrentReadingsGraphIntervalX);
     mICPSettings->setCurrentReadingsGraphIntervalY(mCurrentReadingsGraphIntervalYLow, mCurrentReadingsGraphIntervalYHigh);
+    emit controllerEvent(ControllerEvent::UpdateGraphIntervals);
   }
   if ((TCX != mTickCountX) || (TCY != mTickCountY))
   {
     mICPSettings->setCurrentTickCountX(mTickCountX);
     mICPSettings->setCurrentTickCountY(mTickCountY);
+    emit controllerEvent(ControllerEvent::UpdateGraphTicks);
   }
   if ((CXR  != mCurrentReadingsGraphIntervalX) || (CYRL != mCurrentReadingsGraphIntervalYLow)
       || (CYRH != mCurrentReadingsGraphIntervalYHigh) || (TCX != mTickCountX) || (TCY != mTickCountY))

@@ -15,6 +15,10 @@
 #include "clock.h"
 #include "../core/sensor/zsc.h"
 
+#include <QtMultimedia/QAudioFormat>
+#include <QtMultimedia/QAudioOutput>
+#include <QtMultimedia/QAudio>
+
 class ZSC;
 ZSC mZSC;
 
@@ -317,6 +321,8 @@ mRelativeScreensPath=./ICPPicture
 */
 #include "stdio.h"
 
+#include <QBuffer>
+
 typedef struct
 {
  float mHighLevelAlarm;
@@ -403,10 +409,46 @@ void readInit()
     setParams(&r1, &r2);
   }
 }
+
+void testWav()
+{
+    QFile inputFile;
+    //foreach (const QAudioDeviceInfo &deviceInfo, QAudioDeviceInfo::availableDevices(QAudio::AudioOutput)) qDebug () << "Устройства звуковой карты Доступны в текущей системе:" << deviceInfo.deviceName();
+
+
+    inputFile.setFileName("/media/Wave/test.wav");
+    bool ret = inputFile.open(QIODevice::ReadOnly);
+qDebug() << ret;
+    QAudioFormat format;
+    // Set up the format, eg.
+    format.setSampleRate(44100);
+    format.setChannelCount(2);
+    format.setSampleSize(16);
+    format.setByteOrder(QAudioFormat::LittleEndian);
+    format.setSampleType(QAudioFormat::SignedInt);
+    format.setCodec("audio/pcm");
+
+    QByteArray audioData = inputFile.readAll();
+    QBuffer buffer(&audioData);
+    QAudioOutput *audio = new QAudioOutput( format, 0);
+    audio->setVolume(1.0);
+    //while(1)
+    {
+        audio->start(&buffer);
+    }
+
+
+    //delete[] audioData;
+
+    //
+    //audio->start(&inputFile);
+}
+
+
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
-  //readInit(); exit(222);
+  //testWav(); exit(222);
 
   /* fbset --geometry 720 480 720 480 16 --timings 37037 60 16 30 9 62 6 */
   QString ttt = executeAConsoleCommand("fbset", QStringList() << "--geometry" << "720" << "480" << "720" << "480" << "16" << "--timings" << "37037" << "60" << "16" << "30" << "9" << "62" << "6");

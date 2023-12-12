@@ -109,6 +109,8 @@ MainPage::~MainPage()
   delete mUpdateDateTimeTimer;
   DESTROY_CLASS(mVolumeInputPage);
   DESTROY_CLASS(mParamInputPage);
+  DESTROY_CLASS(patientInfo);
+  DESTROY_CLASS(sessionDirName);
   delete ui;
 }
 
@@ -245,10 +247,10 @@ void MainPage::setupButtons()
   ui->funcFirstButton->setStyleSheet(ToolButtonStyleSheet);
   ui->funcFirstButton->hide();
 
-  ui->deleteItemButton->setIcon(QIcon(":/icons/trash.svg"),QIcon(":/icons/trash_pressed.svg"));
-  ui->deleteItemButton->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
-  ui->deleteItemButton->setStyleSheet(ToolButtonStyleSheet);
-  ui->deleteItemButton->hide();
+  ui->patientInfoButton->setIcon(QIcon(":/icons/patient.svg"),QIcon(":/icons/patient_pressed.svg"));
+  ui->patientInfoButton->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
+  ui->patientInfoButton->setStyleSheet(ToolButtonStyleSheet);
+  ui->patientInfoButton->hide();
 
   ui->markPPointButton->setIcon(QIcon(":/icons/func3.svg"),QIcon(":/icons/func3_pressed.svg"));
   ui->markPPointButton->setIconSize(QSize(BUT_SIZE_SMALL, BUT_SIZE_SMALL));
@@ -416,7 +418,8 @@ void MainPage::on_recordButton_clicked()
     mCurrentGraphsArea->resetGraphOfCurrentValues();
 
     isStart = false;
-    globalFolder =mntDirectory+ "/" + currentTime;
+    globalFolder += "_" + currentTime;
+    qDebug() << "record folder" << globalFolder;
     mCurrentRecordDir.setPath(globalFolder);
     ui->recordButton->setIcon(QIcon(":/icons/stopRecord.svg"), QIcon(":/icons/stopRecord_pressed.svg"));
 
@@ -481,7 +484,7 @@ void MainPage::on_recordButton_clicked()
 
     ui->intervalButton      ->show();
     ui->fluidInjectionButton->show();
-    ui->deleteItemButton    ->show();
+    ui->patientInfoButton    ->show();
     //ui->playRecord          ->show();
 //    ui->rewindRecordButton  ->show();
 //    ui->speedRecordButton   ->show();
@@ -538,7 +541,7 @@ void MainPage::on_makeLabelButton_clicked()
   ui->zoomInterval2Button     ->setEnabled(false);
   ui->dVInputButton           ->setEnabled(false);
   ui->markPPointButton        ->setEnabled(false);
-  ui->deleteItemButton        ->setEnabled(false);
+  ui->patientInfoButton        ->setEnabled(false);
 
   //QTimer::singleShot(0, mController, [this](){ mController->makeLabel(); });
   isLabelCreating = true;
@@ -565,7 +568,7 @@ void MainPage::on_acceptMarkButton_clicked()
   ui->zoomInterval2Button ->setEnabled(true);
   ui->dVInputButton       ->setEnabled(true);
   ui->fluidInjectionButton->setEnabled(true);
-  ui->deleteItemButton    ->setEnabled(true);
+  ui->patientInfoButton    ->setEnabled(true);
 
   mMarksFile->open(QIODevice::WriteOnly | QIODevice::Append);
   mMarksFile->write((QString::number(mLabelCounter/*mLabelManagerGlobal->mCountLabels*/) + ": " + QString::number(mLabelItemsContainer.back()->mIntervalPos/*mCoordLabelX*/) + "\n").toLatin1());
@@ -600,7 +603,7 @@ void MainPage::on_rejectMarkButton_clicked()
   ui->zoomInterval2Button ->setEnabled(true);
   ui->dVInputButton       ->setEnabled(true);
   ui->fluidInjectionButton->setEnabled(true);
-  ui->deleteItemButton    ->setEnabled(true);
+  ui->patientInfoButton    ->setEnabled(true);
 
   if (mIntervalsCount < 4) { ui->intervalButton->show(); }
   else if (mFluidMarksCounter == 2){ ui->markPPointButton->setEnabled(true); }
@@ -625,6 +628,12 @@ void MainPage::startSession()
   ui->acceptMarkButton    ->hide();
   ui->rejectMarkButton    ->hide();
   ui->recordButton        ->setEnabled(true);
+
+  patientInfo = new PatientInfoDialog(); // инф-я о пациенте
+  patientInfo->setInfoDialog();
+
+  globalFolder = mntDirectory+ "/" + sessionDirName->getDirName();
+  qDebug() << "globalFolder" << globalFolder;
 
   //ui->averageICPWidget->show();
   mCurrentLabelIndex = 0;
@@ -666,7 +675,7 @@ void MainPage::stopSession()
   ui->zoomInterval2Button   ->hide();
   ui->dVInputButton         ->hide();
   ui->markPPointButton      ->hide();
-  ui->deleteItemButton      ->hide();
+  ui->patientInfoButton      ->hide();
 
   mCurrentGraphsArea->stopWork();
   mCurrentGraphsArea->stopWorkDraw();
@@ -680,7 +689,12 @@ void MainPage::on_sessionButton_clicked()
   if (isSessionStart)
   {
     isSessionStart = false;
-    startSession();
+    sessionDirName = new PatientInfoDialog(); //
+    //sessionDirName->setLabel("Введите данные пациента");
+    sessionDirName->setPatientDialog();
+    sessionDirName->show();
+    connect(sessionDirName, &PatientInfoDialog::accepted, this, &MainPage::startSession);
+
   }
   else
   {
@@ -707,7 +721,7 @@ void MainPage::on_intervalButton_clicked()
   ui->dVInputButton           ->setEnabled(false);
   ui->markPPointButton        ->setEnabled(false);
   ui->fluidInjectionButton    ->setEnabled(false);
-  ui->deleteItemButton        ->setEnabled(false);
+  ui->patientInfoButton        ->setEnabled(false);
 
   isIntervalCreating = true;
   mCurrentGraphsArea->addIntervalOnRecordedGraph();
@@ -754,7 +768,7 @@ void MainPage::on_acceptIntervalButton_clicked()
     ui->zoomInterval1Button   ->setEnabled(true);
     ui->zoomInterval2Button   ->setEnabled(true);
     ui->dVInputButton         ->setEnabled(true);
-    ui->deleteItemButton      ->setEnabled(true);
+    ui->patientInfoButton      ->setEnabled(true);
     if ((mIntervalsCount == 4) && (mFluidMarksCounter == 2)) {ui->markPPointButton->setEnabled(true);}
 
     mCurrentGraphsArea->addOrDeleteNewItem(true);
@@ -803,7 +817,7 @@ void MainPage::on_rejectIntervalButton_clicked()
   ui->zoomInterval1Button   ->setEnabled(true);
   ui->zoomInterval2Button   ->setEnabled(true);
   ui->dVInputButton         ->setEnabled(true);
-  ui->deleteItemButton      ->setEnabled(true);
+  ui->patientInfoButton      ->setEnabled(true);
   if ((mCurrentIntervalNum == 4) && (mFluidMarksCounter == 2)) {ui->markPPointButton->setEnabled(true);}
 
   if (ui->labelsNavigation->text() != "0/0")
@@ -853,7 +867,7 @@ void MainPage::on_playRecord_clicked()
     ui->zoomInterval2Button   ->setEnabled(false);
     ui->dVInputButton         ->setEnabled(false);
     ui->markPPointButton      ->setEnabled(false);
-    ui->deleteItemButton      ->setEnabled(false);
+    ui->patientInfoButton      ->setEnabled(false);
   }
   else
   {
@@ -872,7 +886,7 @@ void MainPage::on_playRecord_clicked()
     ui->dVInputButton         ->setEnabled(true);
     if ((mCurrentIntervalNum == 4) && (mFluidMarksCounter == 2)) {ui->markPPointButton->setEnabled(true);}
     ui->downloadGraphButton   ->setEnabled(true);
-    ui->deleteItemButton      ->setEnabled(true);
+    ui->patientInfoButton      ->setEnabled(true);
   }
   emit(playBtnPressed());
 }
@@ -954,7 +968,7 @@ void MainPage::on_zoomInterval1Button_clicked()
   ui->goToPreviousMarkButton->hide();
   ui->makeLabelButton       ->hide();
   ui->sessionButton         ->hide();
-  ui->deleteItemButton      ->hide();
+  ui->patientInfoButton      ->hide();
 //  ui->rewindRecordButton    ->hide();
 //  ui->speedRecordButton     ->hide();
   ui->zoomInterval1Button   ->hide();
@@ -988,7 +1002,7 @@ void MainPage::on_zoomInterval2Button_clicked()
   ui->goToPreviousMarkButton->hide();
   ui->makeLabelButton       ->hide();
   ui->sessionButton         ->hide();
-  ui->deleteItemButton      ->hide();
+  ui->patientInfoButton      ->hide();
 //  ui->rewindRecordButton    ->hide();
 //  ui->speedRecordButton     ->hide();
   ui->zoomInterval1Button   ->hide();
@@ -1006,7 +1020,7 @@ void MainPage::on_goBackToGraphButton_clicked()
   mCurrentGraphsArea        ->changeGraph(1);
   ui->goBackToGraphButton   ->hide();
   ui->funcFirstButton       ->hide();
-  ui->deleteItemButton      ->show();
+  ui->patientInfoButton      ->show();
   //ui->funcThirdButton       ->hide();
   ui->goToInterval1Button   ->show();
   ui->goToNextMarkButton    ->show();
@@ -1123,7 +1137,7 @@ void MainPage::on_markPPointButton_clicked()
     //ui->dateTimeLabel             ->hide();
     //ui->downloadGraphButton       ->hide();
     //ui->funcFirstButton           ->hide();
-    //ui->deleteItemButton          ->hide();
+    //ui->patientInfoButton          ->hide();
     //ui->markPPointButton          ->hide();
     //ui->playRecord                ->hide();
     //ui->rejectFluidInjectionButton->hide();
@@ -1158,7 +1172,7 @@ void MainPage::on_fluidInjectionButton_clicked()
     ui->dVInputButton          ->setEnabled(false);
     ui->markPPointButton       ->setEnabled(false);
     ui->intervalButton         ->setEnabled(false);
-    ui->deleteItemButton       ->setEnabled(false);
+    ui->patientInfoButton       ->setEnabled(false);
     //ui->playRecord             ->setEnabled(false);
     //ui->rewindRecordButton     ->setEnabled(false);
     //ui->speedRecordButton      ->setEnabled(false);
@@ -1186,7 +1200,7 @@ void MainPage::on_acceptFluidInjectionButton_clicked()
     ui->zoomInterval1Button       ->setEnabled(true);
     ui->zoomInterval2Button       ->setEnabled(true);
     ui->dVInputButton             ->setEnabled(true);
-    ui->deleteItemButton          ->setEnabled(true);
+    ui->patientInfoButton          ->setEnabled(true);
     //ui->playRecord              ->setEnabled(true);
     //ui->rewindRecordButton      ->setEnabled(true);
     //ui->speedRecordButton       ->setEnabled(true);
@@ -1231,7 +1245,7 @@ void MainPage::on_rejectFluidInjectionButton_clicked()
     ui->zoomInterval1Button   ->setEnabled(true);
     ui->zoomInterval2Button   ->setEnabled(true);
     ui->dVInputButton         ->setEnabled(true);
-    ui->deleteItemButton      ->setEnabled(true);
+    ui->patientInfoButton      ->setEnabled(true);
     //if (mCurrentIntervalNum == 4) {ui->markPPointButton    ->setEnabled(true);}
 
     if (ui->labelsNavigation->text() != "0/0")
@@ -1271,7 +1285,13 @@ void MainPage::on_goBackButton_clicked()
     ui->markPPointButton          ->show();
     ui->zoomInterval1Button       ->show();
     ui->zoomInterval2Button       ->show();
-    ui->deleteItemButton          ->show();
+    ui->patientInfoButton          ->show();
     ui->goBackButton->hide();
+}
+
+
+void MainPage::on_patientInfoButton_clicked()
+{
+    patientInfo->show();
 }
 
