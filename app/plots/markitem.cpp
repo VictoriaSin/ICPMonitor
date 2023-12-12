@@ -34,7 +34,10 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, uint8_t num, QColor color, const QFo
     // Установка слоя отрисовки
     setLayer("overlay");
     // Обработка клика по элементам
+#ifdef PC_BUILD
     connect(parentPlot, &QCustomPlot::itemClick, this, &MarkItem::itemClicked);
+#else
+#endif
     // Установка ориентации
     setOrientation(moVerticalBottom);
 
@@ -100,7 +103,10 @@ MarkItem::MarkItem(QCustomPlot *parentPlot, const QString &text, const float pos
     // Установка слоя отрисовки
     setLayer("overlay");
     // Обработка клика по элементам
+#ifdef PC_BUILD
     connect(parentPlot, &QCustomPlot::itemClick, this, &MarkItem::itemClicked);
+#else
+#endif
     // Установка ориентации
     setOrientation(moVerticalBottom);
 

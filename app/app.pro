@@ -1,4 +1,4 @@
-QT += core gui svg widgets concurrent
+QT += core gui svg widgets concurrent multimedia
 DEFINES += QT_NO_PRINTER
 
 TARGET = ICPMonitor                         # Название приложения

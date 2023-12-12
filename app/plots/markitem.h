@@ -70,7 +70,9 @@ public:
     void deleteLine();
 
 public slots:
+#ifdef PC_BUILD
     void itemClicked(QCPAbstractItem *item, QMouseEvent *event);
+#endif
 protected:
     /*! Составной элемент из других, отрисовывать нечего */
     void draw(QCPPainter *painter) override;

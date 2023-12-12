@@ -260,6 +260,7 @@ void GeneralSettingsPage::updateParameters()
     }
     else if (!checkInputData(mLineEditList[i]->text()))
     {
+        qDebug() << mLineEditList[i]->text() << i;
       openSettingsInfoErrorDialog(tr("Введены некорректные параметры"));
       return;
     }
